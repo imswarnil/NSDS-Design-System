@@ -710,17 +710,17 @@ export const COMPONENTS = [
     variants: [
       { name: "Three up", html: `<div class="ns-features">
   <article class="ns-feature">
-    <div class="ns-feature__top"><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-roadmap"/></svg><span class="ns-feature__num">01</span></div>
+    <div class="ns-feature__top"><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg><span class="ns-feature__num">01</span></div>
     <h3 class="ns-feature__name">One roadmap</h3>
     <p class="ns-feature__text">Admin to developer in an explicit order.</p>
   </article>
   <article class="ns-feature">
-    <div class="ns-feature__top"><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-lesson-lab"/></svg><span class="ns-feature__num">02</span></div>
+    <div class="ns-feature__top"><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-lesson-lab"/></svg><span class="ns-feature__num">02</span></div>
     <h3 class="ns-feature__name">Hands-on labs</h3>
     <p class="ns-feature__text">Every section ends in your own org.</p>
   </article>
   <article class="ns-feature">
-    <div class="ns-feature__top"><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-certificate"/></svg><span class="ns-feature__num">03</span></div>
+    <div class="ns-feature__top"><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-certificate"/></svg><span class="ns-feature__num">03</span></div>
     <h3 class="ns-feature__name">Cert-aligned</h3>
     <p class="ns-feature__text">Studying here counts twice.</p>
   </article>
@@ -834,11 +834,11 @@ export const COMPONENTS = [
     variants: [
       { name: "Grouped", html: `<nav class="ns-admin-nav" aria-label="Admin" style="inline-size:14rem">
   <p class="ns-admin-nav__sep">Content</p>
-  <a href="#" aria-current="page"><span class="ns-admin-nav__num">01</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-dashboard"/></svg>Dashboard</a>
-  <a href="#"><span class="ns-admin-nav__num">02</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-course"/></svg>Courses<span class="ns-admin-nav__count">12</span></a>
-  <a href="#"><span class="ns-admin-nav__num">03</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-draft"/></svg>Drafts<span class="ns-admin-nav__count">3</span></a>
+  <a href="#" aria-current="page"><span class="ns-admin-nav__num">01</span><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-dashboard"/></svg>Dashboard</a>
+  <a href="#"><span class="ns-admin-nav__num">02</span><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-course"/></svg>Courses<span class="ns-admin-nav__count">12</span></a>
+  <a href="#"><span class="ns-admin-nav__num">03</span><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-draft"/></svg>Drafts<span class="ns-admin-nav__count">3</span></a>
   <p class="ns-admin-nav__sep">People</p>
-  <a href="#"><span class="ns-admin-nav__num">04</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-students"/></svg>Students</a>
+  <a href="#"><span class="ns-admin-nav__num">04</span><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-students"/></svg>Students</a>
 </nav>` },
     ],
   },
@@ -929,7 +929,7 @@ export const COMPONENTS = [
   <span class="ns-publishbar__state" role="status"><span class="ns-status ns-status--idle">Draft</span> saved 14:32:07</span>
   <div class="ns-publishbar__actions">
     <button class="ns-btn ns-btn--outline">Save draft</button>
-    <button class="ns-btn ns-btn--primary"><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-publish"/></svg> Publish</button>
+    <button class="ns-btn ns-btn--primary"><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-publish"/></svg> Publish</button>
   </div>
 </div>` },
     ],

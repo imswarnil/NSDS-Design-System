@@ -392,7 +392,7 @@ export const light = {
   gutter: "var(--gutter-md)",
   gutter: "var(--gutter-lg)",
   nsFontSans: "\"Inter\", \"Inter Fallback\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
-  nsFontHeading: "\"Inter\", \"Inter Fallback\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+  nsFontHeading: "\"Space Grotesk\", \"Inter\", \"Inter Fallback\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
   nsFontMono: "\"JetBrains Mono\", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
   nsFontIcon: "\"Phosphor\"",
   nsFontIconFill: "\"Phosphor-Fill\"",

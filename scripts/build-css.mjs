@@ -38,18 +38,18 @@ const banner = (min) => `/*! Namaste UI — design tokens + component layer${min
 
 const source = readFileSync(ENTRY, "utf8");
 
-/* postcss-import inlines the @import graph. The icon font's @font-face rules
-   reference ../fonts/*.woff2 relative to assets/css/theme/icons.css, so URLs
-   are rewritten to stay correct from dist/. */
+/* postcss-import inlines the @import graph, so @font-face URLs authored
+   relative to their own file must be rewritten to stay correct from dist/. */
 const rebaseUrls = {
   postcssPlugin: "ns-rebase-urls",
   Declaration(decl) {
     if (!decl.value.includes("url(")) return;
     // Only the font files' relative hops need rewriting; data: URIs, absolute
-    // paths and bare filenames are left exactly as they are. Both depths
-    // occur: tokens/fonts.css sits one level deep (../assets/fonts/ is
-    // already right), assets/css/theme/icons.css two (../../fonts/).
-    decl.value = decl.value.replace(/url\((['"]?)(?:\.\.\/)+fonts\//g, "url($1../assets/fonts/");
+    // paths and bare filenames are left exactly as they are. Text fonts live
+    // in typography/ (tokens/fonts.css says ../typography/ — already right
+    // from dist/, one level deep either way); the Phosphor icon fonts sit
+    // beside icons/phosphor.css (./phosphor-*.woff2 → ../icons/ from dist/).
+    decl.value = decl.value.replace(/url\((['"]?)\.\/(phosphor[^'")]+)/g, "url($1../icons/$2");
   },
 };
 

@@ -11,6 +11,7 @@
 @import "./tokens/typography.css";
 @import "./tokens/effects.css";
 @import "./tokens/base.css";
-@import "./assets/css/theme/icons.css";
-@import "./assets/css/icons-gap.css";
+@import "./icons/phosphor.css";
+@import "./icons/icons-gap.css";
+@import "./patterns/patterns.css";
 @import "./components/css/index.css";

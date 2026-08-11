@@ -128,7 +128,14 @@ const SECTIONS = [
     ${plainRows(pick(/^--(container|breakpoint|gutter|navbar|sidebar|toc|player|target)/))}
     <p class="sub">Elevation order — six layers, no more</p>
     ${plainRows(pick(/^--z-/))}` },
-  { id: "type", title: "Type", lede: "Inter for prose and headings; JetBrains Mono for every index, label, timestamp and status. That split is what makes a list of lessons read as data and a paragraph read as writing.", body: () => `
+  { id: "type", title: "Type", lede: "Three faces, three volumes: <strong>Space Grotesk</strong> for headings, <strong>Inter</strong> for prose, <strong>JetBrains Mono</strong> for every index, label, timestamp and status. Grotesk's squared terminals echo the mono's, so display type and data read as one voice — Inter stays neutral in between for long reading.", body: () => `
+    <p class="sub">The pairing</p>
+    <div class="demo demo--stack" style="gap:var(--space-2)">
+      <span style="font-family:var(--font-mono);font-size:var(--size-label);font-weight:var(--weight-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label)">// Space Grotesk · heading</span>
+      <span style="font-family:var(--font-heading);font-size:var(--size-h1);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-display);line-height:var(--leading-tight)">Build on the platform, not around it</span>
+      <span style="font-family:var(--font-sans);font-size:var(--size-body);color:var(--color-muted);max-inline-size:42rem">Inter carries the reading layer — lesson copy, descriptions, and every sentence longer than a label. Neutral on purpose: the heading and the data do the talking.</span>
+      <span style="font-family:var(--font-mono);font-size:var(--size-mono)">01 · APEX BASICS · 12:40 · <span style="color:var(--color-success-ink)">COMPLETE</span></span>
+    </div>
     ${typeRows(pick(/^--size-/))}
     <p class="sub">Weight, leading, tracking</p>
     ${plainRows(pick(/^--(weight|leading|tracking)-/))}` },
@@ -137,9 +144,9 @@ const SECTIONS = [
     <p class="sub">Interaction — focus ring, press/disabled/loading dim, hairline</p>
     ${plainRows(pick(/^--(focus-ring|opacity)-|^--border-hairline/))}` },
   { id: "icons", title: "Icons", lede: "Two sets, one optical weight. <strong>Phosphor</strong> (subsetted icon font) covers the generic vocabulary; the <strong>bespoke sprite</strong> covers the LMS-specific glyphs Phosphor has no word for — drawn on the same 24px grid at the same stroke weight, so the sets mix in one row. Every Phosphor glyph also ships a filled variant (<code>ph-fill</code>). Grouped by what the glyph is for; the search filters every group at once. Click a name to copy it.", body: () => {
-    const svg = readFileSync(join(ROOT, "assets/icons/namaste-icons.svg"), "utf8");
+    const svg = readFileSync(join(ROOT, "icons/namaste-icons.svg"), "utf8");
     const spriteIds = [...svg.matchAll(/<symbol id="ns-i-([a-z0-9-]+)"/g)].map((m) => m[1]).sort();
-    const phCss = readFileSync(join(ROOT, "assets/css/theme/icons.css"), "utf8");
+    const phCss = readFileSync(join(ROOT, "icons/phosphor.css"), "utf8");
     const phNames = [...new Set([...phCss.matchAll(/\.ph\.ph-([a-z0-9-]+):before/g)].map((m) => m[1]))].sort();
     /* First matching rule wins; anything unmatched lands in the last group. */
     const CATEGORIES = [
@@ -163,7 +170,7 @@ const SECTIONS = [
         ${glyph}<code class="sw__name" style="padding:0">${name}</code>
       </div>`;
     const spriteCells = spriteIds.map((id) => cell(`ns-i-${id}`,
-      `<svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-${id}"/></svg>`)).join("");
+      `<svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-${id}"/></svg>`)).join("");
     const phGroups = [...grouped].filter(([, list]) => list.length).map(([g, list]) => `
     <p class="sub icon-group-head">${esc(g)} · ${list.length}</p>
     <div class="sw-grid icon-group">${list.map((n) => cell(`ph-${n}`, `<i class="ph ph-${n}" aria-hidden="true" style="font-size:var(--size-h3)"></i>`)).join("")}</div>`).join("");
@@ -173,16 +180,16 @@ const SECTIONS = [
       <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" id="icon-fill" aria-pressed="false">Fill style</button>
       <span id="icon-count" style="font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted)"></span>
     </div>
-    <p class="sub icon-group-head">Bespoke sprite — LMS vocabulary · ${spriteIds.length} · assets/icons/namaste-icons.svg</p>
+    <p class="sub icon-group-head">Bespoke sprite — LMS vocabulary · ${spriteIds.length} · icons/namaste-icons.svg</p>
     <div class="sw-grid icon-group">${spriteCells}</div>
     ${phGroups}
     <p class="sub">Mixing the sets — same row, same color rules</p>
     <div class="row">
-      <button class="ns-btn ns-btn--primary"><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-publish"/></svg> Publish</button>
+      <button class="ns-btn ns-btn--primary"><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-publish"/></svg> Publish</button>
       <button class="ns-btn ns-btn--outline"><i class="ph ph-play" aria-hidden="true"></i> Resume lesson</button>
       <span class="ns-status ns-status--success">Complete</span>
-      <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-roadmap"/></svg>
-      <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-apex"/></svg>
+      <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+      <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-apex"/></svg>
       <i class="ph ph-gear-six" aria-hidden="true" style="font-size:var(--size-h3)"></i>
     </div>
     <script>
@@ -219,6 +226,20 @@ const SECTIONS = [
       });
     })();
     </script>` } },
+  { id: "patterns", title: "Patterns", lede: "Nine abstract, hairline-only background canvases — pure CSS gradients from <code>patterns/patterns.css</code>, for hero bands and collection thumbnails. Put <code>ns-pattern ns-pattern--&lt;name&gt;</code> on a container; add <code>ns-pattern--on-light</code> on light surfaces. Click a name to copy it.", body: () => {
+    const names = ["grid", "dots", "diagonal", "hex", "concentric", "chevron-grid", "blueprint", "topographic", "dashed-path"];
+    const tile = (n, i, light) => `
+      <div class="sw">
+        <div class="ns-pattern ns-pattern--${n}${light ? " ns-pattern--on-light" : ""}" style="aspect-ratio:16/10;background:${light ? "#fff" : "var(--color-brand-900)"}"></div>
+        <code class="sw__name">ns-pattern--${n}</code>
+        <span class="sw__val">${String(i + 1).padStart(2, "0")}${light ? " · + ns-pattern--on-light" : ""}</span>
+      </div>`;
+    return `
+    <p class="sub">On dark bands — the default ink</p>
+    <div class="sw-grid">${names.map((n, i) => tile(n, i, false)).join("")}</div>
+    <p class="sub">On light surfaces</p>
+    <div class="sw-grid">${names.map((n, i) => tile(n, i, true)).join("")}</div>`;
+  } },
   { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
     <p class="sub">${esc(file)}.css — ${list.length}</p>
     <div class="cls">${list.map((c) => `<code>.${esc(c)}</code>`).join("")}</div>`).join("") },
@@ -227,7 +248,7 @@ const SECTIONS = [
 /* Foundations in teaching order: what it looks like (color, surfaces),
    what it reads as (type), how it is spaced and laid out, its shape and
    motion, its glyphs, its data — and the class index as the appendix. */
-const SECTION_ORDER = ["color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "charts", "classes"];
+const SECTION_ORDER = ["color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "charts", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
 const galleryTitle = (g) => groupLabel(g);

@@ -7,7 +7,7 @@
 
 @font-face {
   font-family: "Phosphor";
-  src: url("../../fonts/phosphor-subset.woff2") format("woff2");
+  src: url("./phosphor-subset.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -160,7 +160,7 @@
 
 @font-face {
   font-family: "Phosphor-Fill";
-  src: url("../../fonts/phosphor-fill-subset.woff2") format("woff2");
+  src: url("./phosphor-fill-subset.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: swap;

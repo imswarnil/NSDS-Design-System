@@ -1,7 +1,7 @@
 /* Namaste UI — the bespoke icon primitive.
    =========================================================================
    .ns-icon renders one glyph from the product's own sprite
-   (assets/icons/namaste-icons.svg — the ~20 LMS-specific symbols Phosphor
+   (icons/namaste-icons.svg — the ~20 LMS-specific symbols Phosphor
    has no word for: roadmap, org, Apex, flow, publish…).
 
    The contract is the same as an icon font glyph: 1em square, currentColor,
@@ -11,7 +11,7 @@
    <title> inside the <use> parent or an aria-label on the wrapper.
 
      <svg class="ns-icon" aria-hidden="true">
-       <use href="assets/icons/namaste-icons.svg#ns-i-roadmap"/>
+       <use href="icons/namaste-icons.svg#ns-i-roadmap"/>
      </svg> */
 @layer components {
   .ns-icon {

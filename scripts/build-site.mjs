@@ -35,7 +35,7 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 /* Whole directories the preview references. */
-const DIRS = ["preview", "dist", "assets", "tokens", "components/css", "templates"];
+const DIRS = ["preview", "dist", "assets", "icons", "typography", "patterns", "tokens", "components/css", "templates"];
 for (const d of DIRS) cpSync(join(ROOT, d), join(OUT, d), { recursive: true });
 
 /* styles.css imports tokens/ + components/css/ (copied above), so the cards'

@@ -77,7 +77,7 @@ cp -R node_modules/@namaste-salesforce/design-system/assets/fonts assets/
 ```
 
 The `@font-face` URLs in the bundle resolve relative to the stylesheet, so
-they must sit at `assets/fonts/` next to the compiled CSS.
+they must sit at `typography/` and `icons/` next to the compiled CSS.
 
 ### 4. Theme bootstrap — before anything else
 

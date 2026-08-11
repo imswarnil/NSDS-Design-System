@@ -1,14 +1,21 @@
 @font-face {
   font-family: "Inter";
-  src: url("../assets/fonts/inter-var-latin.woff2") format("woff2-variations"), url("../assets/fonts/inter-var-latin.woff2") format("woff2");
+  src: url("../typography/inter-var-latin.woff2") format("woff2-variations"), url("../typography/inter-var-latin.woff2") format("woff2");
   font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("../assets/fonts/jetbrains-mono-var-latin.woff2") format("woff2-variations"), url("../assets/fonts/jetbrains-mono-var-latin.woff2") format("woff2");
+  src: url("../typography/jetbrains-mono-var-latin.woff2") format("woff2-variations"), url("../typography/jetbrains-mono-var-latin.woff2") format("woff2");
   font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../typography/space-grotesk-var-latin.woff2") format("woff2-variations"), url("../typography/space-grotesk-var-latin.woff2") format("woff2");
+  font-weight: 300 700;
   font-style: normal;
   font-display: swap;
 }

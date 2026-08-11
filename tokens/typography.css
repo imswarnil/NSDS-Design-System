@@ -2,7 +2,11 @@
   /* Private source layer — see the note in tokens/colors.css for why the
      names Tailwind's @theme owns are aliased rather than declared directly. */
   --ns-font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --ns-font-heading: "Inter", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Pairing: Space Grotesk headings over Inter body over JetBrains Mono
+     data. Grotesk's squared terminals echo the mono's, so display type and
+     data labels read as one family at two volumes — Inter stays neutral in
+     between for long-form reading. */
+  --ns-font-heading: "Space Grotesk", "Inter", "Inter Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --ns-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* The subsetted Phosphor icon font. Named as a token so a component that
      draws a glyph in a ::before does not hard-code the family — and so
