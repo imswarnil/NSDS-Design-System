@@ -2132,6 +2132,7 @@
     background: var(--chart-surface);
     margin: 0;
     min-inline-size: 0;
+    inline-size: 100%; /* a chart fills its slot — as a flex/grid child too */
   }
   .ns-chart__head { display: flex; align-items: baseline; gap: var(--space-3); margin-block-end: var(--space-4); flex-wrap: wrap; }
   .ns-chart__title { font-size: var(--size-small); font-weight: var(--weight-semibold); color: var(--chart-ink); }
@@ -2171,7 +2172,7 @@
      never be louder than the data. Heights by size modifier. */
   .ns-chart__plot {
     --_h: 10rem;
-    position: relative; display: flex; align-items: flex-end; gap: var(--space-3);
+    position: relative; display: flex; align-items: stretch; gap: var(--space-3);
     block-size: var(--_h);
     background-image: repeating-linear-gradient(to top, var(--chart-grid) 0 1px, transparent 1px calc(var(--_h) / 4));
   }
@@ -2180,7 +2181,9 @@
   .ns-chart--sm .ns-chart__head { margin-block-end: var(--space-2); }
 
   /* Column (vertical bar). --v is the value as a percentage of the plot. */
-  .ns-chart__col { flex: 1; min-inline-size: 0; display: flex; align-items: flex-end; justify-content: center; position: relative; }
+  /* The column stretches to the full plot height — the bar's percentage
+     height needs that definite frame to resolve against. */
+  .ns-chart__col { flex: 1; min-inline-size: 0; block-size: 100%; display: flex; align-items: flex-end; justify-content: center; position: relative; }
   .ns-chart__bar {
     inline-size: 100%; max-inline-size: 1.5rem; /* ≤24px — never fill the slot */
     block-size: var(--v, 50%);
@@ -2188,6 +2191,7 @@
     border-radius: var(--chart-radius-end) var(--chart-radius-end) 0 0; /* data-end round, baseline square */
     transform-origin: bottom;
     animation: ns-chart-grow 600ms var(--ease-out) both;
+    transition: block-size var(--duration-base) var(--ease-out); /* range switches re-scale smoothly */
   }
   /* Grouped columns: touching bars separated by the 2px surface gap. */
   .ns-chart__col--group { gap: var(--chart-mark-gap); }
@@ -2287,9 +2291,58 @@
   .ns-chart__delta { font-family: var(--font-mono); font-size: var(--size-label); }
   .ns-chart__delta[data-dir="up"] { color: var(--color-success-ink); }
   .ns-chart__delta[data-dir="down"] { color: var(--color-error-ink); }
+
+  /* Filters — one row above the chart: range segments, series toggles,
+     metric select. Controls are the system's own (ns-btn-group, ns-select);
+     this only lays them out. A toggled-off legend key dims, its swatch
+     hollows out, and its series hides — color never moves to a survivor. */
+  .ns-chart__filters { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-block-end: var(--space-4); }
+  .ns-chart__filters > .ns-chart__legend { margin-block-end: 0; margin-inline-start: auto; }
+  .ns-chart__key--toggle { cursor: pointer; border: 0; background: none; padding: 0; }
+  .ns-chart__key--toggle[aria-pressed="false"] { color: var(--color-label); }
+  .ns-chart__key--toggle[aria-pressed="false"] .ns-chart__swatch { background: transparent; box-shadow: inset 0 0 0 1px var(--_c); }
+  .ns-chart [data-series][hidden] { display: none; }
+
+  /* Crosshair — the line chart's hover layer. JS moves it and fills the
+     tooltip; this file only draws them. */
+  .ns-chart__hover { position: absolute; inset: 0; cursor: crosshair; }
+  .ns-chart__xhair { position: absolute; inset-block: 0; inline-size: 1px; background: var(--chart-axis); opacity: 0; pointer-events: none; transition: opacity var(--duration-fast) var(--ease-out); }
+  .ns-chart__hover .ns-chart__tip { inset-block-end: auto; inset-block-start: var(--space-2); transform: translateX(-50%); }
+
+  /* Heatmap — sequential fills on a cell grid (engagement by day × slot).
+     Empty cells keep the grid gray so absence is visibly "zero", not a hole. */
+  .ns-chart__heat { display: grid; gap: var(--chart-mark-gap); }
+  .ns-chart__heat-row { display: grid; grid-template-columns: 3rem repeat(var(--cols, 12), minmax(0, 1fr)); gap: var(--chart-mark-gap); align-items: center; }
+  .ns-chart__heat-label { font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+  .ns-chart__cell { aspect-ratio: 1; border-radius: var(--radius-sm); background: var(--chart-grid); position: relative; }
+  .ns-chart__cell[data-seq] { background: var(--_c); }
+  .ns-chart__cell:hover, .ns-chart__cell:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: 1px; }
+  .ns-chart__cell .ns-chart__tip { inset-block-end: 100%; margin-block-end: var(--space-1); }
+  .ns-chart__cell:hover .ns-chart__tip, .ns-chart__cell:focus-visible .ns-chart__tip { opacity: 1; }
+
+  /* Sparkline — a stat tile's 12-point trend; no axes, no grid, no legend. */
+  .ns-chart__spark { display: block; inline-size: 100%; block-size: 2rem; overflow: visible; }
+
+  /* Funnel — centered stages, sequential fills, the drop-off labeled. */
+  .ns-chart__funnel { display: flex; flex-direction: column; gap: var(--chart-mark-gap); }
+  .ns-chart__fstage { display: grid; grid-template-columns: 6rem 1fr auto; align-items: center; gap: var(--space-3); position: relative; }
+  .ns-chart__ftrack { display: flex; justify-content: center; }
+  .ns-chart__fbar { block-size: 1.25rem; inline-size: var(--v, 50%); border-radius: var(--radius-sm); background: var(--_c, var(--chart-seq-2)); animation: ns-chart-grow-x 600ms var(--ease-out) both; transform-origin: center; }
+  .ns-chart__fstage:hover .ns-chart__tip, .ns-chart__fstage:focus-visible .ns-chart__tip { opacity: 1; }
+  .ns-chart__fstage .ns-chart__tip { inset-block-end: 100%; inset-inline-start: 50%; }
+
+  /* Responsive — tighten, never overflow. */
+  @media (max-width: 40rem) {
+    .ns-chart__plot, .ns-chart__x { gap: var(--space-1-5); }
+    .ns-chart__row, .ns-chart__fstage { grid-template-columns: 4.5rem 1fr auto; }
+    .ns-chart__x span:nth-child(2n) { visibility: hidden; } /* thin the tick labels, keep the slots */
+    .ns-chart__donut { gap: var(--space-4); }
+    .ns-chart--lg .ns-chart__plot { --_h: 10rem; }
+  }
 }
 
 @keyframes ns-chart-grow { from { transform: scaleY(0); } }
+@keyframes ns-chart-grow-x { from { transform: scaleX(0); } }
 @keyframes ns-chart-slide { from { transform: scaleX(0); } }
 @keyframes ns-chart-draw { to { stroke-dashoffset: 0; } }
 @keyframes ns-chart-arc { from { stroke-dasharray: 0 100; } }

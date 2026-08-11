@@ -671,6 +671,163 @@ ${demoBlock("Gauge (semi-donut)", "Half a donut for a score against a scale. The
     <li>Comparing two wholes side by side — humans cannot compare angles; use stacked bars</li>
     <li>Change over time — donuts have no time axis; use a stacked column</li>
   </ul></div></div>` },
+  { id: "chart-lms", title: "LMS charts", lede: "The forms an LMS dashboard actually needs: engagement heatmap, score distribution, the enrollment funnel, and sparkline stat tiles. All from the same layer and the same slots.", body: `
+${demoBlock("Engagement heatmap", "Activity by weekday and week — magnitude, so SEQUENTIAL fills, one hue. Empty cells stay grid-gray: zero is data. Hover or tab to a cell for its value.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Learning activity</span><span class="ns-chart__sub">lessons completed · by weekday</span></div>
+  <div class="ns-chart__heat" style="--cols:12">
+${[["MON", [2, 3, 1, 4, 2, 3, 4, 2, 3, 4, 3, 4]], ["TUE", [1, 2, 3, 2, 4, 2, 3, 4, 2, 3, 4, 3]], ["WED", [3, 4, 2, 3, 1, 4, 2, 3, 4, 2, 3, 4]], ["THU", [2, 1, 4, 2, 3, 2, 4, 1, 2, 4, 2, 3]], ["FRI", [1, 2, 2, 3, 2, 3, 1, 2, 3, 2, 4, 2]], ["SAT", [0, 1, 0, 2, 1, 0, 2, 1, 0, 1, 2, 1]], ["SUN", [0, 0, 1, 0, 1, 2, 0, 0, 1, 0, 1, 2]]].map(([day, vals]) => `    <div class="ns-chart__heat-row" style="--cols:12">
+      <span class="ns-chart__heat-label">${day}</span>
+${vals.map((v, i) => `      <div class="ns-chart__cell"${v ? ` data-seq="${v}"` : ""} tabindex="0"><span class="ns-chart__tip">${day} W${i + 1} · ${v ? v * 12 : 0} lessons</span></div>`).join("\n")}
+    </div>`).join("\n")}
+  </div>
+</figure>`)}
+${demoBlock("Score distribution", "Quiz scores in ten-point bins — a histogram is a column chart whose x-axis is a scale. One series, slot 1, values in tooltips.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Quiz score distribution</span><span class="ns-chart__sub">final assessment · n=412</span></div>
+  <div class="ns-chart__plot">
+${chartCols([[4, "0–10", "8"], [6, "11–20", "12"], [10, "21–30", "21"], [16, "31–40", "33"], [26, "41–50", "54"], [42, "51–60", "87"], [58, "61–70", "120"], [72, "71–80", "148"], [52, "81–90", "107"], [28, "91–100", "58"]])}
+  </div>
+${chartX(["0", "", "", "", "", "50", "", "", "", "100"])}
+</figure>`)}
+${demoBlock("Enrollment funnel", "Enrolled → started → completed → certified. Centered stages, sequential fills, and the drop-off named beside each stage — the loss IS the story.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Course funnel</span><span class="ns-chart__sub">Apex basics · this quarter</span></div>
+  <div class="ns-chart__funnel">
+${[[100, 1, "Enrolled", "460", ""], [76, 2, "Started", "350", "−24%"], [52, 3, "Completed", "239", "−32%"], [31, 4, "Certified", "143", "−40%"]].map(([v, s, lab, val, drop]) => `    <div class="ns-chart__fstage" tabindex="0">
+      <span class="ns-chart__tip">${lab} · ${val}${drop ? ` · ${drop} vs previous` : ""}</span>
+      <span class="ns-chart__row-label">${lab}</span>
+      <div class="ns-chart__ftrack"><div class="ns-chart__fbar" data-seq="${s}" style="--v:${v}%"></div></div>
+      <span class="ns-chart__row-value">${val}</span>
+    </div>`).join("\n")}
+  </div>
+</figure>`)}
+${demoBlock("Stat tiles with sparklines", "The dashboard's first row: label, value, delta in status ink, and a 12-point sparkline — no axes, no grid; the tile's job is the number.", `<dl class="ns-statband" style="background:var(--color-surface)">
+${[["Active learners", "1,284", "up", "▲ 12%", "0,26 29,22 58,24 87,18 116,20 145,14 174,16 203,10 232,12 261,8 290,9 320,4"], ["Completions / wk", "82", "up", "▲ 9%", "0,22 29,24 58,20 87,22 116,16 145,18 174,14 203,16 232,10 261,14 290,8 320,6"], ["Avg quiz score", "71", "down", "▼ 2%", "0,10 29,12 58,8 87,14 116,12 145,16 174,14 203,18 232,16 261,20 290,18 320,22"]].map(([lab, val, dir, delta, pts]) => `  <div class="ns-statband__cell">
+    <dd class="ns-statband__value">${val} <span class="ns-chart__delta" data-dir="${dir}">${delta}</span></dd>
+    <dt class="ns-statband__label">${lab}</dt>
+    <svg class="ns-chart__spark" viewBox="0 0 320 30" preserveAspectRatio="none" aria-hidden="true">
+      <polyline class="ns-chart__line" data-c="1" vector-effect="non-scaling-stroke" points="${pts}"/>
+    </svg>
+  </div>`).join("\n")}
+</dl>`)}` },
+
+  { id: "chart-controls", title: "Filters & controls", lede: "The interactive layer, working end to end: a range toggle re-scaling the data, legend keys that hide a series without repainting the rest, and a crosshair tooltip tracking the pointer. This demo is live — click things.", body: `
+  <p class="sub">The working module</p>
+  <p class="variant-note">Range segments re-render the columns; the legend keys toggle line series (a hidden series never shifts the survivors' colors — color follows the entity); the line plot carries a crosshair tooltip on hover. In product this wiring is React state; here it is the same markup driven by demo JS.</p>
+  <div class="demo demo--stack">
+<figure class="ns-chart" id="mod-bars">
+  <div class="ns-chart__filters">
+    <div class="ns-btn-group" role="group" aria-label="Range">
+      <button class="ns-btn ns-btn--outline ns-btn--sm" data-range="7d" aria-pressed="true">7d</button>
+      <button class="ns-btn ns-btn--outline ns-btn--sm" data-range="30d" aria-pressed="false">30d</button>
+      <button class="ns-btn ns-btn--outline ns-btn--sm" data-range="90d" aria-pressed="false">90d</button>
+    </div>
+    <span class="ns-chart__sub" data-hook="range-sub">completions · last 7 days</span>
+  </div>
+  <div class="ns-chart__plot" data-hook="bars"></div>
+  <div class="ns-chart__x" data-hook="x"></div>
+</figure>
+<figure class="ns-chart" id="mod-lines">
+  <div class="ns-chart__filters">
+    <span class="ns-chart__title">Track progress</span>
+    <ul class="ns-chart__legend">
+      <li><button type="button" class="ns-chart__key ns-chart__key--toggle" data-c="1" data-toggle="admin" aria-pressed="true"><span class="ns-chart__swatch ns-chart__swatch--line"></span>Admin</button></li>
+      <li><button type="button" class="ns-chart__key ns-chart__key--toggle" data-c="2" data-toggle="dev" aria-pressed="true"><span class="ns-chart__swatch ns-chart__swatch--line"></span>Developer</button></li>
+    </ul>
+  </div>
+  <div style="position:relative">
+    <svg class="ns-chart__svg" viewBox="0 0 320 120" role="img" aria-label="Track progress, two toggleable series">
+      <line class="ns-chart__gridline" x1="0" y1="10" x2="320" y2="10"/>
+      <line class="ns-chart__gridline" x1="0" y1="55" x2="320" y2="55"/>
+      <line class="ns-chart__baseline" x1="0" y1="100" x2="320" y2="100"/>
+      <g data-series="admin">
+        <polyline class="ns-chart__line" data-c="1" points="10,90 68,72 126,60 184,42 242,38 300,26"/>
+        <circle class="ns-chart__dot" data-c="1" cx="300" cy="26" r="4"></circle>
+      </g>
+      <g data-series="dev">
+        <polyline class="ns-chart__line" data-c="2" points="10,95 68,88 126,70 184,64 242,48 300,44"/>
+        <circle class="ns-chart__dot" data-c="2" cx="300" cy="44" r="4"></circle>
+      </g>
+    </svg>
+    <div class="ns-chart__hover" data-hook="hover">
+      <div class="ns-chart__xhair" data-hook="xhair"></div>
+      <span class="ns-chart__tip" data-hook="linetip"></span>
+    </div>
+  </div>
+  <div class="ns-chart__x"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span></div>
+</figure>
+  </div>
+  <script>
+  (function () {
+    /* Range toggle → re-render columns. */
+    var DATA = {
+      "7d":  { sub: "completions · last 7 days",  x: ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"], v: [34,52,46,64,58,22,18] },
+      "30d": { sub: "completions · weekly",       x: ["W1","W2","W3","W4"],                        v: [48,61,55,72] },
+      "90d": { sub: "completions · monthly",      x: ["Apr","May","Jun"],                          v: [62,78,84] }
+    };
+    var plot = document.querySelector('[data-hook="bars"]');
+    var xrow = document.querySelector('[data-hook="x"]');
+    var sub = document.querySelector('[data-hook="range-sub"]');
+    function render(key) {
+      var d = DATA[key], max = Math.max.apply(null, d.v);
+      sub.textContent = d.sub;
+      plot.innerHTML = d.v.map(function (v, i) {
+        var pct = Math.round(v / max * 90);
+        return '<div class="ns-chart__col" tabindex="0" style="--v:' + pct + '%">' +
+          '<span class="ns-chart__tip">' + d.x[i] + ' · ' + v + '</span>' +
+          '<div class="ns-chart__bar" data-c="1"></div></div>';
+      }).join('');
+      xrow.innerHTML = d.x.map(function (l) { return '<span>' + l + '</span>'; }).join('');
+    }
+    document.querySelectorAll('[data-range]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('[data-range]').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+        render(btn.getAttribute('data-range'));
+      });
+    });
+    render('7d');
+
+    /* Legend toggles → hide the series, never recolor the rest. */
+    document.querySelectorAll('[data-toggle]').forEach(function (key) {
+      key.addEventListener('click', function () {
+        var on = key.getAttribute('aria-pressed') !== 'true';
+        key.setAttribute('aria-pressed', String(on));
+        var series = document.querySelector('[data-series="' + key.getAttribute('data-toggle') + '"]');
+        if (series) series.toggleAttribute('hidden', !on);
+      });
+    });
+
+    /* Crosshair tooltip — snap to the nearest data point. */
+    var POINTS = { x: [10, 68, 126, 184, 242, 300], labels: ["Jan","Feb","Mar","Apr","May","Jun"], admin: [12, 31, 44, 62, 66, 78], dev: [7, 14, 33, 39, 55, 62] };
+    var hover = document.querySelector('[data-hook="hover"]');
+    var xhair = document.querySelector('[data-hook="xhair"]');
+    var tip = document.querySelector('[data-hook="linetip"]');
+    hover.addEventListener('mousemove', function (e) {
+      var r = hover.getBoundingClientRect();
+      var vx = (e.clientX - r.left) / r.width * 320;
+      var best = 0;
+      POINTS.x.forEach(function (px, i) { if (Math.abs(px - vx) < Math.abs(POINTS.x[best] - vx)) best = i; });
+      var left = POINTS.x[best] / 320 * 100;
+      xhair.style.insetInlineStart = left + '%';
+      xhair.style.opacity = 1;
+      var parts = [];
+      if (document.querySelector('[data-toggle="admin"]').getAttribute('aria-pressed') === 'true') parts.push('admin ' + POINTS.admin[best] + '%');
+      if (document.querySelector('[data-toggle="dev"]').getAttribute('aria-pressed') === 'true') parts.push('dev ' + POINTS.dev[best] + '%');
+      tip.textContent = POINTS.labels[best] + (parts.length ? ' · ' + parts.join(' · ') : '');
+      tip.style.insetInlineStart = Math.min(Math.max(left, 12), 88) + '%';
+      tip.style.opacity = 1;
+    });
+    hover.addEventListener('mouseleave', function () { xhair.style.opacity = 0; tip.style.opacity = 0; });
+  })();
+  </script>
+  <p class="sub">The rules the module obeys</p>
+  <div class="use-grid"><div><ul>
+    <li>Filters sit in ONE row above the chart — never scattered around it</li>
+    <li>A range change re-scales the data, not the palette</li>
+    <li>A hidden series leaves its slot color unused — survivors never repaint</li>
+  </ul></div><div><ul>
+    <li>The crosshair snaps to real data points — never interpolates a lie</li>
+    <li>Tooltips list only visible series, in slot order</li>
+    <li>Keyboard: every control is a real button; columns are tabbable and show their tooltip on focus</li>
+  </ul></div></div>` },
 ];
 
 const BRAND_DOCS = [
