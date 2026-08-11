@@ -1,7 +1,7 @@
 {
   "name": "@namaste-salesforce/design-system",
   "version": "2.3.0",
-  "description": "Namaste UI \u2014 the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
+  "description": "Namaste UI — the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -10,9 +10,6 @@
   "files": [
     "dist",
     "tokens",
-    "icons",
-    "typography",
-    "patterns",
     "components",
     "assets",
     "templates",
@@ -35,17 +32,13 @@
     "./tokens/tokens.json": "./tokens/tokens.json",
     "./components/*": "./components/*",
     "./assets/*": "./assets/*",
-    "./templates/*": "./templates/*",
-    "./icons/*": "./icons/*",
-    "./typography/*": "./typography/*",
-    "./patterns/patterns.css": "./patterns/patterns.css"
+    "./templates/*": "./templates/*"
   },
   "scripts": {
-    "start": "gulp build && node scripts/serve.mjs",
     "dev": "gulp",
     "preview": "gulp build && node scripts/serve.mjs",
     "build": "gulp build",
-    "site": "gulp site",
+    "si te": "gulp site",
     "check": "gulp check",
     "test": "gulp check",
     "serve": "node scripts/serve.mjs",

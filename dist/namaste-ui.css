@@ -2106,6 +2106,193 @@
     color: var(--color-muted); font-size: var(--size-small);
   }
 }
+/* Namaste UI — charts.
+   =========================================================================
+   The chart layer the dashboards render: bar/column, line/area, donut, and
+   the shared anatomy (frame, legend, axes, gridlines, tooltip). Colors come
+   ONLY from the dataviz tokens (tokens/dataviz.css) and follow its six
+   rules: slots assigned 1→7 in fixed order, never cycled; status hues
+   reserved; text on ink tokens, never the series color.
+
+   Series color rides one custom property (--_c), set by data-c="1..7" for
+   categorical or data-seq="1..4" for sequential — markup states WHICH slot,
+   this file resolves it, and dark mode re-resolves it for free.
+
+   Mark specs (from the dataviz guideline): bars ≤ 24px thick with a 4px
+   rounded data-end and a square baseline; 2px lines; ≥8px markers ringed in
+   surface; a 2px surface gap between touching fills; recessive hairline
+   grid. Load animations are single-run, plain ease-out, and collapse under
+   the global reduced-motion guard. */
+@layer components {
+  .ns-chart {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--pad-card);
+    background: var(--chart-surface);
+    margin: 0;
+    min-inline-size: 0;
+  }
+  .ns-chart__head { display: flex; align-items: baseline; gap: var(--space-3); margin-block-end: var(--space-4); flex-wrap: wrap; }
+  .ns-chart__title { font-size: var(--size-small); font-weight: var(--weight-semibold); color: var(--chart-ink); }
+  .ns-chart__sub {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* Series slots — fixed order, never cycled (dataviz rule 1). */
+  .ns-chart [data-c="1"] { --_c: var(--chart-cat-1); }
+  .ns-chart [data-c="2"] { --_c: var(--chart-cat-2); }
+  .ns-chart [data-c="3"] { --_c: var(--chart-cat-3); }
+  .ns-chart [data-c="4"] { --_c: var(--chart-cat-4); }
+  .ns-chart [data-c="5"] { --_c: var(--chart-cat-5); }
+  .ns-chart [data-c="6"] { --_c: var(--chart-cat-6); }
+  .ns-chart [data-c="7"] { --_c: var(--chart-cat-7); }
+  .ns-chart [data-seq="1"] { --_c: var(--chart-seq-1); }
+  .ns-chart [data-seq="2"] { --_c: var(--chart-seq-2); }
+  .ns-chart [data-seq="3"] { --_c: var(--chart-seq-3); }
+  .ns-chart [data-seq="4"] { --_c: var(--chart-seq-4); }
+  /* Polarity, for diverging bars and deltas (never a series color). */
+  .ns-chart [data-pole="up"] { --_c: var(--chart-div-cool-2); }
+  .ns-chart [data-pole="down"] { --_c: var(--chart-div-warm-2); }
+
+  /* Legend — always present for ≥2 series; text wears ink, the swatch
+     carries identity. */
+  .ns-chart__legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); margin-block-end: var(--space-3); padding: 0; }
+  .ns-chart__key {
+    display: inline-flex; align-items: center; gap: var(--space-1-5); list-style: none;
+    font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--chart-muted);
+  }
+  .ns-chart__swatch { inline-size: 0.625rem; block-size: 0.625rem; border-radius: var(--radius-sm); background: var(--_c, var(--chart-cat-1)); flex: none; }
+  .ns-chart__swatch--line { block-size: 2px; inline-size: 0.875rem; border-radius: 0; }
+
+  /* Plot area — hairline gridlines painted as background, so the grid can
+     never be louder than the data. Heights by size modifier. */
+  .ns-chart__plot {
+    --_h: 10rem;
+    position: relative; display: flex; align-items: flex-end; gap: var(--space-3);
+    block-size: var(--_h);
+    background-image: repeating-linear-gradient(to top, var(--chart-grid) 0 1px, transparent 1px calc(var(--_h) / 4));
+  }
+  .ns-chart--sm .ns-chart__plot { --_h: 6rem; }
+  .ns-chart--lg .ns-chart__plot { --_h: 15rem; }
+  .ns-chart--sm .ns-chart__head { margin-block-end: var(--space-2); }
+
+  /* Column (vertical bar). --v is the value as a percentage of the plot. */
+  .ns-chart__col { flex: 1; min-inline-size: 0; display: flex; align-items: flex-end; justify-content: center; position: relative; }
+  .ns-chart__bar {
+    inline-size: 100%; max-inline-size: 1.5rem; /* ≤24px — never fill the slot */
+    block-size: var(--v, 50%);
+    background: var(--_c, var(--chart-cat-1));
+    border-radius: var(--chart-radius-end) var(--chart-radius-end) 0 0; /* data-end round, baseline square */
+    transform-origin: bottom;
+    animation: ns-chart-grow 600ms var(--ease-out) both;
+  }
+  /* Grouped columns: touching bars separated by the 2px surface gap. */
+  .ns-chart__col--group { gap: var(--chart-mark-gap); }
+  .ns-chart__col--group .ns-chart__bar { max-inline-size: 0.75rem; }
+
+  /* Stacked column: segments bottom-up, the surface gap between them. */
+  .ns-chart__stack {
+    inline-size: 100%; max-inline-size: 1.5rem; block-size: 100%;
+    display: flex; flex-direction: column-reverse; justify-content: flex-start;
+    gap: var(--chart-mark-gap);
+  }
+  .ns-chart__seg { block-size: var(--v, 25%); background: var(--_c); flex: none; transform-origin: bottom; animation: ns-chart-grow 600ms var(--ease-out) both; }
+  .ns-chart__seg:last-child { border-radius: var(--chart-radius-end) var(--chart-radius-end) 0 0; }
+
+  /* Horizontal bars: mono label · track · value, one row per entity. */
+  .ns-chart__rows { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-chart__row { display: grid; grid-template-columns: 6rem 1fr auto; align-items: center; gap: var(--space-3); }
+  .ns-chart__row-label {
+    font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--chart-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-chart__hbar {
+    block-size: 0.75rem; inline-size: var(--v, 50%);
+    background: var(--_c, var(--chart-cat-1));
+    border-radius: 0 var(--chart-radius-end) var(--chart-radius-end) 0;
+    transform-origin: left; animation: ns-chart-slide 600ms var(--ease-out) both;
+  }
+  .ns-chart__row-value { font-family: var(--font-mono); font-size: var(--size-label); color: var(--chart-ink); }
+
+  /* Axes — recessive by design. */
+  .ns-chart__x { display: flex; gap: var(--space-3); border-block-start: 1px solid var(--chart-axis); margin-block-start: var(--space-1); padding-block-start: var(--space-1-5); }
+  .ns-chart__x span {
+    flex: 1; text-align: center; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-chart__frame { display: grid; grid-template-columns: auto 1fr; gap: 0 var(--space-3); }
+  .ns-chart__y { display: flex; flex-direction: column-reverse; justify-content: space-between; text-align: end; }
+  .ns-chart__y span { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); line-height: 1; }
+  .ns-chart__frame .ns-chart__x { grid-column: 2; }
+
+  /* SVG line/area/donut hooks. Geometry lives in the markup; ink lives here. */
+  .ns-chart__svg { display: block; inline-size: 100%; block-size: auto; overflow: visible; }
+  .ns-chart__gridline { stroke: var(--chart-grid); stroke-width: 1; }
+  .ns-chart__baseline { stroke: var(--chart-axis); stroke-width: 1; }
+  .ns-chart__line {
+    fill: none; stroke: var(--_c, var(--chart-cat-1));
+    stroke-width: var(--chart-line-w); stroke-linecap: round; stroke-linejoin: round;
+  }
+  .ns-chart__line--draw { stroke-dasharray: 1; stroke-dashoffset: 1; animation: ns-chart-draw 900ms var(--ease-out) forwards; }
+  .ns-chart__area { fill: var(--_c, var(--chart-cat-1)); opacity: 0.1; stroke: none; }
+  .ns-chart__dot { fill: var(--_c, var(--chart-cat-1)); stroke: var(--chart-surface); stroke-width: 2; }
+  .ns-chart__ref { stroke: var(--chart-muted); stroke-width: 1; stroke-dasharray: 4 3; }
+  .ns-chart__ref-label { font-family: var(--font-mono); font-size: 0.6rem; fill: var(--chart-muted); }
+
+  /* Donut — pathLength="100" circles; the markup sets --seg (span) and
+     --off (start) in percent, this file sets everything else. */
+  .ns-chart__donut { display: flex; align-items: center; gap: var(--space-6); flex-wrap: wrap; }
+  .ns-chart__ring { inline-size: 9rem; flex: none; transform: rotate(-90deg); }
+  .ns-chart--sm .ns-chart__ring { inline-size: 6rem; }
+  .ns-chart--lg .ns-chart__ring { inline-size: 12rem; }
+  .ns-chart__arc {
+    fill: none; stroke: var(--_c);
+    stroke-width: var(--_w, 4);
+    stroke-dasharray: calc(var(--seg) - 1.5) 100; /* the 1.5 is the surface gap, in pathLength units */
+    stroke-dashoffset: calc(-1 * var(--off, 0));
+    animation: ns-chart-arc 700ms var(--ease-out) both;
+  }
+  .ns-chart__arc--thick { --_w: 7; }
+  .ns-chart__arc--thin { --_w: 2; }
+  .ns-chart__track { fill: none; stroke: var(--chart-grid); stroke-width: var(--_w, 4); }
+  .ns-chart__center { text-align: center; position: absolute; inset: 0; display: grid; place-content: center; }
+  .ns-chart__ring-wrap { position: relative; flex: none; }
+  .ns-chart__center strong { font-size: var(--size-h3); font-weight: var(--weight-semibold); color: var(--chart-ink); line-height: var(--leading-tight); }
+  .ns-chart__center span { font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+
+  /* Tooltip — appears over the hovered/focused mark; mono, hairline, no
+     arrow. The mark's whole column is the hit target, not just the bar. */
+  .ns-chart__tip {
+    position: absolute; inset-block-end: calc(var(--v, 50%) + var(--space-2)); inset-inline-start: 50%;
+    transform: translateX(-50%);
+    background: var(--color-surface-raised); border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm); box-shadow: var(--shadow-raised);
+    padding: var(--space-1) var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); color: var(--chart-ink);
+    white-space: nowrap; pointer-events: none; opacity: 0; z-index: var(--z-raised);
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-chart__col:hover .ns-chart__tip, .ns-chart__col:focus-visible .ns-chart__tip,
+  .ns-chart__row:hover .ns-chart__tip, .ns-chart__row:focus-visible .ns-chart__tip { opacity: 1; }
+  .ns-chart__row { position: relative; }
+  .ns-chart__row .ns-chart__tip { inset-block-end: 100%; inset-inline-start: var(--v, 50%); }
+  .ns-chart__col:hover .ns-chart__bar, .ns-chart__row:hover .ns-chart__hbar { filter: brightness(1.08); }
+
+  /* Delta / conditional formatting — status ink on TEXT, never on a series
+     mark (dataviz rule 3). */
+  .ns-chart__delta { font-family: var(--font-mono); font-size: var(--size-label); }
+  .ns-chart__delta[data-dir="up"] { color: var(--color-success-ink); }
+  .ns-chart__delta[data-dir="down"] { color: var(--color-error-ink); }
+}
+
+@keyframes ns-chart-grow { from { transform: scaleY(0); } }
+@keyframes ns-chart-slide { from { transform: scaleX(0); } }
+@keyframes ns-chart-draw { to { stroke-dashoffset: 0; } }
+@keyframes ns-chart-arc { from { stroke-dasharray: 0 100; } }
 /* Namaste UI — authentication surfaces: sign in, sign up, forgot password.
    =========================================================================
    One layout serves both products, but the FLOWS differ and the components

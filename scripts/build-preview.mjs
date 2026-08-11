@@ -150,7 +150,7 @@ const SECTIONS = [
     <p class="sub">Status ink — the only tokens allowed under status text, light ⇄ dark</p>
     ${dualSwatches(pick(/^--color-(success|warning|error|info)-ink$/))}
     <p class="sub">Everything else</p>
-    <p class="variant-note">Chart colors live on the <a href="./charts.html">Charts page</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
+    <p class="variant-note">Chart colors live in the <a href="./chart-intro.html">Charts section</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
     ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
   { id: "surfaces", title: "Status & surfaces", lede: 'Semantic roles flip under <code>[data-theme="dark"]</code>. These are what product code should reach for — never a raw brand step for a surface.', body: () => `
     ${swatches(pick(/^--color-(surface|surface-raised|surface-sunken|border|ink|muted|label|grid|scrim|on-brand|on-dark)$/))}
@@ -162,11 +162,6 @@ const SECTIONS = [
       <span class="ns-status ns-status--warning">Expiring</span>
       <span class="ns-status ns-status--error">Failed</span>
     </div>` },
-  { id: "charts", title: "Charts", lede: "Seven categorical slots, assigned 1&rarr;7 in fixed order and never cycled. Verified in CI against the lightness band, chroma floor, colorblind separation, normal-vision floor and surface contrast — in both modes.", body: () => `
-    <p class="sub">Categorical</p>${swatches(pick(/^--chart-cat-/))}
-    <p class="sub">Sequential</p>${swatches(pick(/^--chart-seq-/))}
-    <p class="sub">Diverging</p>${swatches(pick(/^--chart-div-/))}
-    ${spec(["guidelines/data-visualization.card.html"])}` },
   { id: "spacing", title: "Spacing", lede: "4px base, index-matched to Tailwind so <code>p-4</code> and <code>var(--space-4)</code> are the same 16px in both products.", body: () => `
     ${spacingRows(pick(/^--space-/))}
     <p class="sub">Semantic aliases — reach for these first</p>
@@ -318,7 +313,7 @@ const SECTIONS = [
 /* Foundations in teaching order: what it looks like (color, surfaces),
    what it reads as (type), how it is spaced and laid out, its shape and
    motion, its glyphs, its data — and the class index as the appendix. */
-const SECTION_ORDER = ["intro", "color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "charts", "accessibility", "content-design", "classes"];
+const SECTION_ORDER = ["intro", "color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "accessibility", "content-design", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
 /* ---- Brand & Content creation docs --------------------------------------
@@ -381,6 +376,303 @@ const LINKEDIN_BODY = `
     <li>Don't restyle per post: the templates on the Thumbnails and Instagram pages are the only looks.</li>
   </ul></div></div>`;
 
+/* ---- Charts docs --------------------------------------------------------
+   Live demos built from the .ns-chart layer (components/css/chart.css) and
+   the dataviz tokens — the markup under each demo IS the demo, so sample
+   and rendering cannot disagree. */
+const demoBlock = (name, note, html) => `
+  <p class="sub">${esc(name)}</p>
+  ${note ? `<p class="variant-note">${note}</p>` : ""}
+  <div class="demo demo--stack">
+${html}
+  </div>
+  <details class="code"><summary>markup</summary><pre><code>${esc(html)}</code></pre></details>`;
+
+const chartCols = (data) => data.map(([v, lab, val]) => `    <div class="ns-chart__col" tabindex="0" style="--v:${v}%">
+      <span class="ns-chart__tip">${lab} · ${val}</span>
+      <div class="ns-chart__bar"></div>
+    </div>`).join("\n");
+const chartX = (labels) => `  <div class="ns-chart__x">${labels.map((l) => `<span>${l}</span>`).join("")}</div>`;
+const WEEKS = ["W1", "W2", "W3", "W4", "W5", "W6"];
+const COMPLETIONS = [[38, "W1", "38"], [52, "W2", "52"], [46, "W3", "46"], [64, "W4", "64"], [58, "W5", "58"], [82, "W6", "82"]];
+
+const CHART_ANATOMY = `<figure class="ns-chart">
+  <div class="ns-chart__head">
+    <span class="ns-chart__title">Course completions</span>
+    <span class="ns-chart__sub">weekly · last 6 weeks</span>
+  </div>
+  <ul class="ns-chart__legend">
+    <li class="ns-chart__key" data-c="1"><span class="ns-chart__swatch"></span>Admin track</li>
+    <li class="ns-chart__key" data-c="2"><span class="ns-chart__swatch"></span>Developer track</li>
+  </ul>
+  <div class="ns-chart__frame">
+    <div class="ns-chart__y"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div>
+    <div class="ns-chart__plot">
+${[[38, 24], [52, 30], [46, 41], [64, 38], [58, 52], [82, 61]].map(([a, b], i) => `      <div class="ns-chart__col ns-chart__col--group" tabindex="0">
+        <span class="ns-chart__tip" style="--v:${a}%">${WEEKS[i]} · admin ${a} · dev ${b}</span>
+        <div class="ns-chart__bar" data-c="1" style="--v:${a}%"></div>
+        <div class="ns-chart__bar" data-c="2" style="--v:${b}%"></div>
+      </div>`).join("\n")}
+    </div>
+${chartX(WEEKS)}
+  </div>
+</figure>`;
+
+const CHART_DOCS = [
+  { id: "chart-intro", title: "Introduction", lede: "Data visualization in this system: what earns a chart, the anatomy every chart shares, and the machine-verified palette. One rule above all — the data is the only thing allowed to be loud.", body: `
+  <p class="sub">Form first — is it even a chart?</p>
+  <div class="use-grid"><div><p class="sub k-do">Chart it when</p><ul>
+    <li>Change over time — line or column</li>
+    <li>Comparison across entities — bars</li>
+    <li>Parts of one whole (≤ 5 parts) — donut or stacked bar</li>
+    <li>Magnitude across a scale — sequential fills</li>
+  </ul></div><div><p class="sub k-dont">Not a chart</p><ul>
+    <li>One headline number — a stat tile (see Stat), not a one-bar chart</li>
+    <li>Two values — write them in a sentence</li>
+    <li>Eight-plus series — fold into &ldquo;Other&rdquo;, facet, or rethink the question</li>
+  </ul></div></div>
+  <p class="sub">Anatomy — every chart is these parts</p>
+  <p class="variant-note">Frame with title + mono subtitle · legend (always, for two or more series; never for one) · recessive hairline gridlines · mono axis labels · thin marks in slot colors · tooltip on hover/focus. Hover a column below — the whole column is the hit target, not just the bar.</p>
+  <div class="demo demo--stack">
+${CHART_ANATOMY}
+  </div>
+  <details class="code"><summary>markup</summary><pre><code>${esc(CHART_ANATOMY)}</code></pre></details>
+  <p class="sub">Color has four jobs — and only four</p>
+  <p class="variant-note"><strong>Categorical</strong> answers &ldquo;which series is this?&rdquo; — seven fixed slots, assigned 1→7 in order, never cycled or reordered; slot 1 is always brand blue. Filtering a series out never repaints the survivors: color follows the entity.</p>
+  ${swatches(pick(/^--chart-cat-/))}
+  <p class="variant-note" style="margin-block-start:var(--space-4)"><strong>Sequential</strong> answers &ldquo;how much?&rdquo; — one hue, light→dark, four honest steps.</p>
+  ${swatches(pick(/^--chart-seq-/))}
+  <p class="variant-note" style="margin-block-start:var(--space-4)"><strong>Diverging</strong> answers &ldquo;which side of the baseline?&rdquo; — cool arm above, warm arm below, a true neutral at the midpoint (never a hue).</p>
+  ${swatches(pick(/^--chart-div-/))}
+  <p class="variant-note" style="margin-block-start:var(--space-4)"><strong>Status is reserved.</strong> Success/warning/error never paint a series, and a series color never means &ldquo;bad&rdquo;. Conditional formatting happens on TEXT with status ink — a delta beside the value — never by recoloring the mark:</p>
+  <div class="demo">
+<dl class="ns-statband" style="background:var(--color-surface)">
+  <div class="ns-statband__cell"><dd class="ns-statband__value">1,284</dd><dt class="ns-statband__label">Enrollments <span class="ns-chart__delta" data-dir="up">▲ 12%</span></dt></div>
+  <div class="ns-statband__cell"><dd class="ns-statband__value">64%</dd><dt class="ns-statband__label">Completion <span class="ns-chart__delta" data-dir="down">▼ 3%</span></dt></div>
+</dl>
+  </div>
+  <p class="sub">The six rules, verified in CI</p>
+  <div class="use-grid"><div><ul>
+    <li>Slots 1→7 in fixed order — never cycled, never generated</li>
+    <li>No 8th hue — fold into &ldquo;Other&rdquo; or facet</li>
+    <li>Status colors never paint a series</li>
+  </ul></div><div><ul>
+    <li>Text wears ink tokens, never the series color</li>
+    <li>Sequential = one hue; diverging = neutral midpoint</li>
+    <li>Dark mode is re-picked steps, not a mechanical flip — <code>npm run check:palette</code> proves all of it</li>
+  </ul></div></div>
+  ${spec(["guidelines/data-visualization.card.html"])}` },
+
+  { id: "chart-bar", title: "Bar charts", lede: "The workhorse: comparison and time. Bars are ≤24px thick with a rounded data-end and a square baseline, grow from zero on load, and the whole column is the tooltip's hit target.", body: `
+${demoBlock("Column — single series", "One series needs no legend: the title names it. Hover for the tooltip; bars animate up on load (and hold still under reduced motion).", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Course completions</span><span class="ns-chart__sub">weekly</span></div>
+  <div class="ns-chart__plot">
+${chartCols(COMPLETIONS)}
+  </div>
+${chartX(WEEKS)}
+</figure>`)}
+${demoBlock("Sizes", "Three plot heights: sm for cards and rails, md default, lg for a dashboard's lead chart.", `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(14rem,100%),1fr));gap:var(--gap-grid);inline-size:100%">
+  <figure class="ns-chart ns-chart--sm">
+    <div class="ns-chart__head"><span class="ns-chart__title">Small</span><span class="ns-chart__sub">6rem</span></div>
+    <div class="ns-chart__plot">
+${chartCols(COMPLETIONS.slice(0, 4))}
+    </div>
+  </figure>
+  <figure class="ns-chart">
+    <div class="ns-chart__head"><span class="ns-chart__title">Medium</span><span class="ns-chart__sub">10rem · default</span></div>
+    <div class="ns-chart__plot">
+${chartCols(COMPLETIONS.slice(0, 4))}
+    </div>
+  </figure>
+  <figure class="ns-chart ns-chart--lg">
+    <div class="ns-chart__head"><span class="ns-chart__title">Large</span><span class="ns-chart__sub">15rem</span></div>
+    <div class="ns-chart__plot">
+${chartCols(COMPLETIONS.slice(0, 4))}
+    </div>
+  </figure>
+</div>`)}
+${demoBlock("Grouped", "Two series per band, separated by the 2px surface gap — never a stroke. Legend is mandatory from the second series on.", CHART_ANATOMY)}
+${demoBlock("Stacked", "Parts of a whole over time. Segments stack bottom-up in slot order with the surface gap between them; only the top segment gets the rounded end.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Lessons completed by type</span><span class="ns-chart__sub">weekly</span></div>
+  <ul class="ns-chart__legend">
+    <li class="ns-chart__key" data-c="1"><span class="ns-chart__swatch"></span>Video</li>
+    <li class="ns-chart__key" data-c="2"><span class="ns-chart__swatch"></span>Reading</li>
+    <li class="ns-chart__key" data-c="3"><span class="ns-chart__swatch"></span>Lab</li>
+  </ul>
+  <div class="ns-chart__plot">
+${[[30, 18, 12], [36, 22, 10], [28, 16, 18], [44, 20, 14]].map(([a, b, c], i) => `    <div class="ns-chart__col" tabindex="0">
+      <span class="ns-chart__tip" style="--v:${a + b + c}%">W${i + 1} · ${a + b + c} total</span>
+      <div class="ns-chart__stack">
+        <div class="ns-chart__seg" data-c="1" style="--v:${a}%"></div>
+        <div class="ns-chart__seg" data-c="2" style="--v:${b}%"></div>
+        <div class="ns-chart__seg" data-c="3" style="--v:${c}%"></div>
+      </div>
+    </div>`).join("\n")}
+  </div>
+${chartX(["W1", "W2", "W3", "W4"])}
+</figure>`)}
+${demoBlock("Horizontal", "For ranked entities with real names — the label column keeps them readable. Bars slide in from the left; hover a row for its tooltip.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Enrollments by course</span><span class="ns-chart__sub">this quarter</span></div>
+  <div class="ns-chart__rows">
+${[[92, "Apex basics", "460"], [74, "Admin cert", "371"], [58, "Flows", "290"], [41, "LWC", "205"], [26, "SOQL", "131"]].map(([v, lab, val]) => `    <div class="ns-chart__row" tabindex="0">
+      <span class="ns-chart__tip" style="--v:${v}%">${lab} · ${val}</span>
+      <span class="ns-chart__row-label">${lab}</span>
+      <div><div class="ns-chart__hbar" data-c="1" style="--v:${v}%"></div></div>
+      <span class="ns-chart__row-value">${val}</span>
+    </div>`).join("\n")}
+  </div>
+</figure>`)}
+${demoBlock("Diverging", "Above/below a baseline — cool arm up, warm arm down, from the diverging ramp. Never status red/green: polarity is not health.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Enrollment change vs last month</span><span class="ns-chart__sub">by course</span></div>
+  <div class="ns-chart__rows">
+${[[64, "up", "Apex basics", "+32%"], [38, "up", "Flows", "+19%"], [22, "down", "Admin cert", "−11%"], [46, "down", "SOQL", "−23%"]].map(([v, pole, lab, val]) => `    <div class="ns-chart__row" tabindex="0">
+      <span class="ns-chart__tip" style="--v:${v}%">${lab} · ${val}</span>
+      <span class="ns-chart__row-label">${lab}</span>
+      <div><div class="ns-chart__hbar" data-pole="${pole}" style="--v:${v}%"></div></div>
+      <span class="ns-chart__row-value">${val}</span>
+    </div>`).join("\n")}
+  </div>
+</figure>`)}
+${demoBlock("With trend line", "A 2px line over the columns carries the trend; vector-effect keeps it 2px at any width. The line draws itself on load.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Completions + 3-week trend</span><span class="ns-chart__sub">weekly</span></div>
+  <ul class="ns-chart__legend">
+    <li class="ns-chart__key" data-c="1"><span class="ns-chart__swatch"></span>Completions</li>
+    <li class="ns-chart__key" data-c="2"><span class="ns-chart__swatch ns-chart__swatch--line"></span>Trend</li>
+  </ul>
+  <div class="ns-chart__plot">
+${chartCols(COMPLETIONS)}
+    <svg class="ns-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="position:absolute;inset:0;block-size:100%">
+      <polyline class="ns-chart__line ns-chart__line--draw" data-c="2" vector-effect="non-scaling-stroke" pathLength="1" points="8,60 25,50 41,53 58,40 75,44 92,22"/>
+    </svg>
+  </div>
+${chartX(WEEKS)}
+</figure>`)}` },
+
+  { id: "chart-line", title: "Line & area", lede: "Change over time. Lines are 2px with round joins, markers are ≥8px dots ringed in surface color, and the area fill is the hue at 10% — a wash, never a block.", body: `
+${demoBlock("Line — single series", "End-dot + end-label carry the latest value; the y-axis carries the rest. The line draws itself on load.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Active learners</span><span class="ns-chart__sub">last 8 weeks</span></div>
+  <svg class="ns-chart__svg" viewBox="0 0 320 120" role="img" aria-label="Active learners, rising from 40 to 96 over 8 weeks">
+    <line class="ns-chart__gridline" x1="0" y1="10" x2="320" y2="10"/>
+    <line class="ns-chart__gridline" x1="0" y1="55" x2="320" y2="55"/>
+    <line class="ns-chart__baseline" x1="0" y1="100" x2="320" y2="100"/>
+    <polyline class="ns-chart__line ns-chart__line--draw" data-c="1" pathLength="1" points="10,80 52,70 94,74 136,58 178,62 220,44 262,38 300,22"/>
+    <circle class="ns-chart__dot" data-c="1" cx="300" cy="22" r="4"><title>W8 · 96</title></circle>
+    <text class="ns-chart__ref-label" x="308" y="25">96</text>
+  </svg>
+${chartX(["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8"])}
+</figure>`)}
+${demoBlock("Multi-series", "Slots 1 and 2, legend mandatory. Dots mark real data points; the surface ring keeps them legible where lines cross.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Track progress</span><span class="ns-chart__sub">avg % complete</span></div>
+  <ul class="ns-chart__legend">
+    <li class="ns-chart__key" data-c="1"><span class="ns-chart__swatch ns-chart__swatch--line"></span>Admin</li>
+    <li class="ns-chart__key" data-c="2"><span class="ns-chart__swatch ns-chart__swatch--line"></span>Developer</li>
+  </ul>
+  <svg class="ns-chart__svg" viewBox="0 0 320 120" role="img" aria-label="Admin track ahead of developer track for most of the period">
+    <line class="ns-chart__gridline" x1="0" y1="10" x2="320" y2="10"/>
+    <line class="ns-chart__gridline" x1="0" y1="55" x2="320" y2="55"/>
+    <line class="ns-chart__baseline" x1="0" y1="100" x2="320" y2="100"/>
+    <polyline class="ns-chart__line" data-c="1" points="10,90 70,72 130,60 190,42 250,38 300,26"/>
+    <polyline class="ns-chart__line" data-c="2" points="10,95 70,88 130,70 190,64 250,48 300,44"/>
+    <circle class="ns-chart__dot" data-c="1" cx="300" cy="26" r="4"><title>Admin · 78%</title></circle>
+    <circle class="ns-chart__dot" data-c="2" cx="300" cy="44" r="4"><title>Developer · 62%</title></circle>
+  </svg>
+${chartX(["Jan", "Feb", "Mar", "Apr", "May", "Jun"])}
+</figure>`)}
+${demoBlock("Area", "The fill is the series hue at 10% opacity — enough to read \\u201cvolume\\u201d, never enough to shout.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Watch time</span><span class="ns-chart__sub">hours / week</span></div>
+  <svg class="ns-chart__svg" viewBox="0 0 320 120" role="img" aria-label="Watch time rising over the period">
+    <line class="ns-chart__gridline" x1="0" y1="10" x2="320" y2="10"/>
+    <line class="ns-chart__gridline" x1="0" y1="55" x2="320" y2="55"/>
+    <polygon class="ns-chart__area" data-c="1" points="10,84 70,72 130,78 190,50 250,46 300,24 300,100 10,100"/>
+    <polyline class="ns-chart__line" data-c="1" points="10,84 70,72 130,78 190,50 250,46 300,24"/>
+    <line class="ns-chart__baseline" x1="0" y1="100" x2="320" y2="100"/>
+  </svg>
+${chartX(WEEKS)}
+</figure>`)}
+${demoBlock("Target line", "A dashed reference in muted ink — the one legal dashed line. The mark colors never change because of the target; distance from the line IS the story.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Weekly completions vs target</span><span class="ns-chart__sub">target 60</span></div>
+  <svg class="ns-chart__svg" viewBox="0 0 320 120" role="img" aria-label="Completions crossing the target of 60 in week 5">
+    <line class="ns-chart__baseline" x1="0" y1="100" x2="320" y2="100"/>
+    <line class="ns-chart__ref" x1="0" y1="46" x2="320" y2="46"/>
+    <text class="ns-chart__ref-label" x="2" y="41">target 60</text>
+    <polyline class="ns-chart__line ns-chart__line--draw" data-c="1" pathLength="1" points="10,88 68,76 126,80 184,58 242,40 300,28"/>
+    <circle class="ns-chart__dot" data-c="1" cx="300" cy="28" r="4"><title>W6 · 82</title></circle>
+  </svg>
+${chartX(WEEKS)}
+</figure>`)}` },
+
+  { id: "chart-donut", title: "Donut & rings", lede: "Parts of one whole — five parts at most, assembled from pathLength-100 arcs with a surface gap between segments. The center is the one place a chart carries its own headline number.", body: `
+${demoBlock("Donut with center stat", "Segments in slot order from 12 o'clock, legend beside it, the total in the hole. Arcs sweep in on load.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Lessons by type</span><span class="ns-chart__sub">this course</span></div>
+  <div class="ns-chart__donut">
+    <div class="ns-chart__ring-wrap">
+      <svg class="ns-chart__ring ns-chart__svg" viewBox="0 0 36 36" role="img" aria-label="42 lessons: 21 video, 11 reading, 6 lab, 4 quiz">
+        <circle class="ns-chart__arc" data-c="1" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:50;--off:0"/>
+        <circle class="ns-chart__arc" data-c="2" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:26;--off:50"/>
+        <circle class="ns-chart__arc" data-c="3" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:14;--off:76"/>
+        <circle class="ns-chart__arc" data-c="4" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:10;--off:90"/>
+      </svg>
+      <div class="ns-chart__center"><strong>42</strong><span>lessons</span></div>
+    </div>
+    <ul class="ns-chart__legend" style="flex-direction:column;gap:var(--space-2)">
+      <li class="ns-chart__key" data-c="1"><span class="ns-chart__swatch"></span>Video · 21</li>
+      <li class="ns-chart__key" data-c="2"><span class="ns-chart__swatch"></span>Reading · 11</li>
+      <li class="ns-chart__key" data-c="3"><span class="ns-chart__swatch"></span>Lab · 6</li>
+      <li class="ns-chart__key" data-c="4"><span class="ns-chart__swatch"></span>Quiz · 4</li>
+    </ul>
+  </div>
+</figure>`)}
+${demoBlock("Progress ring", "One value against a track — the track is the grid gray, the fill is slot 1. This is the donut's single-series form, so no legend.", `<figure class="ns-chart ns-chart--sm" style="max-inline-size:14rem">
+  <div class="ns-chart__head"><span class="ns-chart__title">Course progress</span></div>
+  <div class="ns-chart__ring-wrap" style="inline-size:6rem">
+    <svg class="ns-chart__ring ns-chart__svg" viewBox="0 0 36 36" role="img" aria-label="64% complete">
+      <circle class="ns-chart__track" cx="18" cy="18" r="15.9"/>
+      <circle class="ns-chart__arc" data-c="1" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:65.5;--off:0"/>
+    </svg>
+    <div class="ns-chart__center"><strong>64%</strong></div>
+  </div>
+</figure>`)}
+${demoBlock("Ring weights", "Thin for inline/compact placements, default, thick where the ring is the hero. Weight is a modifier, never a new component.", `<div style="display:flex;gap:var(--gap-grid);flex-wrap:wrap">
+  <div class="ns-chart__ring-wrap ns-chart" style="inline-size:8rem;padding:var(--space-4)">
+    <svg class="ns-chart__ring ns-chart__svg" viewBox="0 0 36 36" aria-hidden="true">
+      <circle class="ns-chart__track ns-chart__arc--thin" cx="18" cy="18" r="15.9"/>
+      <circle class="ns-chart__arc ns-chart__arc--thin" data-c="1" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:73.5;--off:0"/>
+    </svg>
+    <div class="ns-chart__center"><span>thin · 72%</span></div>
+  </div>
+  <div class="ns-chart__ring-wrap ns-chart" style="inline-size:8rem;padding:var(--space-4)">
+    <svg class="ns-chart__ring ns-chart__svg" viewBox="0 0 36 36" aria-hidden="true">
+      <circle class="ns-chart__track" cx="18" cy="18" r="15.9"/>
+      <circle class="ns-chart__arc" data-c="1" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:73.5;--off:0"/>
+    </svg>
+    <div class="ns-chart__center"><span>default</span></div>
+  </div>
+  <div class="ns-chart__ring-wrap ns-chart" style="inline-size:8rem;padding:var(--space-4)">
+    <svg class="ns-chart__ring ns-chart__svg" viewBox="0 0 36 36" aria-hidden="true">
+      <circle class="ns-chart__track ns-chart__arc--thick" cx="18" cy="18" r="15.9"/>
+      <circle class="ns-chart__arc ns-chart__arc--thick" data-c="1" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:73.5;--off:0"/>
+    </svg>
+    <div class="ns-chart__center"><span>thick</span></div>
+  </div>
+</div>`)}
+${demoBlock("Gauge (semi-donut)", "Half a donut for a score against a scale. The unfilled half of the scale stays visible — a gauge with no track is just an arc.", `<figure class="ns-chart ns-chart--sm" style="max-inline-size:14rem">
+  <div class="ns-chart__head"><span class="ns-chart__title">Quiz average</span></div>
+  <div class="ns-chart__ring-wrap" style="inline-size:8rem">
+    <svg class="ns-chart__ring ns-chart__svg" viewBox="0 0 36 36" role="img" aria-label="Average score 71 out of 100" style="transform:rotate(180deg)">
+      <circle class="ns-chart__track" cx="18" cy="18" r="15.9" pathLength="100" stroke-dasharray="50 100"/>
+      <circle class="ns-chart__arc" data-c="1" cx="18" cy="18" r="15.9" pathLength="100" style="--seg:37;--off:0"/>
+    </svg>
+    <div class="ns-chart__center" style="place-content:end center;padding-block-end:var(--space-4)"><strong>71</strong><span>/ 100</span></div>
+  </div>
+</figure>`)}
+  <p class="sub">When NOT a donut</p>
+  <div class="use-grid"><div><ul>
+    <li>More than five parts — a horizontal bar chart ranks them honestly</li>
+    <li>Comparing two wholes side by side — humans cannot compare angles; use stacked bars</li>
+    <li>Change over time — donuts have no time axis; use a stacked column</li>
+  </ul></div></div>` },
+];
+
 const BRAND_DOCS = [
   { id: "logo", title: "Logo", lede: "The mark, its lockups, and the favicon set — clear space, minimum sizes, and what never happens to it (no stretching, no recoloring, no shadows). Animated uses of the mark — stings and loading — are the Preloader component's five styles.", cards: ["guidelines/brand-logo.card.html", "guidelines/brand-logo-lockups.card.html", "guidelines/brand-favicon.card.html"] },
 ];
@@ -401,6 +693,7 @@ const PAGES = [
     COMPONENTS.filter((c) => c.family === fam)
       .map((c) => ({ file: `c-${c.id}.html`, title: c.title, kind: "component", comp: c, family: fam }))),
   ...BRAND_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Brand" })),
+  ...CHART_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Charts" })),
   ...CONTENT_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Content creation" })),
 ];
 const nn = (i) => String(i).padStart(2, "0");
@@ -599,7 +892,7 @@ const sidebar = (current) => {
     const pages = PAGES.filter((p) => p.kind === "component" && p.family === fam);
     return `<p class="side__sep">${esc(fam)}</p>\n  ` + pages.map(link).join("\n  ");
   }).join("\n  ");
-  const docNav = ["Brand", "Content creation"].map((side) => {
+  const docNav = ["Brand", "Charts", "Content creation"].map((side) => {
     const pages = PAGES.filter((p) => p.kind === "doc" && p.side === side);
     return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");
   }).join("\n  ");
@@ -686,6 +979,10 @@ for (const page of PAGES) {
   <p class="sub">Brand</p>
   <div class="dir">
     ${PAGES.filter((p) => p.kind === "doc" && p.side === "Brand").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong></a>`).join("\n    ")}
+  </div>
+  <p class="sub">Charts</p>
+  <div class="dir">
+    ${PAGES.filter((p) => p.kind === "doc" && p.side === "Charts").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong></a>`).join("\n    ")}
   </div>
   <p class="sub">Content creation</p>
   <div class="dir">
@@ -927,4 +1224,4 @@ ${body}
 `);
 }
 
-console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${COMPONENTS.length} components + ${BRAND_DOCS.length + CONTENT_DOCS.length} brand/content docs), ${all.length} tokens, ${cards.length} specimens embedded in place`);
+console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${COMPONENTS.length} components + ${BRAND_DOCS.length + CHART_DOCS.length + CONTENT_DOCS.length} brand/chart/content docs), ${all.length} tokens, ${cards.length} specimens embedded in place`);
