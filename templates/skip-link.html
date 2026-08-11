@@ -1,0 +1,15 @@
+<!--
+  Namaste UI template — skip link
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- FIRST element inside <body>. The target needs id="main" AND tabindex="-1",
+     or focus stays behind in Safari/Chrome and the link does nothing. -->
+<a class="ns-skip-link ns-visually-hidden" href="#main">Skip to content</a>

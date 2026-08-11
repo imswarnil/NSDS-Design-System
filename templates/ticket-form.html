@@ -1,0 +1,55 @@
+<!--
+  Namaste UI template — raise a support ticket
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- Point action at whatever receives tickets (an API route, a form service).
+     The hidden context fields carry the page the reporter came from — the
+     provenance that otherwise costs a support round-trip. -->
+<form class="ns-ticket-form" method="post" action="#">
+  <input type="hidden" name="context_url" value=""><!-- fill from location -->
+  <input type="hidden" name="context_title" value="">
+  <div class="ns-field">
+    <label class="ns-field__label" for="ns-t-subject">Subject</label>
+    <input id="ns-t-subject" class="ns-input" name="subject" required maxlength="120">
+    <p class="ns-field__help">One line — what went wrong, not the whole story.</p>
+  </div>
+  <div class="ns-field">
+    <label class="ns-field__label" for="ns-t-category">Category</label>
+    <select id="ns-t-category" class="ns-select" name="category" required>
+      <option value="" disabled selected>Choose a category</option>
+      <option value="course">Course content — a lesson, video or quiz</option>
+      <option value="account">Account &amp; sign-in</option>
+      <option value="billing">Billing &amp; membership</option>
+      <option value="org">My Salesforce practice org</option>
+      <option value="other">Something else</option>
+    </select>
+  </div>
+  <fieldset class="ns-fieldset">
+    <legend class="ns-fieldset__legend">Priority</legend>
+    <div class="ns-priority-row">
+      <label class="ns-priority"><input type="radio" name="priority" value="low"><span>Low</span></label>
+      <label class="ns-priority"><input type="radio" name="priority" value="normal" checked><span>Normal</span></label>
+      <label class="ns-priority"><input type="radio" name="priority" value="high"><span>High</span></label>
+      <label class="ns-priority ns-priority--urgent"><input type="radio" name="priority" value="urgent"><span>Urgent</span></label>
+    </div>
+  </fieldset>
+  <div class="ns-field">
+    <label class="ns-field__label" for="ns-t-body">What happened?</label>
+    <textarea id="ns-t-body" class="ns-textarea" name="body" rows="6" required></textarea>
+    <p class="ns-field__help">What you did, what you expected, and what happened instead.
+      Paste any error text verbatim.</p>
+  </div>
+  <label class="ns-attach">
+    <i class="ph ph-paperclip" aria-hidden="true"></i> Attach a screenshot (optional)
+    <input type="file" name="attachment" accept="image/*,.txt,.log">
+  </label>
+  <div><button class="ns-btn ns-btn--primary" type="submit">Raise ticket</button></div>
+</form>

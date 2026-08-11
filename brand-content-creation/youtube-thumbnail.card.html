@@ -1,0 +1,21 @@
+<!-- @dsCard group="Content Creation" viewport="700x460" name="YouTube Thumbnail — Dark + Light" subtitle="1280×720 · chevron-grid pattern, icon-led CTA" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:16px;background:var(--color-surface);display:flex;flex-direction:column;gap:14px}
+.card{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;top:0;left:0;right:0;height:6px;background:var(--color-brand-500)}
+.pat{position:absolute;inset:0}
+.kick{position:absolute;top:28px;left:32px;font-family:var(--font-mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.dark .kick{color:var(--color-brand-300)}
+.light .kick{color:var(--color-brand-600)}
+.title{position:absolute;left:32px;right:32px;top:78px;font-family:var(--font-heading);font-weight:800;font-size:52px;line-height:1.05;letter-spacing:-.015em}
+.badge{position:absolute;left:32px;bottom:28px;font-family:var(--font-mono);font-weight:700;font-size:14px;background:var(--color-brand-500);color:#fff;padding:8px 16px;border-radius:2px;display:flex;align-items:center;gap:8px}
+.dur{position:absolute;right:32px;bottom:30px;font-family:var(--font-mono);font-size:13px;padding:6px 12px;border-radius:2px;display:flex;align-items:center;gap:6px}
+.dark .dur{color:rgb(255 255 255/.75);border:1px solid rgb(255 255 255/.25)}
+.light .dur{color:var(--color-muted);border:1px solid var(--color-border)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+</style></head><body>
+<div><div class="label">Dark — chevron-grid pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="background-image:repeating-linear-gradient(90deg,rgb(255 255 255/.07) 0 6px,transparent 6px 16px),repeating-linear-gradient(0deg,rgb(255 255 255/.07) 0 6px,transparent 6px 16px)"></div><div class="kick"><i class="ph ph-shield-check"></i>Namaste Salesforce</div><div class="title">Apex Triggers Explained<br/>in 10 Minutes</div><div class="badge"><i class="ph ph-play"></i>WATCH FREE</div><div class="dur"><i class="ph ph-clock"></i>10:24</div></div></div>
+<div><div class="label">Light — chevron-grid pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="background-image:repeating-linear-gradient(90deg,rgb(0 0 30/.05) 0 6px,transparent 6px 16px),repeating-linear-gradient(0deg,rgb(0 0 30/.05) 0 6px,transparent 6px 16px)"></div><div class="kick"><i class="ph ph-shield-check"></i>Namaste Salesforce</div><div class="title">Apex Triggers Explained<br/>in 10 Minutes</div><div class="badge"><i class="ph ph-play"></i>WATCH FREE</div><div class="dur"><i class="ph ph-clock"></i>10:24</div></div></div>
+</body></html>

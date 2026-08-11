@@ -1,0 +1,47 @@
+<!-- @dsCard group="Content Creation" viewport="700x800" name="Training Module + Lesson Pair — Dark + Light" subtitle="Roadmap icon and progress bar carry through, both themes" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../styles.css">
+<style>body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.pair{display:flex;gap:10px;align-items:center}
+.card{width:280px;aspect-ratio:16/9;position:relative;overflow:hidden;flex-shrink:0}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;top:0;left:0;right:0;height:4px;background:var(--color-brand-500)}
+.pat{position:absolute;inset:0}
+.k{position:absolute;top:10px;left:26px;font-family:var(--font-mono);font-size:8px;text-transform:uppercase}
+.dark .k{color:var(--color-brand-300)}
+.light .k{color:var(--color-brand-600)}
+.k::before{content:"// "}
+.ic{position:absolute;top:9px;left:10px;font-size:11px}
+.dark .ic{color:var(--color-brand-300)}
+.light .ic{color:var(--color-brand-500)}
+.tt{position:absolute;left:10px;right:10px;bottom:34px;font-family:var(--font-heading);font-weight:700;font-size:13px;line-height:1.15}
+.prog{position:absolute;left:10px;right:10px;bottom:16px;height:3px}
+.dark .prog{background:rgb(255 255 255/.15)}
+.light .prog{background:var(--color-border)}
+.prog i{display:block;height:100%;background:var(--color-brand-500)}
+.step{position:absolute;top:9px;right:10px;font-family:var(--font-mono);font-size:9px}
+.dark .step{color:rgb(255 255 255/.5)}
+.light .step{color:var(--color-muted)}
+.idx{position:absolute;right:10px;bottom:32px;font-family:var(--font-mono);font-weight:700;font-size:20px}
+.dark .idx{color:rgb(255 255 255/.18)}
+.light .idx{color:rgb(0 0 30/.12)}
+.arrow{font-family:var(--font-mono);color:var(--color-muted);font-size:14px}
+</style></head><body>
+<div class="label">Dark</div>
+<div class="pair" id="d"></div>
+<div class="label">Light</div>
+<div class="pair" id="l"></div>
+<script>
+function render(id,theme){
+  const w=theme==="dark"?"255 255 255":"0 0 30";
+  const boost=theme==="dark"?1:1.5;
+  const pat=`repeating-linear-gradient(90deg,rgb(${w}/${.06*boost}) 0 5px,transparent 5px 14px),repeating-linear-gradient(0deg,rgb(${w}/${.06*boost}) 0 5px,transparent 5px 14px)`;
+  document.getElementById(id).innerHTML=`
+  <div class="card ${theme}"><div class="bar"></div><div class="pat" style="background-image:${pat}"></div><i class="ph ph-flag-checkered ic"></i><div class="k">Roadmap</div><div class="step">6 stops</div><div class="tt">Org Setup Training</div><div class="prog"><i style="width:40%"></i></div></div>
+  <div class="arrow">→</div>
+  <div class="card ${theme}"><div class="bar"></div><div class="pat" style="background-image:${pat}"></div><i class="ph ph-flag-checkered ic"></i><div class="k">Org Setup Training</div><div class="step">Stop 3 of 6</div><div class="tt">Configuring Sharing Rules</div><div class="idx">03</div><div class="prog"><i style="width:60%"></i></div></div>`;
+}
+render("d","dark");render("l","light");
+</script>
+</body></html>

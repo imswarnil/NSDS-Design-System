@@ -1,0 +1,175 @@
+/* Namaste UI — course player.
+   =========================================================================
+   The screen a learner lives in: video stage + lesson header + prev/next,
+   with the curriculum in a rail beside it. This is the product's core screen,
+   so it gets a real layout primitive rather than being assembled ad hoc on
+   each side (the Ghost lesson template and the Next.js player route must be
+   the same room).
+
+   Layout contract:
+     ≥ lg   two columns — stage+content | curriculum rail (--player-side-w),
+            the rail scrolling independently under the sticky navbar.
+     < lg   one column — stage first, then the lesson header, then the
+            curriculum as a plain section. The video is never displaced by
+            the lesson list on a phone: watching is the primary act.
+
+   The stage sits on brand-900 in BOTH themes: video looks wrong on white
+   letterboxing, and a consistent stage means switching themes mid-lesson
+   never flashes the frame. */
+@layer components {
+
+  .ns-player {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--player-side-w);
+    min-block-size: calc(100dvh - var(--navbar-h));
+  }
+
+  .ns-player__main { min-inline-size: 0; display: flex; flex-direction: column; }
+
+  /* --- Stage --------------------------------------------------------------
+     aspect-ratio reserves the box before the video loads, so the page never
+     jumps when metadata arrives. The <video>/<iframe> child fills it. */
+  .ns-player__stage {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--color-brand-900);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-player__stage > video,
+  .ns-player__stage > iframe {
+    position: absolute; inset: 0;
+    inline-size: 100%; block-size: 100%;
+    border: 0; display: block;
+  }
+
+  /* --- Lesson header ------------------------------------------------------
+     Kicker (mono index + section), title, meta row. The prev/next controls
+     live HERE, next to the content they change — not floating over the
+     video where they fight the player's own chrome. */
+  .ns-player__head {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    padding: var(--pad-card-lg) var(--pad-card-lg) var(--space-4);
+  }
+  .ns-player__kicker {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-player__title { font-size: var(--size-h3); line-height: var(--leading-heading); }
+  .ns-player__meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+
+  .ns-player__nav {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: 0 var(--pad-card-lg) var(--pad-card-lg);
+    margin-block-start: auto; /* pins to the bottom of the column on tall screens */
+  }
+  .ns-player__nav .ns-progress-row { flex: 1; margin-inline: var(--space-4); }
+
+  /* Body content under the header (tabs: notes / transcript / resources
+     reuse .ns-tabs; prose respects the reading measure even though the
+     column is wider). */
+  .ns-player__body { padding: 0 var(--pad-card-lg) var(--pad-card-lg); max-inline-size: var(--container-prose); }
+
+  /* --- Curriculum rail ----------------------------------------------------
+     Its own scroll region so a 40-lesson course scrolls beside a pinned
+     video, not under it. */
+  .ns-player__side {
+    border-inline-start: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: flex; flex-direction: column;
+    max-block-size: calc(100dvh - var(--navbar-h));
+    position: sticky; inset-block-start: var(--navbar-h);
+    overflow: hidden;
+  }
+  .ns-player__side-head {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    padding: var(--pad-card);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-player__side-head strong { font-size: var(--size-small); font-weight: var(--weight-semibold); }
+  .ns-player__side-head span {
+    margin-inline-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-player__list { overflow-y: auto; flex: 1; padding-block: var(--space-2); }
+
+  /* Section divider inside the list — the mono kicker again. */
+  .ns-player__section {
+    padding: var(--space-4) var(--pad-card) var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* --- Lesson row ---------------------------------------------------------
+     index · title · duration, with completion as the index cell's state:
+       todo     the zero-padded mono index
+       done     the index is REPLACED by a check — the number has done its
+                job; "finished" is now the more useful information
+       current  brand ink + the left accent line, aria-current="true"
+     A real <a>: lessons are pages, middle-click must work. */
+  .ns-lesson {
+    display: grid; grid-template-columns: auto 1fr auto;
+    align-items: center; gap: var(--space-3);
+    padding: var(--pad-row) var(--pad-card);
+    min-block-size: var(--target-comfy);
+    border-inline-start: 2px solid transparent;
+    text-decoration: none; color: var(--color-ink);
+    font-size: var(--size-small);
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-lesson:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-300); }
+  .ns-lesson:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+
+  .ns-lesson__index {
+    inline-size: var(--space-6); text-align: center;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-lesson__title { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-lesson__time {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+
+  .ns-lesson[data-state="done"] .ns-lesson__index { color: var(--color-success-ink); }
+  .ns-lesson[data-state="done"] .ns-lesson__title { color: var(--color-muted); }
+
+  .ns-lesson[aria-current="true"] {
+    border-inline-start-color: var(--color-brand-500);
+    background: color-mix(in srgb, var(--color-brand-500) 5%, transparent);
+  }
+  .ns-lesson[aria-current="true"] .ns-lesson__title { color: var(--color-brand-600); font-weight: var(--weight-medium); }
+  .ns-lesson[aria-current="true"] .ns-lesson__index { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-lesson[aria-current="true"] .ns-lesson__title,
+  [data-theme="dark"] .ns-lesson[aria-current="true"] .ns-lesson__index { color: var(--color-brand-300); }
+
+  /* Locked lesson (paid tier ahead): muted, a lock instead of duration, and
+     kept as a link to the upgrade page — a dead row explains nothing. */
+  .ns-lesson[data-state="locked"] { opacity: 0.55; }
+
+  /* --- Responsive ---------------------------------------------------------
+     One column below lg. The rail becomes a normal section capped at a
+     scrollable height, after the header — the learner is here to watch. */
+  @media (max-width: 63.999rem) {
+    .ns-player { grid-template-columns: 1fr; min-block-size: 0; }
+    .ns-player__side {
+      position: static; max-block-size: 24rem;
+      border-inline-start: 0; border-block-start: 1px solid var(--color-border);
+    }
+    .ns-player__nav { margin-block-start: 0; }
+    .ns-player__nav .ns-progress-row { display: none; } /* the rail header shows the count */
+  }
+  @media (max-width: 39.999rem) {
+    .ns-player__head, .ns-player__body { padding-inline: var(--gutter); }
+    .ns-player__nav { padding-inline: var(--gutter); }
+  }
+}

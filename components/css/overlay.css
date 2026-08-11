@@ -1,0 +1,156 @@
+/* Namaste UI — overlays: modal, drawer, popover, menu, tooltip.
+   =========================================================================
+   Every overlay here is built on a native element that already does the hard
+   part:
+
+     <dialog>          modal + drawer — focus trap, inert background, Esc to
+                       close, top-layer stacking, all from the platform
+     popover attribute popover/menu   — light-dismiss and top-layer, no JS
+
+   That choice is the whole point. A hand-rolled <div class="modal"> has to
+   reimplement focus trapping, scroll locking, Esc handling, `inert` on the
+   rest of the page and z-index stacking — five things that are individually
+   easy to get 90% right and collectively the reason most design systems ship
+   a broken modal. The top layer also means these overlays sit above
+   everything regardless of --z-* — the z tokens below are only for the
+   non-top-layer fallbacks (sticky chrome, tooltips positioned inline).
+
+   All of them close on Esc and return focus to the trigger. If you build a
+   new overlay that does not, it is not finished. */
+@layer components {
+
+  /* --- Scrim --------------------------------------------------------------
+     Deliberately a plain low-opacity navy rather than a blur: backdrop-filter
+     is expensive on mid-range Android, and "calm and fast" is a stated
+     product value. In dark mode it goes darker, not lighter, so the surface
+     above still reads as raised. */
+  .ns-modal::backdrop, .ns-drawer::backdrop {
+    background: var(--color-scrim);
+    animation: ns-fade-in var(--duration-fast) var(--ease-out);
+  }
+
+
+  /* --- Modal --------------------------------------------------------------
+     Open with dialog.showModal(), never by toggling a class — showModal() is
+     what grants the top layer, the focus trap and the inert background. */
+  .ns-modal {
+    inline-size: min(32rem, calc(100vw - var(--space-8)));
+    max-block-size: min(42rem, calc(100dvh - var(--space-16)));
+    padding: 0; border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-raised); color: var(--color-ink);
+    box-shadow: var(--shadow-raised);
+    display: flex; flex-direction: column;
+    animation: ns-fade-up var(--duration-base) var(--ease-out);
+  }
+  .ns-modal--sm { inline-size: min(24rem, calc(100vw - var(--space-8))); }
+  .ns-modal--lg { inline-size: min(48rem, calc(100vw - var(--space-8))); }
+
+  .ns-modal__header {
+    display: flex; align-items: flex-start; gap: var(--space-4);
+    padding: var(--pad-card-lg) var(--pad-card-lg) var(--space-3);
+  }
+  .ns-modal__title { font-size: var(--size-h3); font-weight: var(--weight-heading); line-height: var(--leading-heading); }
+  .ns-modal__body { padding: 0 var(--pad-card-lg); overflow-y: auto; flex: 1; }
+  /* The footer is a hairline-separated band, and actions sit end-aligned with
+     the confirm LAST — matching the platform convention on every OS this
+     ships to, so muscle memory works. */
+  .ns-modal__footer {
+    display: flex; justify-content: flex-end; gap: var(--space-2);
+    padding: var(--pad-card-lg);
+    margin-block-start: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-modal__close { margin-inline-start: auto; flex: none; }
+
+  /* --- Drawer -------------------------------------------------------------
+     Same <dialog> semantics, anchored to an edge. Used for mobile nav and the
+     docs sidebar below --breakpoint-lg. */
+  .ns-drawer {
+    padding: 0; border: 0; margin: 0;
+    max-block-size: none; block-size: 100dvh;
+    inline-size: min(20rem, 85vw);
+    background: var(--color-surface-raised); color: var(--color-ink);
+    border-inline-end: 1px solid var(--color-border);
+    display: flex; flex-direction: column;
+  }
+  .ns-drawer--start { margin-inline-end: auto; animation: ns-slide-start var(--duration-base) var(--ease-out); }
+  .ns-drawer--end {
+    margin-inline-start: auto;
+    border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
+    animation: ns-slide-end var(--duration-base) var(--ease-out);
+  }
+  .ns-drawer__header {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--pad-card); border-block-end: 1px solid var(--color-border);
+  }
+  .ns-drawer__body { padding: var(--pad-card); overflow-y: auto; flex: 1; }
+
+  /* --- Popover & menu -----------------------------------------------------
+     Uses the popover attribute: light-dismiss (click outside / Esc) and top
+     layer come free, with no outside-click listener to leak. Positioning uses
+     anchor() where supported and falls back to absolute positioning by the
+     caller, which is why the fallback z-index is declared. */
+  .ns-popover {
+    margin: 0; padding: var(--space-3);
+    inline-size: max-content; max-inline-size: min(22rem, calc(100vw - var(--space-8)));
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); color: var(--color-ink);
+    box-shadow: var(--shadow-raised);
+    z-index: var(--z-dropdown);
+  }
+  .ns-popover:popover-open { animation: ns-fade-up var(--duration-fast) var(--ease-out); }
+
+  .ns-menu { padding: var(--space-1-5); min-inline-size: 12rem; }
+  .ns-menu__item {
+    display: flex; align-items: center; gap: var(--gap-inline);
+    inline-size: 100%; min-block-size: var(--target-comfy);
+    padding: var(--space-2) var(--space-3);
+    border: 0; border-radius: var(--radius-sm);
+    background: transparent; color: var(--color-ink);
+    font-family: var(--font-sans); font-size: var(--size-small); text-align: start;
+    text-decoration: none; cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-menu__item:hover, .ns-menu__item:focus-visible { background: var(--color-surface-sunken); outline: none; }
+  /* Roving-tabindex focus is shown by the same treatment as hover plus a left
+     accent, so keyboard position is visible without a second visual language. */
+  .ns-menu__item:focus-visible { box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-menu__item[aria-current="true"] { color: var(--color-brand-600); }
+  .ns-menu__item--danger { color: var(--color-error-ink); }
+  .ns-menu__sep { block-size: 1px; background: var(--color-border); margin: var(--space-1-5) 0; border: 0; }
+  .ns-menu__label {
+    padding: var(--space-2) var(--space-3) var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* --- Tooltip ------------------------------------------------------------
+     A tooltip may only ever carry a SUPPLEMENT to a visible accessible name,
+     never the name itself — content that exists only on hover is unreachable
+     by touch and by most screen-reader modes. If the control has no visible
+     label, it needs aria-label, not a tooltip.
+
+     Shown on hover AND focus-within, because a keyboard user never hovers. */
+  .ns-tooltip {
+    position: absolute; z-index: var(--z-dropdown);
+    padding: var(--space-1-5) var(--space-2-5);
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    inline-size: max-content; max-inline-size: 16rem;
+    opacity: 0; visibility: hidden;
+    transition: opacity var(--duration-fast) var(--ease-out), visibility var(--duration-fast);
+  }
+  [data-theme="dark"] .ns-tooltip { background: var(--color-surface-sunken); border: 1px solid var(--color-border); }
+  .ns-tooltip-host { position: relative; display: inline-flex; }
+  .ns-tooltip-host:hover > .ns-tooltip,
+  .ns-tooltip-host:focus-within > .ns-tooltip { opacity: 1; visibility: visible; }
+}
+
+@keyframes ns-fade-in { from { opacity: 0; } }
+@keyframes ns-fade-up { from { opacity: 0; translate: 0 0.5rem; } }
+@keyframes ns-slide-start { from { translate: -100% 0; } }
+@keyframes ns-slide-end { from { translate: 100% 0; } }

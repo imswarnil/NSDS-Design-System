@@ -1,0 +1,72 @@
+<!-- @dsCard group="Foundations" viewport="700x460" name="Accessibility" subtitle="The contract every component in this system is held to — contrast, focus, targets, motion, semantics" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;padding:20px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:12.5px;line-height:1.6}
+.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 8px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+ul{margin:0 0 18px;padding-left:16px}
+li{margin-bottom:5px}
+code{font-family:var(--font-mono);font-size:11px;color:var(--color-brand-600)}
+.pair{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--color-border);font-family:var(--font-mono);font-size:11px}
+.sw{width:34px;height:16px;border-radius:2px;flex:none}
+.ok{margin-left:auto;color:var(--color-success-ink);font-weight:700}
+.no{margin-left:auto;color:var(--color-error-ink);font-weight:700}
+</style></head><body>
+<div class="cols">
+<div>
+  <p class="k">Contrast — status text</p>
+  <div class="pair"><span class="sw" style="background:var(--color-warning)"></span><span>--color-warning</span><span class="no">2.22:1 &mdash; fails AA</span></div>
+  <div class="pair"><span class="sw" style="background:var(--color-warning-ink)"></span><span>--color-warning-ink</span><span class="ok">6.8:1</span></div>
+  <div class="pair"><span class="sw" style="background:var(--color-error)"></span><span>--color-error</span><span class="no">4.65:1 &mdash; no headroom</span></div>
+  <div class="pair"><span class="sw" style="background:var(--color-error-ink)"></span><span>--color-error-ink</span><span class="ok">6.77:1</span></div>
+  <p style="font-size:11px;color:var(--color-muted);margin:8px 0 18px">
+    The raw status hues are for <strong>dots, borders and icons</strong>. Status <strong>text</strong> always uses the
+    <code>-ink</code> pair, which is darkened for light mode and lightened for dark.
+  </p>
+
+  <p class="k">Focus</p>
+  <ul>
+    <li>Never <code>outline: none</code> without a replacement ring.</li>
+    <li><code>:focus-visible</code>, so a mouse click paints no ring.</li>
+    <li>2px brand outline, 2px offset &mdash; or the <code>--shadow-focus</code> ring on inputs.</li>
+    <li>Only <code>[tabindex="-1"]</code> containers suppress it, because script moved focus there, not the user.</li>
+  </ul>
+
+  <p class="k">Targets</p>
+  <ul>
+    <li><code>--target-comfy</code> 40px for anything a thumb hits.</li>
+    <li><code>--target-min</code> 24px is the WCAG 2.2 floor, for dense inline controls only.</li>
+  </ul>
+</div>
+<div>
+  <p class="k">Semantics — use the platform</p>
+  <ul>
+    <li><code>&lt;dialog&gt;</code> for modal and drawer: focus trap, inert background, Esc, top layer.</li>
+    <li><code>&lt;details&gt;</code> for accordion: find-in-page can still reach collapsed content.</li>
+    <li><code>&lt;progress&gt;</code> for completion, <code>&lt;meter&gt;</code> for a score. Not interchangeable.</li>
+    <li>Native <code>&lt;select&gt;</code>, checkbox and radio &mdash; restyled, never reimplemented.</li>
+  </ul>
+
+  <p class="k">Never color alone</p>
+  <ul>
+    <li>Status = dot + word + color. Works in grayscale.</li>
+    <li>Charts pair a legend with direct labels; the palette is CVD-verified by CI.</li>
+    <li><code>@media (forced-colors: active)</code> re-anchors every custom control to system colors.</li>
+  </ul>
+
+  <p class="k">Announcements</p>
+  <ul>
+    <li><code>role="status"</code> polite for info and success.</li>
+    <li><code>role="alert"</code> assertive only for a failure needing action now.</li>
+    <li>Live regions are mounted <em>empty and early</em> &mdash; a region created with its message announces nothing.</li>
+    <li>Never put an actionable error in a toast: it disappears, and it cannot be reached again by keyboard.</li>
+  </ul>
+
+  <p class="k">Motion</p>
+  <ul>
+    <li><code>prefers-reduced-motion</code> collapses all durations globally in base.css.</li>
+    <li>Looping animation (shimmer, float) stops entirely rather than snapping to a frame.</li>
+  </ul>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,128 @@
+<!--
+  Namaste UI template — create a course
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  (components/admin/Admin.jsx + Builder.jsx) render. The screen is the
+  editor layout: the course on the left, everything ABOUT the course in the
+  sticky rail, the publish bar pinned below.
+    Next.js → <EditorLayout> + <CurriculumBuilder> + <PublishBar>.
+    Static  → use directly; wire the form action.
+-->
+<form method="post" action="#">
+  <div class="ns-pagehead">
+    <div>
+      <span class="ns-pagehead__kicker">// Courses / new</span>
+      <h1>Create a course</h1>
+    </div>
+    <div class="ns-pagehead__actions">
+      <a class="ns-btn ns-btn--quiet" href="#">Cancel</a>
+    </div>
+  </div>
+
+  <div class="ns-editor">
+    <div class="ns-editor__main">
+      <input class="ns-titlebox" type="text" placeholder="Course title…" aria-label="Course title" value="Admin Fundamentals">
+
+      <div class="ns-field">
+        <label class="ns-field__label" for="ns-c-slug">URL</label>
+        <span class="ns-slug">
+          <span class="ns-slug__prefix" aria-hidden="true">namaste.dev/courses/</span>
+          <input class="ns-input ns-input--mono" id="ns-c-slug" name="slug" value="admin-fundamentals" aria-label="URL slug">
+        </span>
+      </div>
+
+      <div class="ns-field">
+        <label class="ns-field__label" for="ns-c-summary">Summary</label>
+        <textarea class="ns-textarea" id="ns-c-summary" name="summary" rows="3" aria-describedby="ns-c-summary-h">Navigate Lightning Experience, model your first objects, and load 200 records without fear.</textarea>
+        <p class="ns-field__help" id="ns-c-summary-h">Two sentences on the card and in search results. Say what the learner can do afterwards.</p>
+      </div>
+
+      <!-- Curriculum builder: sections of lesson rows + dashed adders. -->
+      <span class="ns-pagehead__kicker">// Curriculum</span>
+      <div class="ns-builder">
+        <section class="ns-builder__section">
+          <header class="ns-builder__head">
+            <span class="ns-builder__index">01</span>
+            <input class="ns-builder__title" value="Getting around" aria-label="Section 1 title">
+            <span class="ns-builder__meta">3 lessons · 34 min</span>
+          </header>
+          <div class="ns-builder__row">
+            <button type="button" class="ns-builder__grip" aria-label="Reorder What is an org? — arrow keys move it"><i class="ph ph-dots-six-vertical" aria-hidden="true"></i></button>
+            <span class="ns-builder__index">01</span>
+            <span class="ns-builder__name">What is an org?</span>
+            <span class="ns-builder__type">video</span>
+            <span class="ns-builder__dur">12:04</span>
+            <span class="ns-builder__rowactions">
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Edit"><i class="ph ph-pencil-simple" aria-hidden="true"></i></button>
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Remove"><i class="ph ph-x" aria-hidden="true"></i></button>
+            </span>
+          </div>
+          <div class="ns-builder__row">
+            <button type="button" class="ns-builder__grip" aria-label="Reorder Lightning navigation — arrow keys move it"><i class="ph ph-dots-six-vertical" aria-hidden="true"></i></button>
+            <span class="ns-builder__index">02</span>
+            <span class="ns-builder__name">Lightning navigation</span>
+            <span class="ns-builder__type">video</span>
+            <span class="ns-builder__dur">14:31</span>
+            <span class="ns-builder__rowactions">
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Edit"><i class="ph ph-pencil-simple" aria-hidden="true"></i></button>
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Remove"><i class="ph ph-x" aria-hidden="true"></i></button>
+            </span>
+          </div>
+          <div class="ns-builder__row">
+            <button type="button" class="ns-builder__grip" aria-label="Reorder Try it: your first app — arrow keys move it"><i class="ph ph-dots-six-vertical" aria-hidden="true"></i></button>
+            <span class="ns-builder__index">03</span>
+            <span class="ns-builder__name">Try it: your first app</span>
+            <span class="ns-builder__type">lab</span>
+            <span class="ns-builder__dur">08:00</span>
+            <span class="ns-builder__rowactions">
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Edit"><i class="ph ph-pencil-simple" aria-hidden="true"></i></button>
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Remove"><i class="ph ph-x" aria-hidden="true"></i></button>
+            </span>
+          </div>
+          <button type="button" class="ns-builder__add"><i class="ph ph-plus" aria-hidden="true"></i> Add lesson</button>
+        </section>
+        <button type="button" class="ns-builder__add"><i class="ph ph-plus" aria-hidden="true"></i> Add section</button>
+      </div>
+    </div>
+
+    <div class="ns-editor__rail">
+      <section class="ns-railbox">
+        <h2 class="ns-railbox__title">Status</h2>
+        <span class="ns-status ns-status--idle">Draft</span>
+        <div class="ns-field">
+          <label class="ns-field__label" for="ns-c-level">Level</label>
+          <select class="ns-select" id="ns-c-level" name="level">
+            <option selected>Beginner</option><option>Intermediate</option><option>Advanced</option>
+          </select>
+        </div>
+      </section>
+      <section class="ns-railbox">
+        <h2 class="ns-railbox__title">Thumbnail</h2>
+        <label class="ns-dropzone ns-dropzone--compact">
+          <i class="ph ph-upload-simple ns-dropzone__icon" aria-hidden="true"></i>
+          <span>Drop an image, or browse</span>
+          <span class="ns-dropzone__hint">1280×720 · webp/png</span>
+          <input type="file" accept="image/*">
+        </label>
+      </section>
+      <section class="ns-railbox">
+        <h2 class="ns-railbox__title">Tags</h2>
+        <div class="ns-taginput">
+          <span class="ns-taginput__tag">admin<button type="button" class="ns-taginput__x" aria-label="Remove admin"><i class="ph ph-x" aria-hidden="true"></i></button></span>
+          <span class="ns-taginput__tag">beginner<button type="button" class="ns-taginput__x" aria-label="Remove beginner"><i class="ph ph-x" aria-hidden="true"></i></button></span>
+          <input aria-label="Tags" placeholder="">
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="ns-publishbar">
+    <span class="ns-publishbar__state" role="status"><span class="ns-status ns-status--idle">Draft</span> saved 14:32:07</span>
+    <div class="ns-publishbar__actions">
+      <button type="submit" class="ns-btn ns-btn--outline" name="save" value="draft">Save draft</button>
+      <button type="submit" class="ns-btn ns-btn--primary" name="save" value="publish">
+        <svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-publish"/></svg> Publish
+      </button>
+    </div>
+  </div>
+</form>

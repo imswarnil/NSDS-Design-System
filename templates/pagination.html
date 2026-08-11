@@ -1,0 +1,28 @@
+<!--
+  Namaste UI template — pagination
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- Real links (crawlable, middle-clickable). Slots: hrefs + page numbers. -->
+<nav aria-label="Pagination">
+  <ul class="ns-pagination">
+    <li><a class="ns-pagination__link" href="#prev" rel="prev">
+      <i class="ph ph-caret-left" aria-hidden="true"></i>
+      <span class="ns-visually-hidden">Previous page</span></a></li>
+    <li><a class="ns-pagination__link" href="#1">1</a></li>
+    <li><a class="ns-pagination__link" href="#2" aria-current="page" aria-label="Page 2">2</a></li>
+    <li><a class="ns-pagination__link" href="#3">3</a></li>
+    <li><span class="ns-pagination__ellipsis" aria-hidden="true">…</span></li>
+    <li><a class="ns-pagination__link" href="#9">9</a></li>
+    <li><a class="ns-pagination__link" href="#next" rel="next">
+      <span class="ns-visually-hidden">Next page</span>
+      <i class="ph ph-caret-right" aria-hidden="true"></i></a></li>
+  </ul>
+</nav>

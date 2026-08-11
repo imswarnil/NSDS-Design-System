@@ -1,0 +1,37 @@
+<!--
+  Namaste UI template — account panel
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- Signed-in state shown; branch on your stack's member check (Ghost:
+     {{#if @member}}; Next.js: session). The signed-out branch should be the
+     empty state with a real sign-in action, never a bare "please sign in". -->
+<div class="ns-page ns-page--narrow ns-stack">
+  <h1 class="ns-modal__title">Your account</h1>
+  <dl class="ns-field">
+    <dt class="ns-field__label">Email</dt>
+    <dd style="margin:0"><!-- member email --></dd>
+  </dl>
+  <dl class="ns-field">
+    <dt class="ns-field__label">Membership</dt>
+    <dd style="margin:0"><span class="ns-status ns-status--success">Free</span></dd>
+  </dl>
+  <fieldset class="ns-fieldset">
+    <legend class="ns-fieldset__legend">Preferences</legend>
+    <label class="ns-choice">
+      <input type="checkbox" role="switch" class="ns-switch" checked>
+      <span class="ns-choice__text">
+        <span class="ns-choice__label">Weekly newsletter</span>
+        <span class="ns-choice__help">New courses and lessons, once a week.</span>
+      </span>
+    </label>
+  </fieldset>
+  <div><a class="ns-btn ns-btn--outline" href="#signout">Sign out</a></div>
+</div>

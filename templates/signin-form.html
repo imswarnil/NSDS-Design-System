@@ -1,0 +1,36 @@
+<!--
+  Namaste UI template — sign in (magic link)
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- Passwordless sign-in (Ghost's model). For email+password, see
+     components/auth/Auth.jsx (LoginForm) — same .ns-auth shell. -->
+<div class="ns-auth">
+  <div class="ns-auth__card">
+    <p class="ns-auth__kicker">sign in</p>
+    <h1 class="ns-auth__title">Sign in</h1>
+    <p class="ns-auth__sub">Enter your email and we will send you a sign-in link. No password needed.</p>
+    <form class="ns-auth__form" data-members-form="signin" action="#">
+      <div class="ns-field">
+        <label class="ns-field__label" for="ns-signin-email">Email address</label>
+        <input id="ns-signin-email" class="ns-input" type="email" name="email"
+               autocomplete="email" required data-members-email>
+      </div>
+      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Send sign-in link</button>
+      <div class="ns-auth__sent" data-members-success role="status" hidden>
+        <p class="ns-auth__sent-title"><i class="ph ph-check-circle" aria-hidden="true"></i> Check your inbox</p>
+        <p>Open the link we sent to finish signing in.</p>
+      </div>
+      <p class="ns-field__error" data-members-error role="alert" hidden>
+        We could not find an account for that address. <a href="#signup">Create one instead</a>.</p>
+    </form>
+    <p class="ns-auth__alt">New here? <a href="#signup">Create an account</a></p>
+  </div>
+</div>

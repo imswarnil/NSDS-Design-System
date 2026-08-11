@@ -1,0 +1,133 @@
+<!--
+  Namaste UI template — reusable page sections, composed as a home page
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  (components/sections/Sections.jsx) render. Each band stands alone — lift
+  any one of them into any page. Order here is the canonical marketing
+  page: hero → logos → features → stats → quote → FAQ → CTA.
+    Ghost   → paste bands into partials/, swap copy for Ghost helpers.
+    Next.js → prefer <HeroSection>/<FeatureGrid>/<CtaBand>/<Faq>.
+-->
+
+<!-- Hero: dark navy console band with the dissolving hairline grid. -->
+<section class="ns-band ns-hero ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <span class="ns-kicker">Learn Salesforce, properly</span>
+    <h1 class="ns-hero__title">The training roadmap for people who build on Salesforce</h1>
+    <p class="ns-hero__lede">Courses, a step-by-step roadmap and working code — from your first org to Apex you can defend in a code review.</p>
+    <div class="ns-hero__actions">
+      <a class="ns-btn ns-btn--white ns-btn--lg" href="#">Start learning</a>
+      <a class="ns-btn ns-btn--ghost ns-btn--lg" href="#">Browse the roadmap</a>
+    </div>
+    <span class="ns-hero__proof">12 courses · 214 lessons · free while in beta</span>
+  </div>
+</section>
+
+<!-- Logo row: quiet trust band. -->
+<section class="ns-band ns-band--tight ns-band--sunken">
+  <div class="ns-band__inner">
+    <div class="ns-logorow">
+      <span class="ns-logorow__mark">Acme Cloud</span>
+      <span class="ns-logorow__mark">Northwind</span>
+      <span class="ns-logorow__mark">Globex</span>
+      <span class="ns-logorow__mark">Initech</span>
+      <span class="ns-logorow__mark">Umbrella&nbsp;Ops</span>
+    </div>
+  </div>
+</section>
+
+<!-- Feature grid: 3-up hairline cards with the bespoke icons. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">Why this works</span>
+      <h2 class="ns-band__title">A curriculum, not a pile of videos</h2>
+      <p class="ns-band__lede">Every course follows the same shape: plain-English concept, a concrete example, then a bridge to the next step.</p>
+    </header>
+    <div class="ns-features">
+      <article class="ns-feature">
+        <div class="ns-feature__top">
+          <svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+          <span class="ns-feature__num">01</span>
+        </div>
+        <h3 class="ns-feature__name">One roadmap</h3>
+        <p class="ns-feature__text">Admin to developer in an explicit order — every course knows what comes before and after it.</p>
+      </article>
+      <article class="ns-feature">
+        <div class="ns-feature__top">
+          <svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-lesson-lab"/></svg>
+          <span class="ns-feature__num">02</span>
+        </div>
+        <h3 class="ns-feature__name">Hands-on labs</h3>
+        <p class="ns-feature__text">Every section ends in your own org: create the object, load the data, break the trigger, fix it.</p>
+      </article>
+      <article class="ns-feature">
+        <div class="ns-feature__top">
+          <svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-certificate"/></svg>
+          <span class="ns-feature__num">03</span>
+        </div>
+        <h3 class="ns-feature__name">Cert-aligned</h3>
+        <p class="ns-feature__text">Courses map to the certification outlines, so studying here counts twice.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- Stat band: concrete numbers only. -->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <dl class="ns-statband">
+      <div class="ns-statband__cell"><dd class="ns-statband__value">12</dd><dt class="ns-statband__label">Courses</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">214</dd><dt class="ns-statband__label">Lessons</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">1,482</dd><dt class="ns-statband__label">Learners</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">74%</dd><dt class="ns-statband__label">Completion</dt></div>
+    </dl>
+  </div>
+</section>
+
+<!-- Testimonial: one voice, set large. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <figure class="ns-quote">
+      <blockquote>I passed the Platform Developer I after the Apex course — but the real win is that my triggers stopped scaring me.</blockquote>
+      <figcaption>Priya S. · Salesforce Developer · batch 2025</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- FAQ: native details rows. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--center">
+      <span class="ns-kicker">Questions</span>
+      <h2 class="ns-band__title">Before you start</h2>
+    </header>
+    <div class="ns-faq">
+      <details class="ns-faq__item">
+        <summary>Do I need a Salesforce license?</summary>
+        <div class="ns-faq__body"><p>No — every lab runs in a free Developer Edition org. Lesson one walks you through creating it.</p></div>
+      </details>
+      <details class="ns-faq__item" open>
+        <summary>Where should I start?</summary>
+        <div class="ns-faq__body"><p>The roadmap. It begins at "what is an org" and tells you exactly which course is next at every step.</p></div>
+      </details>
+      <details class="ns-faq__item">
+        <summary>Is this aligned with the certifications?</summary>
+        <div class="ns-faq__body"><p>Each course maps to the relevant certification outline — Admin, Platform App Builder, Platform Developer I.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CTA: the closer — exactly one per page, at the end. -->
+<section class="ns-band ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <div class="ns-cta">
+      <h2 class="ns-band__title">Create your free org. Start lesson one.</h2>
+      <div class="ns-cta__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="#">Start the roadmap</a>
+      </div>
+      <span class="ns-cta__fine">No card. No install. A browser is enough.</span>
+    </div>
+  </div>
+</section>

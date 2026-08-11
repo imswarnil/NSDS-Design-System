@@ -1,0 +1,38 @@
+<!-- @dsCard group="Content Creation" viewport="700x1180" name="Course Thumbnail — Dark + Light" subtitle="1280×720 · 3 variants × 2 themes, each on a different background pattern, icon usage shown" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:16px;background:var(--color-surface);display:flex;flex-direction:column;gap:14px;font-family:var(--font-sans)}
+.card{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;top:0;left:0;right:0;height:4px;background:var(--color-brand-500)}
+.pat{position:absolute;inset:0}
+.dark .pat{opacity:1}
+.light .pat{opacity:.5}
+.kick{position:absolute;top:22px;left:24px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.dark .kick{color:var(--color-brand-300)}
+.light .kick{color:var(--color-brand-600)}
+.kick i{font-size:13px}
+.title{position:absolute;left:24px;right:120px;bottom:52px;font-family:var(--font-heading);font-weight:700;font-size:34px;line-height:1.08;letter-spacing:-.01em}
+.meta{position:absolute;left:24px;bottom:18px;font-family:var(--font-mono);font-size:10.5px;display:flex;gap:14px;align-items:center}
+.dark .meta{color:rgb(255 255 255/.65)}
+.light .meta{color:var(--color-muted)}
+.meta span{display:flex;align-items:center;gap:5px}
+.lvl{position:absolute;right:22px;top:20px;font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:2px;display:flex;align-items:center;gap:5px}
+.dark .lvl{border:1px solid rgb(255 255 255/.25);color:#fff}
+.light .lvl{border:1px solid var(--color-border);color:var(--color-brand-700)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+</style></head><body>
+
+<div><div class="label">01 · Standard — dark, grid pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 90% 90% at 30% 30%,#000 20%,transparent 75%)"></div><div class="kick"><i class="ph ph-shield-check"></i>Admin</div><div class="lvl"><i class="ph ph-lightning"></i>Beginner</div><div class="title">Salesforce — Zero to Hero</div><div class="meta"><span><i class="ph ph-books"></i>7 lessons</span><span><i class="ph ph-clock"></i>1h 10m</span><span>Free</span></div></div></div>
+
+<div><div class="label">01 · Standard — light, grid pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="background-image:linear-gradient(to right,rgb(0 0 30/.06) 1px,transparent 1px),linear-gradient(to bottom,rgb(0 0 30/.06) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 90% 90% at 30% 30%,#000 20%,transparent 75%)"></div><div class="kick"><i class="ph ph-shield-check"></i>Admin</div><div class="lvl"><i class="ph ph-lightning"></i>Beginner</div><div class="title">Salesforce — Zero to Hero</div><div class="meta"><span><i class="ph ph-books"></i>7 lessons</span><span><i class="ph ph-clock"></i>1h 10m</span><span>Free</span></div></div></div>
+
+<div><div class="label">02 · Featured — dark, dot pattern</div><div class="card dark"><div class="bar" style="height:6px"></div><div class="pat" style="background-image:radial-gradient(rgb(255 255 255/.14) 1px,transparent 1px);background-size:16px 16px"></div><div class="kick"><i class="ph ph-code"></i>Development</div><div class="lvl" style="background:var(--color-brand-500);border-color:var(--color-brand-500)"><i class="ph ph-chart-bar"></i>Advanced</div><div class="title">Apex Masterclass:<br/>Triggers &amp; Async</div><div class="meta"><span><i class="ph ph-books"></i>12 lessons</span><span><i class="ph ph-clock"></i>6h 40m</span><span>$49</span></div></div></div>
+
+<div><div class="label">02 · Featured — light, dot pattern</div><div class="card light"><div class="bar" style="height:6px"></div><div class="pat" style="background-image:radial-gradient(rgb(0 0 30/.1) 1px,transparent 1px);background-size:16px 16px"></div><div class="kick"><i class="ph ph-code"></i>Development</div><div class="lvl" style="background:var(--color-brand-500);border-color:var(--color-brand-500);color:#fff"><i class="ph ph-chart-bar"></i>Advanced</div><div class="title">Apex Masterclass:<br/>Triggers &amp; Async</div><div class="meta"><span><i class="ph ph-books"></i>12 lessons</span><span><i class="ph ph-clock"></i>6h 40m</span><span>$49</span></div></div></div>
+
+<div><div class="label">03 · Minimal — dark, diagonal pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="background-image:repeating-linear-gradient(45deg,rgb(255 255 255/.06) 0 1px,transparent 1px 12px)"></div><div class="kick"><i class="ph ph-database"></i>Data Cloud</div><div class="lvl"><i class="ph ph-gear-six"></i>Intermediate</div><div class="title">Flow Builder in Practice</div><div class="meta"><span><i class="ph ph-books"></i>9 lessons</span><span><i class="ph ph-clock"></i>3h 05m</span><span>Free</span></div></div></div>
+
+<div><div class="label">03 · Minimal — light, diagonal pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="background-image:repeating-linear-gradient(45deg,rgb(0 0 30/.06) 0 1px,transparent 1px 12px)"></div><div class="kick"><i class="ph ph-database"></i>Data Cloud</div><div class="lvl"><i class="ph ph-gear-six"></i>Intermediate</div><div class="title">Flow Builder in Practice</div><div class="meta"><span><i class="ph ph-books"></i>9 lessons</span><span><i class="ph ph-clock"></i>3h 05m</span><span>Free</span></div></div></div>
+
+</body></html>

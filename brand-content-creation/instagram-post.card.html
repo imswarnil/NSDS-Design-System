@@ -1,0 +1,21 @@
+<!-- @dsCard group="Content Creation" viewport="440x900" name="Instagram Post — Dark + Light" subtitle="1080×1080 · concentric-circle pattern" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:16px;background:var(--color-surface);display:flex;flex-direction:column;gap:14px}
+.card{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;top:0;left:0;right:0;height:5px;background:var(--color-brand-500)}
+.pat{position:absolute;inset:0}
+.kick{position:absolute;top:26px;left:26px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.dark .kick{color:var(--color-brand-300)}
+.light .kick{color:var(--color-brand-600)}
+.title{position:absolute;left:26px;right:26px;bottom:96px;font-family:var(--font-heading);font-weight:800;font-size:34px;line-height:1.12;letter-spacing:-.01em}
+.tag{position:absolute;left:26px;bottom:28px;font-family:var(--font-mono);font-size:11px}
+.dark .tag{color:rgb(255 255 255/.6)}
+.light .tag{color:var(--color-muted)}
+.logo{position:absolute;right:26px;bottom:28px;font-family:var(--font-mono);font-weight:700;font-size:12px;color:var(--color-brand-500)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+</style></head><body>
+<div><div class="label">Dark — concentric pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="background-image:radial-gradient(circle,transparent 0 8px,rgb(255 255 255/.09) 9px 10px,transparent 11px),radial-gradient(circle,transparent 0 16px,rgb(255 255 255/.06) 17px 18px,transparent 19px);background-position:80% 15%;background-size:90px 90px"></div><div class="kick"><i class="ph ph-lightbulb"></i>Tip of the day</div><div class="title">3 SOQL mistakes killing your governor limits</div><div class="tag">@namastesalesforce</div><div class="logo">NSF</div></div></div>
+<div><div class="label">Light — concentric pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="background-image:radial-gradient(circle,transparent 0 8px,rgb(0 0 30/.08) 9px 10px,transparent 11px),radial-gradient(circle,transparent 0 16px,rgb(0 0 30/.05) 17px 18px,transparent 19px);background-position:80% 15%;background-size:90px 90px"></div><div class="kick"><i class="ph ph-lightbulb"></i>Tip of the day</div><div class="title">3 SOQL mistakes killing your governor limits</div><div class="tag">@namastesalesforce</div><div class="logo">NSF</div></div></div>
+</body></html>

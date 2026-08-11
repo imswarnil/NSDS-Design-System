@@ -1,0 +1,58 @@
+<!-- @dsCard group="Content Creation" viewport="700x1900" name="Instagram Post Styles — Dark + Light" subtitle="6 archetypes × 2 themes, each with a Phosphor icon" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../styles.css">
+<style>body{margin:0;padding:14px;background:var(--color-surface);font-family:var(--font-sans)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.p{aspect-ratio:1/1;position:relative;overflow:hidden}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;top:0;left:0;right:0;height:4px;background:var(--color-brand-500)}
+.lbl{position:absolute;bottom:6px;left:8px;font-family:var(--font-mono);font-size:8px;text-transform:uppercase;z-index:2}
+.dark .lbl{color:rgb(255 255 255/.45)}
+.light .lbl{color:var(--color-muted)}
+.logo{position:absolute;right:10px;bottom:8px;font-family:var(--font-mono);font-weight:700;font-size:9px;color:var(--color-brand-500);z-index:2}
+.k{position:absolute;top:12px;left:28px;font-family:var(--font-mono);font-size:9px;text-transform:uppercase}
+.dark .k{color:var(--color-brand-300)}
+.light .k{color:var(--color-brand-600)}
+.k::before{content:"// "}
+.ic{position:absolute;top:12px;left:10px;font-size:12px}
+.dark .ic{color:var(--color-brand-300)}
+.light .ic{color:var(--color-brand-500)}
+.t{position:absolute;left:10px;right:10px;top:36px;font-family:var(--font-heading);font-weight:800;font-size:15px;line-height:1.15}
+.dots{position:absolute;right:10px;top:12px;font-family:var(--font-mono);font-size:9px;background:var(--color-brand-500);color:#fff;padding:2px 6px;border-radius:8px}
+.checklist div{position:absolute;left:28px;right:10px;top:12px;font-family:var(--font-mono);font-size:9px}
+.checklist p{display:flex;gap:5px;margin:5px 0}
+.dark .checklist p{color:rgb(255 255 255/.75)}
+.light .checklist p{color:var(--color-muted)}
+.checklist i{color:var(--color-brand-500)}
+.comp{display:grid;grid-template-columns:1fr 1fr;height:100%}
+.comp div{display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;flex-direction:column;gap:4px}
+.dark .comp div:first-child{background:rgb(255 255 255/.05);border-right:1px solid rgb(255 255 255/.15)}
+.light .comp div:first-child{background:var(--color-surface-sunken);border-right:1px solid var(--color-border)}
+.testi{display:flex;align-items:center;justify-content:center;height:100%;text-align:center;padding:0 16px;font-family:var(--font-heading);font-weight:700;font-size:13px}
+.testi::before{content:"\201C";display:block;font-size:26px;color:var(--color-brand-500);line-height:.5}
+.statv{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:2px}
+.statv b{font-family:var(--font-mono);font-size:30px;color:var(--color-brand-500)}
+.statv span{font-family:var(--font-mono);font-size:9px}
+.dark .statv span{color:rgb(255 255 255/.6)}
+.light .statv span{color:var(--color-muted)}
+</style></head><body>
+<div class="label">Dark</div>
+<div class="grid" id="d"></div>
+<div class="label">Light</div>
+<div class="grid" id="l"></div>
+<script>
+function render(id,theme){
+const g=document.getElementById(id);
+g.innerHTML=`
+<div class="p ${theme}"><div class="bar"></div><i class="ph ph-image ic"></i><div class="k">Carousel cover</div><div class="t">5 Flow Mistakes Killing Your Org</div><div class="dots">1/5</div><div class="logo">NSF</div><span class="lbl">Carousel cover</span></div>
+<div class="p ${theme}"><div class="bar"></div><div class="testi">"Went from zero to<br>Admin cert in 6 weeks."</div><div class="logo">NSF</div><span class="lbl">Testimonial</span></div>
+<div class="p ${theme} checklist"><div class="bar"></div><i class="ph ph-list-checks ic"></i><div class="k">Save this post</div><div style="top:32px"><p><i class="ph ph-check-circle"></i>Bulkify your loops</p><p><i class="ph ph-check-circle"></i>Cache SOQL results</p><p><i class="ph ph-check-circle"></i>Use async where needed</p></div><div class="logo">NSF</div><span class="lbl">Checklist</span></div>
+<div class="p ${theme} comp"><div class="bar"></div><div><i class="ph ph-flow-arrow"></i>Flow</div><div><i class="ph ph-code"></i>Apex</div><div class="logo" style="position:absolute">NSF</div><span class="lbl">Comparison</span></div>
+<div class="p ${theme}"><div class="bar"></div><i class="ph ph-lightbulb ic"></i><div class="k">Quick tip</div><div class="t">SOQL in a loop = governor limit crash</div><div class="logo">NSF</div><span class="lbl">Quote / tip</span></div>
+<div class="p ${theme} statv"><div class="bar"></div><b>10k+</b><span>learners certified</span><div class="logo">NSF</div><span class="lbl">Stat callout</span></div>
+`;
+}
+render("d","dark");render("l","light");
+</script>
+</body></html>

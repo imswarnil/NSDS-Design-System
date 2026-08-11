@@ -1,0 +1,450 @@
+/* Namaste UI — admin: the builder's console.
+   =========================================================================
+   The screens where courses get MADE: dashboard, course list, the course
+   creation wizard, the lesson editor. Same five principles as the learner
+   side — hairline structure, mono-as-data, one signal color — applied to a
+   denser, tool-shaped surface. If the learner side is the published book,
+   this is the typesetter's bench, so the console voice is at its most
+   literal here: record counts, statuses, ids and timestamps everywhere,
+   all set in mono.
+
+   Blocks in this file:
+     .ns-admin            the app shell — topbar, side nav, main
+     .ns-admin-nav        the side navigation with mono indices
+     .ns-pagehead         page title row: kicker, h1, actions
+     .ns-stat             dashboard stat card (mono value + delta)
+     .ns-toolbar          list-screen controls: search, filters, view toggle
+     .ns-editor           two-pane creation layout: form + settings rail
+     .ns-publishbar       sticky save/publish row with status
+     .ns-titlebox         the big borderless title input (lesson editor)
+     .ns-rte              rich-text editing chrome (toolbar + writing area)
+     .ns-builder          curriculum builder: sections, lesson rows, adders
+     .ns-dropzone         media upload target + uploaded-file row
+     .ns-taginput         chips-inside-a-field tag entry
+     .ns-slug             prefix + input group for URL slugs */
+@layer components {
+
+  /* --- App shell ----------------------------------------------------------
+     Fixed topbar, fixed-width side nav, scrolling main. The shell is a grid
+     so the sidebar and main scroll independently without JS. */
+  .ns-admin {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) 1fr;
+    grid-template-rows: var(--navbar-h) 1fr;
+    grid-template-areas: "topbar topbar" "side main";
+    min-block-size: 100dvh;
+    background: var(--color-surface);
+  }
+  .ns-admin__topbar {
+    grid-area: topbar;
+    display: flex; align-items: center; gap: var(--space-4);
+    padding-inline: var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface);
+    position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
+  }
+  .ns-admin__side {
+    grid-area: side;
+    position: sticky; inset-block-start: var(--navbar-h);
+    block-size: calc(100dvh - var(--navbar-h));
+    overflow-y: auto;
+    border-inline-end: 1px solid var(--color-border);
+    padding: var(--space-4) var(--space-3) var(--space-8);
+    background: var(--color-surface);
+  }
+  .ns-admin__main {
+    grid-area: main;
+    min-inline-size: 0;
+    padding: var(--space-6) var(--gutter-lg) var(--space-24);
+  }
+  /* Environment label in the topbar — which org/site this console edits.
+     Mono, uppercase: it is data, not branding. */
+  .ns-admin__env {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    padding: var(--space-0-5) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  }
+  .ns-admin__spacer { margin-inline-start: auto; }
+
+  @media (max-width: 63.999rem) {
+    /* Below lg the side nav becomes a top strip; main takes the full width. */
+    .ns-admin { grid-template-columns: 1fr; grid-template-areas: "topbar" "side" "main"; grid-template-rows: var(--navbar-h) auto 1fr; }
+    .ns-admin__side { position: static; block-size: auto; border-inline-end: 0; border-block-end: 1px solid var(--color-border); }
+    .ns-admin__main { padding-inline: var(--gutter); }
+  }
+
+  /* --- Side navigation ----------------------------------------------------
+     Terminal rows with the mono index motif; the current page carries the
+     2px leading edge in brand — the same accent grammar as everywhere else.
+     State is aria-current, never an .active class. */
+  .ns-admin-nav { display: flex; flex-direction: column; gap: var(--space-0-5); }
+  .ns-admin-nav__sep {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    margin: var(--space-5) 0 var(--space-1); padding-inline-start: var(--space-3);
+  }
+  .ns-admin-nav__sep:first-child { margin-block-start: 0; }
+  .ns-admin-nav a {
+    display: flex; align-items: center; gap: var(--space-2-5);
+    padding: var(--space-1-5) var(--space-3);
+    min-block-size: var(--target-min);
+    font-size: var(--size-small); color: var(--color-muted);
+    text-decoration: none;
+    border-inline-start: 2px solid transparent;
+    border-radius: 0; /* rows, not pills — the rail is the shape */
+    transition: color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-admin-nav a:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  .ns-admin-nav a:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-admin-nav a[aria-current="page"] {
+    color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500);
+    font-weight: var(--weight-medium);
+    background: color-mix(in srgb, var(--color-brand-500) 5%, transparent);
+  }
+  [data-theme="dark"] .ns-admin-nav a[aria-current="page"] { color: var(--color-brand-300); }
+  .ns-admin-nav__num {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* A count at the row end — drafts pending review, open tickets. */
+  .ns-admin-nav__count {
+    margin-inline-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Page head ----------------------------------------------------------
+     Every admin screen opens with one: code-comment kicker, the h1, and the
+     screen's actions on the trailing edge. One primary per screen lives here. */
+  .ns-pagehead {
+    display: flex; align-items: flex-end; gap: var(--space-4);
+    padding-block-end: var(--space-5); margin-block-end: var(--space-6);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-pagehead__kicker {
+    display: block;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    margin-block-end: var(--space-1);
+  }
+  .ns-pagehead h1 { font-size: var(--size-h2); line-height: var(--leading-tight); }
+  .ns-pagehead__meta { font-size: var(--size-small); color: var(--color-muted); margin-block-start: var(--space-1); }
+  .ns-pagehead__actions { margin-inline-start: auto; display: flex; gap: var(--space-2); flex: none; }
+
+  /* --- Stat card ----------------------------------------------------------
+     The dashboard number: mono value (tabular), label above, delta below.
+     Deltas use the status-ink grammar — a word and an arrow, not a green wash. */
+  .ns-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr)); gap: var(--gap-grid); }
+  .ns-stat {
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+  }
+  .ns-stat__label {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-stat__value {
+    font-family: var(--font-mono); font-size: var(--size-h2);
+    font-weight: var(--weight-semibold); line-height: var(--leading-tight);
+    font-variant-numeric: tabular-nums;
+    margin-block-start: var(--space-2);
+  }
+  .ns-stat__delta {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-muted); margin-block-start: var(--space-1-5);
+  }
+  .ns-stat__delta--up { color: var(--color-success-ink); }
+  .ns-stat__delta--down { color: var(--color-error-ink); }
+
+  /* --- Toolbar ------------------------------------------------------------
+     The row above every list: search on the left, filters, then the view
+     toggle. It is a flex row that wraps — never a second navbar. */
+  .ns-toolbar { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin-block-end: var(--space-5); }
+  .ns-toolbar__search { flex: 1 1 14rem; max-inline-size: 22rem; }
+  .ns-toolbar__spacer { margin-inline-start: auto; }
+  .ns-toolbar .ns-select { inline-size: auto; }
+  /* Result count — the console tells you how many records matched. */
+  .ns-toolbar__count {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* --- Editor layout ------------------------------------------------------
+     Course/lesson creation: the writing pane and a settings rail. The rail
+     holds everything that is ABOUT the record (status, visibility, tags,
+     thumbnail); the pane holds the record itself. Rail is sticky so Publish
+     is reachable from anywhere in a long form. */
+  .ns-editor { display: grid; grid-template-columns: minmax(0, 1fr) var(--toc-w); gap: var(--space-8); align-items: start; }
+  .ns-editor__main { min-inline-size: 0; display: flex; flex-direction: column; gap: var(--stack-md); }
+  .ns-editor__rail {
+    position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-6));
+    display: flex; flex-direction: column; gap: var(--space-5);
+  }
+  /* A rail group: kicker heading + its controls, hairline-boxed. */
+  .ns-railbox {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    padding: var(--pad-card);
+    display: flex; flex-direction: column; gap: var(--gap-field);
+  }
+  .ns-railbox__title {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  @media (max-width: 63.999rem) {
+    .ns-editor { grid-template-columns: 1fr; }
+    .ns-editor__rail { position: static; }
+  }
+
+  /* --- Publish bar --------------------------------------------------------
+     Sticky footer strip on creation screens: save state on the left (mono —
+     it is a timestamp), draft/publish actions on the right. Sits above
+     content but below overlays. */
+  .ns-publishbar {
+    position: sticky; inset-block-end: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    margin-inline: calc(-1 * var(--space-4));
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-publishbar__state {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-publishbar__actions { margin-inline-start: auto; display: flex; gap: var(--space-2); }
+
+  /* --- Title box ----------------------------------------------------------
+     The lesson/course title is written, not filled in — so it gets a big
+     borderless input at heading size. The hairline appears only below, on
+     focus, so the writing surface stays a page, not a form. */
+  .ns-titlebox {
+    inline-size: 100%;
+    border: 0; border-block-end: 1px solid transparent;
+    background: none; color: var(--color-ink);
+    font-family: var(--font-heading); font-size: var(--size-h2);
+    font-weight: var(--weight-heading); line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    padding: 0 0 var(--space-2);
+    border-radius: 0;
+  }
+  .ns-titlebox::placeholder { color: var(--color-label); }
+  .ns-titlebox:focus-visible { outline: none; border-block-end-color: var(--color-brand-500); }
+
+  /* --- Rich text chrome ---------------------------------------------------
+     A toolbar of icon buttons over a writing area. The toolbar is chrome, so
+     it is quiet: hairline box, muted glyphs, brand only on the active state
+     (aria-pressed). The writing area reads with body type, not form type. */
+  .ns-rte { border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface-raised); overflow: hidden; }
+  .ns-rte__bar {
+    display: flex; align-items: center; gap: var(--space-0-5); flex-wrap: wrap;
+    padding: var(--space-1-5) var(--space-2);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  .ns-rte__btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--target-min); block-size: var(--target-min);
+    border: 1px solid transparent; border-radius: var(--radius-btn);
+    background: none; color: var(--color-muted); cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-rte__btn:hover { color: var(--color-ink); border-color: var(--color-border); }
+  .ns-rte__btn:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-rte__btn[aria-pressed="true"] {
+    color: var(--color-brand-600); border-color: var(--color-brand-500);
+    background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
+  }
+  [data-theme="dark"] .ns-rte__btn[aria-pressed="true"] { color: var(--color-brand-300); }
+  .ns-rte__gap { inline-size: 1px; align-self: stretch; margin-block: var(--space-1); margin-inline: var(--space-1); background: var(--color-border); }
+  .ns-rte__area {
+    min-block-size: 14rem; padding: var(--pad-card-lg);
+    font-size: var(--size-body); line-height: var(--leading-body); color: var(--color-ink);
+  }
+  .ns-rte__area:focus-visible { outline: none; box-shadow: inset 0 2px 0 var(--color-brand-500); }
+  .ns-rte__area p + p { margin-block-start: var(--space-3); }
+
+  /* --- Curriculum builder -------------------------------------------------
+     The course's structure, editable: section blocks holding lesson rows.
+     Same terminal-row grammar as the learner curriculum, plus the editing
+     affordances — drag handle, type badge, per-row actions, and a dashed
+     "add" row (the dashed border always means "nothing here yet"). */
+  .ns-builder { display: flex; flex-direction: column; gap: var(--space-5); }
+  .ns-builder__section { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; background: var(--color-surface-raised); }
+  .ns-builder__head {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2-5) var(--pad-card);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  .ns-builder__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* The section title is editable in place — same borderless grammar as the
+     title box, at body scale. */
+  .ns-builder__title {
+    flex: 1; min-inline-size: 0;
+    border: 0; background: none; color: var(--color-ink);
+    font-family: var(--font-sans); font-size: var(--size-body);
+    font-weight: var(--weight-semibold);
+    padding: 0; border-radius: 0;
+  }
+  .ns-builder__title:focus-visible { outline: none; box-shadow: 0 2px 0 var(--color-brand-500); }
+  .ns-builder__meta {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+
+  .ns-builder__row {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--pad-card);
+    min-block-size: var(--target-comfy);
+    border-inline-start: 2px solid transparent;
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-builder__row + .ns-builder__row { border-block-start: 1px solid var(--color-border); }
+  .ns-builder__row:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-500); }
+  .ns-builder__row[aria-grabbed="true"] { background: color-mix(in srgb, var(--color-brand-500) 6%, transparent); border-inline-start-color: var(--color-brand-500); }
+
+  .ns-builder__grip {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--space-5); flex: none;
+    border: 0; background: none; padding: 0;
+    color: var(--color-label); cursor: grab;
+  }
+  .ns-builder__grip:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: var(--radius-sm); }
+  .ns-builder__row .ns-builder__index { inline-size: var(--space-6); flex: none; }
+  .ns-builder__name { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--size-small); font-weight: var(--weight-medium); }
+  /* Lesson type — VIDEO / READING / QUIZ / LAB. Mono badge, hairline, no fill. */
+  .ns-builder__type {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-muted);
+    padding: var(--space-0-5) var(--space-1-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    white-space: nowrap;
+  }
+  .ns-builder__dur {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .ns-builder__rowactions { display: flex; gap: var(--space-1); opacity: 0; transition: opacity var(--duration-fast) var(--ease-out); }
+  .ns-builder__row:hover .ns-builder__rowactions,
+  .ns-builder__row:focus-within .ns-builder__rowactions { opacity: 1; }
+
+  /* Add-a-lesson / add-a-section: the dashed "nothing here yet" affordance. */
+  .ns-builder__add {
+    display: flex; align-items: center; justify-content: center; gap: var(--gap-inline);
+    inline-size: 100%; min-block-size: var(--target-comfy);
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-btn);
+    background: none; color: var(--color-muted); cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-builder__add:hover, .ns-builder__add:focus-visible { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-builder__add:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-builder__section .ns-builder__add { border-inline: 0; border-block-end: 0; border-radius: 0; }
+
+  /* --- Dropzone -----------------------------------------------------------
+     Upload target for video, thumbnail, attachments. Dashed at rest; the
+     border resolves to brand while a file is over it (data-state="over"). */
+  .ns-dropzone {
+    position: relative;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-2);
+    padding: var(--space-8) var(--space-5);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-card);
+    color: var(--color-muted); font-size: var(--size-small); text-align: center;
+    cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-dropzone:hover, .ns-dropzone:focus-within,
+  .ns-dropzone[data-state="over"] { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-dropzone input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .ns-dropzone__icon { font-size: var(--size-h3); }
+  .ns-dropzone__hint { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+  .ns-dropzone--compact { padding: var(--space-4) var(--space-5); flex-direction: row; }
+
+  /* An uploaded file: terminal row — mono name, mono size, status, remove. */
+  .ns-file {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    font-family: var(--font-mono); font-size: var(--size-label);
+  }
+  .ns-file__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-file__size { color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ns-file__remove { margin-inline-start: auto; }
+  .ns-file + .ns-file { margin-block-start: var(--space-2); }
+
+  /* --- Tag input ----------------------------------------------------------
+     Chips inside an input-shaped box; the text entry is a bare input at the
+     end. Removing is a real button inside each chip. */
+  .ns-taginput {
+    display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-1-5);
+    padding: var(--space-1-5) var(--space-2);
+    min-block-size: var(--target-comfy);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface-raised);
+    cursor: text;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-taginput:focus-within { border-color: var(--color-brand-500); outline: 2px solid var(--color-brand-500); outline-offset: -1px; }
+  .ns-taginput__tag {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-0-5) var(--space-1) var(--space-0-5) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-muted); background: var(--color-surface-sunken);
+  }
+  .ns-taginput__x {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--space-4); block-size: var(--space-4);
+    border: 0; border-radius: var(--radius-pill); background: none; padding: 0;
+    color: var(--color-label); cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-taginput__x:hover { color: var(--color-error-ink); }
+  .ns-taginput__x:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 1px; }
+  .ns-taginput input {
+    flex: 1; min-inline-size: 6rem;
+    border: 0; background: none; padding: var(--space-0-5);
+    font-family: var(--font-sans); font-size: var(--size-small); color: var(--color-ink);
+  }
+  .ns-taginput input:focus-visible { outline: none; }
+
+  /* --- Slug group ---------------------------------------------------------
+     The URL prefix is data the author cannot edit; the slug is data they can.
+     Both are mono — Principle 2. */
+  .ns-slug { display: flex; align-items: stretch; }
+  .ns-slug__prefix {
+    display: inline-flex; align-items: center;
+    padding-inline: var(--space-3);
+    border: 1px solid var(--color-border); border-inline-end: 0;
+    border-start-start-radius: var(--radius-btn); border-end-start-radius: var(--radius-btn);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted);
+    white-space: nowrap;
+  }
+  .ns-slug .ns-input { border-start-start-radius: 0; border-end-start-radius: 0; }
+}

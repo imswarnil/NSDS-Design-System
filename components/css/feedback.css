@@ -1,0 +1,178 @@
+/* Namaste UI — feedback: alerts, toasts, status, skeletons, empty & error states.
+   =========================================================================
+   Principle 3 is doing heavy lifting in this file. Most design systems paint
+   feedback as a tinted background wash — a pale red box for errors, a pale
+   green one for success. This system does not: status is a DOT plus MONO TEXT
+   plus (where it is a whole block) a single hairline accent edge.
+
+   That is not decoration-avoidance for its own sake. A tinted wash competes
+   with the one solid blue button for attention, and on a lesson page with an
+   inline warning the wash wins — so the reader's eye goes to a caveat instead
+   of to "continue". Keeping status to a dot and an accent line means the one
+   solid button stays the loudest thing on the page.
+
+   Every status treatment here pairs color with a SHAPE (icon or dot) and
+   TEXT, so it survives colorblindness, grayscale printing and forced-colors. */
+@layer components {
+
+  /* --- Inline status ------------------------------------------------------
+     The atom: a dot plus mono text. Used in lists, table cells, course rows.
+     The dot is a shape, and the label spells the state out — color is the
+     third signal, never the only one. */
+  .ns-status {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-muted);
+  }
+  .ns-status::before {
+    content: ""; inline-size: 0.5rem; block-size: 0.5rem; flex: none;
+    border-radius: var(--radius-pill); background: currentColor;
+  }
+  .ns-status--success { color: var(--color-success-ink); }
+  .ns-status--warning { color: var(--color-warning-ink); }
+  .ns-status--error { color: var(--color-error-ink); }
+  .ns-status--info { color: var(--color-info-ink); }
+  /* "Not started" / "draft" — a hollow dot, so the empty state is legible as
+     a shape difference and not only as a grey. */
+  .ns-status--idle::before { background: transparent; box-shadow: inset 0 0 0 1px currentColor; }
+
+  /* --- Alert --------------------------------------------------------------
+     A block-level message. Hairline border all round, and the leading edge
+     thickens to the status color — the same "accent line" device the cards
+     and rows use, so a warning does not introduce a new visual language.
+
+     role: use role="status" for informational/success (polite) and
+     role="alert" for error (assertive). Do not put role="alert" on a message
+     that is present at page load — it fires on nothing. */
+  .ns-alert {
+    display: flex; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border);
+    border-inline-start: 3px solid var(--color-muted);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: var(--color-ink);
+  }
+  .ns-alert__icon { flex: none; color: var(--color-muted); line-height: var(--leading-body); }
+  .ns-alert__body { display: flex; flex-direction: column; gap: var(--space-1); min-inline-size: 0; }
+  .ns-alert__title { font-weight: var(--weight-semibold); }
+  .ns-alert__text { color: var(--color-muted); font-size: var(--size-small); }
+  .ns-alert__actions { display: flex; gap: var(--space-2); margin-block-start: var(--space-2); }
+
+  .ns-alert--success { border-inline-start-color: var(--color-success); }
+  .ns-alert--success .ns-alert__icon { color: var(--color-success-ink); }
+  .ns-alert--warning { border-inline-start-color: var(--color-warning); }
+  .ns-alert--warning .ns-alert__icon { color: var(--color-warning-ink); }
+  .ns-alert--error { border-inline-start-color: var(--color-error); }
+  .ns-alert--error .ns-alert__icon { color: var(--color-error-ink); }
+  .ns-alert--info { border-inline-start-color: var(--color-brand-500); }
+  .ns-alert--info .ns-alert__icon { color: var(--color-info-ink); }
+
+  /* --- Toast --------------------------------------------------------------
+     Transient confirmation ("Progress saved"). The region is a live region
+     that exists on the page from the start and is populated later — creating
+     the live region at the same moment as the message is the classic bug that
+     makes it announce nothing.
+
+     Never put an error the user must act on in a toast: it disappears, and
+     it is unreachable by keyboard once gone. Errors belong in an alert next
+     to the thing that failed. */
+  .ns-toast-region {
+    position: fixed; z-index: var(--z-toast);
+    inset-block-end: var(--space-6); inset-inline-end: var(--space-6);
+    display: flex; flex-direction: column; gap: var(--space-2);
+    inline-size: min(22rem, calc(100vw - var(--space-8)));
+    pointer-events: none;
+  }
+  .ns-toast {
+    pointer-events: auto;
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-inline-start: 3px solid var(--color-brand-500);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-raised);
+    animation: ns-fade-up var(--duration-base) var(--ease-out);
+  }
+  .ns-toast--success { border-inline-start-color: var(--color-success); }
+  .ns-toast--error { border-inline-start-color: var(--color-error); }
+  .ns-toast__text { font-size: var(--size-small); flex: 1; min-inline-size: 0; }
+  .ns-toast__close { flex: none; }
+
+  @media (max-width: 39.999rem) {
+    /* Bottom-anchored full width on phones, where a corner toast either
+       overlaps the thumb zone or is too small to hit. */
+    .ns-toast-region { inset-inline: var(--space-4); inline-size: auto; inset-block-end: var(--space-4); }
+  }
+
+  /* --- Skeleton -----------------------------------------------------------
+     Shown while content loads. aria-hidden on the shapes and a single
+     visually-hidden "Loading…" for assistive tech: eight shimmering bars
+     announced individually are noise, not information.
+
+     The shimmer is the one place a long-running animation is allowed, and it
+     is disabled entirely under prefers-reduced-motion (base.css kills the
+     duration; here the gradient also flattens so it does not freeze
+     mid-sweep on an arbitrary bright frame). */
+  .ns-skeleton {
+    background: linear-gradient(90deg,
+      var(--color-surface-sunken) 25%,
+      color-mix(in srgb, var(--color-border) 40%, var(--color-surface-sunken)) 37%,
+      var(--color-surface-sunken) 63%);
+    background-size: 400% 100%;
+    border-radius: var(--radius-sm);
+    animation: ns-shimmer 1.4s linear infinite;
+  }
+  .ns-skeleton--text { block-size: 0.75rem; margin-block: var(--space-1-5); }
+  .ns-skeleton--title { block-size: 1.25rem; inline-size: 60%; }
+  .ns-skeleton--card { block-size: 10rem; border-radius: var(--radius-card); }
+  .ns-skeleton--avatar { inline-size: 2.5rem; block-size: 2.5rem; border-radius: var(--radius-pill); }
+  @media (prefers-reduced-motion: reduce) {
+    .ns-skeleton { background: var(--color-surface-sunken); }
+  }
+
+  /* --- Spinner ------------------------------------------------------------
+     For indeterminate waits under ~1s where a skeleton would flash. Anything
+     longer should be a skeleton — a spinner tells the user nothing about what
+     is arriving. */
+  .ns-spinner {
+    display: inline-block; inline-size: 1rem; block-size: 1rem;
+    border: 2px solid currentColor; border-block-start-color: transparent;
+    border-radius: var(--radius-pill); color: var(--color-muted);
+    animation: ns-spin 700ms linear infinite;
+  }
+  .ns-spinner--lg { inline-size: 1.75rem; block-size: 1.75rem; border-width: 3px; }
+
+  /* --- Empty state --------------------------------------------------------
+     Three parts, all required: what is not here, WHY, and the one thing to do
+     about it. An empty state with no action is a dead end — if there is
+     genuinely nothing to do, say so in the description rather than leaving
+     the user to guess. */
+  .ns-empty {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    gap: var(--space-3); padding: var(--space-16) var(--space-6);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-card);
+    color: var(--color-muted);
+  }
+  .ns-empty__icon { font-size: 2rem; color: var(--color-border); line-height: 1; }
+  .ns-empty__title { font-size: var(--size-h4); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-empty__text { max-inline-size: 32rem; font-size: var(--size-small); }
+  .ns-empty__action { margin-block-start: var(--space-2); }
+
+  /* --- Error state --------------------------------------------------------
+     Whole-page failure (404, 500, a route that threw). Same shape as the
+     empty state, but with a mono status code as a first-class element — the
+     console motif applied to the failure page. Solid border, not dashed:
+     dashed reads as "nothing here yet", solid as "something went wrong". */
+  .ns-error-state { border-style: solid; }
+  .ns-error-state .ns-empty__code {
+    font-family: var(--font-mono); font-size: var(--size-display);
+    font-weight: var(--weight-heading); color: var(--color-border);
+    line-height: 1;
+  }
+}
+
+@keyframes ns-shimmer { to { background-position: -200% 0; } }

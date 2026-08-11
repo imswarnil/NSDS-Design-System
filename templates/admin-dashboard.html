@@ -1,0 +1,98 @@
+<!--
+  Namaste UI template — admin dashboard
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  (components/admin/Admin.jsx) render. Adapt the marked slots to your stack:
+    Ghost   → the admin side is normally the Next.js app, but the shell
+              works anywhere; swap hrefs for your routes.
+    Next.js → prefer <AdminShell>/<AdminNav>/<Stat>; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<div class="ns-admin">
+  <header class="ns-admin__topbar">
+    <strong>Namaste Salesforce</strong>
+    <span class="ns-admin__env">admin · production</span>
+    <span class="ns-admin__spacer"></span>
+    <!-- theme toggle: see templates/theme-toggle.html -->
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon" aria-label="Notifications">
+      <i class="ph ph-bell" aria-hidden="true"></i>
+    </button>
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm">swarnil@…</button>
+  </header>
+
+  <aside class="ns-admin__side">
+    <nav class="ns-admin-nav" aria-label="Admin">
+      <p class="ns-admin-nav__sep">Content</p>
+      <a href="#" aria-current="page"><span class="ns-admin-nav__num">01</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-dashboard"/></svg>Dashboard</a>
+      <a href="#"><span class="ns-admin-nav__num">02</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-course"/></svg>Courses<span class="ns-admin-nav__count">12</span></a>
+      <a href="#"><span class="ns-admin-nav__num">03</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-roadmap"/></svg>Roadmap</a>
+      <a href="#"><span class="ns-admin-nav__num">04</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-draft"/></svg>Drafts<span class="ns-admin-nav__count">3</span></a>
+      <p class="ns-admin-nav__sep">People</p>
+      <a href="#"><span class="ns-admin-nav__num">05</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-students"/></svg>Students</a>
+      <a href="#"><span class="ns-admin-nav__num">06</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-instructor"/></svg>Instructors</a>
+      <p class="ns-admin-nav__sep">System</p>
+      <a href="#"><span class="ns-admin-nav__num">07</span><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-analytics"/></svg>Analytics</a>
+      <a href="#"><span class="ns-admin-nav__num">08</span><i class="ph ph-gear" aria-hidden="true"></i>Settings</a>
+    </nav>
+  </aside>
+
+  <main class="ns-admin__main">
+    <div class="ns-pagehead">
+      <div>
+        <span class="ns-pagehead__kicker">// Overview</span>
+        <h1>Dashboard</h1>
+        <p class="ns-pagehead__meta">Everything published, in progress and waiting on you.</p>
+      </div>
+      <div class="ns-pagehead__actions">
+        <a class="ns-btn ns-btn--outline" href="#">New lesson</a>
+        <a class="ns-btn ns-btn--primary" href="#">New course</a>
+      </div>
+    </div>
+
+    <div class="ns-stat-grid">
+      <div class="ns-stat">
+        <span class="ns-stat__label">Published courses</span>
+        <div class="ns-stat__value">12</div>
+        <span class="ns-stat__delta ns-stat__delta--up">↑ 2 this month</span>
+      </div>
+      <div class="ns-stat">
+        <span class="ns-stat__label">Active students</span>
+        <div class="ns-stat__value">1,482</div>
+        <span class="ns-stat__delta ns-stat__delta--up">↑ 6.1% vs last month</span>
+      </div>
+      <div class="ns-stat">
+        <span class="ns-stat__label">Completion rate</span>
+        <div class="ns-stat__value">74%</div>
+        <span class="ns-stat__delta ns-stat__delta--down">↓ 1.2 pts</span>
+      </div>
+      <div class="ns-stat">
+        <span class="ns-stat__label">Open tickets</span>
+        <div class="ns-stat__value">7</div>
+        <span class="ns-stat__delta">3 waiting on you</span>
+      </div>
+    </div>
+
+    <p class="ns-pagehead__kicker" style="margin-block-start:var(--space-8)">// Drafts in progress</p>
+    <div class="ns-tickets">
+      <a class="ns-ticket" href="#">
+        <span class="ns-ticket__id">C-0013</span>
+        <span class="ns-ticket__body">
+          <span class="ns-ticket__subject">Apex Triggers, Deeply</span>
+          <span class="ns-ticket__excerpt">8 of 24 lessons written · section 2 needs a lab</span>
+        </span>
+        <span class="ns-status ns-status--info">In progress</span>
+        <time class="ns-ticket__when" datetime="2026-08-10">yesterday</time>
+      </a>
+      <a class="ns-ticket" href="#">
+        <span class="ns-ticket__id">C-0014</span>
+        <span class="ns-ticket__body">
+          <span class="ns-ticket__subject">Flow Builder from Zero</span>
+          <span class="ns-ticket__excerpt">Outline complete · recording starts Monday</span>
+        </span>
+        <span class="ns-status ns-status--idle">Not started</span>
+        <time class="ns-ticket__when" datetime="2026-08-08">3d ago</time>
+      </a>
+    </div>
+  </main>
+</div>

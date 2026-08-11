@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "Inter";
+  src: url("../assets/fonts/inter-var-latin.woff2") format("woff2-variations"), url("../assets/fonts/inter-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../assets/fonts/jetbrains-mono-var-latin.woff2") format("woff2-variations"), url("../assets/fonts/jetbrains-mono-var-latin.woff2") format("woff2");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Helvetica Neue"), local("Arial"), local("Segoe UI"), local("Roboto");
+  size-adjust: 107%;
+  ascent-override: 90%;
+  descent-override: 22%;
+  line-gap-override: 0%;
+}

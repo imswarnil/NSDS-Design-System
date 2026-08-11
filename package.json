@@ -1,0 +1,97 @@
+{
+  "name": "@namaste-salesforce/design-system",
+  "version": "2.3.0",
+  "description": "Namaste UI — the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "files": [
+    "dist",
+    "tokens",
+    "components",
+    "assets",
+    "templates",
+    "scripts",
+    "docs",
+    "styles.css",
+    "gulpfile.mjs",
+    "readme.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./tokens/tokens.d.ts",
+      "default": "./tokens/tokens.js"
+    },
+    "./styles.css": "./styles.css",
+    "./dist/namaste-ui.css": "./dist/namaste-ui.css",
+    "./dist/namaste-ui.min.css": "./dist/namaste-ui.min.css",
+    "./tokens/tailwind.css": "./tokens/tailwind.css",
+    "./tokens/tokens.json": "./tokens/tokens.json",
+    "./components/*": "./components/*",
+    "./assets/*": "./assets/*",
+    "./templates/*": "./templates/*"
+  },
+  "scripts": {
+    "dev": "gulp",
+    "preview": "gulp build && node scripts/serve.mjs",
+    "build": "gulp build",
+    "site": "gulp site",
+    "check": "gulp check",
+    "test": "gulp check",
+    "serve": "node scripts/serve.mjs",
+    "build:tokens": "node scripts/build-tokens.mjs",
+    "build:css": "node scripts/build-css.mjs",
+    "build:preview": "node scripts/build-preview.mjs",
+    "build:site": "node scripts/build-site.mjs",
+    "check:tokens": "node scripts/build-tokens.mjs --check",
+    "check:principles": "node scripts/lint-principles.mjs",
+    "check:components": "node scripts/check-components.mjs",
+    "check:palette": "node scripts/check-palette.mjs",
+    "check:css": "node scripts/build-css.mjs --check",
+    "prepublishOnly": "gulp build && gulp check"
+  },
+  "author": {
+    "name": "Swarnil Singhai",
+    "email": "swarnilsinghaicse@gmail.com",
+    "url": "https://github.com/imswarnil"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imswarnil/Namaste-Salesforce.git",
+    "directory": "design-system"
+  },
+  "bugs": "https://github.com/imswarnil/Namaste-Salesforce/issues",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "ghost-theme",
+    "nextjs",
+    "tailwindcss",
+    "salesforce",
+    "slds"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "browserslist": [
+    "defaults"
+  ],
+  "peerDependencies": {
+    "tailwindcss": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "cssnano": "7.1.2",
+    "postcss": "^8.5.10",
+    "postcss-import": "^16.1.0",
+    "esbuild": "^0.25.0",
+    "gulp": "5.0.1"
+  }
+}

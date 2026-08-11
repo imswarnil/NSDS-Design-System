@@ -1,0 +1,23 @@
+<!-- @dsCard group="Content Creation" viewport="700x800" name="Website Promo Card — Dark + Light" subtitle="Screen-share / description-box card promoting the course platform" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../styles.css">
+<style>body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.card{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;top:0;left:0;right:0;height:5px;background:var(--color-brand-500)}
+.pat{position:absolute;inset:0;-webkit-mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,#000 20%,transparent 75%)}
+.ic{font-size:22px;color:var(--color-brand-500);z-index:1}
+.wm{font-family:var(--font-heading);font-weight:800;font-size:20px;letter-spacing:-.01em;z-index:1}
+.tag{font-family:var(--font-mono);font-size:12px;z-index:1}
+.dark .tag{color:rgb(255 255 255/.7)}
+.light .tag{color:var(--color-muted)}
+.cta{font-family:var(--font-mono);font-weight:700;font-size:12px;background:var(--color-brand-500);color:#fff;padding:8px 18px;border-radius:2px;z-index:1;display:flex;align-items:center;gap:6px}
+</style></head><body>
+<div class="label">Dark</div>
+<div class="card dark"><div class="bar"></div><div class="pat" style="background-image:radial-gradient(rgb(255 255 255/.09) 1px,transparent 1px);background-size:16px 16px"></div>
+<i class="ph ph-shield-check ic"></i><div class="wm">Namaste Salesforce</div><div class="tag">Free courses · Certification prep · Community</div><div class="cta"><i class="ph ph-arrow-up-right"></i>namastesalesforce.com</div></div>
+<div class="label">Light</div>
+<div class="card light"><div class="bar"></div><div class="pat" style="background-image:radial-gradient(rgb(0 0 30/.07) 1px,transparent 1px);background-size:16px 16px"></div>
+<i class="ph ph-shield-check ic"></i><div class="wm">Namaste Salesforce</div><div class="tag">Free courses · Certification prep · Community</div><div class="cta"><i class="ph ph-arrow-up-right"></i>namastesalesforce.com</div></div>
+</body></html>

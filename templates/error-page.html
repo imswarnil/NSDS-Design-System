@@ -1,0 +1,24 @@
+<!--
+  Namaste UI template — error page (404/500)
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<div class="ns-page ns-page--narrow" style="padding-block:var(--stack-lg)">
+  <div class="ns-empty ns-error-state" role="alert">
+    <p class="ns-empty__code">404</p>
+    <p class="ns-empty__title">Page not found</p>
+    <p class="ns-empty__text">That page has moved or never existed.
+      The course catalog is a good place to pick the thread back up.</p>
+    <div class="ns-empty__action" style="display:flex; gap:var(--space-2)">
+      <a class="ns-btn ns-btn--primary" href="#courses">Browse courses</a>
+      <a class="ns-btn ns-btn--outline" href="#home">Home</a>
+    </div>
+  </div>
+</div>

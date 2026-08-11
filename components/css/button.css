@@ -1,0 +1,107 @@
+/* Namaste UI — buttons, as portable classes.
+   =========================================================================
+   The React <Button> already existed as inline styles, which Handlebars
+   cannot use. These classes are the same design expressed so both products
+   can render it; the React component now emits them rather than re-deriving
+   the styling. One definition, two renderers.
+
+   Principle 3 in practice: `primary` is the ONLY solid fill. If a screen has
+   two solid buttons, one of them is wrong — not "a bit loud", wrong, because
+   the whole colour system rests on solid-blue meaning "the one action". */
+@layer components {
+
+  .ns-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: var(--gap-inline);
+    min-block-size: var(--target-comfy);
+    padding: var(--space-2-5) var(--space-5);
+    border: 1px solid transparent;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-sans); font-size: var(--size-body); font-weight: var(--weight-semibold);
+    line-height: 1; text-decoration: none; cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out),
+                opacity var(--duration-fast) linear;
+  }
+  /* Press is an instant opacity dim — no scale-pop, no lift (Principle 5). */
+  .ns-btn:active:not(:disabled) { opacity: 0.85; }
+  .ns-btn:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-btn:disabled, .ns-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+
+  .ns-btn--sm { min-block-size: var(--space-8); padding: var(--space-1-5) var(--space-3-5); font-size: var(--size-small); }
+  .ns-btn--lg { min-block-size: 3rem; padding: var(--space-3) var(--space-6); font-size: var(--size-body-lg); }
+  .ns-btn--block { inline-size: 100%; }
+
+  .ns-btn--primary { background: var(--color-brand-500); border-color: var(--color-brand-500); color: var(--color-on-brand); }
+  .ns-btn--primary:hover:not(:disabled) { background: var(--color-brand-600); border-color: var(--color-brand-600); }
+
+  /* DEPRECATED alias. `accent` was a second solid fill back when the accent
+     scale was a distinct (in fact identical) ramp. Kept so existing
+     variant="accent" call sites render correctly instead of falling through to
+     an unstyled button; use --primary in new work. */
+  .ns-btn--accent { background: var(--color-brand-600); border-color: var(--color-brand-600); color: var(--color-on-brand); }
+  .ns-btn--accent:hover:not(:disabled) { background: var(--color-brand-700); border-color: var(--color-brand-700); }
+
+  .ns-btn--outline { background: transparent; border-color: var(--color-border); color: var(--color-ink); }
+  .ns-btn--outline:hover:not(:disabled) { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+
+  /* Lowest-emphasis action — no border at rest, so it reads as a link that
+     happens to be a button. For "Cancel" next to a destructive confirm. */
+  .ns-btn--quiet { background: transparent; border-color: transparent; color: var(--color-muted); }
+  .ns-btn--quiet:hover:not(:disabled) { color: var(--color-ink); background: var(--color-surface-sunken); }
+
+  /* Dark/photographic surfaces only (hero bands). On a light surface these
+     two are invisible — that is intentional, not a bug to patch. */
+  .ns-btn--white { background: var(--color-on-dark); border-color: var(--color-on-dark); color: var(--color-brand-800); }
+  .ns-btn--white:hover:not(:disabled) { background: var(--color-brand-50); }
+  .ns-btn--ghost { background: transparent; border-color: var(--color-on-dark-border); color: var(--color-on-dark); }
+  .ns-btn--ghost:hover:not(:disabled) { background: var(--color-on-dark-wash); border-color: var(--color-on-dark-border-hover); }
+
+  /* Destructive. Deliberately an outline, not a solid red fill: a red wash
+     would compete with the one solid brand button for "primary action", and
+     delete is virtually never the primary action on a screen. The solid
+     variant exists only for the confirm button inside a delete dialog, where
+     it IS the primary action and there is no brand-blue button present. */
+  .ns-btn--danger { background: transparent; border-color: var(--color-error); color: var(--color-error-ink); }
+  .ns-btn--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--color-error) 8%, transparent); }
+  .ns-btn--danger-solid { background: var(--color-error); border-color: var(--color-error); color: var(--color-on-brand); }
+  .ns-btn--danger-solid:hover:not(:disabled) { background: var(--color-error-ink); border-color: var(--color-error-ink); }
+
+  /* Square target for a lone icon. aria-label is mandatory — an icon button
+     with no accessible name is an unlabelled control, and this is the single
+     most common a11y defect in a component library. */
+  .ns-btn--icon { padding: 0; inline-size: var(--target-comfy); min-inline-size: var(--target-comfy); }
+  .ns-btn--icon.ns-btn--sm { inline-size: var(--space-8); min-inline-size: var(--space-8); }
+
+  /* Busy state. The label STAYS in the DOM (dimmed) rather than being swapped
+     for a spinner, so the button does not change width mid-submit and the
+     accessible name does not vanish while the user is waiting on it. */
+  .ns-btn[data-loading="true"] { position: relative; cursor: progress; pointer-events: none; }
+  .ns-btn[data-loading="true"] > * { opacity: 0.35; }
+  .ns-btn[data-loading="true"]::after {
+    content: ""; position: absolute; inline-size: 1rem; block-size: 1rem;
+    border: 2px solid currentColor; border-block-start-color: transparent;
+    border-radius: var(--radius-pill);
+    animation: ns-spin 700ms linear infinite;
+  }
+
+  /* A button group reads as one segmented control: shared hairlines, only
+     the outer corners rounded. */
+  .ns-btn-group { display: inline-flex; }
+  .ns-btn-group > .ns-btn { border-radius: 0; }
+  .ns-btn-group > .ns-btn + .ns-btn { margin-inline-start: -1px; }
+  .ns-btn-group > .ns-btn:first-child { border-start-start-radius: var(--radius-btn); border-end-start-radius: var(--radius-btn); }
+  .ns-btn-group > .ns-btn:last-child { border-start-end-radius: var(--radius-btn); border-end-end-radius: var(--radius-btn); }
+  /* Keep the focused/active member's border above its neighbour's, or the
+     -1px overlap clips the ring on one side. */
+  .ns-btn-group > .ns-btn:focus-visible, .ns-btn-group > .ns-btn[aria-pressed="true"] { position: relative; z-index: var(--z-raised); }
+  .ns-btn-group > .ns-btn[aria-pressed="true"] { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+
+  @media (forced-colors: active) {
+    .ns-btn { border-color: ButtonBorder; }
+    .ns-btn--primary { background: Highlight; color: HighlightText; }
+  }
+}
+
+@keyframes ns-spin { to { rotate: 360deg; } }

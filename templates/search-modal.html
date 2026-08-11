@@ -1,0 +1,45 @@
+<!--
+  Namaste UI template — search dialog
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- <dialog> supplies the focus trap, Esc, inert background and top layer.
+     Open with showModal() — never by toggling a class. -->
+<dialog class="ns-modal ns-modal--lg" id="ns-search" aria-label="Search">
+  <div class="ns-modal__header">
+    <div style="flex:1">
+      <label class="ns-visually-hidden" for="ns-search-input">Search courses and documentation</label>
+      <input id="ns-search-input" class="ns-input ns-input--has-icon" type="search"
+             placeholder="Search courses, lessons, docs…" autocomplete="off">
+    </div>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm"
+            aria-label="Close search" data-ns-search-close>
+      <i class="ph ph-x" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="ns-modal__body" id="ns-search-results" role="status" aria-live="polite">
+    <div class="ns-empty" style="border:0">
+      <i class="ph ph-magnifying-glass ns-empty__icon" aria-hidden="true"></i>
+      <p class="ns-empty__text">Start typing to search.</p>
+    </div>
+  </div>
+</dialog>
+<script>
+  (function () {
+    var dlg = document.getElementById('ns-search');
+    if (!dlg) return;
+    var open = function () { dlg.showModal(); document.getElementById('ns-search-input').focus(); };
+    document.querySelectorAll('[data-ns-search-open]').forEach(function (b) { b.addEventListener('click', open); });
+    dlg.querySelector('[data-ns-search-close]').addEventListener('click', function () { dlg.close(); });
+    document.addEventListener('keydown', function (e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open(); }
+    });
+  })();
+</script>

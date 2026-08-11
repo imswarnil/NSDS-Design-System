@@ -1,0 +1,99 @@
+<!-- @dsCard group="Content Creation" viewport="700x2280" name="15 Thumbnail Styles — Dark + Light" subtitle="Layout archetypes, each carrying a Phosphor icon, in both themes" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../styles.css">
+<style>body{margin:0;padding:14px;background:var(--color-surface);font-family:var(--font-sans)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.t{aspect-ratio:16/10;position:relative;overflow:hidden}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.t span.lbl{position:absolute;bottom:4px;left:6px;font-family:var(--font-mono);font-size:8px;text-transform:uppercase;letter-spacing:.04em;z-index:2}
+.dark .lbl{color:rgb(255 255 255/.45)}
+.light .lbl{color:var(--color-muted)}
+.bar{position:absolute;top:0;left:0;right:0;height:3px;background:var(--color-brand-500)}
+.ic{position:absolute;right:8px;top:8px;font-size:11px}
+.dark .ic{color:var(--color-brand-300)}
+.light .ic{color:var(--color-brand-500)}
+.big{position:absolute;left:8px;top:8px;font-family:var(--font-heading);font-weight:800;font-size:11px;line-height:1.15;right:24px}
+.stat{position:absolute;left:8px;top:8px;font-family:var(--font-mono);font-weight:700;font-size:18px;line-height:1}
+.dark .stat{color:var(--color-brand-300)}
+.light .stat{color:var(--color-brand-500)}
+.statcap{position:absolute;left:8px;top:30px;right:8px;font-family:var(--font-heading);font-weight:800;font-size:9px;line-height:1.2}
+.code{position:absolute;left:8px;right:8px;top:8px;height:52px;font-family:var(--font-mono);font-size:7px;line-height:1.4;overflow:hidden;border-radius:2px;padding:4px;box-sizing:border-box}
+.dark .code{color:rgb(255 255 255/.55);background:rgb(255 255 255/.05)}
+.light .code{color:var(--color-muted);background:var(--color-surface-sunken)}
+.codecap{position:absolute;left:8px;right:8px;top:66px;font-family:var(--font-heading);font-weight:700;font-size:9px;line-height:1.2}
+.quote{position:absolute;left:8px;right:8px;top:22px;bottom:8px;font-family:var(--font-heading);font-weight:700;font-size:10px;line-height:1.25}
+.quote::before{content:"\201C";font-size:20px;color:var(--color-brand-400);display:block;line-height:.6}
+.vs{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--color-brand-500)}
+.dark .vs{color:var(--color-brand-300)}
+.ba{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr}
+.ba div{display:flex;align-items:center;justify-content:center;gap:4px;font-family:var(--font-mono);font-size:8px}
+.dark .ba div:first-child{background:rgb(255 255 255/.05);border-right:1px solid rgb(255 255 255/.15);color:rgb(255 255 255/.7)}
+.dark .ba div:last-child{color:rgb(255 255 255/.7)}
+.light .ba div:first-child{background:var(--color-surface-sunken);border-right:1px solid var(--color-border);color:var(--color-muted)}
+.light .ba div:last-child{color:var(--color-muted)}
+.check{position:absolute;left:8px;top:8px;right:8px;font-size:8px;font-family:var(--font-mono)}
+.check div{display:flex;gap:4px;align-items:center;margin-top:4px}
+.dark .check div{color:rgb(255 255 255/.7)}
+.light .check div{color:var(--color-muted)}
+.check i{color:var(--color-brand-500)}
+.warn{position:absolute;inset:0}
+.dark .warn{background:color-mix(in srgb,var(--color-warning) 18%,var(--color-brand-900))}
+.light .warn{background:color-mix(in srgb,var(--color-warning) 14%,#fff)}
+.badge{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.badge i{font-size:20px;color:var(--color-brand-500)}
+.badge span{font-family:var(--font-mono);font-size:8px}
+.numlist{position:absolute;left:8px;top:8px;right:8px;font-family:var(--font-mono);font-size:8px}
+.numlist div{display:flex;gap:5px;margin-top:4px}
+.dark .numlist div{color:rgb(255 255 255/.7)}
+.light .numlist div{color:var(--color-muted)}
+.numlist b{color:var(--color-brand-500)}
+.term{position:absolute;inset:8px;background:#000;border-radius:2px;font-family:var(--font-mono);font-size:7px;color:#7cbeff;padding:4px}
+.term .dots{display:flex;gap:2px;margin-bottom:3px}
+.term .dots i{width:5px;height:5px;border-radius:50%;background:rgb(255 255 255/.3);display:inline-block}
+.split{position:absolute;inset:0;display:grid;grid-template-columns:38% 1fr}
+.split .ph{display:flex;align-items:center;justify-content:center;font-size:14px}
+.dark .split .ph{background:rgb(255 255 255/.08);color:rgb(255 255 255/.3)}
+.light .split .ph{background:var(--color-surface-sunken);color:var(--color-muted)}
+.split .tx{padding:8px;font-family:var(--font-heading);font-weight:700;font-size:10px}
+.diag{position:absolute;inset:8px;display:flex;align-items:center;justify-content:space-between;font-family:var(--font-mono);font-size:7px}
+.diag div{border-radius:2px;padding:3px 4px}
+.dark .diag div{background:rgb(255 255 255/.1);border:1px solid rgb(255 255 255/.2)}
+.light .diag div{background:var(--color-surface-sunken);border:1px solid var(--color-border)}
+.diag span{color:var(--color-muted)}
+.cal{position:absolute;inset:8px;display:flex;gap:8px;align-items:center}
+.cal .d{background:var(--color-brand-500);color:#fff;border-radius:2px;padding:6px 8px;text-align:center;font-family:var(--font-mono)}
+.cal .d b{display:block;font-size:14px}
+.cal .d small{font-size:7px}
+.word{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-heading);font-weight:800;font-size:16px;letter-spacing:-.02em}
+</style></head><body>
+<div class="label">Dark</div><div class="grid" id="d"></div>
+<div class="label">Light</div><div class="grid" id="l"></div>
+<script>
+const items=[
+["01 Standard title","ph-shield-check","<div class=\"big\" style=\"top:auto;bottom:20px;left:8px\">Setting Up Your Dev Org</div>"],
+["02 Stat callout","ph-chart-bar","<div class=\"stat\">92%</div><div class=\"statcap\">of learners pass first try</div>"],
+["03 Code snippet","ph-code","<div class=\"code\">trigger OnCase {<br>&nbsp;update acct;<br>}</div><div class=\"codecap\">Apex Triggers 101</div>"],
+["04 Quote","ph-quotes","<div class=\"quote\">Governor limits aren't the enemy.</div>"],
+["05 Comparison VS","ph-arrows-left-right","<div class=\"vs\">FLOW VS APEX</div>"],
+["06 Before / After","ph-arrows-clockwise","<div class=\"ba\"><div><i class=\"ph ph-x-circle\"></i>Before</div><div><i class=\"ph ph-check-circle\"></i>After</div></div>"],
+["07 Checklist","ph-list-checks","<div class=\"check\"><b>3 things to fix</b><div><i class=\"ph ph-check-circle\"></i>Bulkify loops</div><div><i class=\"ph ph-check-circle\"></i>Use maps</div><div><i class=\"ph ph-check-circle\"></i>Avoid SOQL in loop</div></div>"],
+["08 Warning / alert","ph-warning","<div class=\"warn\"><div class=\"big\" style=\"top:10px\">3 Mistakes to Avoid</div></div>"],
+["09 Badge earned","ph-medal","<div class=\"badge\"><i class=\"ph ph-medal\"></i><span>CERTIFICATION EARNED</span></div>"],
+["10 Numbered list","ph-list-numbers","<div class=\"numlist\"><b>Top 3 Admin Skills</b><div><b>01</b>Flows</div><div><b>02</b>Reports</div><div><b>03</b>Security</div></div>"],
+["11 Terminal style","ph-terminal-window","<div class=\"term\"><div class=\"dots\"><i></i><i></i><i></i></div>$ sfdx force:org:open<br>Opening org...</div>"],
+["12 Split image+text","ph-user","<div class=\"split\"><div class=\"ph\"><i class=\"ph ph-user\"></i></div><div class=\"tx\">Meet Your Instructor</div></div>"],
+["13 Diagram / flow","ph-flow-arrow","<div class=\"diag\"><div>Trigger</div><span>→</span><div>Handler</div><span>→</span><div>DML</div></div>"],
+["14 Calendar / schedule","ph-calendar-blank","<div class=\"cal\"><div class=\"d\"><b>24</b><small>JUL</small></div><div class=\"big\" style=\"position:static;font-size:10px\">Live Workshop: Data Cloud</div></div>"],
+["15 Minimal wordmark","ph-app-window","<div class=\"word\">NSF</div>"]
+];
+function render(id,theme){
+  const g=document.getElementById(id);
+  items.forEach(([label,icon,html])=>{
+    const showIcon = !["04","05","06","07","08","09","10","11","12","13","14","15"].some(n=>label.startsWith(n)) || label.startsWith("01")||label.startsWith("02")||label.startsWith("03");
+    g.insertAdjacentHTML('beforeend',`<div class="t ${theme}"><div class="bar"></div>${showIcon?`<i class="ph ${icon} ic"></i>`:''}${html}<span class="lbl">${label}</span></div>`);
+  });
+}
+render("d","dark");render("l","light");
+</script>
+</body></html>

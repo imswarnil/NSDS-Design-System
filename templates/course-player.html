@@ -1,0 +1,58 @@
+<!--
+  Namaste UI template — course player
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- Two columns ≥ lg, stage-first single column below (player.css).
+     Slots: the media element in the stage, kicker/title/meta, prev/next
+     hrefs, and the rail's lesson rows (repeat .ns-lesson per lesson;
+     data-state="done|locked", aria-current="true" on the current one). -->
+<div class="ns-player">
+  <div class="ns-player__main">
+    <div class="ns-player__stage">
+      <!-- your <video> / <iframe> here -->
+    </div>
+    <header class="ns-player__head">
+      <p class="ns-player__kicker">section 2 · lesson 07</p>
+      <h1 class="ns-player__title">SOQL joins: relationships in queries</h1>
+      <p class="ns-player__meta"><span>21:15</span><span>updated Jan 2026</span></p>
+    </header>
+    <div class="ns-player__nav">
+      <a class="ns-btn ns-btn--outline" href="#prev"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous lesson</a>
+      <div class="ns-progress-row">
+        <progress class="ns-progress" value="6" max="12" aria-label="Course progress: 6 of 12 lessons"></progress>
+        <span class="ns-progress-row__value">6/12</span>
+      </div>
+      <a class="ns-btn ns-btn--primary" href="#next">Next lesson <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+  <nav class="ns-player__side" aria-label="Curriculum">
+    <div class="ns-player__side-head"><strong>Apex fundamentals</strong><span>6/12 done</span></div>
+    <div class="ns-player__list">
+      <p class="ns-player__section">2. Query the database</p>
+      <a class="ns-lesson" href="#l6" data-state="done">
+        <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+        <span class="ns-lesson__title">SELECT and WHERE<span class="ns-visually-hidden"> (completed)</span></span>
+        <span class="ns-lesson__time">14:02</span></a>
+      <a class="ns-lesson" href="#l7" aria-current="true">
+        <span class="ns-lesson__index" aria-hidden="true">07</span>
+        <span class="ns-lesson__title">SOQL joins: relationships</span>
+        <span class="ns-lesson__time">21:15</span></a>
+      <a class="ns-lesson" href="#l8">
+        <span class="ns-lesson__index" aria-hidden="true">08</span>
+        <span class="ns-lesson__title">Aggregate queries</span>
+        <span class="ns-lesson__time">18:40</span></a>
+      <a class="ns-lesson" href="#upgrade" data-state="locked">
+        <span class="ns-lesson__index" aria-hidden="true">09</span>
+        <span class="ns-lesson__title">Bulk-safe triggers<span class="ns-visually-hidden"> (locked — members only)</span></span>
+        <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+    </div>
+  </nav>
+</div>

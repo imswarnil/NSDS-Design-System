@@ -1,0 +1,32 @@
+/* Namaste UI — component layer entry point.
+   =========================================================================
+   These classes are the shared contract between the Ghost theme (Handlebars)
+   and the Next.js LMS (React). Both render the SAME class names, so a course
+   card on the marketing site and a course card in the app are one component
+   with two renderers, not two components that look alike until someone
+   changes one of them.
+
+   Everything is inside @layer components, below Tailwind's utilities layer,
+   so a utility always wins over a component default without !important.
+
+   Rules for adding to this layer:
+   - `ns-` prefix, BEM-ish: .ns-block, .ns-block__element, .ns-block--modifier.
+   - No component may hard-code a color, size, radius or duration. Tokens only.
+   - State goes on an ARIA attribute (aria-selected, aria-current, aria-invalid,
+     data-state) rather than a state class, so the visual and the announced
+     state cannot drift apart.
+   - Every new component is checked against the five Design Principles in
+     readme.md before it ships. */
+@import "./button.css";
+@import "./form.css";
+@import "./overlay.css";
+@import "./navigation.css";
+@import "./feedback.css";
+@import "./progress.css";
+@import "./auth.css";
+@import "./helpdesk.css";
+@import "./player.css";
+@import "./icon.css";
+@import "./sections.css";
+@import "./admin.css";
+@import "./a11y.css";

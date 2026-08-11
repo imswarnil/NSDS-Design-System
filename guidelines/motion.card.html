@@ -1,0 +1,12 @@
+<!-- @dsCard group="Foundations" viewport="700x150" name="Motion" subtitle="120–180ms plain ease-out only — no spring, no bounce, no hover-lift" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:20px;background:var(--color-surface);display:flex;gap:24px;align-items:center;font-family:var(--font-sans);font-size:12px;color:var(--color-muted)}
+.col{display:flex;flex-direction:column;align-items:center;gap:10px}
+.dot{width:56px;height:56px;border-radius:var(--radius-card);background:var(--color-brand-500)}
+.f{animation:fade-up 1.8s ease infinite alternate}
+.fl{animation:ns-float 3.5s ease-in-out infinite}
+</style></head><body>
+<div class="col"><div class="dot f"></div>fade-up (entrance)</div>
+<div class="col"><div class="dot fl"></div>ns-float (illustrations only)</div>
+<div class="col" style="max-width:230px">Everything else — hover, press, focus — resolves in <code style="font-family:var(--font-mono)">120–180ms ease-out</code>. No spring easing, no bounce, no translateY lift.</div>
+</body></html>

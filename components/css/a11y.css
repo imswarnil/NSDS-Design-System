@@ -1,0 +1,104 @@
+/* Namaste UI — accessibility utilities and the layout primitives.
+   =========================================================================
+   Small file, disproportionate value: these are the pieces that every page in
+   both products needs and that are always reinvented slightly wrong. */
+@layer components {
+
+  /* --- Visually hidden ----------------------------------------------------
+     Hidden visually, still announced. NOT `display: none` and NOT
+     `visibility: hidden` — both remove the element from the accessibility
+     tree, which is the exact opposite of what this is for.
+
+     The `:not(:focus):not(:active)` guard means a focusable element using
+     this class becomes visible when focused, which is what makes the skip
+     link below work. */
+  .ns-visually-hidden:not(:focus):not(:active) {
+    position: absolute !important;
+    inline-size: 1px; block-size: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; border: 0;
+  }
+
+  /* --- Skip link ----------------------------------------------------------
+     First focusable element in the <body>, pointing at #main. On a docs page
+     with a 40-link sidebar this is the difference between a keyboard user
+     reaching the content in one keystroke and in forty.
+
+     The target needs tabindex="-1", or following the link moves the viewport
+     but not focus in Safari and Chrome. */
+  .ns-skip-link {
+    position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
+    z-index: var(--z-max);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-brand-500); color: var(--color-on-brand);
+    border-radius: var(--radius-btn);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; text-decoration: none;
+  }
+  /* Hidden until keyboard focus — baked in, so the class works ALONE.
+     Historically this relied on pairing with .ns-visually-hidden; markup
+     that omitted the second class showed a permanent blue pill in the page
+     corner. The pairing still works; it is just no longer required. */
+  .ns-skip-link:not(:focus):not(:active) {
+    inline-size: 1px; block-size: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%);
+    white-space: nowrap; border: 0;
+  }
+  /* A container that is focused programmatically (the skip-link target, a
+     route-change landmark) should not paint a ring — the user did not
+     navigate to it with the keyboard, and a ring around <main> is noise.
+     Scoped to tabindex="-1", which is exactly the "focusable only by script"
+     case; anything genuinely tabbable keeps its ring. */
+  [tabindex="-1"]:focus { outline: none; }
+
+  /* --- Layout primitives --------------------------------------------------
+     The page shell, spelled once. Both products write this on every template;
+     without it they each invent their own max-width and the two drift. */
+  .ns-page { inline-size: 100%; max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
+  .ns-page--prose { max-inline-size: var(--container-prose); }
+  .ns-page--narrow { max-inline-size: var(--container-narrow); }
+  .ns-page--wide { max-inline-size: var(--container-wide); }
+
+  /* Vertical rhythm between sections, as a class rather than a margin on
+     every heading — margins on headings collapse unpredictably next to
+     grids and cards. */
+  .ns-stack > * + * { margin-block-start: var(--stack-sm); }
+  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); }
+  .ns-stack--md > * + * { margin-block-start: var(--stack-md); }
+  .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
+
+  /* Auto-fitting card grid. `min()` keeps the track from overflowing the
+     viewport at 320px, which a bare minmax(18rem, 1fr) does. */
+  .ns-grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  }
+  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
+
+  /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
+     column below lg, where the sidebar becomes a drawer. */
+  .ns-docs-layout { display: flex; gap: var(--space-10); align-items: flex-start; }
+  .ns-docs-layout__main { flex: 1; min-inline-size: 0; }
+  .ns-docs-layout__toc {
+    position: sticky; inset-block-start: var(--navbar-h);
+    inline-size: var(--toc-w); flex: none;
+    max-block-size: calc(100dvh - var(--navbar-h));
+    overflow-y: auto; padding-block: var(--space-6);
+  }
+  @media (max-width: 63.999rem) {
+    .ns-docs-layout { display: block; }
+    .ns-docs-layout__toc { display: none; }
+  }
+
+  /* --- Motion opt-out -----------------------------------------------------
+     base.css already collapses durations globally. This is for the narrower
+     case: content that should not animate at all rather than animate fast —
+     an autoplaying marquee or the illustration float loop, which at 0.001ms
+     would snap to a single frame rather than stop. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-motion-safe { animation: none !important; }
+  }
+}

@@ -1,0 +1,30 @@
+<!--
+  Namaste UI template — newsletter subscribe
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- data-members-* = Ghost Members hooks (work as-is in a Ghost theme; wire
+     action/onsubmit yourself elsewhere). Both response messages exist up
+     front, hidden — a live region created together with its message announces
+     nothing. -->
+<form class="ns-field" data-members-form="subscribe" action="#">
+  <label class="ns-field__label" for="ns-subscribe-email">Email address</label>
+  <div style="display:flex; gap:var(--space-2); flex-wrap:wrap;">
+    <input id="ns-subscribe-email" class="ns-input" style="flex:1; min-inline-size:14rem;"
+           type="email" name="email" autocomplete="email" required
+           placeholder="you@example.com" data-members-email>
+    <button class="ns-btn ns-btn--primary" type="submit">Subscribe</button>
+  </div>
+  <p class="ns-field__help">Weekly Salesforce lessons. Unsubscribe any time.</p>
+  <p class="ns-field__help" data-members-success role="status" hidden>
+    Check your inbox — the confirmation link is on its way.</p>
+  <p class="ns-field__error" data-members-error role="alert" hidden>
+    That did not work. Check the address and try again.</p>
+</form>

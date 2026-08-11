@@ -1,0 +1,63 @@
+<!-- @dsCard group="Foundations" viewport="700x400" name="Data Visualization" subtitle="Seven categorical slots, CVD-verified in CI — brand blue is slot 1 and status colors are reserved" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;padding:20px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:12.5px}
+.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 10px}
+.swatches{display:flex;gap:6px;margin-bottom:6px}
+.sw{flex:1;height:44px;border-radius:var(--radius-sm);display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
+.sw span{font-family:var(--font-mono);font-size:9px;color:var(--color-on-brand);letter-spacing:.05em}
+.ramp{display:flex;gap:2px;margin-bottom:16px}
+.ramp div{flex:1;height:26px}
+.note{font-size:11px;color:var(--color-muted);line-height:1.6}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:16px}
+</style></head><body>
+
+<p class="k">Categorical — fixed order, never cycled</p>
+<div class="swatches">
+  <div class="sw" style="background:var(--chart-cat-1)"><span>01</span></div>
+  <div class="sw" style="background:var(--chart-cat-2)"><span>02</span></div>
+  <div class="sw" style="background:var(--chart-cat-3)"><span>03</span></div>
+  <div class="sw" style="background:var(--chart-cat-4)"><span>04</span></div>
+  <div class="sw" style="background:var(--chart-cat-5)"><span>05</span></div>
+  <div class="sw" style="background:var(--chart-cat-6)"><span>06</span></div>
+  <div class="sw" style="background:var(--chart-cat-7)"><span>07</span></div>
+</div>
+<p class="note" style="margin-bottom:18px">
+  Slot 1 is brand blue, always. There is no slot 8 &mdash; an eighth series folds into &ldquo;Other&rdquo;, becomes a
+  small multiple, or the chart is the wrong form.
+</p>
+
+<div class="cols">
+  <div>
+    <p class="k">Sequential — magnitude, one hue</p>
+    <div class="ramp">
+      <div style="background:var(--chart-seq-1)"></div>
+      <div style="background:var(--chart-seq-2)"></div>
+      <div style="background:var(--chart-seq-3)"></div>
+      <div style="background:var(--chart-seq-4)"></div>
+    </div>
+    <p class="k">Diverging — polarity, neutral midpoint</p>
+    <div class="ramp">
+      <div style="background:var(--chart-div-cool-3)"></div>
+      <div style="background:var(--chart-div-cool-2)"></div>
+      <div style="background:var(--chart-div-cool-1)"></div>
+      <div style="background:var(--chart-div-mid)"></div>
+      <div style="background:var(--chart-div-warm-1)"></div>
+      <div style="background:var(--chart-div-warm-2)"></div>
+      <div style="background:var(--chart-div-warm-3)"></div>
+    </div>
+  </div>
+  <div>
+    <p class="k">Rules</p>
+    <p class="note">
+      <strong>Brand blue means &ldquo;interactive&rdquo; everywhere else in this system</strong>, so a chart painted in six
+      blues would make every series look clickable. The other six hues appear nowhere but charts.<br><br>
+      Status colors are <strong>reserved</strong> &mdash; never a series, and a series color never means &ldquo;bad&rdquo;.<br><br>
+      Text wears ink tokens, never its series color; a colored mark sits beside it instead.<br><br>
+      Dark mode is a <strong>re-picked</strong> set against the navy surface, not a mechanical lightening.<br><br>
+      <code style="font-family:var(--font-mono);color:var(--color-brand-600)">npm run check:palette</code> re-proves the
+      lightness band, chroma floor, protan/deutan/tritan separation, normal-vision floor and contrast on every CI run.
+    </p>
+  </div>
+</div>
+</body></html>

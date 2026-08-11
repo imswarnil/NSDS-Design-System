@@ -1,0 +1,20 @@
+@layer base {
+  html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { background-color: var(--color-surface); color: var(--color-ink); font: var(--size-body)/var(--leading-body) var(--font-sans); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; transition: background-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out); margin: 0; }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); margin: 0; text-wrap: balance; }
+  /* Tighten only the sizes where Inter's default metrics run loose. h4+ stays
+     at natural tracking — it sits close to body size. */
+  h1, h2, h3 { letter-spacing: var(--tracking-tight); }
+  p { margin: 0; }
+  * { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--color-muted) 45%, transparent) transparent; }
+  ::selection { background-color: color-mix(in srgb, var(--color-brand-500) 22%, transparent); }
+  :focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: var(--radius-sm); }
+  /* On the navy console surface, brand-500 reads too dim for a focus ring —
+     the ring is a safety feature, so it brightens rather than stays on-brand. */
+  [data-theme="dark"] :focus-visible { outline-color: var(--color-brand-300); }
+  a { color: var(--color-brand-600); }
+  a:hover { color: var(--color-brand-500); }
+  [data-theme="dark"] a { color: var(--color-brand-300); }
+  code, kbd, .ns-label { font-family: var(--font-mono); }
+}

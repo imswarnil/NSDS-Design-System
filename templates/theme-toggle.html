@@ -1,0 +1,32 @@
+<!--
+  Namaste UI template — theme toggle
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<!-- Requires assets/js/theme-init.js inlined in <head> BEFORE any stylesheet. -->
+<button type="button" class="ns-btn ns-btn--outline ns-btn--icon ns-btn--sm"
+        role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+  <i class="ph ph-moon" aria-hidden="true" data-ns-theme-icon></i>
+</button>
+<script>
+  (function () {
+    var btn = document.querySelector('[data-ns-theme-toggle]');
+    if (!btn) return;
+    var icon = btn.querySelector('[data-ns-theme-icon]');
+    var sync = function () {
+      var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+      btn.setAttribute('aria-checked', String(dark));
+      if (icon) icon.className = 'ph ' + (dark ? 'ph-sun' : 'ph-moon');
+    };
+    btn.addEventListener('click', function () { window.nsTheme && window.nsTheme.toggle(); });
+    sync();
+    new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  })();
+</script>

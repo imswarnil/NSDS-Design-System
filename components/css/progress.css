@@ -1,0 +1,122 @@
+/* Namaste UI — progress, and the table primitive.
+   =========================================================================
+   Progress is the LMS's single most important piece of feedback: "how far
+   through this course am I" is the question the product exists to answer.
+   It appears on course cards, the player, the roadmap and the account page,
+   so it gets a real primitive rather than an ad-hoc div per screen. */
+@layer components {
+
+  /* --- Progress bar -------------------------------------------------------
+     Built on native <progress> so the value is exposed to assistive tech and
+     to the browser's own UI without any ARIA. Where a determinate value is
+     genuinely unknown, omit `value` and the indeterminate style applies.
+
+     Percentage is ALSO printed as mono text next to the bar. A bar alone
+     encodes the value only as length, which is unreadable at small sizes and
+     invisible to a screen reader that does not announce the native element. */
+  .ns-progress {
+    appearance: none; inline-size: 100%; block-size: 0.375rem;
+    border: 0; border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken);
+    overflow: hidden;
+  }
+  /* Both vendor pseudo-elements are required and cannot be combined into one
+     rule — a selector list containing an unknown pseudo-element is dropped
+     entirely by the parser, so Chrome and Firefox get separate blocks. */
+  .ns-progress::-webkit-progress-bar { background: var(--color-surface-sunken); border-radius: var(--radius-pill); }
+  .ns-progress::-webkit-progress-value {
+    background: var(--color-brand-500); border-radius: var(--radius-pill);
+    transition: inline-size var(--duration-base) var(--ease-out);
+  }
+  .ns-progress::-moz-progress-bar { background: var(--color-brand-500); border-radius: var(--radius-pill); }
+
+  .ns-progress--lg { block-size: 0.625rem; }
+  /* Completed runs green, because "done" is a status and not the brand's
+     interactive signal — a finished course is not a thing to click. */
+  .ns-progress--complete::-webkit-progress-value { background: var(--color-success); }
+  .ns-progress--complete::-moz-progress-bar { background: var(--color-success); }
+
+  .ns-progress-row { display: flex; align-items: center; gap: var(--space-3); }
+  .ns-progress-row__value {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Step progress ------------------------------------------------------
+     "Lesson 3 of 12" as discrete ticks — for a curriculum, where the unit is
+     a lesson rather than a percentage. Ticks are a list so the count is real
+     content; the label carries the numbers for anyone not seeing the ticks. */
+  .ns-steps { display: flex; align-items: center; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+  .ns-steps__tick {
+    block-size: 0.25rem; flex: 1; min-inline-size: 0.5rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken);
+  }
+  .ns-steps__tick[data-state="done"] { background: var(--color-brand-500); }
+  .ns-steps__tick[data-state="current"] { background: var(--color-brand-500); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-500) 25%, transparent); }
+
+  /* --- Meter --------------------------------------------------------------
+     For a score against a threshold (quiz result, code coverage) — native
+     <meter>, which carries low/high/optimum semantics that <progress> lacks.
+     Progress = "how far along"; meter = "how good". They are not the same
+     thing and swapping them makes the announcement wrong. */
+  .ns-meter { inline-size: 100%; block-size: 0.5rem; border: 0; border-radius: var(--radius-pill); background: var(--color-surface-sunken); }
+  .ns-meter::-webkit-meter-bar { background: var(--color-surface-sunken); border: 0; border-radius: var(--radius-pill); }
+  .ns-meter::-webkit-meter-optimum-value { background: var(--color-success); border-radius: var(--radius-pill); }
+  .ns-meter::-webkit-meter-suboptimum-value { background: var(--color-warning); border-radius: var(--radius-pill); }
+  .ns-meter::-webkit-meter-even-less-good-value { background: var(--color-error); border-radius: var(--radius-pill); }
+  .ns-meter:-moz-meter-optimum::-moz-meter-bar { background: var(--color-success); }
+  .ns-meter:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--color-warning); }
+  .ns-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--color-error); }
+
+  /* --- Table --------------------------------------------------------------
+     Hairlines only, no zebra striping: striping is a second structuring
+     device competing with the border, and with mono numerals the rows already
+     read as rows. Numeric columns are tabular-nums and end-aligned so digits
+     line up in columns the eye can scan.
+
+     A table must always be wrapped in .ns-table-wrap — the wrapper is what
+     makes a wide table scroll inside itself instead of pushing the whole page
+     sideways on mobile. tabindex="0" on the wrapper makes that scroll region
+     reachable by keyboard, which is required once it scrolls. */
+  .ns-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-card); }
+  .ns-table-wrap:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+
+  .ns-table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
+  .ns-table th {
+    text-align: start; padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface);
+    white-space: nowrap;
+  }
+  .ns-table td { padding: var(--space-3) var(--space-4); border-block-end: 1px solid var(--color-border); }
+  .ns-table tbody tr:last-child td { border-block-end: 0; }
+  .ns-table tbody tr:hover { background: var(--color-surface-sunken); }
+  .ns-table__num { text-align: end; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+  /* Sticky header for long tables. Needs the wrapper to be the scroll
+     container, which .ns-table-wrap already is. */
+  .ns-table--sticky th { position: sticky; inset-block-start: 0; z-index: var(--z-raised); }
+
+  /* A sortable header is a real <button> inside the <th>, so it is keyboard
+     reachable; the <th> carries aria-sort, which is what gets announced. */
+  .ns-table__sort {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    border: 0; background: none; padding: 0; cursor: pointer;
+    font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit;
+  }
+  .ns-table__sort:hover { color: var(--color-brand-600); }
+  .ns-table__sort::after { content: "\e136"; font-family: var(--font-icon); opacity: 0.3; }
+  [aria-sort="ascending"] .ns-table__sort::after { opacity: 1; rotate: 180deg; }
+  [aria-sort="descending"] .ns-table__sort::after { opacity: 1; }
+
+  .ns-table caption {
+    caption-side: top; text-align: start;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-muted); font-size: var(--size-small);
+  }
+}

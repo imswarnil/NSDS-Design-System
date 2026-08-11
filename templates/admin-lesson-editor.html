@@ -1,0 +1,109 @@
+<!--
+  Namaste UI template — lesson editor
+  =====================================================================
+  Framework-agnostic markup: the writing surface. Title box, rich-text
+  chrome, video upload, and the lesson's record data in the rail.
+    Next.js → <TitleBox> + <RichText> + <Dropzone> + <RailBox> + <PublishBar>.
+    Static  → the contenteditable area needs your editor of choice mounted;
+              everything else works as-is.
+-->
+<form method="post" action="#">
+  <div class="ns-pagehead">
+    <div>
+      <span class="ns-pagehead__kicker">// Admin Fundamentals / section 01 / lesson 02</span>
+      <h1 class="ns-visually-hidden">Edit lesson</h1>
+    </div>
+    <div class="ns-pagehead__actions">
+      <a class="ns-btn ns-btn--quiet" href="#">Back to course</a>
+      <a class="ns-btn ns-btn--outline ns-btn--sm" href="#" target="_blank" rel="noopener">Preview ↗</a>
+    </div>
+  </div>
+
+  <div class="ns-editor">
+    <div class="ns-editor__main">
+      <input class="ns-titlebox" type="text" aria-label="Lesson title" value="Lightning navigation">
+
+      <!-- The lesson video: dropzone until uploaded, then a file row. -->
+      <label class="ns-dropzone">
+        <i class="ph ph-upload-simple ns-dropzone__icon" aria-hidden="true"></i>
+        <span>Drop the lesson video here, or browse</span>
+        <span class="ns-dropzone__hint">mp4 · up to 4 GB · 16:9</span>
+        <input type="file" accept="video/mp4">
+      </label>
+      <div class="ns-file">
+        <i class="ph ph-file-video" aria-hidden="true"></i>
+        <span class="ns-file__name">02-lightning-navigation-v3.mp4</span>
+        <span class="ns-file__size">612 MB</span>
+        <span class="ns-status ns-status--success">Processed</span>
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-file__remove" aria-label="Remove video"><i class="ph ph-x" aria-hidden="true"></i></button>
+      </div>
+
+      <!-- Lesson body: plain-English concept → concrete example → bridge. -->
+      <div class="ns-rte">
+        <div class="ns-rte__bar" role="toolbar" aria-label="Formatting">
+          <button type="button" class="ns-rte__btn" aria-label="Bold" aria-pressed="false"><i class="ph ph-text-b" aria-hidden="true"></i></button>
+          <button type="button" class="ns-rte__btn" aria-label="Italic" aria-pressed="false"><i class="ph ph-text-italic" aria-hidden="true"></i></button>
+          <span class="ns-rte__gap" aria-hidden="true"></span>
+          <button type="button" class="ns-rte__btn" aria-label="Heading 2" aria-pressed="true"><i class="ph ph-text-h-two" aria-hidden="true"></i></button>
+          <button type="button" class="ns-rte__btn" aria-label="Heading 3" aria-pressed="false"><i class="ph ph-text-h-three" aria-hidden="true"></i></button>
+          <span class="ns-rte__gap" aria-hidden="true"></span>
+          <button type="button" class="ns-rte__btn" aria-label="Bulleted list" aria-pressed="false"><i class="ph ph-list-bullets" aria-hidden="true"></i></button>
+          <button type="button" class="ns-rte__btn" aria-label="Numbered list" aria-pressed="false"><i class="ph ph-list-numbers" aria-hidden="true"></i></button>
+          <button type="button" class="ns-rte__btn" aria-label="Quote" aria-pressed="false"><i class="ph ph-quotes" aria-hidden="true"></i></button>
+          <span class="ns-rte__gap" aria-hidden="true"></span>
+          <button type="button" class="ns-rte__btn" aria-label="Code block" aria-pressed="false"><i class="ph ph-code" aria-hidden="true"></i></button>
+          <button type="button" class="ns-rte__btn" aria-label="Link" aria-pressed="false"><i class="ph ph-link" aria-hidden="true"></i></button>
+          <button type="button" class="ns-rte__btn" aria-label="Image" aria-pressed="false"><i class="ph ph-image" aria-hidden="true"></i></button>
+        </div>
+        <div class="ns-rte__area" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Lesson body">
+          <p>Lightning Experience organizes everything you do into apps — a named collection of tabs. The App Launcher (the nine dots, top left) is how you move between them.</p>
+          <p>Try it: open the App Launcher and search for <strong>Sales</strong>. Every record you create in this course lives inside that app.</p>
+          <p>Next, we'll turn this navigation into muscle memory by building an app of your own.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="ns-editor__rail">
+      <section class="ns-railbox">
+        <h2 class="ns-railbox__title">Lesson</h2>
+        <div class="ns-field">
+          <label class="ns-field__label" for="ns-l-type">Type</label>
+          <select class="ns-select" id="ns-l-type" name="type">
+            <option selected>Video</option><option>Reading</option><option>Quiz</option><option>Lab</option>
+          </select>
+        </div>
+        <div class="ns-field">
+          <label class="ns-field__label" for="ns-l-dur">Duration</label>
+          <input class="ns-input ns-input--mono" id="ns-l-dur" name="duration" value="14:31" aria-describedby="ns-l-dur-h">
+          <p class="ns-field__help" id="ns-l-dur-h">Filled automatically once the video processes.</p>
+        </div>
+      </section>
+      <section class="ns-railbox">
+        <h2 class="ns-railbox__title">Visibility</h2>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" checked><span class="ns-choice__text"><span class="ns-choice__label">Free preview lesson</span></span></label>
+      </section>
+      <section class="ns-railbox">
+        <h2 class="ns-railbox__title">Attachments</h2>
+        <div class="ns-file">
+          <i class="ph ph-file" aria-hidden="true"></i>
+          <span class="ns-file__name">navigation-cheatsheet.pdf</span>
+          <span class="ns-file__size">1.2 MB</span>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-file__remove" aria-label="Remove attachment"><i class="ph ph-x" aria-hidden="true"></i></button>
+        </div>
+        <label class="ns-dropzone ns-dropzone--compact">
+          <i class="ph ph-upload-simple ns-dropzone__icon" aria-hidden="true"></i>
+          <span>Add a file</span>
+          <input type="file" multiple>
+        </label>
+      </section>
+    </div>
+  </div>
+
+  <div class="ns-publishbar">
+    <span class="ns-publishbar__state" role="status"><span class="ns-status ns-status--success">Published</span> edited 2 min ago</span>
+    <div class="ns-publishbar__actions">
+      <button type="submit" class="ns-btn ns-btn--outline" name="save" value="draft">Unpublish</button>
+      <button type="submit" class="ns-btn ns-btn--primary" name="save" value="update">Update lesson</button>
+    </div>
+  </div>
+</form>

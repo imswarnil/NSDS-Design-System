@@ -1,0 +1,251 @@
+/* Namaste UI — form controls.
+   =========================================================================
+   Ghost renders these from .hbs, the Next.js app renders them from React.
+   Both emit the same class names, so a sign-in form on the marketing site
+   and a sign-in form in the app are the same object, not two lookalikes.
+
+   Structural rules for every control here:
+   - The hairline border IS the control (Principle 1). No inner shadow, no
+     filled grey background, no floating.
+   - Focus is the shared ring: brand border + --shadow-focus. Never remove it.
+   - Invalid state is carried by BOTH color and a text message, never color
+     alone — and the message is wired with aria-describedby, not just placed
+     nearby.
+   - Labels are real <label> elements. Placeholder text is never a label:
+     it disappears exactly when the user needs it most.
+   - Controls hold --target-comfy (40px) so they are thumb-sized on mobile. */
+@layer components {
+
+  /* --- Field wrapper ------------------------------------------------------
+     label → control → (help | error). One vertical rhythm for every field so
+     a stack of mixed control types still lines up. */
+  .ns-field { display: flex; flex-direction: column; gap: var(--gap-field); }
+
+  .ns-field__label {
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+
+  /* The required marker is a glyph AND the control carries `required`, so
+     assistive tech learns it from the control rather than from a red star it
+     cannot see. Colored with brand, not error — nothing has failed yet. */
+  .ns-field__required { color: var(--color-brand-500); margin-inline-start: var(--space-1); }
+
+  .ns-field__help { font-size: var(--size-small); color: var(--color-muted); }
+
+  /* Status text uses the -ink pair, which clears WCAG AA; the raw
+     --color-error does not. The icon means the message is not color-alone. */
+  .ns-field__error {
+    display: flex; align-items: flex-start; gap: var(--space-1-5);
+    font-size: var(--size-small); color: var(--color-error-ink);
+  }
+  .ns-field__error::before {
+    content: "\e5b4"; /* ph-warning-circle */
+    font-family: var(--font-icon); flex: none; line-height: var(--leading-body);
+  }
+
+  /* --- Text-like controls ------------------------------------------------- */
+  .ns-input, .ns-select, .ns-textarea {
+    inline-size: 100%;
+    box-sizing: border-box;
+    min-block-size: var(--target-comfy);
+    padding: var(--pad-control) var(--pad-control-x);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--size-body);
+    line-height: var(--leading-heading);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-textarea { min-block-size: 7rem; resize: vertical; line-height: var(--leading-body); }
+
+  /* A mono input for anything that is data rather than prose — coupon codes,
+     org IDs, API keys. Principle 2 applied to input, not just output. */
+  .ns-input--mono { font-family: var(--font-mono); font-size: var(--size-mono); }
+
+  .ns-input::placeholder, .ns-textarea::placeholder { color: var(--color-muted); opacity: 1; }
+
+  .ns-input:hover:not(:disabled), .ns-select:hover:not(:disabled), .ns-textarea:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--color-brand-500) 45%, var(--color-border));
+  }
+
+  /* :focus-visible rather than :focus so a click does not paint a ring the
+     mouse user never asked for, while keyboard users always get one. */
+  .ns-input:focus-visible, .ns-select:focus-visible, .ns-textarea:focus-visible {
+    outline: none;
+    border-color: var(--color-brand-500);
+    box-shadow: var(--shadow-focus);
+  }
+
+  .ns-input:disabled, .ns-select:disabled, .ns-textarea:disabled {
+    opacity: 0.5; cursor: not-allowed;
+    background: var(--color-surface-sunken);
+  }
+
+  /* Driven by aria-invalid, not a separate class, so the visual state cannot
+     get out of sync with what a screen reader announces. */
+  .ns-input[aria-invalid="true"], .ns-select[aria-invalid="true"], .ns-textarea[aria-invalid="true"] {
+    border-color: var(--color-error);
+  }
+  .ns-input[aria-invalid="true"]:focus-visible,
+  .ns-select[aria-invalid="true"]:focus-visible,
+  .ns-textarea[aria-invalid="true"]:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 25%, transparent);
+  }
+
+  /* --- Input affixes ------------------------------------------------------
+     Icon on the left, a hint slot on the right (the ⌘K pattern). Padding is
+     applied by modifier classes rather than inline styles so Handlebars can
+     use it too. */
+  .ns-input-wrap { position: relative; display: block; inline-size: 100%; }
+  .ns-input-wrap__icon, .ns-input-wrap__hint {
+    position: absolute; inset-block-start: 50%; transform: translateY(-50%);
+    color: var(--color-muted); pointer-events: none;
+  }
+  .ns-input-wrap__icon { inset-inline-start: var(--space-3); }
+  .ns-input-wrap__hint {
+    inset-inline-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    padding: var(--space-0-5) var(--space-1-5);
+  }
+  .ns-input--has-icon { padding-inline-start: var(--space-9); }
+  .ns-input--has-hint { padding-inline-end: var(--space-14); }
+
+  /* --- Select -------------------------------------------------------------
+     Native <select>, restyled. A custom listbox is not worth the keyboard and
+     screen-reader debt for a form this simple; the native control is already
+     correct on every platform, including mobile. */
+  .ns-select {
+    appearance: none;
+    padding-inline-end: var(--space-8);
+    /* Caret drawn as a background chevron so no extra element is needed and
+       Handlebars can emit a bare <select>. currentColor is not available in
+       url() data-SVG, so the muted ink is inlined and re-declared for dark. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23706e6b' stroke-width='1.5'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--space-3) center;
+    background-size: 1rem;
+  }
+  [data-theme="dark"] .ns-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%237fa0c2' stroke-width='1.5'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  }
+
+  /* --- Checkbox & radio ---------------------------------------------------
+     Built on the native input with `appearance: none` so the control keeps
+     its real semantics, keyboard behaviour and form participation — a <div
+     role="checkbox"> would have to reimplement all three and would lose the
+     forced-colors treatment below. */
+  .ns-choice {
+    display: flex; align-items: flex-start; gap: var(--space-2-5);
+    cursor: pointer; padding-block: var(--space-1);
+  }
+  .ns-choice:has(input:disabled) { cursor: not-allowed; opacity: 0.5; }
+
+  .ns-checkbox, .ns-radio {
+    appearance: none; margin: 0; flex: none;
+    inline-size: 1.125rem; block-size: 1.125rem;
+    /* Optically centred on the first line of the label rather than the top of
+       the box, so a two-line label does not look misaligned. */
+    margin-block-start: calc((1rem * var(--leading-body) - 1.125rem) / 2);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    display: grid; place-content: center;
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-checkbox { border-radius: var(--radius-sm); }
+  .ns-radio { border-radius: var(--radius-pill); }
+
+  .ns-checkbox::before {
+    content: ""; inline-size: 0.625rem; block-size: 0.625rem;
+    transform: scale(0); transform-origin: center;
+    transition: transform var(--duration-fast) var(--ease-out);
+    box-shadow: inset 1em 1em var(--color-on-brand);
+    clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 84% 0, 39% 66%);
+  }
+  .ns-checkbox:checked::before { transform: scale(1); }
+  .ns-checkbox:indeterminate::before {
+    transform: scale(1); clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%);
+  }
+  .ns-radio::before {
+    content: ""; inline-size: 0.5rem; block-size: 0.5rem;
+    border-radius: var(--radius-pill); background: var(--color-on-brand);
+    transform: scale(0); transition: transform var(--duration-fast) var(--ease-out);
+  }
+  .ns-radio:checked::before { transform: scale(1); }
+
+  .ns-checkbox:checked, .ns-checkbox:indeterminate, .ns-radio:checked {
+    background: var(--color-brand-500); border-color: var(--color-brand-500);
+  }
+  .ns-checkbox:focus-visible, .ns-radio:focus-visible {
+    outline: 2px solid var(--color-brand-500); outline-offset: 2px;
+  }
+
+  .ns-choice__text { display: flex; flex-direction: column; gap: var(--space-0-5); }
+  .ns-choice__label { color: var(--color-ink); }
+  .ns-choice__help { font-size: var(--size-small); color: var(--color-muted); }
+
+  /* --- Switch -------------------------------------------------------------
+     For a setting that takes effect immediately (dark mode, email digest).
+     If the change only applies on submit, use a checkbox — the affordance is
+     a promise about when the change lands.
+
+     Still a checkbox underneath, with role="switch" on the element. The knob
+     slide is the one place a transform animates, and it stays inside the
+     120ms budget. */
+  .ns-switch {
+    appearance: none; margin: 0; flex: none; cursor: pointer;
+    inline-size: 2.25rem; block-size: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken);
+    position: relative;
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-switch::before {
+    content: ""; position: absolute; inset-block-start: 50%;
+    inset-inline-start: 0.1875rem; translate: 0 -50%;
+    inline-size: 0.875rem; block-size: 0.875rem;
+    border-radius: var(--radius-pill); background: var(--color-muted);
+    transition: translate var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-switch:checked { background: var(--color-brand-500); border-color: var(--color-brand-500); }
+  .ns-switch:checked::before { translate: 1rem -50%; background: var(--color-on-brand); }
+  .ns-switch:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-switch:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* --- Fieldset -----------------------------------------------------------
+     A group of related choices. <fieldset>/<legend> is what tells a screen
+     reader "these four radios are one question"; a styled <div> does not. */
+  .ns-fieldset { border: 0; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-fieldset__legend {
+    padding: 0; margin-block-end: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* --- Windows High Contrast / forced-colors ------------------------------
+     `appearance: none` strips the control's system styling, and in forced-
+     colors mode our brand fill is discarded too — which would leave checked
+     and unchecked visually identical. Re-anchoring to system color keywords
+     restores the distinction. */
+  @media (forced-colors: active) {
+    .ns-checkbox, .ns-radio, .ns-switch { border-color: ButtonBorder; }
+    .ns-checkbox:checked, .ns-checkbox:indeterminate, .ns-radio:checked, .ns-switch:checked {
+      background: Highlight; border-color: Highlight;
+    }
+    .ns-checkbox::before, .ns-radio::before, .ns-switch::before { box-shadow: none; background: ButtonFace; }
+    .ns-input, .ns-select, .ns-textarea { border-color: ButtonBorder; }
+  }
+}

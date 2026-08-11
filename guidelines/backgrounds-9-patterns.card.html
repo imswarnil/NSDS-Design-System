@@ -1,0 +1,47 @@
+<!-- @dsCard group="Brand" viewport="700x580" name="9 Background Patterns" subtitle="Abstract, geometric, hairline-only — dark + light variants for hero canvases and collection thumbnails" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:0;background:var(--color-surface)}
+h2{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.08em;margin:0;padding:8px 8px 6px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--color-border)}
+.p{aspect-ratio:16/10;position:relative;overflow:hidden}
+.p.dark{background:var(--color-brand-900)}
+.p.light{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border)}
+.p span{position:absolute;bottom:6px;left:8px;font-family:var(--font-mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.p.dark span{color:rgb(255 255 255/.5)}
+.p.light span{color:rgb(0 0 0/.4)}
+.l{position:absolute;inset:0}
+</style></head><body>
+<h2>Dark</h2>
+<div class="grid" id="dark"></div>
+<h2>Light</h2>
+<div class="grid" id="light"></div>
+<script>
+const defs=[
+["grid","linear-gradient(to right,{c} 1px,transparent 1px),linear-gradient(to bottom,{c} 1px,transparent 1px)","22px 22px",null,"radial-gradient(ellipse 100% 100% at 50% 40%,#000 25%,transparent 78%)"],
+["dots","radial-gradient({c} 1px,transparent 1px)","14px 14px",null,"radial-gradient(ellipse 90% 90% at 50% 50%,#000 20%,transparent 75%)"],
+["diagonal","repeating-linear-gradient(45deg,{c} 0 1px,transparent 1px 12px)",null,null,null],
+["hex","linear-gradient(30deg,{c} 1px,transparent 1px),linear-gradient(150deg,{c} 1px,transparent 1px),linear-gradient(90deg,{c} 1px,transparent 1px)","26px 45px",null,null],
+["dashed path","repeating-linear-gradient(to bottom,{c2} 0 2px,transparent 2px 9px)",null,"width:2px;left:50%;top:8px;bottom:8px;right:auto",null],
+["concentric","radial-gradient(circle,transparent 0 8px,{c} 9px 10px,transparent 11px),radial-gradient(circle,transparent 0 16px,{c3} 17px 18px,transparent 19px)","80px 80px","background-position:50% 50%",null],
+["chevron-grid","repeating-linear-gradient(90deg,{c} 0 6px,transparent 6px 16px),repeating-linear-gradient(0deg,{c} 0 6px,transparent 6px 16px)",null,null,null],
+["blueprint","linear-gradient(to right,{c4} 1px,transparent 1px)","12px 100%",null,"linear-gradient(to bottom,#000,transparent)"],
+["topographic","radial-gradient({c5} 1.5px,transparent 1.5px)","9px 9px",null,"radial-gradient(circle at 30% 30%,#000 0,transparent 60%)"]
+];
+function render(id,theme){
+  const el=document.getElementById(id);
+  const w=theme==="dark"?"255 255 255":"0 0 0";
+  const boost=theme==="dark"?1:1.6;
+  defs.forEach((d,i)=>{
+    const [name,img,size,extra,mask]=d;
+    const c=`rgb(${w}/${.08*boost})`, c2=`rgb(${w}/${.18*boost})`, c3=`rgb(${w}/${.06*boost})`, c4=`rgb(${w}/${.1*boost})`, c5=`rgb(${w}/${.16*boost})`;
+    let bg=img.replaceAll("{c}",c).replaceAll("{c2}",c2).replaceAll("{c3}",c3).replaceAll("{c4}",c4).replaceAll("{c5}",c5);
+    let style=`background-image:${bg}`;
+    if(size) style+=`;background-size:${size}`;
+    if(extra) style+=`;${extra}`;
+    if(mask) style+=`;-webkit-mask-image:${mask}`;
+    el.insertAdjacentHTML("beforeend",`<div class="p ${theme}"><div class="l" style="${style}"></div><span>${String(i+1).padStart(2,"0")} ${name}</span></div>`);
+  });
+}
+render("dark","dark");render("light","light");
+</script>
+</body></html>

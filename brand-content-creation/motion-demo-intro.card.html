@@ -1,0 +1,23 @@
+<!-- @dsCard group="Content Creation" viewport="700x420" name="Motion Demo — Intro Sequence" subtitle="Live loop: bar draws in → kicker wipes → title wipes → index counts up → CTA pulses" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>body{margin:0;padding:16px;background:var(--color-surface)}
+.card{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:var(--color-brand-900);color:#fff}
+.bar{position:absolute;top:0;left:0;height:4px;background:var(--color-brand-500);width:0;animation:bar 6s infinite}
+@keyframes bar{0%{width:0}5%{width:100%}100%{width:100%}}
+.pat{position:absolute;inset:0;background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);background-size:26px 26px;-webkit-mask-image:radial-gradient(ellipse 90% 90% at 30% 30%,#000 20%,transparent 75%);animation:drift 60s linear infinite}
+@keyframes drift{from{background-position:0 0}to{background-position:260px 260px}}
+.kickwrap{position:absolute;top:22px;left:24px;overflow:hidden}
+.kick{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-brand-300);display:flex;align-items:center;gap:6px;transform:translateX(-100%);animation:wipe 6s infinite;animation-delay:.3s}
+.kick::before{content:"// "}
+@keyframes wipe{0%{transform:translateX(-100%)}8%{transform:translateX(0)}100%{transform:translateX(0)}}
+.titlewrap{position:absolute;left:24px;right:120px;bottom:52px;overflow:hidden}
+.title{font-family:var(--font-heading);font-weight:700;font-size:34px;line-height:1.08;letter-spacing:-.01em;transform:translateX(-100%);animation:wipe 6s infinite;animation-delay:.55s}
+.idx{position:absolute;right:22px;bottom:16px;font-family:var(--font-mono);font-weight:700;font-size:44px;color:rgb(255 255 255/.14);opacity:0;animation:pop 6s infinite;animation-delay:1s}
+@keyframes pop{0%{opacity:0}12%{opacity:1}100%{opacity:1}}
+.cta{position:absolute;right:22px;top:20px;font-family:var(--font-mono);font-weight:700;font-size:11px;background:var(--color-brand-500);padding:6px 12px;border-radius:2px;opacity:0;animation:cta 6s infinite;animation-delay:1.3s}
+@keyframes cta{0%{opacity:0;transform:scale(1)}10%{opacity:1;transform:scale(1)}14%{transform:scale(1.06)}18%{transform:scale(1)}24%{transform:scale(1.06)}28%{transform:scale(1)}100%{opacity:1;transform:scale(1)}}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+</style></head><body>
+<div class="label">Loops every 6s — bar draw → kicker wipe → title wipe → index → CTA pulse</div>
+<div class="card"><div class="bar"></div><div class="pat"></div><div class="cta">WATCH FREE</div><div class="kickwrap"><div class="kick">Salesforce — Zero to Hero</div></div><div class="titlewrap"><div class="title">Setting Up Your Dev Org</div></div><div class="idx">02</div></div>
+</body></html>

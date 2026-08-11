@@ -1,0 +1,38 @@
+<!--
+  Namaste UI template — sign up (magic link)
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+-->
+<div class="ns-auth">
+  <div class="ns-auth__card">
+    <div class="ns-auth__brand">
+      <img src="../assets/logo/favicon.svg" alt=""><strong><!-- site name --></strong>
+    </div>
+    <p class="ns-auth__kicker">create account</p>
+    <h1 class="ns-auth__title">Start learning Salesforce</h1>
+    <p class="ns-auth__sub">Free courses, a training roadmap, and progress that follows you.
+      No password — we email you a sign-in link.</p>
+    <form class="ns-auth__form" data-members-form="signup" action="#">
+      <div class="ns-field">
+        <label class="ns-field__label" for="ns-signup-email">Email address</label>
+        <input id="ns-signup-email" class="ns-input" type="email" name="email"
+               autocomplete="email" required data-members-email>
+      </div>
+      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Create account</button>
+      <div class="ns-auth__sent" data-members-success role="status" hidden>
+        <p class="ns-auth__sent-title"><i class="ph ph-check-circle" aria-hidden="true"></i> Check your inbox</p>
+        <p>Click the confirmation link we just sent and you are in.</p>
+      </div>
+      <p class="ns-field__error" data-members-error role="alert" hidden>
+        That did not work. Check the address and try again.</p>
+    </form>
+    <p class="ns-auth__alt">Already have an account? <a href="#signin">Sign in</a></p>
+  </div>
+</div>

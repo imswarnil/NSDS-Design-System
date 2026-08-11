@@ -1,0 +1,156 @@
+/* Namaste UI — navigation: tabs, accordion, breadcrumb, pagination, sidebar.
+   =========================================================================
+   The through-line: navigation state is shown with a HAIRLINE ACCENT plus a
+   weight/ink change, never a filled pill. A filled blue pill would read as
+   "this is a button you should press", and Principle 3 reserves solid blue
+   for the one action on the screen. The current tab is not an action — you
+   are already there.
+
+   Every pattern here also carries its state in an ARIA attribute
+   (aria-selected, aria-expanded, aria-current) rather than a class, so the
+   visual state and the announced state are the same fact. */
+@layer components {
+
+  /* --- Tabs ---------------------------------------------------------------
+     Markup: role="tablist" > role="tab"[aria-selected][aria-controls], with
+     role="tabpanel"[aria-labelledby]. Keyboard: arrow keys move between tabs,
+     Home/End jump to the ends, and only the selected tab is in the tab order
+     (roving tabindex) — Tab moves OUT of the tablist to the panel. */
+  .ns-tabs {
+    display: flex; gap: var(--space-1);
+    border-block-end: 1px solid var(--color-border);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .ns-tabs::-webkit-scrollbar { display: none; }
+
+  .ns-tab {
+    flex: none;
+    padding: var(--space-3) var(--space-4);
+    min-block-size: var(--target-comfy);
+    border: 0; background: transparent; cursor: pointer;
+    color: var(--color-muted);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; white-space: nowrap;
+    /* The 2px underline is drawn transparent at rest rather than added on
+       select, so selecting a tab never shifts the row by 2px. */
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-tab:hover { color: var(--color-ink); }
+  .ns-tab[aria-selected="true"] { color: var(--color-brand-600); box-shadow: inset 0 -2px 0 var(--color-brand-500); }
+  .ns-tab:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; border-radius: var(--radius-sm); }
+  [data-theme="dark"] .ns-tab[aria-selected="true"] { color: var(--color-brand-300); }
+
+  .ns-tabpanel { padding-block-start: var(--space-5); }
+  .ns-tabpanel:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 4px; }
+
+  /* --- Accordion ----------------------------------------------------------
+     Native <details>/<summary>: open/closed state, keyboard toggle and
+     find-in-page expansion all come from the platform. Do not reimplement
+     this with buttons and hidden divs — you lose Ctrl+F reaching the
+     collapsed content, which on a docs site is a real loss. */
+  .ns-accordion { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; }
+  .ns-accordion__item + .ns-accordion__item { border-block-start: 1px solid var(--color-border); }
+
+  .ns-accordion__summary {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--pad-card); cursor: pointer;
+    min-block-size: var(--target-comfy);
+    font-weight: var(--weight-medium); color: var(--color-ink);
+    list-style: none;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-accordion__summary::-webkit-details-marker { display: none; }
+  .ns-accordion__summary:hover { background: var(--color-surface-sunken); }
+  .ns-accordion__summary:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+
+  /* Mono index, first-class rather than decoration (the system's second
+     supporting motif). Set --ns-index on the item to number it. */
+  .ns-accordion__index {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label);
+  }
+  .ns-accordion__summary::after {
+    content: "\e136"; /* ph-caret-down */
+    font-family: var(--font-icon); margin-inline-start: auto; flex: none;
+    color: var(--color-muted);
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+  .ns-accordion__item[open] > .ns-accordion__summary::after { rotate: 180deg; }
+  .ns-accordion__content { padding: 0 var(--pad-card) var(--pad-card); color: var(--color-muted); }
+
+  /* --- Breadcrumb ---------------------------------------------------------
+     <nav aria-label="Breadcrumb"> > <ol>. The separator is a pseudo-element
+     so it is not read aloud as content, and the last crumb carries
+     aria-current="page" instead of being a dead link. */
+  .ns-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); list-style: none; margin: 0; padding: 0; }
+  .ns-breadcrumb__item { display: flex; align-items: center; gap: var(--space-2); }
+  .ns-breadcrumb__item + .ns-breadcrumb__item::before {
+    content: "/"; color: var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-small);
+  }
+  .ns-breadcrumb__link {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); text-decoration: none;
+  }
+  .ns-breadcrumb__link:hover { color: var(--color-brand-600); }
+  .ns-breadcrumb__link[aria-current="page"] { color: var(--color-ink); font-weight: var(--weight-label); }
+
+  /* --- Pagination ---------------------------------------------------------
+     Ghost paginates the blog and the course catalog server-side, so these are
+     real links (crawlable, middle-clickable), not buttons. */
+  .ns-pagination { display: flex; align-items: center; justify-content: center; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+  .ns-pagination__link {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-inline-size: var(--target-comfy); min-block-size: var(--target-comfy);
+    padding-inline: var(--space-2);
+    border: 1px solid transparent; border-radius: var(--radius-btn);
+    font-family: var(--font-mono); font-size: var(--size-small);
+    color: var(--color-muted); text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-pagination__link:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-pagination__link[aria-current="page"] { border-color: var(--color-border); color: var(--color-ink); font-weight: var(--weight-label); }
+  .ns-pagination__ellipsis { padding-inline: var(--space-2); color: var(--color-muted); font-family: var(--font-mono); }
+
+  /* --- Sidebar (docs) -----------------------------------------------------
+     Sticky under the navbar, its own scroll region. Section labels are mono
+     kickers; the active page gets a left accent line rather than a fill —
+     the row equivalent of the card's top accent line. */
+  .ns-sidebar {
+    position: sticky; inset-block-start: var(--navbar-h);
+    inline-size: var(--sidebar-w); flex: none;
+    max-block-size: calc(100dvh - var(--navbar-h));
+    overflow-y: auto; padding-block: var(--space-6);
+    padding-inline-end: var(--space-4);
+  }
+  .ns-sidebar__group + .ns-sidebar__group { margin-block-start: var(--space-6); }
+  .ns-sidebar__label {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-sidebar__link {
+    display: block; padding: var(--space-1-5) var(--space-3);
+    border-inline-start: 2px solid var(--color-border);
+    color: var(--color-muted); text-decoration: none; font-size: var(--size-small);
+    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-sidebar__link:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  .ns-sidebar__link[aria-current="page"] {
+    color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500);
+    font-weight: var(--weight-medium);
+  }
+  [data-theme="dark"] .ns-sidebar__link[aria-current="page"] { color: var(--color-brand-300); }
+
+  /* Below lg the sidebar is not a sticky column — it moves into a drawer.
+     Declared here so the breakpoint lives with the component it governs. */
+  @media (max-width: 63.999rem) {
+    .ns-sidebar { position: static; inline-size: 100%; max-block-size: none; }
+  }
+}

@@ -1,0 +1,75 @@
+# Namaste UI — CI/CD.
+# ===========================================================================
+# Two jobs:
+#
+#   check   every push & PR — regenerates the token exports and CSS bundle,
+#           then proves nothing drifted and no principle is violated. This is
+#           the gate: a raw hex in the component layer, a stale tokens.json,
+#           or a chart hue that no longer clears the colorblind checks all
+#           fail here, not in a consumer's bug report.
+#
+#   deploy  pushes to main only — builds the static styleguide and publishes
+#           it to GitHub Pages, so the team always has a hosted preview of
+#           exactly what main ships. Enable once in repo settings:
+#           Settings → Pages → Source: "GitHub Actions".
+#
+# If this directory lives inside the Namaste-Salesforce repo (not standalone),
+# set `defaults.run.working-directory: design-system` on both jobs and prefix
+# the artifact path with it.
+name: design-system
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      # Build first, then check: `check` verifies the committed generated
+      # files (tokens.json, tailwind.css, dist/) match the sources byte for
+      # byte — the drift guard that keeps hand-edits out of generated files.
+      - run: npx gulp build
+      - run: npx gulp check
+      # A dirty tree after build means someone edited a generated file by
+      # hand or forgot to commit a regeneration — surface the diff.
+      - name: generated files committed
+        run: git diff --exit-code --stat
+
+  deploy:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx gulp site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

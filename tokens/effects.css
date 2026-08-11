@@ -1,0 +1,48 @@
+:root {
+  /* Geometry — sharp and specific, not the generic 12px-everywhere/pill-everywhere
+     look. Cards get a small, deliberate radius; buttons/inputs a tighter one
+     still; --radius-pill is reserved for TRUE pills (tags, segmented controls),
+     never the default button/card shape. */
+  --ns-radius-card: 6px;
+  --ns-radius-btn: 4px;
+  --ns-radius-pill: 9999px;
+  --ns-radius-sm: 4px;
+
+  --radius-card: var(--ns-radius-card);
+  --radius-btn: var(--ns-radius-btn);
+  --radius-pill: var(--ns-radius-pill);
+  --radius-sm: var(--ns-radius-sm);
+
+  /* Elevation — the hairline border IS the primary structuring device.
+     Shadows are near-flat; nothing floats, nothing glows. */
+  --ns-shadow-card: 0 1px 0 rgb(0 0 0 / 0.02);
+  --ns-shadow-raised: 0 4px 16px -8px rgb(0 0 0 / 0.18);
+
+  --shadow-card: var(--ns-shadow-card);
+  --shadow-raised: var(--ns-shadow-raised);
+  --shadow-brand: 0 0 0 1px color-mix(in srgb, var(--color-brand-500) 55%, transparent);
+  --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 25%, transparent);
+
+  /* Motion — fast and literal. No spring/bounce; state changes read instantly,
+     like a console, not a marketing site. */
+  --ns-ease-out: cubic-bezier(0.2, 0.6, 0.2, 1); /* @kind cubicBezier */
+  --ease-out: var(--ns-ease-out); /* @kind cubicBezier */
+  --duration-fast: 120ms; /* @kind other */
+  --duration-base: 180ms; /* @kind other */
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(0.5rem); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ns-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
