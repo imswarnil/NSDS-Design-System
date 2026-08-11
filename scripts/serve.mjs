@@ -150,8 +150,9 @@ if (WATCH) {
   });
 }
 
-server.listen(PORT, "127.0.0.1", () => {
-  const url = `http://127.0.0.1:${PORT}/preview/index.html`;
+let port = PORT;
+const onListening = () => {
+  const url = `http://127.0.0.1:${port}/preview/index.html`;
   console.log(`\n  Namaste UI preview → ${url}`);
   console.log(`  Serving the real tree, so specimens and dist/ are what actually ships.`);
   if (WATCH) console.log("  Watching: save any token, CSS, card or script and open tabs reload.");
@@ -161,12 +162,18 @@ server.listen(PORT, "127.0.0.1", () => {
     const cmd = process.platform === "darwin" ? "open" : process.platform === "win32" ? "start" : "xdg-open";
     spawn(cmd, [url], { stdio: "ignore", detached: true, shell: process.platform === "win32" }).unref();
   }
-});
+};
+server.once("listening", onListening);
+server.listen(port, "127.0.0.1");
 
 server.on("error", (err) => {
-  if (err.code === "EADDRINUSE") {
-    console.error(`Port ${PORT} is already in use. Try:  npm run dev -- ${PORT + 1}`);
-    process.exit(1);
+  // A busy port is almost always a forgotten earlier preview — walk to the
+  // next free one instead of making the user hunt processes.
+  if (err.code === "EADDRINUSE" && port < PORT + 10) {
+    console.error(`  Port ${port} is busy (an old preview still running?) — trying ${port + 1}…`);
+    port += 1;
+    setTimeout(() => server.listen(port, "127.0.0.1"), 100);
+    return;
   }
   throw err;
 });
