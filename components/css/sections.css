@@ -161,7 +161,7 @@
   .ns-faq__item[open] summary::before { content: "\2212"; color: var(--color-brand-600); }
   .ns-faq__item summary:hover { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-faq__item summary:hover, [data-theme="dark"] .ns-faq__item[open] summary::before { color: var(--color-brand-300); }
-  .ns-faq__item summary:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-faq__item summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-faq__body { padding: 0 var(--space-1) var(--space-4) var(--space-8); font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body); }
   .ns-faq__body p + p { margin-block-start: var(--space-3); }
 

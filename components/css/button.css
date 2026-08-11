@@ -25,9 +25,9 @@
                 opacity var(--duration-fast) linear;
   }
   /* Press is an instant opacity dim — no scale-pop, no lift (Principle 5). */
-  .ns-btn:active:not(:disabled) { opacity: 0.85; }
-  .ns-btn:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
-  .ns-btn:disabled, .ns-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+  .ns-btn:active:not(:disabled) { opacity: var(--opacity-press); }
+  .ns-btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-btn:disabled, .ns-btn[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: not-allowed; }
 
   .ns-btn--sm { min-block-size: var(--space-8); padding: var(--space-1-5) var(--space-3-5); font-size: var(--size-small); }
   .ns-btn--lg { min-block-size: 3rem; padding: var(--space-3) var(--space-6); font-size: var(--size-body-lg); }
@@ -78,7 +78,7 @@
      for a spinner, so the button does not change width mid-submit and the
      accessible name does not vanish while the user is waiting on it. */
   .ns-btn[data-loading="true"] { position: relative; cursor: progress; pointer-events: none; }
-  .ns-btn[data-loading="true"] > * { opacity: 0.35; }
+  .ns-btn[data-loading="true"] > * { opacity: var(--opacity-loading); }
   .ns-btn[data-loading="true"]::after {
     content: ""; position: absolute; inline-size: 1rem; block-size: 1rem;
     border: 2px solid currentColor; border-block-start-color: transparent;

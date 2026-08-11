@@ -100,7 +100,7 @@
                 background-color var(--duration-fast) var(--ease-out);
   }
   .ns-admin-nav a:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
-  .ns-admin-nav a:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-admin-nav a:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-admin-nav a[aria-current="page"] {
     color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500);
     font-weight: var(--weight-medium);
@@ -264,7 +264,7 @@
                 background-color var(--duration-fast) var(--ease-out);
   }
   .ns-rte__btn:hover { color: var(--color-ink); border-color: var(--color-border); }
-  .ns-rte__btn:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-rte__btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-rte__btn[aria-pressed="true"] {
     color: var(--color-brand-600); border-color: var(--color-brand-500);
     background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
@@ -329,7 +329,7 @@
     border: 0; background: none; padding: 0;
     color: var(--color-label); cursor: grab;
   }
-  .ns-builder__grip:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: var(--radius-sm); }
+  .ns-builder__grip:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm); }
   .ns-builder__row .ns-builder__index { inline-size: var(--space-6); flex: none; }
   .ns-builder__name { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--size-small); font-weight: var(--weight-medium); }
   /* Lesson type — VIDEO / READING / QUIZ / LAB. Mono badge, hairline, no fill. */
@@ -362,7 +362,7 @@
     transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
   }
   .ns-builder__add:hover, .ns-builder__add:focus-visible { border-color: var(--color-brand-500); color: var(--color-brand-600); }
-  .ns-builder__add:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-builder__add:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-builder__section .ns-builder__add { border-inline: 0; border-block-end: 0; border-radius: 0; }
 
   /* --- Dropzone -----------------------------------------------------------
@@ -408,7 +408,7 @@
     cursor: text;
     transition: border-color var(--duration-fast) var(--ease-out);
   }
-  .ns-taginput:focus-within { border-color: var(--color-brand-500); outline: 2px solid var(--color-brand-500); outline-offset: -1px; }
+  .ns-taginput:focus-within { border-color: var(--color-brand-500); outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -1px; }
   .ns-taginput__tag {
     display: inline-flex; align-items: center; gap: var(--space-1);
     padding: var(--space-0-5) var(--space-1) var(--space-0-5) var(--space-2);
@@ -425,7 +425,7 @@
     transition: color var(--duration-fast) var(--ease-out);
   }
   .ns-taginput__x:hover { color: var(--color-error-ink); }
-  .ns-taginput__x:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 1px; }
+  .ns-taginput__x:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: 1px; }
   .ns-taginput input {
     flex: 1; min-inline-size: 6rem;
     border: 0; background: none; padding: var(--space-0-5);

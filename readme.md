@@ -159,7 +159,8 @@ design-system/
 ├── dist/              generated flat CSS bundle (committed — gulp consumes it)
 ├── preview/           generated styleguide (git-ignored)
 ├── _site/             deployable static site from `gulp site` (git-ignored)
-├── guidelines/ brand-content-creation/ ui_kits/           specimen cards
+├── guidelines/        foundation specimen cards (colors, type, a11y, motion…)
+├── brand-content-creation/  brand + content specimen cards
 └── styles.css         the single entry point
 ```
 
@@ -255,7 +256,6 @@ conventions someone has to remember.
 - `guidelines/` — foundation specimen cards, including **Spacing & Layout**,
   **Interaction States**, **Accessibility**, **Data Visualization** and
   **Content Design**.
-- `ui_kits/lms/` — an interactive click-through of the LMS product.
 - `scripts/` — the build, the five checks, and the preview generator + server.
 - `docs/` — `INTEGRATION.md` (wiring both products), `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
 

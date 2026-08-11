@@ -33,7 +33,7 @@
   }
   .ns-ticket + .ns-ticket { border-block-start: 1px solid var(--color-border); }
   .ns-ticket:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-500); }
-  .ns-ticket:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-ticket:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
 
   /* The mono ticket id — first-class, like the lesson index. */
   .ns-ticket__id {
@@ -131,7 +131,7 @@
     background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
   }
   [data-theme="dark"] .ns-priority input:checked + span { color: var(--color-brand-300); }
-  .ns-priority input:focus-visible + span { outline: 2px solid var(--color-brand-500); outline-offset: 2px; z-index: var(--z-raised); }
+  .ns-priority input:focus-visible + span { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); z-index: var(--z-raised); }
   /* Urgent, when selected, is allowed the error hue — it is a status. */
   .ns-priority--urgent input:checked + span {
     border-color: var(--color-error); color: var(--color-error-ink);
@@ -165,7 +165,7 @@
                 box-shadow var(--duration-fast) var(--ease-out);
   }
   .ns-help-card:hover { border-color: var(--color-brand-500); box-shadow: inset 0 2px 0 var(--color-brand-500); }
-  .ns-help-card:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-help-card:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-help-card i { font-size: var(--size-h3); color: var(--color-brand-600); }
   [data-theme="dark"] .ns-help-card i { color: var(--color-brand-300); }
   .ns-help-card strong { font-weight: var(--weight-semibold); }

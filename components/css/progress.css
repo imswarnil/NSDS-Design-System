@@ -81,7 +81,7 @@
      sideways on mobile. tabindex="0" on the wrapper makes that scroll region
      reachable by keyboard, which is required once it scrolls. */
   .ns-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-card); }
-  .ns-table-wrap:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-table-wrap:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
 
   .ns-table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
   .ns-table th {

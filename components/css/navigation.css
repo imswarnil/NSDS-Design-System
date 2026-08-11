@@ -40,11 +40,11 @@
   }
   .ns-tab:hover { color: var(--color-ink); }
   .ns-tab[aria-selected="true"] { color: var(--color-brand-600); box-shadow: inset 0 -2px 0 var(--color-brand-500); }
-  .ns-tab:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; border-radius: var(--radius-sm); }
+  .ns-tab:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; border-radius: var(--radius-sm); }
   [data-theme="dark"] .ns-tab[aria-selected="true"] { color: var(--color-brand-300); }
 
   .ns-tabpanel { padding-block-start: var(--space-5); }
-  .ns-tabpanel:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 4px; }
+  .ns-tabpanel:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: 4px; }
 
   /* --- Accordion ----------------------------------------------------------
      Native <details>/<summary>: open/closed state, keyboard toggle and
@@ -64,7 +64,7 @@
   }
   .ns-accordion__summary::-webkit-details-marker { display: none; }
   .ns-accordion__summary:hover { background: var(--color-surface-sunken); }
-  .ns-accordion__summary:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-accordion__summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
 
   /* Mono index, first-class rather than decoration (the system's second
      supporting motif). Set --ns-index on the item to number it. */

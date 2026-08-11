@@ -489,6 +489,16 @@
   --shadow-brand: 0 0 0 1px color-mix(in srgb, var(--color-brand-500) 55%, transparent);
   --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 25%, transparent);
 
+  /* Interaction — the states every control shares. Focus is a brand ring
+     outside the element; press is an instant opacity dim; disabled and
+     loading are fixed dim levels so "off" reads the same everywhere. */
+  --border-hairline: 1px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --opacity-press: 0.85; /* @kind number */
+  --opacity-disabled: 0.45; /* @kind number */
+  --opacity-loading: 0.35; /* @kind number */
+
   /* Motion — fast and literal. No spring/bounce; state changes read instantly,
      like a console, not a marketing site. */
   --ns-ease-out: cubic-bezier(0.2, 0.6, 0.2, 1); /* @kind cubicBezier */
@@ -989,9 +999,9 @@
                 opacity var(--duration-fast) linear;
   }
   /* Press is an instant opacity dim — no scale-pop, no lift (Principle 5). */
-  .ns-btn:active:not(:disabled) { opacity: 0.85; }
-  .ns-btn:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
-  .ns-btn:disabled, .ns-btn[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+  .ns-btn:active:not(:disabled) { opacity: var(--opacity-press); }
+  .ns-btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-btn:disabled, .ns-btn[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: not-allowed; }
 
   .ns-btn--sm { min-block-size: var(--space-8); padding: var(--space-1-5) var(--space-3-5); font-size: var(--size-small); }
   .ns-btn--lg { min-block-size: 3rem; padding: var(--space-3) var(--space-6); font-size: var(--size-body-lg); }
@@ -1042,7 +1052,7 @@
      for a spinner, so the button does not change width mid-submit and the
      accessible name does not vanish while the user is waiting on it. */
   .ns-btn[data-loading="true"] { position: relative; cursor: progress; pointer-events: none; }
-  .ns-btn[data-loading="true"] > * { opacity: 0.35; }
+  .ns-btn[data-loading="true"] > * { opacity: var(--opacity-loading); }
   .ns-btn[data-loading="true"]::after {
     content: ""; position: absolute; inline-size: 1rem; block-size: 1rem;
     border: 2px solid currentColor; border-block-start-color: transparent;
@@ -1257,7 +1267,7 @@
     background: var(--color-brand-500); border-color: var(--color-brand-500);
   }
   .ns-checkbox:focus-visible, .ns-radio:focus-visible {
-    outline: 2px solid var(--color-brand-500); outline-offset: 2px;
+    outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset);
   }
 
   .ns-choice__text { display: flex; flex-direction: column; gap: var(--space-0-5); }
@@ -1292,7 +1302,7 @@
   }
   .ns-switch:checked { background: var(--color-brand-500); border-color: var(--color-brand-500); }
   .ns-switch:checked::before { translate: 1rem -50%; background: var(--color-on-brand); }
-  .ns-switch:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-switch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-switch:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* --- Fieldset -----------------------------------------------------------
@@ -1518,11 +1528,11 @@
   }
   .ns-tab:hover { color: var(--color-ink); }
   .ns-tab[aria-selected="true"] { color: var(--color-brand-600); box-shadow: inset 0 -2px 0 var(--color-brand-500); }
-  .ns-tab:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; border-radius: var(--radius-sm); }
+  .ns-tab:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; border-radius: var(--radius-sm); }
   [data-theme="dark"] .ns-tab[aria-selected="true"] { color: var(--color-brand-300); }
 
   .ns-tabpanel { padding-block-start: var(--space-5); }
-  .ns-tabpanel:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 4px; }
+  .ns-tabpanel:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: 4px; }
 
   /* --- Accordion ----------------------------------------------------------
      Native <details>/<summary>: open/closed state, keyboard toggle and
@@ -1542,7 +1552,7 @@
   }
   .ns-accordion__summary::-webkit-details-marker { display: none; }
   .ns-accordion__summary:hover { background: var(--color-surface-sunken); }
-  .ns-accordion__summary:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-accordion__summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
 
   /* Mono index, first-class rather than decoration (the system's second
      supporting motif). Set --ns-index on the item to number it. */
@@ -1893,7 +1903,7 @@
      sideways on mobile. tabindex="0" on the wrapper makes that scroll region
      reachable by keyboard, which is required once it scrolls. */
   .ns-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-card); }
-  .ns-table-wrap:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-table-wrap:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
 
   .ns-table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
   .ns-table th {
@@ -2098,7 +2108,7 @@
   }
   .ns-ticket + .ns-ticket { border-block-start: 1px solid var(--color-border); }
   .ns-ticket:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-500); }
-  .ns-ticket:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-ticket:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
 
   /* The mono ticket id — first-class, like the lesson index. */
   .ns-ticket__id {
@@ -2196,7 +2206,7 @@
     background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
   }
   [data-theme="dark"] .ns-priority input:checked + span { color: var(--color-brand-300); }
-  .ns-priority input:focus-visible + span { outline: 2px solid var(--color-brand-500); outline-offset: 2px; z-index: var(--z-raised); }
+  .ns-priority input:focus-visible + span { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); z-index: var(--z-raised); }
   /* Urgent, when selected, is allowed the error hue — it is a status. */
   .ns-priority--urgent input:checked + span {
     border-color: var(--color-error); color: var(--color-error-ink);
@@ -2230,7 +2240,7 @@
                 box-shadow var(--duration-fast) var(--ease-out);
   }
   .ns-help-card:hover { border-color: var(--color-brand-500); box-shadow: inset 0 2px 0 var(--color-brand-500); }
-  .ns-help-card:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-help-card:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-help-card i { font-size: var(--size-h3); color: var(--color-brand-600); }
   [data-theme="dark"] .ns-help-card i { color: var(--color-brand-300); }
   .ns-help-card strong { font-weight: var(--weight-semibold); }
@@ -2364,7 +2374,7 @@
                 border-color var(--duration-fast) var(--ease-out);
   }
   .ns-lesson:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-300); }
-  .ns-lesson:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-lesson:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
 
   .ns-lesson__index {
     inline-size: var(--space-6); text-align: center;
@@ -2601,7 +2611,7 @@
   .ns-faq__item[open] summary::before { content: "\2212"; color: var(--color-brand-600); }
   .ns-faq__item summary:hover { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-faq__item summary:hover, [data-theme="dark"] .ns-faq__item[open] summary::before { color: var(--color-brand-300); }
-  .ns-faq__item summary:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-faq__item summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-faq__body { padding: 0 var(--space-1) var(--space-4) var(--space-8); font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body); }
   .ns-faq__body p + p { margin-block-start: var(--space-3); }
 
@@ -2715,7 +2725,7 @@
                 background-color var(--duration-fast) var(--ease-out);
   }
   .ns-admin-nav a:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
-  .ns-admin-nav a:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-admin-nav a:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-admin-nav a[aria-current="page"] {
     color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500);
     font-weight: var(--weight-medium);
@@ -2879,7 +2889,7 @@
                 background-color var(--duration-fast) var(--ease-out);
   }
   .ns-rte__btn:hover { color: var(--color-ink); border-color: var(--color-border); }
-  .ns-rte__btn:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-rte__btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-rte__btn[aria-pressed="true"] {
     color: var(--color-brand-600); border-color: var(--color-brand-500);
     background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
@@ -2944,7 +2954,7 @@
     border: 0; background: none; padding: 0;
     color: var(--color-label); cursor: grab;
   }
-  .ns-builder__grip:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; border-radius: var(--radius-sm); }
+  .ns-builder__grip:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm); }
   .ns-builder__row .ns-builder__index { inline-size: var(--space-6); flex: none; }
   .ns-builder__name { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--size-small); font-weight: var(--weight-medium); }
   /* Lesson type — VIDEO / READING / QUIZ / LAB. Mono badge, hairline, no fill. */
@@ -2977,7 +2987,7 @@
     transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
   }
   .ns-builder__add:hover, .ns-builder__add:focus-visible { border-color: var(--color-brand-500); color: var(--color-brand-600); }
-  .ns-builder__add:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-builder__add:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-builder__section .ns-builder__add { border-inline: 0; border-block-end: 0; border-radius: 0; }
 
   /* --- Dropzone -----------------------------------------------------------
@@ -3023,7 +3033,7 @@
     cursor: text;
     transition: border-color var(--duration-fast) var(--ease-out);
   }
-  .ns-taginput:focus-within { border-color: var(--color-brand-500); outline: 2px solid var(--color-brand-500); outline-offset: -1px; }
+  .ns-taginput:focus-within { border-color: var(--color-brand-500); outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -1px; }
   .ns-taginput__tag {
     display: inline-flex; align-items: center; gap: var(--space-1);
     padding: var(--space-0-5) var(--space-1) var(--space-0-5) var(--space-2);
@@ -3040,7 +3050,7 @@
     transition: color var(--duration-fast) var(--ease-out);
   }
   .ns-taginput__x:hover { color: var(--color-error-ink); }
-  .ns-taginput__x:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 1px; }
+  .ns-taginput__x:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: 1px; }
   .ns-taginput input {
     flex: 1; min-inline-size: 6rem;
     border: 0; background: none; padding: var(--space-0-5);

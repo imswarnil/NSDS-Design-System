@@ -186,7 +186,7 @@
     background: var(--color-brand-500); border-color: var(--color-brand-500);
   }
   .ns-checkbox:focus-visible, .ns-radio:focus-visible {
-    outline: 2px solid var(--color-brand-500); outline-offset: 2px;
+    outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset);
   }
 
   .ns-choice__text { display: flex; flex-direction: column; gap: var(--space-0-5); }
@@ -221,7 +221,7 @@
   }
   .ns-switch:checked { background: var(--color-brand-500); border-color: var(--color-brand-500); }
   .ns-switch:checked::before { translate: 1rem -50%; background: var(--color-on-brand); }
-  .ns-switch:focus-visible { outline: 2px solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-switch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-switch:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* --- Fieldset -----------------------------------------------------------

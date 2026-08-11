@@ -23,6 +23,16 @@
   --shadow-brand: 0 0 0 1px color-mix(in srgb, var(--color-brand-500) 55%, transparent);
   --shadow-focus: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 25%, transparent);
 
+  /* Interaction — the states every control shares. Focus is a brand ring
+     outside the element; press is an instant opacity dim; disabled and
+     loading are fixed dim levels so "off" reads the same everywhere. */
+  --border-hairline: 1px;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+  --opacity-press: 0.85; /* @kind number */
+  --opacity-disabled: 0.45; /* @kind number */
+  --opacity-loading: 0.35; /* @kind number */
+
   /* Motion — fast and literal. No spring/bounce; state changes read instantly,
      like a console, not a marketing site. */
   --ns-ease-out: cubic-bezier(0.2, 0.6, 0.2, 1); /* @kind cubicBezier */

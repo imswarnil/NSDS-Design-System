@@ -132,26 +132,93 @@ const SECTIONS = [
     ${typeRows(pick(/^--size-/))}
     <p class="sub">Weight, leading, tracking</p>
     ${plainRows(pick(/^--(weight|leading|tracking)-/))}` },
-  { id: "geometry", title: "Geometry & motion", lede: "Four radii exist and no more — Tailwind's <code>rounded-lg</code>/<code>-xl</code> are deliberately left undefined so reaching for one is a build error. One easing curve, no springs.", body: () => plainRows(pick(/^--(radius|shadow|duration|ease)-/)) },
-  { id: "icons", title: "Icons", lede: "Two sets, one optical weight. <strong>Phosphor</strong> (subsetted icon font) covers the generic vocabulary; the <strong>bespoke sprite</strong> below covers the ~20 LMS-specific glyphs Phosphor has no word for — drawn on the same 24px grid at the same stroke weight, so the sets mix in one row. Use via <code>&lt;svg class=\"ns-icon\"&gt;&lt;use href=\"assets/icons/namaste-icons.svg#ns-i-name\"/&gt;&lt;/svg&gt;</code>; 1em square, currentColor — an icon inherits like a letter.", body: () => {
+  { id: "geometry", title: "Geometry & motion", lede: "Four radii exist and no more — Tailwind's <code>rounded-lg</code>/<code>-xl</code> are deliberately left undefined so reaching for one is a build error. One easing curve, no springs.", body: () => `
+    ${plainRows(pick(/^--(radius|shadow|duration|ease)-/))}
+    <p class="sub">Interaction — focus ring, press/disabled/loading dim, hairline</p>
+    ${plainRows(pick(/^--(focus-ring|opacity)-|^--border-hairline/))}` },
+  { id: "icons", title: "Icons", lede: "Two sets, one optical weight. <strong>Phosphor</strong> (subsetted icon font) covers the generic vocabulary; the <strong>bespoke sprite</strong> covers the LMS-specific glyphs Phosphor has no word for — drawn on the same 24px grid at the same stroke weight, so the sets mix in one row. Every Phosphor glyph also ships a filled variant (<code>ph-fill</code>). Grouped by what the glyph is for; the search filters every group at once. Click a name to copy it.", body: () => {
     const svg = readFileSync(join(ROOT, "assets/icons/namaste-icons.svg"), "utf8");
-    const ids = [...svg.matchAll(/<symbol id="ns-i-([a-z0-9-]+)"/g)].map((m) => m[1]);
+    const spriteIds = [...svg.matchAll(/<symbol id="ns-i-([a-z0-9-]+)"/g)].map((m) => m[1]).sort();
+    const phCss = readFileSync(join(ROOT, "assets/css/theme/icons.css"), "utf8");
+    const phNames = [...new Set([...phCss.matchAll(/\.ph\.ph-([a-z0-9-]+):before/g)].map((m) => m[1]))].sort();
+    /* First matching rule wins; anything unmatched lands in the last group. */
+    const CATEGORIES = [
+      ["Arrows & navigation", /^(arrow|caret)|^(compass|map-pin|map-trifold|crosshair|target|sidebar|list$|list-checks|rows|squares-four|funnel|steps|flow-arrow)$/],
+      ["Learning & achievement", /^(book|exam|graduation|article|newspaper|note$|presentation|projector|medal|seal-check|star|crown|flag|barbell|flask|lightbulb|strategy|sparkle|infinity)$|^books$/],
+      ["Media & broadcast", /^(play|video|film|image|microphone|megaphone|headset|rss)/],
+      ["Charts & data", /^(chart|gauge|database|stack$|cube)/],
+      ["Code & tools", /^(code$|brackets|terminal|git-|robot|plugs|wrench|toolbox|gear|cloud|globe)/],
+      ["Communication", /^(chat|envelope|paper-plane|phone|share|question|quotes|hash|link-simple|bell)/],
+      ["People & places", /^(user|users|handshake|heart|buildings|briefcase|house|coffee)/],
+      ["Status & security", /^(check-circle|circle|info$|warning|x$|x-circle|shield|lock|eye|magnifying-glass|lightning|fire)/],
+      ["Time", /^(clock|calendar|timer|arrows-clockwise)/],
+      ["Commerce", /^(credit-card|currency|gift|tag$)/],
+      ["Social logos", /-logo$/],
+      ["Objects & misc", /./],
+    ];
+    const grouped = new Map(CATEGORIES.map(([g]) => [g, []]));
+    for (const n of phNames) grouped.get(CATEGORIES.find(([, re]) => re.test(n))[0]).push(n);
+    const cell = (name, glyph) => `
+      <div class="sw icon-cell" data-icon="${name}" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3)">
+        ${glyph}<code class="sw__name" style="padding:0">${name}</code>
+      </div>`;
+    const spriteCells = spriteIds.map((id) => cell(`ns-i-${id}`,
+      `<svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-${id}"/></svg>`)).join("");
+    const phGroups = [...grouped].filter(([, list]) => list.length).map(([g, list]) => `
+    <p class="sub icon-group-head">${esc(g)} · ${list.length}</p>
+    <div class="sw-grid icon-group">${list.map((n) => cell(`ph-${n}`, `<i class="ph ph-${n}" aria-hidden="true" style="font-size:var(--size-h3)"></i>`)).join("")}</div>`).join("");
     return `
-    <p class="sub">Bespoke sprite — ${ids.length} glyphs · assets/icons/namaste-icons.svg</p>
-    <div class="sw-grid">${ids.map((id) => `
-      <div class="sw" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3)">
-        <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-${id}"/></svg>
-        <code class="sw__name" style="padding:0">ns-i-${id}</code>
-      </div>`).join("")}</div>
-    <p class="sub">Mixing with Phosphor — same row, same color rules</p>
+    <div class="row" style="margin-block-start:var(--space-4)">
+      <input class="ns-input" type="search" id="icon-q" placeholder="Search ${spriteIds.length + phNames.length} icons…" aria-label="Search icons" style="max-inline-size:20rem">
+      <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" id="icon-fill" aria-pressed="false">Fill style</button>
+      <span id="icon-count" style="font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted)"></span>
+    </div>
+    <p class="sub icon-group-head">Bespoke sprite — LMS vocabulary · ${spriteIds.length} · assets/icons/namaste-icons.svg</p>
+    <div class="sw-grid icon-group">${spriteCells}</div>
+    ${phGroups}
+    <p class="sub">Mixing the sets — same row, same color rules</p>
     <div class="row">
       <button class="ns-btn ns-btn--primary"><svg class="ns-icon" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-publish"/></svg> Publish</button>
       <button class="ns-btn ns-btn--outline"><i class="ph ph-play" aria-hidden="true"></i> Resume lesson</button>
       <span class="ns-status ns-status--success">Complete</span>
       <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-roadmap"/></svg>
       <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../assets/icons/namaste-icons.svg#ns-i-apex"/></svg>
-      <i class="ph ph-gear" aria-hidden="true" style="font-size:var(--size-h3)"></i>
-    </div>` } },
+      <i class="ph ph-gear-six" aria-hidden="true" style="font-size:var(--size-h3)"></i>
+    </div>
+    <script>
+    (function () {
+      var q = document.getElementById('icon-q');
+      var fill = document.getElementById('icon-fill');
+      var count = document.getElementById('icon-count');
+      var cells = [].slice.call(document.querySelectorAll('.icon-cell'));
+      var total = cells.length;
+      function apply() {
+        var t = q.value.trim().toLowerCase();
+        var shown = 0;
+        cells.forEach(function (c) {
+          var hit = !t || c.getAttribute('data-icon').indexOf(t) !== -1;
+          c.style.display = hit ? '' : 'none';
+          if (hit) shown++;
+        });
+        document.querySelectorAll('.icon-group').forEach(function (g) {
+          var any = [].some.call(g.querySelectorAll('.icon-cell'), function (c) { return c.style.display !== 'none'; });
+          g.style.display = any ? '' : 'none';
+          if (g.previousElementSibling && g.previousElementSibling.classList.contains('icon-group-head'))
+            g.previousElementSibling.style.display = any ? '' : 'none';
+        });
+        count.textContent = t ? shown + ' / ' + total : total + ' icons';
+      }
+      q.addEventListener('input', apply);
+      apply();
+      fill.addEventListener('click', function () {
+        var on = fill.getAttribute('aria-pressed') !== 'true';
+        fill.setAttribute('aria-pressed', String(on));
+        document.querySelectorAll('.icon-cell i.ph, .icon-cell i.ph-fill').forEach(function (i) {
+          i.className = i.className.replace(on ? /\\bph\\b/ : /\\bph-fill\\b/, on ? 'ph-fill' : 'ph');
+        });
+      });
+    })();
+    </script>` } },
   { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
     <p class="sub">${esc(file)}.css — ${list.length}</p>
     <div class="cls">${list.map((c) => `<code>.${esc(c)}</code>`).join("")}</div>`).join("") },
