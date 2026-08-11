@@ -6,12 +6,12 @@
 
      preview/index.html             home: counts + numbered directory
      preview/<section>.html         one page per foundation section
-     preview/specimens-<group>.html one page per specimen group
+     preview/c-<component>.html     one page per component
+     preview/<doc>.html             one page per brand / content-creation doc
 
-   A dedicated page per topic is what keeps each page light (a specimen page
-   loads only its own iframes) and each URL shareable ("look at
-   /specimens-brand.html"). The sidebar is the same numbered index on
-   every page, with the current page marked.
+   One page per topic, full stop — there is no gallery. Specimen cards are
+   embedded on the page they document, so nothing is shown twice. The sidebar
+   is the same numbered index on every page, with the current page marked.
 
    Everything is derived from the real artifacts — token tables from
    tokens/tokens.json, the class index scraped from components/css/*.css,
@@ -87,24 +87,71 @@ const typeRows = (list) => rows(list, (t) => `<tr>
   <td><code>${esc(t.name)}</code></td><td class="num">${esc(t.value)}</td>
   <td class="fill"><span style="font-size:var(${t.name});line-height:1.2">Namaste Salesforce</span></td></tr>`);
 
-const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const groupLabel = (g) => g.replace(/^(?:\d+|[A-Z])\.\s*/, "");
-/* Gallery groups in reading order — system guidelines first, brand assets
-   next, produced content. Unlisted groups land last. */
-const GROUP_ORDER = ["Foundations", "Colors", "Type", "Brand", "Content Creation"];
-const groupRank = (g) => { const i = GROUP_ORDER.indexOf(g); return i === -1 ? GROUP_ORDER.length : i; };
-const cardGroups = [...new Set(cards.map((c) => c.group))].sort((a, b) => groupRank(a) - groupRank(b) || a.localeCompare(b));
+/* There is no gallery. Every specimen card is embedded ON the doc page it
+   belongs to, by path — so a topic has exactly one page. */
+const cardBy = (p) => cards.find((c) => c.path === p) || null;
+const spec = (paths) => paths.map(cardBy).filter(Boolean).map((c) => `
+  <article class="spec">
+    <header class="spec__head">
+      <div>
+        <h2>${esc(c.name)}</h2>
+        ${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ""}
+      </div>
+      <a class="spec__src" href="../${c.path}" target="_blank" rel="noopener">open&nbsp;↗</a>
+    </header>
+    <div class="spec__frame" style="block-size:${c.h + 2}px">
+      <iframe src="../${c.path}" title="${esc(c.name)}" loading="lazy" data-theme-frame style="inline-size:${c.w}px"></iframe>
+    </div>
+  </article>`).join("");
+
+/* Light + dark value per token, for the Colors page's dual chips. A chip half
+   stamped data-theme="dark" re-resolves the token inside it, because the dark
+   override selector matches any element carrying the attribute. */
+const darkVals = new Map(flat(tokens.dark).map((t) => [t.name, t.value]));
+const dualSwatches = (list) => `<div class="sw-grid">${list.map((t) => `
+  <div class="sw">
+    <div class="sw__chip sw__chip--dual">
+      <span style="background:var(${t.name})" title="light"></span>
+      <span data-theme="dark" style="background:var(${t.name})" title="dark"></span>
+    </div>
+    <code class="sw__name">${esc(t.name)}</code>
+    <span class="sw__val">${esc(t.value)}${darkVals.has(t.name) ? ` <em title="dark value">⇄ ${esc(darkVals.get(t.name))}</em>` : ""}</span>
+  </div>`).join("")}</div>`;
 
 /* ---- the page inventory -------------------------------------------------
    Foundation sections first, then specimen groups, one running mono index
    across both — the numbering IS the navigation model. */
 const SECTIONS = [
-  { id: "color", title: "Color", lede: "One signal color. Brand blue is the only hue that means &ldquo;interactive&rdquo;; <code>--color-accent-*</code> is a deprecated alias of it.", body: () => `
-    <p class="sub">Brand</p>${swatches(pick(/^--color-brand-/))}
+  { id: "intro", title: "Introduction", lede: "Why this design system exists, and the five rules every component obeys.", body: () => `
+    <p class="sub">Why</p>
+    <p style="max-inline-size:46rem;margin-block-end:var(--space-4)">One brand, two codebases: the Ghost theme (Handlebars + Tailwind) and the Next.js LMS (React). Without a shared system they drift apart within weeks — two blues, two card radii, two ideas of &ldquo;small text.&rdquo; This system is the single source both render: one set of tokens, one portable <code>.ns-*</code> class layer, checked in CI so drift is a build failure, not a design review finding.</p>
+    <p style="max-inline-size:46rem;margin-block-end:var(--space-4)">The identity is a developer console, not a marketing site — Apex is Salesforce's own language, and the whole visual voice (mono indices, code-comment kickers, hairline borders, terminal-row lists) is built to feel like a precise tool. Calm, flat, reading-first.</p>
+    <p class="sub">The five principles</p>
+    <div class="use-grid"><div><ul>
+      <li><strong>The hairline is the structure, not the shadow.</strong> Cards, inputs and tags are built from a single 1px border; elevation is a border brightening to brand blue, never a floating lift.</li>
+      <li><strong>Monospace is a structural material.</strong> JetBrains Mono renders every index, duration, timestamp, status and kicker — that split is what makes a list read as data and a paragraph read as writing.</li>
+      <li><strong>One signal color.</strong> Brand blue is the only hue that means &ldquo;interactive&rdquo; — so a screen with one solid blue button has exactly one obvious next action.</li>
+      <li><strong>Sharp, specific geometry.</strong> 6px cards, 4px buttons, pills only for true pills. Nothing is rounded because rounding is the default.</li>
+      <li><strong>Motion is instant, not springy.</strong> 120–180ms plain ease-out; no bounce, no scale-pop, no hover-lift.</li>
+    </ul></div></div>
+    ${spec(["guidelines/principles.card.html"])}` },
+  { id: "color", title: "Colors", lede: "The complete palette, end to end: primary blue and its ten shades, the secondary navy, the neutral reading layer, status, and how every role flips in dark mode. Each dual chip shows light on the left, dark on the right.", body: () => `
+    <p class="sub">Primary — brand blue, ten shades</p>
+    <p class="variant-note">The one signal color. 500 is the working blue for fills and active states; 600 is interactive text on light; 300 is interactive text on dark; 50–100 are wash-free — they exist for charts and rare tint borders, never for status washes.</p>
+    ${swatches(pick(/^--color-brand-/))}
+    <p class="sub">Secondary — the navy console</p>
+    <p class="variant-note">The dark end of the same scale is the brand's second color: hero bands, the admin rail, dark mode's canvas. It is a surface family, not a second signal — nothing navy is clickable by virtue of being navy.</p>
+    ${swatches(pick(/^--color-brand-(700|800|900)$/))}${swatches(pick(/^--color-on-(brand|dark)$/))}
+    <p class="sub">Neutrals — the reading layer, light ⇄ dark</p>
+    <p class="variant-note">Product code reaches for these roles, never raw hex: surfaces, hairline, ink for prose, muted for secondary text, label for mono labels. Every one re-resolves under <code>[data-theme="dark"]</code> to the navy scale — dark mode is this brand's console, not a gray reskin.</p>
+    ${dualSwatches(pick(/^--color-(surface|surface-raised|surface-sunken|border|ink|muted|label|grid|scrim)$/))}
     <p class="sub">Status — raw hues, for dots, borders and icons only</p>
     ${swatches(all.filter((t) => ["--color-success", "--color-warning", "--color-error"].includes(t.name)))}
-    <p class="sub">Status ink — the only tokens allowed under status text</p>
-    ${swatches(pick(/^--color-(success|warning|error|info)-ink$/))}` },
+    <p class="sub">Status ink — the only tokens allowed under status text, light ⇄ dark</p>
+    ${dualSwatches(pick(/^--color-(success|warning|error|info)-ink$/))}
+    <p class="sub">Everything else</p>
+    <p class="variant-note">Chart colors live on the <a href="./charts.html">Charts page</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
+    ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
   { id: "surfaces", title: "Status & surfaces", lede: 'Semantic roles flip under <code>[data-theme="dark"]</code>. These are what product code should reach for — never a raw brand step for a surface.', body: () => `
     ${swatches(pick(/^--color-(surface|surface-raised|surface-sunken|border|ink|muted|label|grid|scrim|on-brand|on-dark)$/))}
     <p class="sub">Live</p>
@@ -118,11 +165,30 @@ const SECTIONS = [
   { id: "charts", title: "Charts", lede: "Seven categorical slots, assigned 1&rarr;7 in fixed order and never cycled. Verified in CI against the lightness band, chroma floor, colorblind separation, normal-vision floor and surface contrast — in both modes.", body: () => `
     <p class="sub">Categorical</p>${swatches(pick(/^--chart-cat-/))}
     <p class="sub">Sequential</p>${swatches(pick(/^--chart-seq-/))}
-    <p class="sub">Diverging</p>${swatches(pick(/^--chart-div-/))}` },
+    <p class="sub">Diverging</p>${swatches(pick(/^--chart-div-/))}
+    ${spec(["guidelines/data-visualization.card.html"])}` },
   { id: "spacing", title: "Spacing", lede: "4px base, index-matched to Tailwind so <code>p-4</code> and <code>var(--space-4)</code> are the same 16px in both products.", body: () => `
     ${spacingRows(pick(/^--space-/))}
     <p class="sub">Semantic aliases — reach for these first</p>
-    ${spacingRows(pick(/^--(pad|gap|stack)-/))}` },
+    ${spacingRows(pick(/^--(pad|gap|stack)-/))}
+    <p class="sub">Applied — the same tokens doing real work</p>
+    <div class="demo demo--stack" style="gap:var(--gap-grid)">
+      <div style="display:flex;gap:var(--gap-grid)">
+        <div style="flex:1;border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--pad-card)">
+          <span style="font-family:var(--font-mono);font-size:var(--size-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label)">--pad-card</span>
+          <p style="margin-block-start:var(--space-2);font-size:var(--size-small);color:var(--color-muted)">Card padding is one token — change it once, every card follows.</p>
+        </div>
+        <div style="flex:1;border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--pad-card)">
+          <span style="font-family:var(--font-mono);font-size:var(--size-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label)">--gap-grid</span>
+          <p style="margin-block-start:var(--space-2);font-size:var(--size-small);color:var(--color-muted)">The gap between these two cards is the grid gap token.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:var(--stack-lg)">
+        <span style="font-size:var(--size-small);color:var(--color-muted)">Stacked blocks separated by <code>--stack-lg</code> —</span>
+        <span style="font-size:var(--size-small);color:var(--color-muted)">— the rhythm between sections, not a hand-picked margin.</span>
+      </div>
+    </div>
+    ${spec(["guidelines/spacing-layout.card.html"])}` },
   { id: "layout", title: "Layout & elevation", lede: "Containers, breakpoints, fixed chrome, and the six-layer elevation order.", body: () => `
     <p class="sub">Containers &amp; breakpoints</p>
     ${plainRows(pick(/^--(container|breakpoint|gutter|navbar|sidebar|toc|player|target)/))}
@@ -138,11 +204,13 @@ const SECTIONS = [
     </div>
     ${typeRows(pick(/^--size-/))}
     <p class="sub">Weight, leading, tracking</p>
-    ${plainRows(pick(/^--(weight|leading|tracking)-/))}` },
+    ${plainRows(pick(/^--(weight|leading|tracking)-/))}
+    ${spec(["guidelines/type-headings.card.html", "guidelines/type-body.card.html", "guidelines/type-kicker.card.html", "guidelines/type-mono-code.card.html"])}` },
   { id: "geometry", title: "Geometry & motion", lede: "Four radii exist and no more — Tailwind's <code>rounded-lg</code>/<code>-xl</code> are deliberately left undefined so reaching for one is a build error. One easing curve, no springs.", body: () => `
     ${plainRows(pick(/^--(radius|shadow|duration|ease)-/))}
     <p class="sub">Interaction — focus ring, press/disabled/loading dim, hairline</p>
-    ${plainRows(pick(/^--(focus-ring|opacity)-|^--border-hairline/))}` },
+    ${plainRows(pick(/^--(focus-ring|opacity)-|^--border-hairline/))}
+    ${spec(["guidelines/radii-shadows.card.html", "guidelines/motion.card.html", "guidelines/states.card.html"])}` },
   { id: "icons", title: "Icons", lede: "Two sets, one optical weight. <strong>Phosphor</strong> (subsetted icon font) covers the generic vocabulary; the <strong>bespoke sprite</strong> covers the LMS-specific glyphs Phosphor has no word for — drawn on the same 24px grid at the same stroke weight, so the sets mix in one row. Every Phosphor glyph also ships a filled variant (<code>ph-fill</code>). Grouped by what the glyph is for; the search filters every group at once. Click a name to copy it.", body: () => {
     const svg = readFileSync(join(ROOT, "icons/namaste-icons.svg"), "utf8");
     const spriteIds = [...svg.matchAll(/<symbol id="ns-i-([a-z0-9-]+)"/g)].map((m) => m[1]).sort();
@@ -240,6 +308,8 @@ const SECTIONS = [
     <p class="sub">On light surfaces</p>
     <div class="sw-grid">${names.map((n, i) => tile(n, i, true)).join("")}</div>`;
   } },
+  { id: "accessibility", title: "Accessibility", lede: "The contract every component ships with: focus is always visible, motion collapses under reduced-motion, status never relies on color alone, and every icon-only control has a name.", body: () => spec(["guidelines/accessibility.card.html"]) },
+  { id: "content-design", title: "Content design", lede: "How the product speaks: plain-English, encouraging, practical. Sentence case everywhere except mono kickers; no emoji in UI; numbers only when concrete.", body: () => spec(["guidelines/content-design.card.html"]) },
   { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
     <p class="sub">${esc(file)}.css — ${list.length}</p>
     <div class="cls">${list.map((c) => `<code>.${esc(c)}</code>`).join("")}</div>`).join("") },
@@ -248,10 +318,81 @@ const SECTIONS = [
 /* Foundations in teaching order: what it looks like (color, surfaces),
    what it reads as (type), how it is spaced and laid out, its shape and
    motion, its glyphs, its data — and the class index as the appendix. */
-const SECTION_ORDER = ["color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "charts", "classes"];
+const SECTION_ORDER = ["intro", "color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "charts", "accessibility", "content-design", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
-const galleryTitle = (g) => groupLabel(g);
+/* ---- Brand & Content creation docs --------------------------------------
+   Same model as components: one page per topic, cards embedded where they
+   belong. `body` is authored guidance; `cards` are the live specimens. */
+const beat = (t, say, show) => `<tr><td><code>${t}</code></td><td style="inline-size:45%">${say}</td><td class="fill">${show}</td></tr>`;
+const SCHEDULE_BODY = `
+  <p class="sub">The weekly cadence</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>MON</code></td><td style="inline-size:45%">YouTube lesson (7–12 min) — one concept from the current course</td><td class="fill">course thumbnail style · intro sting · end screen</td></tr>
+    <tr><td><code>WED</code></td><td style="inline-size:45%">Short / Reel (under 60s) — the single best moment of Monday's lesson</td><td class="fill">lesson thumbnail · hook caption card</td></tr>
+    <tr><td><code>FRI</code></td><td style="inline-side:45%">Instagram carousel or LinkedIn post — the lesson as 5 swipeable steps</td><td class="fill">instagram post styles · social action icons</td></tr>
+    <tr><td><code>SUN</code></td><td style="inline-size:45%">Community touch — poll, Q&amp;A, or next-week teaser</td><td class="fill">story style · promo card</td></tr>
+  </tbody></table>
+  <p class="variant-note" style="margin-block-start:var(--space-3)">One lesson feeds the whole week. Never create Wednesday's short from scratch — cut it from Monday's video. The system's thumbnail styles exist so a series is recognizable in the feed before the title is read.</p>
+
+  <p class="sub">The video template — every video, same skeleton</p>
+  <table class="tbl"><tbody>
+    ${beat("0–3s", "<strong>Cold hook.</strong> The payoff shown or said first — the finished flow running, the exam passing, the error disappearing. No logo yet, no &ldquo;hey guys.&rdquo;", "raw screen recording, full bleed")}
+    ${beat("3–10s", "<strong>The promise.</strong> One sentence: what they will be able to DO by the end — &ldquo;By the end of this you'll deploy your first Apex trigger.&rdquo; Then the sting.", "logo sting (Preloader &middot; flip, ~1.8s) + title lower-third")}
+    ${beat("10–40s", "<strong>Context.</strong> Why this matters and where it sits in the roadmap — &ldquo;this is lesson 03 of Apex Basics; last time we built X.&rdquo; Show the roadmap, name the prerequisite.", "roadmap card · mono index 01/02/03 overlay")}
+    ${beat("40s–", "<strong>The teaching.</strong> Numbered steps, one concept per step, said then shown then said again. Every step gets its mono index on screen — the numbering IS the structure.", "live screen + step lower-thirds · code panels for snippets")}
+    ${beat("last 30s", "<strong>Recap + bridge.</strong> The three things they can now do, then the bridge to the next lesson — &ldquo;next, we turn this data into insight.&rdquo; One CTA only.", "recap card (3 mono-indexed lines) → end screen")}
+    ${beat("end 10s", "<strong>End screen.</strong> Next lesson thumbnail + subscribe. Silence is fine; no outro music ramp.", "youtube end screen template")}
+  </tbody></table>
+
+  <p class="sub">Hook line formulas — write three, keep the best</p>
+  <div class="use-grid"><div><ul>
+    <li><strong>Payoff-first:</strong> &ldquo;This is a working approval flow — built in eleven minutes, no code.&rdquo;</li>
+    <li><strong>Mistake-first:</strong> &ldquo;Most admins set up validation rules exactly wrong. Here's the tell.&rdquo;</li>
+    <li><strong>Stakes-first:</strong> &ldquo;This one topic is 12% of the exam — and it fits in one screen.&rdquo;</li>
+  </ul></div><div><ul>
+    <li>Say the hook over the result, never over your face or a logo.</li>
+    <li>Numbers only when concrete (Principle: never decorative stats).</li>
+    <li>If the hook needs two sentences, the video is about two things — cut one.</li>
+  </ul></div></div>
+
+  <p class="sub">Ending lines — the bridge, not a beg</p>
+  <div class="use-grid"><div><ul>
+    <li>&ldquo;You can now ___, ___ and ___. Next, we ___.&rdquo; — the recap IS the CTA.</li>
+    <li>One ask per video: next lesson OR subscribe OR the roadmap link. Never all three.</li>
+    <li>Last frame is always the end-screen template — muscle memory for the viewer.</li>
+  </ul></div></div>`;
+
+const LINKEDIN_BODY = `
+  <p class="sub">Post anatomy</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>LINE 1–2</code></td><td class="fill">The hook — these are all that shows before &ldquo;…see more.&rdquo; Payoff or mistake first, exactly like a video hook. No hashtags here.</td></tr>
+    <tr><td><code>BODY</code></td><td class="fill">3–7 short lines, one idea per line, blank line between each. Numbered steps use the mono-index voice: 01, 02, 03.</td></tr>
+    <tr><td><code>IMAGE</code></td><td class="fill">One branded visual: a thumbnail-style card (1200&times;627) or a carousel PDF reusing the Instagram post styles at 1080&times;1350.</td></tr>
+    <tr><td><code>CLOSE</code></td><td class="fill">One link (lesson or roadmap), then at most 3 hashtags.</td></tr>
+  </tbody></table>
+  <p class="sub">Rules</p>
+  <div class="use-grid"><div><ul>
+    <li>Same weekly slot as the Friday carousel — one asset, two crops.</li>
+    <li>Sentence case, no emoji walls — one glyph max, and only as a bullet.</li>
+    <li>Carousel = the lesson's numbered steps, one step per slide, brand card style.</li>
+  </ul></div><div><ul>
+    <li>Never post a bare external link with no visual — the branded card is the point.</li>
+    <li>Don't restyle per post: the templates on the Thumbnails and Instagram pages are the only looks.</li>
+  </ul></div></div>`;
+
+const BRAND_DOCS = [
+  { id: "logo", title: "Logo", lede: "The mark, its lockups, and the favicon set — clear space, minimum sizes, and what never happens to it (no stretching, no recoloring, no shadows). Animated uses of the mark — stings and loading — are the Preloader component's five styles.", cards: ["guidelines/brand-logo.card.html", "guidelines/brand-logo-lockups.card.html", "guidelines/brand-favicon.card.html"] },
+];
+const CONTENT_DOCS = [
+  { id: "cc-approach", title: "Approach", lede: "What content creation is in this system: every public asset — thumbnail, post, video frame — is built from the same tokens and voice as the product, so the feed is recognizably one brand.", cards: ["brand-content-creation/README.card.html", "brand-content-creation/training/training-pair.card.html", "brand-content-creation/course-lesson-pairs/pairs.card.html"] },
+  { id: "cc-schedule", title: "Video series & schedule", lede: "The publishing plan: what ships on which day, and the second-by-second template every video follows — hook, promise, sting, teaching, bridge.", body: SCHEDULE_BODY, cards: ["brand-content-creation/video-structure/first-60-seconds.card.html"] },
+  { id: "cc-video", title: "Video structure & motion", lede: "Hooks, closures and the motion rules for moving brand assets — how the intro sting and scene transitions behave.", cards: ["brand-content-creation/video-structure/hooks-and-closures.card.html", "brand-content-creation/motion-guidelines.card.html", "brand-content-creation/motion-demo-intro.card.html", "brand-content-creation/motion-demo-transition.card.html"] },
+  { id: "cc-thumbnails", title: "Thumbnails", lede: "Every thumbnail surface — course, lesson, blog, YouTube — from one style family, so a row of them reads as a series.", cards: ["brand-content-creation/thumbnails/15-thumbnail-styles.card.html", "brand-content-creation/course-thumbnail.card.html", "brand-content-creation/lesson-thumbnail.card.html", "brand-content-creation/blog/10-blog-thumbnail-styles.card.html", "brand-content-creation/youtube-thumbnail.card.html"] },
+  { id: "cc-instagram", title: "Instagram", lede: "Post and story templates. Same tokens, same mono indices — the feed is the product's voice at 1080px.", cards: ["brand-content-creation/instagram-post.card.html", "brand-content-creation/instagram-story.card.html", "brand-content-creation/instagram/instagram-post-styles.card.html"] },
+  { id: "cc-linkedin", title: "LinkedIn", lede: "The professional-feed variant: hook-first text posts and carousel PDFs cut from the same weekly asset as the Instagram carousel.", body: LINKEDIN_BODY, cards: [] },
+  { id: "cc-promo", title: "Promo & end screens", lede: "Website promo cards, social action icons, and the YouTube end screen every video closes on.", cards: ["brand-content-creation/promo/website-promo-card.card.html", "brand-content-creation/promo/social-action-icons.card.html", "brand-content-creation/promo/youtube-end-screen.card.html"] },
+];
 
 const PAGES = [
   { file: "index.html", title: "Overview", kind: "home" },
@@ -259,7 +400,8 @@ const PAGES = [
   ...FAMILIES.flatMap((fam) =>
     COMPONENTS.filter((c) => c.family === fam)
       .map((c) => ({ file: `c-${c.id}.html`, title: c.title, kind: "component", comp: c, family: fam }))),
-  ...cardGroups.map((g) => ({ file: `specimens-${slug(g)}.html`, title: galleryTitle(g), kind: "specimens", group: g })),
+  ...BRAND_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Brand" })),
+  ...CONTENT_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Content creation" })),
 ];
 const nn = (i) => String(i).padStart(2, "0");
 PAGES.forEach((p, i) => { p.num = nn(i + 1); });
@@ -327,6 +469,8 @@ const CSS = `
   [data-theme="dark"] .copyable:hover { color: var(--color-brand-300); }
   .copyable[data-copied] { color: var(--color-success-ink); }
   .sw__chip { block-size: 3rem; border-block-end: 1px solid var(--color-border); }
+  .sw__chip--dual { display: flex; }
+  .sw__chip--dual > span { flex: 1; }
   .sw__name { display: block; padding: var(--space-2) var(--space-2-5) 0; font-family: var(--font-mono); font-size: 0.7rem; }
   .sw__val { display: block; padding: 0 var(--space-2-5) var(--space-2); font-family: var(--font-mono); font-size: 0.65rem; color: var(--color-muted); }
   .sw__val em { color: var(--color-brand-600); font-style: normal; }
@@ -451,10 +595,13 @@ const JS = `
 const sidebar = (current) => {
   const link = (p) => `<a href="./${p.file}"${p.file === current ? ' aria-current="page"' : ""}><span class="side__num">${p.num}</span>${esc(p.title)}</a>`;
   const foundations = PAGES.filter((p) => p.kind === "home" || p.kind === "section");
-  const gallery = PAGES.filter((p) => p.kind === "specimens");
   const componentNav = FAMILIES.map((fam) => {
     const pages = PAGES.filter((p) => p.kind === "component" && p.family === fam);
     return `<p class="side__sep">${esc(fam)}</p>\n  ` + pages.map(link).join("\n  ");
+  }).join("\n  ");
+  const docNav = ["Brand", "Content creation"].map((side) => {
+    const pages = PAGES.filter((p) => p.kind === "doc" && p.side === side);
+    return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");
   }).join("\n  ");
   return `<div class="side">
   <div class="side__brand"><img src="../assets/logo/favicon.svg" alt=""><strong><a href="./index.html">Namaste UI</a></strong></div>
@@ -462,8 +609,7 @@ const sidebar = (current) => {
   <nav aria-label="Pages">
   ${foundations.map(link).join("\n  ")}
   ${componentNav}
-  <p class="side__sep">Gallery</p>
-  ${gallery.map(link).join("\n  ")}
+  ${docNav}
   </nav>
 </div>`;
 };
@@ -537,9 +683,13 @@ for (const page of PAGES) {
   <div class="dir">
     ${PAGES.filter((p) => p.kind === "component").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong><span>${esc(p.family)}</span></a>`).join("\n    ")}
   </div>
-  <p class="sub">Gallery</p>
+  <p class="sub">Brand</p>
   <div class="dir">
-    ${PAGES.filter((p) => p.kind === "specimens").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong><span>${cards.filter((c) => c.group === p.group).length}</span></a>`).join("\n    ")}
+    ${PAGES.filter((p) => p.kind === "doc" && p.side === "Brand").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong></a>`).join("\n    ")}
+  </div>
+  <p class="sub">Content creation</p>
+  <div class="dir">
+    ${PAGES.filter((p) => p.kind === "doc" && p.side === "Content creation").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong></a>`).join("\n    ")}
   </div>`;
   } else if (page.kind === "section") {
     page.lede = page.section.lede;
@@ -563,21 +713,9 @@ ${v.html}
   <details class="code"><summary>markup</summary><pre><code>${esc(v.html)}</code></pre></details>`).join("")}
   ${c.a11y ? `<p class="sub">Accessibility contract</p><div class="use-grid"><div><ul>${list(c.a11y)}</ul></div></div>` : ""}`;
   } else {
-    const groupCards = cards.filter((c) => c.group === page.group);
-    page.lede = `${groupCards.length} specimen${groupCards.length === 1 ? "" : "s"}. Each renders the real .card.html file — open one in its own tab via the mono link.`;
-    inner = groupCards.map((c) => `
-  <article class="spec">
-    <header class="spec__head">
-      <div>
-        <h2>${esc(c.name)}</h2>
-        ${c.subtitle ? `<p>${esc(c.subtitle)}</p>` : ""}
-      </div>
-      <a class="spec__src" href="../${c.path}" target="_blank" rel="noopener">open&nbsp;↗</a>
-    </header>
-    <div class="spec__frame" style="block-size:${c.h + 2}px">
-      <iframe src="../${c.path}" title="${esc(c.name)}" loading="lazy" data-theme-frame style="inline-size:${c.w}px"></iframe>
-    </div>
-  </article>`).join("");
+    const d = page.doc;
+    page.lede = d.lede;
+    inner = `${d.body || ""}${spec(d.cards || [])}`;
   }
   writeFileSync(join(OUT, page.file), shell(page, inner));
 }
@@ -789,4 +927,4 @@ ${body}
 `);
 }
 
-console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${cardGroups.length} specimen groups), ${all.length} tokens, ${cards.length} specimens`);
+console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${COMPONENTS.length} components + ${BRAND_DOCS.length + CONTENT_DOCS.length} brand/content docs), ${all.length} tokens, ${cards.length} specimens embedded in place`);

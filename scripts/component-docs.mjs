@@ -249,6 +249,36 @@ export const COMPONENTS = [
     ],
   },
   {
+    id: "preloader", title: "Preloader", family: "Feedback",
+    summary: "The brand mark loading — for app boot, route changes and video stings. Five styles, all hairline-and-opacity; under reduced motion every one collapses to the static logo. A page-level wait shows the mark, never a generic spinner.",
+    use: ["App boot and route transitions", "Video intro stings — flip is drawn for exactly that", "Anywhere the wait is the whole screen, not one control"],
+    not: ["Inline busy state on a control — Spinner", "Content that is arriving in a known shape — Skeleton"],
+    a11y: ["role=\"status\" on the wrapper announces the wait once", "The label is real text, not only animation — the wait is legible with motion off"],
+    variants: [
+      { name: "Pulse", note: "The default. The logo breathing — calmest, for app boot.", html: `<div class="ns-preloader ns-preloader--pulse" role="status">
+  <span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span>
+  <span class="ns-preloader__label">Loading</span>
+</div>` },
+      { name: "Ring", note: "A brand arc circles the mark; the logo holds still.", html: `<div class="ns-preloader ns-preloader--ring" role="status">
+  <span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span>
+  <span class="ns-preloader__label">Loading</span>
+</div>` },
+      { name: "Orbit", note: "One dot orbiting — the quietest of the five.", html: `<div class="ns-preloader ns-preloader--orbit" role="status">
+  <span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span>
+  <span class="ns-preloader__label">Loading</span>
+</div>` },
+      { name: "Flip", note: "The video sting: one clean turn, then a beat of rest.", html: `<div class="ns-preloader ns-preloader--flip" role="status">
+  <span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span>
+  <span class="ns-preloader__label">Namaste Salesforce</span>
+</div>` },
+      { name: "Bar", note: "Logo over an indeterminate hairline — reads as measurable progress coming.", html: `<div class="ns-preloader" role="status">
+  <span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span>
+  <span class="ns-preloader__bar" aria-hidden="true"></span>
+  <span class="ns-preloader__label">Loading</span>
+</div>` },
+    ],
+  },
+  {
     id: "empty-state", title: "Empty state", family: "Feedback",
     summary: "Three required parts: what is not here, why, and the one thing to do about it. Dashed border = \"nothing here yet\". An empty state with no action is a dead end.",
     use: ["First-run screens, filtered-to-nothing lists, empty dashboards"],

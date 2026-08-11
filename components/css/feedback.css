@@ -145,6 +145,44 @@
   }
   .ns-spinner--lg { inline-size: 1.75rem; block-size: 1.75rem; border-width: 3px; }
 
+  /* --- Preloader ----------------------------------------------------------
+     The brand mark loading, for app boot, route changes and video stings —
+     never a generic spinner at page level. Five styles, all hairline-and-
+     opacity: no bounce, no glow (Principle 5). The global reduced-motion
+     guard collapses every style to the static logo. */
+  .ns-preloader {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: var(--space-4); min-block-size: 8rem;
+  }
+  .ns-preloader__mark { position: relative; display: grid; place-items: center; inline-size: 4.5rem; block-size: 4.5rem; }
+  .ns-preloader__logo { inline-size: 2.5rem; block-size: 2.5rem; }
+  .ns-preloader__label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  /* 01 pulse — the logo breathing. */
+  .ns-preloader--pulse .ns-preloader__logo { animation: ns-preloader-pulse 1.6s var(--ease-out) infinite; }
+  /* 02 ring — a brand arc circling the mark; the logo holds still. */
+  .ns-preloader--ring .ns-preloader__mark::before {
+    content: ""; position: absolute; inset: 0; border-radius: var(--radius-pill);
+    border: 2px solid var(--color-border); border-block-start-color: var(--color-brand-500);
+    animation: ns-spin 900ms linear infinite;
+  }
+  /* 03 orbit — a single dot orbiting the mark. */
+  .ns-preloader--orbit .ns-preloader__mark::before {
+    content: ""; position: absolute; inset: 0; border-radius: var(--radius-pill);
+    background: radial-gradient(circle 3px at 50% 3px, var(--color-brand-500) 97%, transparent);
+    animation: ns-spin 1.4s linear infinite;
+  }
+  /* 04 flip — the sting: one clean turn on the vertical axis. */
+  .ns-preloader--flip .ns-preloader__logo { animation: ns-preloader-flip 1.8s var(--ease-out) infinite; }
+  /* 05 bar — logo over an indeterminate hairline. */
+  .ns-preloader__bar { inline-size: 6rem; block-size: 2px; background: var(--color-border); overflow: hidden; }
+  .ns-preloader__bar::before {
+    content: ""; display: block; inline-size: 40%; block-size: 100%;
+    background: var(--color-brand-500); animation: ns-preloader-bar 1.2s var(--ease-out) infinite;
+  }
+
   /* --- Empty state --------------------------------------------------------
      Three parts, all required: what is not here, WHY, and the one thing to do
      about it. An empty state with no action is a dead end — if there is
@@ -176,3 +214,6 @@
 }
 
 @keyframes ns-shimmer { to { background-position: -200% 0; } }
+@keyframes ns-preloader-pulse { 0%, 100% { opacity: 1; transform: none; } 50% { opacity: 0.55; transform: scale(0.92); } }
+@keyframes ns-preloader-flip { 0% { transform: rotateY(0); } 55%, 100% { transform: rotateY(360deg); } }
+@keyframes ns-preloader-bar { from { transform: translateX(-110%); } to { transform: translateX(260%); } }
