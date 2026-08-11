@@ -10,7 +10,7 @@
 
    A dedicated page per topic is what keeps each page light (a specimen page
    loads only its own iframes) and each URL shareable ("look at
-   /specimens-components.html"). The sidebar is the same numbered index on
+   /specimens-brand.html"). The sidebar is the same numbered index on
    every page, with the current page marked.
 
    Everything is derived from the real artifacts — token tables from
@@ -90,10 +90,9 @@ const typeRows = (list) => rows(list, (t) => `<tr>
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const groupLabel = (g) => g.replace(/^(?:\d+|[A-Z])\.\s*/, "");
 /* Gallery groups in reading order — system guidelines first, brand assets
-   next, produced content, and the legacy component collage last (it exists
-   to be worked DOWN, not browsed). Unlisted groups land before legacy. */
-const GROUP_ORDER = ["Foundations", "Colors", "Type", "Brand", "Content Creation", "Components"];
-const groupRank = (g) => { const i = GROUP_ORDER.indexOf(g); return i === -1 ? GROUP_ORDER.length - 1.5 : i; };
+   next, produced content. Unlisted groups land last. */
+const GROUP_ORDER = ["Foundations", "Colors", "Type", "Brand", "Content Creation"];
+const groupRank = (g) => { const i = GROUP_ORDER.indexOf(g); return i === -1 ? GROUP_ORDER.length : i; };
 const cardGroups = [...new Set(cards.map((c) => c.group))].sort((a, b) => groupRank(a) - groupRank(b) || a.localeCompare(b));
 
 /* ---- the page inventory -------------------------------------------------
@@ -115,14 +114,6 @@ const SECTIONS = [
       <span class="ns-status ns-status--success">Complete</span>
       <span class="ns-status ns-status--warning">Expiring</span>
       <span class="ns-status ns-status--error">Failed</span>
-    </div>
-    <div class="row">
-      <button class="ns-btn ns-btn--primary">Primary</button>
-      <button class="ns-btn ns-btn--outline">Outline</button>
-      <button class="ns-btn ns-btn--quiet">Quiet</button>
-      <button class="ns-btn ns-btn--danger">Delete</button>
-      <button class="ns-btn ns-btn--primary" disabled>Disabled</button>
-      <button class="ns-btn ns-btn--primary" data-loading="true">Saving</button>
     </div>` },
   { id: "charts", title: "Charts", lede: "Seven categorical slots, assigned 1&rarr;7 in fixed order and never cycled. Verified in CI against the lightness band, chroma floor, colorblind separation, normal-vision floor and surface contrast — in both modes.", body: () => `
     <p class="sub">Categorical</p>${swatches(pick(/^--chart-cat-/))}
@@ -172,11 +163,7 @@ const SECTIONS = [
 const SECTION_ORDER = ["color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "charts", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
-/* The card group named "Components" holds the LEGACY per-component demo
-   cards (Badge, CourseCard, Navbar…) — components not yet migrated to the
-   shared CSS layer. The migrated ones get real doc pages below; the gallery
-   keeps the rest visible until each is converted. */
-const galleryTitle = (g) => groupLabel(g) === "Components" ? "Legacy components" : groupLabel(g);
+const galleryTitle = (g) => groupLabel(g);
 
 const PAGES = [
   { file: "index.html", title: "Overview", kind: "home" },
