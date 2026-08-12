@@ -1,5 +1,9 @@
 # NS Design System
 
+**Live styleguide → <https://dev.imswarnil.com/NS-Design-System/>** — published
+from `main` on every push. See **[`LIVE.md`](LIVE.md)** for the URLs, what is on
+the site, how the deploy works, and how to fix it when it breaks.
+
 A design system for **Namaste Salesforce**, an open-source Ghost theme (`imswarnil/Namaste-Salesforce`) for Salesforce learning communities: courses, a training roadmap, developer documentation, and a blog, all in one calm, fast, accessible package.
 
 *Why "Console" styling?* Apex is Salesforce's own programming language — and the whole visual language here (mono indices, code-comment kickers, hairline borders, terminal-row lists) is built to feel like a developer console, not a marketing site. See **Design Principles** below.
@@ -76,7 +80,10 @@ attribute, and the `ns-theme` storage key — are documented and enforced in
 
 ## Preview it
 
-The design system runs on its own — no Ghost, no Next.js, nothing but Node:
+The current `main` is always live at
+**<https://dev.imswarnil.com/NS-Design-System/>** — nothing to install if you
+only want to look. To run it locally, the design system stands on its own — no
+Ghost, no Next.js, nothing but Node:
 
 ```bash
 npm install
@@ -122,11 +129,13 @@ rebuild.
 of it, and it is one command away at any time.
 
 **Hosting the preview on a server:** `gulp site` stages a fully self-contained
-static site into `_site/` (~1 MB — the styleguide, the CSS closure, fonts and
-all 75 specimens, plus a root redirect and `.nojekyll`). Deploy it to any
-static host: GitHub Pages (CI does this automatically on every push to main —
-see `.github/workflows/ci.yml`), Netlify, S3, or plain nginx
-(`rsync -a _site/ server:/var/www/design`).
+static site into `_site/` (~4 MB — the 98-page styleguide, the CSS closure,
+fonts and all 38 specimen cards, plus a root redirect and `.nojekyll`). Every
+reference in it
+is relative, so it hosts correctly under a subpath. CI already publishes it to
+GitHub Pages on every push to `main`; the same bundle drops onto Netlify, S3,
+or plain nginx (`rsync -a _site/ server:/var/www/design`). Full detail in
+[`LIVE.md`](LIVE.md).
 
 ## CI/CD
 
@@ -137,13 +146,16 @@ see `.github/workflows/ci.yml`), Netlify, S3, or plain nginx
   colorblind checks, stale `dist/`), then `git diff --exit-code` to prove no
   generated file was hand-edited.
 - **deploy** — pushes to `main`: `gulp site` → publish `_site/` to GitHub
-  Pages, so the team always has a hosted preview of exactly what `main` ships.
-  One-time setup: repo → Settings → Pages → Source: "GitHub Actions".
+  Pages at <https://dev.imswarnil.com/NS-Design-System/>, so the team always
+  has a hosted preview of exactly what `main` ships. Already configured
+  (Settings → Pages → Source: "GitHub Actions"); a failing check blocks the
+  deploy. See [`LIVE.md`](LIVE.md) for the full pipeline and troubleshooting.
 
 ## Repository layout
 
 ```
-design-system/
+NS-Design-System/
+├── LIVE.md            the hosted site: URLs, contents, deploy pipeline, fixes
 ├── tokens/            authored token CSS + generated JSON/JS/Tailwind exports
 ├── components/
 │   ├── css/           the portable .ns-* layer BOTH products render

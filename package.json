@@ -18,6 +18,7 @@
     "styles.css",
     "gulpfile.mjs",
     "readme.md",
+    "LIVE.md",
     "LICENSE"
   ],
   "exports": {
@@ -38,7 +39,7 @@
     "dev": "gulp",
     "preview": "gulp build && node scripts/serve.mjs",
     "build": "gulp build",
-    "si te": "gulp site",
+    "site": "gulp site",
     "check": "gulp check",
     "test": "gulp check",
     "serve": "node scripts/serve.mjs",
@@ -58,12 +59,12 @@
     "email": "swarnilsinghaicse@gmail.com",
     "url": "https://github.com/imswarnil"
   },
+  "homepage": "https://dev.imswarnil.com/NS-Design-System/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/imswarnil/Namaste-Salesforce.git",
-    "directory": "design-system"
+    "url": "git+https://github.com/imswarnil/NS-Design-System.git"
   },
-  "bugs": "https://github.com/imswarnil/Namaste-Salesforce/issues",
+  "bugs": "https://github.com/imswarnil/NS-Design-System/issues",
   "keywords": [
     "design-system",
     "design-tokens",
