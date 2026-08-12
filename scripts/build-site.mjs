@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — deployable static site build.
+/* NS Design System — deployable static site build.
    =========================================================================
    Stages everything the preview needs into `_site/`, ready for any static
    host (GitHub Pages, Netlify, S3, nginx). The dev server serves the repo
@@ -65,8 +65,8 @@ for (const rel of walk(".")) {
 writeFileSync(join(OUT, "index.html"), `<!DOCTYPE html>
 <meta charset="utf-8">
 <meta http-equiv="refresh" content="0; url=./preview/index.html">
-<title>Namaste UI</title>
-<a href="./preview/index.html">Namaste UI design system</a>
+<title>NS Design System</title>
+<a href="./preview/index.html">NS Design System design system</a>
 `);
 
 /* Tell GitHub Pages not to run Jekyll — it would ignore files/dirs it

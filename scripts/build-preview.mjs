@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — styleguide generator (multi-page).
+/* NS Design System — styleguide generator (multi-page).
    =========================================================================
    Generates a static, self-contained styleguide into preview/ — one HTML
    page PER SECTION, not one endless scroll:
@@ -1124,7 +1124,7 @@ const sidebar = (current) => {
     return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");
   }).join("\n  ");
   return `<div class="side">
-  <div class="side__brand"><img src="../assets/logo/favicon.svg" alt=""><strong><a href="./index.html">Namaste UI</a></strong></div>
+  <div class="side__brand"><img src="../assets/logo/favicon.svg" alt=""><strong><a href="./index.html">NS Design System</a></strong></div>
   <span class="side__ver">v${esc(pkg.version)} · ${all.length} tokens</span>
   <input class="ns-input side__search" type="search" id="side-search" placeholder="Filter pages…" aria-label="Filter pages">
   <nav aria-label="Pages">
@@ -1165,7 +1165,7 @@ const shell = (page, inner) => {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(page.title)} — Namaste UI</title>
+<title>${esc(page.title)} — NS Design System</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
 <link rel="stylesheet" href="../dist/namaste-ui.css">
 <style>${CSS}</style>

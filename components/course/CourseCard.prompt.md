@@ -2,6 +2,6 @@ The course catalog card — a mono index chip over the media, a status-dot level
 
 ```jsx
 <CourseCard index={2} title="Apex Masterclass" excerpt="Master server-side Salesforce development."
-  level="advanced" price="paid" priceLabel="$49" lessons={12} duration="6h 40m" authorName="Namaste UI" featured />
+  level="advanced" price="paid" priceLabel="$49" lessons={12} duration="6h 40m" authorName="NS Design System" featured />
 ```
 `sponsored` swaps the ribbon to a solid brand-navy "Sponsored" tag instead of the amber "Featured" one.

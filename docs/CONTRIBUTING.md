@@ -1,4 +1,4 @@
-# Contributing to Namaste UI
+# Contributing to NS Design System
 
 ## Before you add a component
 

@@ -1,4 +1,4 @@
-# Integrating Namaste UI
+# Integrating NS Design System
 
 One design system, two renderers: the **Ghost theme** (Handlebars + Tailwind v4)
 and the **Next.js LMS** (React). Both consume the same tokens and the same

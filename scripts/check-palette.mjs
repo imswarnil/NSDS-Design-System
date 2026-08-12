@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — chart palette regression check.
+/* NS Design System — chart palette regression check.
    =========================================================================
    The data-viz palette in tokens/dataviz.css was not chosen by eye; it was
    solved for. Every hue sits inside an OKLCH lightness band, clears a chroma

@@ -1,4 +1,4 @@
-/* Namaste UI — layout, breakpoints and elevation order.
+/* NS Design System — layout, breakpoints and elevation order.
    =========================================================================
    Breakpoints match Tailwind v4 defaults so the Ghost theme's `md:` / `lg:`
    utilities and the Next.js app's media queries break at the same width.

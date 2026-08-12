@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — component parse & convention check.
+/* NS Design System — component parse & convention check.
    =========================================================================
    Two things, both cheap and both worth a build failure:
 

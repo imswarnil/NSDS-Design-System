@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — preview server, with live reload.
+/* NS Design System — preview server, with live reload.
    =========================================================================
    A dependency-free static server, deliberately: the design system should be
    previewable with nothing but Node installed. Pulling in a dev-server package
@@ -153,7 +153,7 @@ if (WATCH) {
 let port = PORT;
 const onListening = () => {
   const url = `http://127.0.0.1:${port}/preview/index.html`;
-  console.log(`\n  Namaste UI preview → ${url}`);
+  console.log(`\n  NS Design System preview → ${url}`);
   console.log(`  Serving the real tree, so specimens and dist/ are what actually ships.`);
   if (WATCH) console.log("  Watching: save any token, CSS, card or script and open tabs reload.");
   console.log("  Ctrl-C to stop.\n");

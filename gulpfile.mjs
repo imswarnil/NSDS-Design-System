@@ -1,4 +1,4 @@
-/* Namaste UI — gulp orchestration.
+/* NS Design System — gulp orchestration.
    =========================================================================
    The Ghost theme builds with gulp, so the design system speaks the same
    language: `gulp` for the dev loop, `gulp build` for artifacts, `gulp site`

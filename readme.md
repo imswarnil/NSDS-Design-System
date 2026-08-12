@@ -1,4 +1,4 @@
-# Namaste Salesforce Design
+# NS Design System
 
 A design system for **Namaste Salesforce**, an open-source Ghost theme (`imswarnil/Namaste-Salesforce`) for Salesforce learning communities: courses, a training roadmap, developer documentation, and a blog, all in one calm, fast, accessible package.
 

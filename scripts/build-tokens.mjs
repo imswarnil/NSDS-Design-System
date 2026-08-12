@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — token export build.
+/* NS Design System — token export build.
    =========================================================================
    The CSS files in tokens/ are the SOURCE OF TRUTH. Everything else — the
    JSON token file, the JS/TS module the Next.js app imports, the docs table —
@@ -98,7 +98,7 @@ const groupOf = (name) => {
   return [head];
 };
 
-const doc = { $schema: "https://design-tokens.org/schema.json", $description: "Namaste UI design tokens — generated from tokens/*.css by scripts/build-tokens.mjs. Do not edit by hand.", light: {}, dark: {} };
+const doc = { $schema: "https://design-tokens.org/schema.json", $description: "NS Design System design tokens — generated from tokens/*.css by scripts/build-tokens.mjs. Do not edit by hand.", light: {}, dark: {} };
 for (const [mode, list] of [["light", light], ["dark", dark]]) {
   for (const t of list) {
     let node = doc[mode];

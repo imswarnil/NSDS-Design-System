@@ -1,6 +1,6 @@
 # Changelog
 
-Notable changes to Namaste UI. The version here is the **design system's**, not
+Notable changes to NS Design System. The version here is the **design system's**, not
 the Ghost theme's — they are released independently.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/). Versioning is

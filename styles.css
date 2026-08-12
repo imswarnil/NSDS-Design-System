@@ -1,4 +1,4 @@
-/* Namaste UI — single stylesheet entry point.
+/* NS Design System — single stylesheet entry point.
    Import this in the Ghost theme and in the Next.js LMS. Order matters:
    tokens define the vocabulary, base applies it to bare elements, then the
    component layer uses both. Tailwind users additionally import

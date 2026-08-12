@@ -1,7 +1,7 @@
 {
   "name": "@namaste-salesforce/design-system",
   "version": "2.3.0",
-  "description": "Namaste UI — the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
+  "description": "NS Design System — the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
   "license": "MIT",
   "type": "module",
   "sideEffects": [

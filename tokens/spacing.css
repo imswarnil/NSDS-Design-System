@@ -1,4 +1,4 @@
-/* Namaste UI — spacing scale.
+/* NS Design System — spacing scale.
    =========================================================================
    Base unit is 4px (0.25rem), and the index deliberately matches Tailwind's
    default spacing scale 1:1 (--space-4 === Tailwind `4` === 1rem). That is

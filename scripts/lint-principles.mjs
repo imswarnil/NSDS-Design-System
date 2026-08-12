@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* Namaste UI — design-principle linter.
+/* NS Design System — design-principle linter.
    =========================================================================
    readme.md states five principles and then relies on everyone remembering
    them. This turns the checkable subset into a build failure.

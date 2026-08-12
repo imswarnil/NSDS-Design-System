@@ -1,4 +1,4 @@
-/* Namaste UI — component documentation registry.
+/* NS Design System — component documentation registry.
    =========================================================================
    One entry per component. This is the SOURCE for the per-component doc
    pages the styleguide generates: each entry becomes preview/c-<id>.html
