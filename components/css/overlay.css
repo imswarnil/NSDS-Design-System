@@ -40,9 +40,14 @@
     border-radius: var(--radius-card);
     background: var(--color-surface-raised); color: var(--color-ink);
     box-shadow: var(--shadow-raised);
-    display: flex; flex-direction: column;
     animation: ns-fade-up var(--duration-base) var(--ease-out);
   }
+  /* The display switch is on [open]. An author `display` beats the UA's
+     `dialog:not([open]) { display: none }` whatever the specificity, so a
+     base display here leaves the modal rendered in the page flow on every
+     page that includes one — visible, unfocusable, and stacked wherever it
+     happens to sit in the document. */
+  .ns-modal[open] { display: flex; flex-direction: column; }
   .ns-modal--sm { inline-size: min(24rem, calc(100vw - var(--space-8))); }
   .ns-modal--lg { inline-size: min(48rem, calc(100vw - var(--space-8))); }
 
@@ -72,8 +77,8 @@
     inline-size: min(20rem, 85vw);
     background: var(--color-surface-raised); color: var(--color-ink);
     border-inline-end: 1px solid var(--color-border);
-    display: flex; flex-direction: column;
   }
+  .ns-drawer[open] { display: flex; flex-direction: column; }
   .ns-drawer--start { margin-inline-end: auto; animation: ns-slide-start var(--duration-base) var(--ease-out); }
   .ns-drawer--end {
     margin-inline-start: auto;
@@ -153,4 +158,8 @@
 @keyframes ns-fade-in { from { opacity: 0; } }
 @keyframes ns-fade-up { from { opacity: 0; translate: 0 0.5rem; } }
 @keyframes ns-slide-start { from { translate: -100% 0; } }
+/* The mobile nav sheet: down from the bar it came out of, not up from the
+   bottom — it belongs to the burger, and motion should say so. */
+@keyframes ns-sheet-in { from { opacity: 0; translate: 0 -1rem; } }
+@keyframes ns-sheet-row { from { opacity: 0; translate: 0 0.5rem; } }
 @keyframes ns-slide-end { from { translate: 100% 0; } }

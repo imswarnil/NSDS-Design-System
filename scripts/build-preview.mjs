@@ -30,6 +30,14 @@ const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replac
 
 /* ---- inputs ------------------------------------------------------------ */
 const tokens = JSON.parse(readFileSync(join(ROOT, "tokens/tokens.json"), "utf8"));
+/* The two runtime scripts the system actually ships. theme-init is INLINED
+   in the head — that is its documented requirement and the styleguide should
+   demonstrate the correct usage, not a convenient one. nav.js is deferred,
+   and makes the navbar demos on the component pages genuinely operable. */
+/* Its header comment contains a literal </script> (the Ghost snippet it tells
+   you to paste), which would end the inline block early and dump the rest of
+   the file into the page as text. Escaping the slash is the standard fix. */
+const THEME_INIT = readFileSync(join(ROOT, "assets/js/theme-init.js"), "utf8").replace(/<\/script/g, "<\\/script");
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 
 const flat = (node, out = []) => {
@@ -1054,6 +1062,32 @@ const CSS = `
           padding: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
   .demo--dark { background: var(--color-brand-900); border-color: var(--color-brand-900); }
   .demo--stack { flex-direction: column; align-items: stretch; }
+  /* Chrome demos — a navbar is edge-to-edge or it is not a navbar. The bar is
+     unstuck inside the demo box (it would otherwise pin itself to the top of
+     the styleguide while its box scrolled away) and the corners are rounded
+     to the frame so the demo still reads as one card. */
+  /* A bar wider than the doc column scrolls rather than spilling over the
+     rail — except when it carries a panel, which must be free to overhang. */
+  .demo--flush { padding: 0; display: block; overflow-x: auto; }
+  /* The fade-up entrance leaves an identity transform on every .colmain
+     child, and that is a stacking context — so an open panel would be
+     trapped under the next block. Lift the whole demo instead. */
+  .demo--flush:has(.ns-navmenu, .ns-megamenu, .ns-usermenu__panel) {
+    overflow: visible; position: relative; z-index: var(--z-raised);
+  }
+  /* Only one LIVE menu is ever open at a time, so the demo holding it takes
+     the dropdown layer and its panel clears the demos that follow. Keyed on
+     data-ns-menu so the held-open anatomy specimens do not also claim it. */
+  .demo--flush:has([data-ns-menu][aria-expanded="true"]) { z-index: var(--z-dropdown); }
+  .demo--flush > :first-child { border-start-start-radius: var(--radius-card); border-start-end-radius: var(--radius-card); }
+  .demo--flush > :last-child { border-end-start-radius: var(--radius-card); border-end-end-radius: var(--radius-card); }
+  .demo--flush .ns-topnav { position: static; }
+  /* Phone-width demos really are an iframe: media queries answer to the
+     VIEWPORT, so a narrow div would keep showing the desktop bar. */
+  .demo--phone { padding: var(--space-6); justify-content: center; background: var(--color-surface-sunken); }
+  .demo--phone iframe { inline-size: 24rem; max-inline-size: 100%; block-size: 34rem;
+                        border: 1px solid var(--color-border); border-radius: var(--radius-card);
+                        background: var(--color-surface); }
   .code { margin-block-start: var(--space-2); }
   .code > summary { cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: var(--space-1-5);
                     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
@@ -1228,6 +1262,7 @@ const shell = (page, inner) => {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(page.title)} — NS Design System</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
+<script>${THEME_INIT}</script>
 <link rel="stylesheet" href="../dist/namaste-ui.css">
 <style>${CSS}</style>
 </head>
@@ -1256,6 +1291,7 @@ ${sidebar(page.file)}
   </div>
 </main>
 <script>${JS}</script>
+<script src="../assets/js/nav.js" defer></script>
 </body>
 </html>
 `;
@@ -1329,7 +1365,7 @@ for (const page of PAGES) {
   ${c.variants.map((v) => `
   <p class="sub">${esc(v.name)}</p>
   ${v.note ? `<p class="variant-note">${v.note}</p>` : ""}
-  <div class="demo${v.dark ? " demo--dark" : ""}${/ns-(alert|toast|thread|tickets|auth__|accordion|field|fieldset|table-wrap|empty|band|builder|statband|features|faq|quote|rte|dropzone|publishbar|toolbar|pagehead|stat-grid|editor__rail|file)/.test(v.html) ? " demo--stack" : ""}">
+  <div class="demo${v.dark ? " demo--dark" : ""}${v.flush ? " demo--flush" : ""}${v.phone ? " demo--phone" : ""}${/ns-(alert|toast|thread|tickets|auth__|accordion|field|fieldset|table-wrap|empty|band|builder|statband|features|faq|quote|rte|dropzone|publishbar|toolbar|pagehead|stat-grid|editor__rail|file)/.test(v.html) ? " demo--stack" : ""}">
 ${v.html}
   </div>
   ${v.script ? `<script>${v.script}</script>` : ""}
@@ -1357,6 +1393,10 @@ const DEMOS = [
      no backend — in product this behaviour comes from the React components. */
   { out: "demo-admin-course-new.html", tpl: "admin-course-new.html", title: "Create a course — full screen demo", back: "c-admin-shell.html", note: "interactive — build the curriculum, tag it, publish", wrap: "ns-admin__main", interactive: true },
   { out: "demo-admin-lesson-editor.html", tpl: "admin-lesson-editor.html", title: "Lesson editor — full screen demo", back: "c-admin-shell.html", note: "interactive — write, format, upload, publish", wrap: "ns-admin__main", interactive: true },
+  { out: "demo-navbar.html", tpl: "navbar.html", title: "Site navbar — full width demo", back: "c-topnav.html", note: "open the menus; resize below 64rem for the hamburger and the sheet", extras: ["search-modal.html"] },
+  { out: "demo-navbar-blog.html", tpl: "navbar-blog.html", title: "Blog navbar — full width demo", back: "c-topnav.html", note: "signed-in bar: account menu, reading progress on scroll", extras: ["search-modal.html"] },
+  { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed" },
+  { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
   { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
   { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
   { out: "demo-course-listing.html", tpl: "course-listing.html", title: "Course listing — full page demo", back: "c-course-listing.html", note: "live filters — the tags actually filter the grid" },
@@ -1532,6 +1572,12 @@ for (const d of DEMOS) {
   let body = readFileSync(join(ROOT, `templates/${d.tpl}`), "utf8")
     .replace(/<!--[\s\S]*?-->\n?/, ""); // strip the adaptation header comment
   if (d.wrap) body = `<main class="${d.wrap}">\n${body}\n</main>`;
+  /* Some bars carry a search affordance that opens the shared search dialog.
+     The dialog is its own template — appending it here is what the consuming
+     product does too, rather than each bar shipping a copy of it. */
+  for (const extra of d.extras || []) {
+    body += "\n" + readFileSync(join(ROOT, `templates/${extra}`), "utf8").replace(/<!--[\s\S]*?-->\n?/, "");
+  }
   if (d.interactive) body += `\n<script>${ADMIN_DEMO_JS}</script>`;
   writeFileSync(join(OUT, d.out), `<!DOCTYPE html>
 <html lang="en" data-theme="light">
@@ -1546,6 +1592,7 @@ for (const d of DEMOS) {
 <div class="demo-bar">templates/${esc(d.tpl)} — ${esc(d.note)}
   <a class="ns-btn ns-btn--outline ns-btn--sm" style="margin-inline-start:auto" href="./${d.back}">&larr; back to docs</a></div>
 ${body}
+<script src="../assets/js/nav.js" defer></script>
 <script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
 </body>
 </html>

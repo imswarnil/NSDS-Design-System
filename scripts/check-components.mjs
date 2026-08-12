@@ -73,7 +73,7 @@ const LEGACY = new Set([
   "components/core/AvatarRing.jsx", "components/core/Badge.jsx", "components/core/Chip.jsx",
   "components/core/CodeBlock.jsx", "components/core/CodePanel.jsx", "components/core/Footer.jsx",
   "components/core/Hero.jsx", "components/core/Kicker.jsx", "components/core/Logo.jsx",
-  "components/core/Navbar.jsx", "components/core/TableOfContents.jsx", "components/core/TimelineStepper.jsx",
+  "components/core/TableOfContents.jsx", "components/core/TimelineStepper.jsx",
   "components/course/AdSlot.jsx", "components/course/AuthorBox.jsx", "components/course/BlogCard.jsx",
   "components/course/CourseCard.jsx", "components/course/CourseStats.jsx", "components/course/CurriculumList.jsx",
   "components/course/LevelBadge.jsx", "components/course/ResourceCard.jsx", "components/course/RoadmapCard.jsx",

@@ -197,9 +197,12 @@ export default function RootLayout({ children }) {
 import { Field, Input, Select, Switch } from "@namaste-salesforce/design-system/components/forms/Form";
 import { Modal, ConfirmModal, Menu }    from "@namaste-salesforce/design-system/components/overlays/Overlay";
 import { Tabs, Pagination, Breadcrumb } from "@namaste-salesforce/design-system/components/navigation/Navigation";
+import { Topnav, NavBrand, NavLinks, NavLink, MegaMenu, UserMenu, Burger, NavSheet }
+                                       from "@namaste-salesforce/design-system/components/navigation/Navbar";
 import { Alert, ToastProvider, useToast, EmptyState } from "@namaste-salesforce/design-system/components/feedback/Feedback";
 import { ProgressBar, Steps, DataTable } from "@namaste-salesforce/design-system/components/progress/Progress";
-import { ThemeToggle, SkipLink }        from "@namaste-salesforce/design-system/components/core/ThemeToggle";
+import { ThemeToggle, ThemeSwitcher, SkipLink }
+                                       from "@namaste-salesforce/design-system/components/core/ThemeToggle";
 ```
 
 Wrap the app once in `<ToastProvider>` — the live region has to exist before

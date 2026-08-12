@@ -35,8 +35,15 @@
   (function () {
     var dlg = document.getElementById('ns-search');
     if (!dlg) return;
-    var open = function () { dlg.showModal(); document.getElementById('ns-search-input').focus(); };
-    document.querySelectorAll('[data-ns-search-open]').forEach(function (b) { b.addEventListener('click', open); });
+    /* showModal() on an already-open dialog throws, and this page may also
+       carry a navbar whose search button points here — so guard it. */
+    var open = function () {
+      if (!dlg.open) dlg.showModal();
+      document.getElementById('ns-search-input').focus();
+    };
+    /* [data-ns-search] is the navbar's search affordance (.ns-navsearch);
+       [data-ns-search-open] is anything else on the page that opens search. */
+    document.querySelectorAll('[data-ns-search-open], [data-ns-search]').forEach(function (b) { b.addEventListener('click', open); });
     dlg.querySelector('[data-ns-search-close]').addEventListener('click', function () { dlg.close(); });
     document.addEventListener('keydown', function (e) {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open(); }

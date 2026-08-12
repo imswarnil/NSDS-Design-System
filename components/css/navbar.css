@@ -1,0 +1,896 @@
+/* NS Design System — the top bar and everything that hangs off it.
+   =========================================================================
+   Split out of navigation.css because the navbar is not one component: it is
+   a shell (.ns-topnav) plus a family of parts that only ever appear inside
+   it — a brand lockup, a link row, a search affordance, dropdown and mega
+   panels, an account menu, a theme toggle, a hamburger and the mobile sheet
+   it opens. Each is documented and usable on its own; together they are the
+   one piece of chrome on every page, so it is worth its own file.
+
+   Three decisions run through all of it:
+
+   1. STATE LIVES ON aria-expanded / aria-current / aria-checked. Every panel
+      here is shown by a CSS rule that reads the TRIGGER's aria-expanded via
+      :has(). There is no .is-open class anywhere, so the visual state and
+      the announced state are physically the same fact — they cannot drift.
+      JavaScript's whole job is to flip one attribute (see assets/js/nav.js).
+
+   2. NO BACKDROP BLUR. A translucent blurred bar is the default look of
+      every marketing navbar of the last five years, and it costs a real
+      repaint budget on mid-range Android — the same reason the scrim in
+      overlay.css is a flat wash. The transparent variant rides a hero and
+      then becomes SOLID on scroll, which is cheaper and reads clearer.
+
+   3. THE ACCENT LINE, HORIZONTALLY. Current page = 2px brand underline,
+      never a filled pill; Principle 3 keeps solid blue for the one action on
+      the screen, and the page you are already on is not an action. The same
+      device turns up as the left accent inside menus and the mobile sheet. */
+@layer components {
+
+  /* --- Announcement bar ---------------------------------------------------
+     Sits ABOVE the navbar and scrolls away with the page — it is news, not
+     chrome, and pinning news to the viewport is how a banner becomes an ad.
+     Dismissal is a real button; hiding it is the consumer's job (a cookie in
+     Ghost, state in the app), so nothing here assumes it can persist. */
+  .ns-announce {
+    display: flex; align-items: center; justify-content: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-6);
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    font-size: var(--size-small);
+  }
+  .ns-announce__kicker {
+    flex: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-brand-300);
+  }
+  .ns-announce__text { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-announce__link { flex: none; white-space: nowrap; color: var(--color-on-brand); text-underline-offset: 3px; }
+  .ns-announce__close {
+    flex: none; margin-inline-start: var(--space-2);
+    inline-size: var(--target-min); block-size: var(--target-min);
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 0; border-radius: var(--radius-sm);
+    background: transparent; color: var(--color-on-dark); cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-announce__close:hover { background: var(--color-on-dark-wash); }
+  /* On a phone the kicker is the first thing to go: the sentence carries the
+     same news and the row must stay one line. */
+  @media (max-width: 47.999rem) {
+    .ns-announce { padding-inline: var(--space-4); }
+    .ns-announce__kicker { display: none; }
+  }
+  .ns-announce--quiet { background: var(--color-surface-sunken); color: var(--color-ink); border-block-end: 1px solid var(--color-border); }
+  .ns-announce--quiet .ns-announce__kicker { color: var(--color-brand-600); }
+  .ns-announce--quiet .ns-announce__link { color: var(--color-brand-600); }
+  .ns-announce--quiet .ns-announce__close { color: var(--color-muted); }
+  .ns-announce--quiet .ns-announce__close:hover { background: var(--color-surface); }
+
+  /* --- The bar ------------------------------------------------------------
+     Sticky, one hairline below, --navbar-h tall. Children may sit directly
+     inside it (the short form) or inside .ns-topnav__inner when the page
+     content is width-capped and the bar's contents must line up with it. */
+  .ns-topnav {
+    position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-4);
+    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-4);
+    background: var(--color-surface); border-block-end: 1px solid var(--color-border);
+  }
+  /* The optional width-capping wrapper. Same flex row, centred, so a bar on a
+     72rem page has its brand exactly above the page's first column. */
+  .ns-topnav__inner {
+    flex: 1; min-inline-size: 0;
+    display: flex; align-items: center; gap: var(--space-4);
+    block-size: 100%; inline-size: 100%;
+    max-inline-size: var(--container-page); margin-inline: auto;
+  }
+  .ns-topnav--wide .ns-topnav__inner { max-inline-size: var(--container-wide); }
+
+  /* Brand. The mark is fixed at 1.5rem so the bar's optical height never
+     depends on the logo file, and the mono tagline is a real element rather
+     than a slash in the text — it has to be able to disappear on mobile. */
+  .ns-topnav__brand {
+    flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
+    font-weight: var(--weight-semibold); color: var(--color-ink); text-decoration: none;
+  }
+  .ns-topnav__brand img, .ns-topnav__brand svg { inline-size: 1.5rem; block-size: 1.5rem; flex: none; }
+  .ns-topnav__brand:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm); }
+  .ns-topnav__brand-name { white-space: nowrap; }
+  .ns-topnav__brand-tag {
+    padding-inline-start: var(--space-2); margin-inline-start: var(--space-1);
+    border-inline-start: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label); white-space: nowrap;
+  }
+
+  /* Link row. The 2px underline is drawn transparent at rest so marking a
+     link current never moves the row.
+
+     Note the child combinators: a panel hanging off one of these <li>s is
+     full of <a>s too, and a descendant selector here would give every row in
+     a dropdown the bar's own 3.5rem height. */
+  /* flex: none on both clusters — a bar narrower than its contents scrolls
+     the page's own gutter rather than squeezing a two-word button onto two
+     lines, which is the failure mode when a long brand name meets a long CTA. */
+  .ns-topnav__links { flex: none; display: flex; align-items: center; gap: var(--space-0-5); margin: 0; padding: 0; list-style: none; }
+  .ns-topnav__links > li > a, .ns-topnav__link, .ns-topnav__trigger {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    block-size: var(--navbar-h, 3.5rem);
+    padding-inline: var(--space-2-5);
+    border: 0; background: transparent; cursor: pointer;
+    font-family: var(--font-sans); font-size: var(--size-small); color: var(--color-muted);
+    text-decoration: none; white-space: nowrap;
+    box-shadow: inset 0 -2px 0 transparent;
+    transition: color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-topnav__links > li > a:hover, .ns-topnav__link:hover, .ns-topnav__trigger:hover { color: var(--color-ink); }
+  .ns-topnav__links > li > a:focus-visible, .ns-topnav__link:focus-visible, .ns-topnav__trigger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: calc(-1 * var(--focus-ring-width));
+    border-radius: var(--radius-sm); color: var(--color-ink);
+  }
+  .ns-topnav__links > li > a[aria-current="page"], .ns-topnav__link[aria-current="page"] {
+    color: var(--color-brand-600); box-shadow: inset 0 -2px 0 var(--color-brand-500);
+  }
+  [data-theme="dark"] .ns-topnav__links > li > a[aria-current="page"],
+  [data-theme="dark"] .ns-topnav__link[aria-current="page"] { color: var(--color-brand-300); }
+
+  /* A "New" style flag on a link. Mono, tiny, never a colored dot alone —
+     a dot with no text is a decoration a screen reader cannot read. */
+  .ns-topnav__flag {
+    padding: var(--space-0-5) var(--space-1-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-brand-50); color: var(--color-brand-600);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label); text-transform: uppercase;
+  }
+  [data-theme="dark"] .ns-topnav__flag { background: var(--color-surface-sunken); color: var(--color-brand-300); }
+
+  /* Icons in the link row. Optional and OFF by default — a bar where every
+     link has a glyph is a bar where the glyphs mean nothing. Use them when
+     the destinations are places in a product (Dashboard, My courses) rather
+     than pages of a site, where the shape genuinely helps someone find the
+     row again. The icon rides the link's colour, so current/hover need no
+     extra rule. */
+  .ns-topnav__links > li > a i, .ns-topnav__link i, .ns-topnav__trigger i:not(.ns-navicon i) {
+    font-size: var(--size-body); line-height: 1; opacity: 0.85;
+  }
+
+  /* Icon-only bar action — notifications, streak, help, fullscreen. Square,
+     hairline-free until hover, and it ALWAYS carries an aria-label; the
+     badge is a count, never a bare dot, because a dot with no number tells a
+     screen-reader user nothing. */
+  .ns-navicon {
+    position: relative; flex: none;
+    inline-size: var(--target-comfy); block-size: var(--target-comfy);
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid transparent; border-radius: var(--radius-btn);
+    background: transparent; color: var(--color-muted); cursor: pointer;
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-navicon:hover { color: var(--color-ink); border-color: var(--color-border); }
+  .ns-navicon:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-navicon i { font-size: var(--size-body-lg); }
+  .ns-navicon__badge {
+    position: absolute; inset-block-start: 0; inset-inline-end: 0;
+    min-inline-size: var(--space-4); padding-inline: var(--space-1);
+    border-radius: var(--radius-pill);
+    background: var(--color-error); color: var(--color-on-brand);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); line-height: var(--space-4); text-align: center;
+  }
+  .ns-topnav--dark .ns-navicon, .ns-topnav--transparent .ns-navicon { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-navicon:hover, .ns-topnav--transparent .ns-navicon:hover {
+    color: var(--color-on-brand); border-color: var(--color-on-dark-border);
+  }
+
+  /* GitHub star — the open-source bar's one piece of social proof. A link,
+     not a button: it goes to the repo, and the count is a number rendered
+     mono like every other number in this system. The count is separated by a
+     hairline rather than a gap, so the pill reads as one control that happens
+     to carry a figure. Keep it to ONE of these in a bar. */
+  .ns-navstar {
+    flex: none; display: inline-flex; align-items: center;
+    min-block-size: var(--target-comfy);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    color: var(--color-ink); text-decoration: none; font-size: var(--size-small);
+    overflow: hidden;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-navstar:hover { border-color: var(--color-brand-300); }
+  .ns-navstar:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-navstar__label {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding-inline: var(--space-2-5); align-self: stretch;
+  }
+  .ns-navstar__count {
+    display: inline-flex; align-items: center; align-self: stretch;
+    padding-inline: var(--space-2);
+    border-inline-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
+  .ns-topnav--dark .ns-navstar, .ns-topnav--transparent .ns-navstar {
+    border-color: var(--color-on-dark-border); color: var(--color-on-dark);
+  }
+  .ns-topnav--dark .ns-navstar:hover, .ns-topnav--transparent .ns-navstar:hover { border-color: var(--color-on-dark-border-hover); }
+  .ns-topnav--dark .ns-navstar__count, .ns-topnav--transparent .ns-navstar__count {
+    border-inline-start-color: var(--color-on-dark-border); background: var(--color-on-dark-wash); color: var(--color-on-dark);
+  }
+  /* Below lg the words go and the mark stands alone — the star count is the
+     first thing worth dropping when the row gets tight. */
+  @media (max-width: 63.999rem) {
+    .ns-navstar__label span, .ns-navstar__count { display: none; }
+    .ns-navstar__label { padding-inline: var(--space-2); }
+  }
+
+  .ns-topnav__divider { flex: none; inline-size: 1px; block-size: var(--space-6); background: var(--color-border); }
+  .ns-topnav__spacer { flex: 1; }
+  .ns-topnav__actions { flex: none; margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-1-5); }
+  .ns-topnav__actions .ns-btn { flex: none; white-space: nowrap; }
+  /* --center puts the link row in the optical middle; the spacers do the work
+     so the row is centred between brand and actions, not on the viewport. */
+  .ns-topnav--center .ns-topnav__links { margin-inline: auto; }
+
+  /* Reading progress, for the blog bar. A 2px rule along the bottom edge —
+     the same accent line, used as a measure. --p is the percentage. */
+  .ns-topnav__progress {
+    position: absolute; inset-block-end: -1px; inset-inline-start: 0;
+    block-size: 2px; inline-size: calc(var(--p, 0) * 1%);
+    background: var(--color-brand-500);
+    transition: inline-size var(--duration-fast) linear;
+  }
+
+  /* --- Bar variants -------------------------------------------------------- */
+  .ns-topnav--compact { --navbar-h: 3rem; }
+  .ns-topnav--sunken { background: var(--color-surface-sunken); }
+
+  /* On a navy hero: transparent until the page scrolls, then solid. The
+     swap is driven by data-scrolled, set by one scroll listener in
+     assets/js/nav.js — no blur, no translucency, no repaint cost. */
+  .ns-topnav--dark, .ns-topnav--transparent[data-scrolled="true"] {
+    background: var(--color-brand-900);
+    border-block-end-color: color-mix(in srgb, var(--color-on-dark) 15%, transparent);
+  }
+  .ns-topnav--transparent { background: transparent; border-block-end-color: transparent; }
+  .ns-topnav--dark .ns-topnav__brand, .ns-topnav--transparent .ns-topnav__brand { color: var(--color-on-brand); }
+  .ns-topnav--dark .ns-topnav__brand-tag, .ns-topnav--transparent .ns-topnav__brand-tag {
+    border-inline-start-color: var(--color-on-dark-border); color: var(--color-on-dark);
+  }
+  .ns-topnav--dark .ns-topnav__links > li > a, .ns-topnav--dark .ns-topnav__trigger,
+  .ns-topnav--transparent .ns-topnav__links > li > a, .ns-topnav--transparent .ns-topnav__trigger { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-topnav__links > li > a:hover, .ns-topnav--dark .ns-topnav__links > li > a[aria-current="page"],
+  .ns-topnav--transparent .ns-topnav__links > li > a:hover, .ns-topnav--transparent .ns-topnav__links > li > a[aria-current="page"] { color: var(--color-on-brand); }
+  .ns-topnav--dark .ns-topnav__divider, .ns-topnav--transparent .ns-topnav__divider { background: var(--color-on-dark-border); }
+
+  /* Detached bar — floats over the page with a gutter on each side. For
+     marketing pages that want air; never for app chrome, where a bar that
+     does not touch the edges wastes the one row of height it costs. */
+  .ns-topnav--floating {
+    inset-block-start: var(--space-4);
+    margin-inline: var(--space-4); border: 1px solid var(--color-border);
+    border-radius: var(--radius-card); box-shadow: var(--shadow-raised);
+  }
+
+  /* --- Search affordance ---------------------------------------------------
+     A BUTTON that looks like a field, not a field. It opens the search modal
+     (templates/search-modal.html); typing happens there, where results have
+     room. Shaping it like an input is honest about what it will feel like,
+     and the shortcut hint teaches the keyboard path. */
+  .ns-navsearch {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    min-inline-size: 12rem; min-block-size: var(--target-comfy);
+    padding-inline: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface-sunken); color: var(--color-muted);
+    font-family: var(--font-sans); font-size: var(--size-small); text-align: start; cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-navsearch:hover { border-color: var(--color-brand-300); color: var(--color-ink); }
+  .ns-navsearch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-navsearch__text { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-navsearch__kbd {
+    flex: none; padding: var(--space-0-5) var(--space-1-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label);
+  }
+  .ns-navsearch--icon { min-inline-size: 0; border-color: transparent; background: transparent; }
+  .ns-topnav--dark .ns-navsearch, .ns-topnav--transparent .ns-navsearch {
+    border-color: var(--color-on-dark-border); background: var(--color-on-dark-wash); color: var(--color-on-dark);
+  }
+  .ns-topnav--dark .ns-navsearch:hover, .ns-topnav--transparent .ns-navsearch:hover { border-color: var(--color-on-dark-border-hover); color: var(--color-on-brand); }
+  .ns-topnav--dark .ns-navsearch__kbd, .ns-topnav--transparent .ns-navsearch__kbd {
+    border-color: var(--color-on-dark-border); background: transparent; color: var(--color-on-dark);
+  }
+
+  /* --- Dropdown & mega panels ---------------------------------------------
+     .ns-navitem wraps a trigger and its panel. The panel is shown by reading
+     the trigger's aria-expanded — the attribute IS the state — and it stays
+     interactive on hover of the whole item so a mouse can travel from
+     trigger to panel without a hover-intent timer.
+
+     Keyboard: the trigger is a real <button aria-expanded aria-controls>,
+     Esc closes and returns focus, Tab out closes. That behaviour is in
+     assets/js/nav.js for the Ghost theme and in components/navigation/
+     Navbar.jsx for React — one contract, two renderers. */
+  .ns-navitem { position: relative; display: flex; align-items: center; }
+  .ns-topnav__trigger::after {
+    content: "\e136"; /* ph-caret-down */
+    font-family: var(--font-icon); font-size: var(--size-label); color: currentcolor;
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+  .ns-navitem:has(> [aria-expanded="true"]) > .ns-topnav__trigger { color: var(--color-ink); }
+  .ns-navitem:has(> [aria-expanded="true"]) > .ns-topnav__trigger::after { rotate: 180deg; }
+  .ns-topnav--dark .ns-navitem:has(> [aria-expanded="true"]) > .ns-topnav__trigger,
+  .ns-topnav--transparent .ns-navitem:has(> [aria-expanded="true"]) > .ns-topnav__trigger { color: var(--color-on-brand); }
+
+  .ns-navmenu, .ns-megamenu {
+    position: absolute; inset-block-start: 100%; z-index: var(--z-dropdown);
+    background: var(--color-surface-raised); color: var(--color-ink);
+    border: 1px solid var(--color-border); box-shadow: var(--shadow-raised);
+    /* Closed state. visibility (not display) so the panel can transition, and
+       so its contents stay out of the tab order while hidden. The open move
+       is a short drop plus a hair of scale from the top edge — it reads as
+       the panel unfolding from the trigger rather than appearing. */
+    transform-origin: top center;
+    opacity: 0; visibility: hidden; translate: 0 calc(-1 * var(--space-2)); scale: 0.985;
+    transition: opacity var(--duration-base) var(--ease-out),
+                translate var(--duration-base) var(--ease-out),
+                scale var(--duration-base) var(--ease-out),
+                visibility var(--duration-base);
+  }
+  .ns-navitem:has(> [aria-expanded="true"]) > .ns-navmenu,
+  .ns-navitem:has(> [aria-expanded="true"]) > .ns-megamenu {
+    opacity: 1; visibility: visible; translate: 0 0; scale: 1;
+  }
+
+  /* Dropdown: a column of rows, each an icon tile + title + one line of
+     description. The description is what makes a menu navigable by people
+     who do not already know the product — it is not optional decoration. */
+  .ns-navmenu {
+    inset-inline-start: var(--space-2);
+    inline-size: max-content; min-inline-size: 14rem; max-inline-size: 21rem;
+    margin-block-start: calc(-1 * var(--space-2));
+    padding: var(--space-1-5); border-radius: var(--radius-card);
+  }
+  .ns-navmenu--end { inset-inline-start: auto; inset-inline-end: var(--space-2); }
+  .ns-navmenu__label {
+    display: block; padding: var(--space-1-5) var(--space-2) var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-navmenu__item {
+    display: flex; align-items: center; gap: var(--space-2-5);
+    padding: var(--space-1-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--color-ink); text-decoration: none;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: background-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-navmenu__item:hover, .ns-navmenu__item:focus-visible {
+    background: var(--color-surface-sunken); outline: none;
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+  }
+  .ns-navmenu__item[aria-current="page"] { color: var(--color-brand-600); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-navmenu__icon {
+    flex: none; inline-size: var(--space-8); block-size: var(--space-8);
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken); color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-navmenu__icon { color: var(--color-brand-300); }
+  .ns-navmenu__title { display: block; font-size: var(--size-small); font-weight: var(--weight-medium); }
+  .ns-navmenu__desc { display: block; font-size: var(--size-label); color: var(--color-muted); line-height: var(--leading-heading); }
+  .ns-navmenu__sep { block-size: 1px; margin: var(--space-1) 0; border: 0; background: var(--color-border); }
+  .ns-navmenu__foot {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    margin: var(--space-1-5) calc(-1 * var(--space-1-5)) calc(-1 * var(--space-1-5));
+    padding: var(--space-2) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    border-end-start-radius: var(--radius-card); border-end-end-radius: var(--radius-card);
+    font-size: var(--size-small);
+  }
+
+  /* Mega panel: full bar width. --mega makes the wrapper `static` so the
+     panel's containing block is the bar itself rather than the link. */
+  .ns-navitem--mega { position: static; }
+  .ns-megamenu {
+    inset-inline: 0;
+    border-inline: 0; border-end-start-radius: var(--radius-card); border-end-end-radius: var(--radius-card);
+  }
+  .ns-megamenu__inner {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+    gap: var(--space-5);
+    max-inline-size: var(--container-page); margin-inline: auto;
+    padding: var(--space-5) var(--space-4);
+  }
+  .ns-megamenu--wide .ns-megamenu__inner { max-inline-size: var(--container-wide); }
+  .ns-megamenu__col { display: flex; flex-direction: column; gap: var(--space-1); min-inline-size: 0; }
+  .ns-megamenu__label {
+    margin-block-end: var(--space-1);
+    padding-block-end: var(--space-2); border-block-end: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  /* Rows reuse the dropdown row wholesale — a mega menu is a dropdown with
+     more columns, and pretending otherwise would double the CSS. Columns
+     render .ns-navmenu__item; only the inline padding differs. */
+  .ns-megamenu .ns-navmenu__item { padding-inline: var(--space-2); }
+
+  /* The promo column. Sunken card, mono kicker, one link — this is where a
+     mega menu earns its height, and it is capped at ONE per panel. */
+  .ns-megamenu__feature {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 2px 0 var(--color-brand-500);
+  }
+  .ns-megamenu__feature-kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-megamenu__feature-kicker { color: var(--color-brand-300); }
+  .ns-megamenu__feature-title { font-size: var(--size-h4); font-weight: var(--weight-heading); line-height: var(--leading-heading); }
+  .ns-megamenu__feature-text { font-size: var(--size-small); color: var(--color-muted); }
+  .ns-megamenu__feature .ns-btn { align-self: start; }  /* hug the label, not the column */
+  .ns-megamenu__foot {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-5);
+    padding: var(--space-2-5) var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-size: var(--size-small);
+  }
+  .ns-megamenu__foot a { display: inline-flex; align-items: center; gap: var(--space-1-5); color: var(--color-muted); text-decoration: none; }
+  .ns-megamenu__foot a:hover { color: var(--color-brand-600); }
+
+  /* --- Account menu --------------------------------------------------------
+     Signed in: an avatar trigger opening a panel that states WHO you are
+     before it offers actions — the top of an account menu is an identity
+     check, and a menu that skips it is how people post from the wrong
+     account. Signed out: two buttons, one quiet, one primary. */
+  .ns-usermenu { position: relative; display: flex; align-items: center; }
+  .ns-usermenu__trigger {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    min-block-size: var(--target-comfy); padding: var(--space-1) var(--space-2);
+    border: 1px solid transparent; border-radius: var(--radius-pill);
+    background: transparent; color: var(--color-ink); cursor: pointer;
+    font-family: var(--font-sans); font-size: var(--size-small);
+    transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-usermenu__trigger:hover { border-color: var(--color-border); }
+  .ns-usermenu__trigger[aria-expanded="true"] { border-color: var(--color-brand-500); }
+  .ns-usermenu__trigger:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-usermenu__trigger::after {
+    content: "\e136"; /* ph-caret-down */
+    font-family: var(--font-icon); font-size: var(--size-label); color: var(--color-muted);
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+  .ns-usermenu__trigger[aria-expanded="true"]::after { rotate: 180deg; }
+  .ns-usermenu__name { max-inline-size: 9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-topnav--dark .ns-usermenu__trigger, .ns-topnav--transparent .ns-usermenu__trigger { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-usermenu__trigger:hover, .ns-topnav--transparent .ns-usermenu__trigger:hover { border-color: var(--color-on-dark-border); }
+  .ns-topnav--dark .ns-usermenu__trigger::after, .ns-topnav--transparent .ns-usermenu__trigger::after { color: var(--color-on-dark); }
+
+  .ns-usermenu__panel {
+    position: absolute; inset-block-start: 100%; inset-inline-end: 0; z-index: var(--z-dropdown);
+    inline-size: 16rem; padding: var(--space-1-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); color: var(--color-ink);
+    box-shadow: var(--shadow-raised);
+    transform-origin: top right;
+    opacity: 0; visibility: hidden; translate: 0 calc(-1 * var(--space-2)); scale: 0.985;
+    transition: opacity var(--duration-base) var(--ease-out),
+                translate var(--duration-base) var(--ease-out),
+                scale var(--duration-base) var(--ease-out),
+                visibility var(--duration-base);
+  }
+  .ns-usermenu:has(> [aria-expanded="true"]) > .ns-usermenu__panel { opacity: 1; visibility: visible; translate: 0 0; scale: 1; }
+  .ns-usermenu__head { display: flex; align-items: center; gap: var(--space-2-5); padding: var(--space-2) var(--space-2) var(--space-1-5); }
+  /* Menu rows in a nav panel are a LIST, not a set of touch targets on a
+     phone: --target-comfy per row turns eight items into a column of air.
+     The rows stay 2rem — comfortably clickable, four to the inch. */
+  .ns-usermenu__panel .ns-menu__item {
+    min-block-size: var(--space-8); padding: var(--space-1) var(--space-2);
+    gap: var(--space-2-5); font-size: var(--size-small);
+  }
+  .ns-usermenu__panel .ns-menu__item i { font-size: var(--size-body); color: var(--color-muted); }
+  .ns-usermenu__panel .ns-menu__sep { margin: var(--space-1) 0; }
+  .ns-usermenu__identity { min-inline-size: 0; }
+  .ns-usermenu__fullname { display: block; font-weight: var(--weight-medium); font-size: var(--size-small); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-usermenu__email { display: block; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* Progress in the account menu, because on an LMS "where was I?" is the
+     most common reason the menu is opened at all. */
+  .ns-usermenu__progress { padding: 0 var(--space-2) var(--space-1-5); }
+  .ns-usermenu__progress-label {
+    display: flex; justify-content: space-between; gap: var(--space-2); margin-block-end: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-usermenu__plan {
+    margin-inline-start: auto; flex: none;
+    padding: var(--space-0-5) var(--space-1-5); border-radius: var(--radius-pill);
+    background: var(--color-brand-50); color: var(--color-brand-600);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label); text-transform: uppercase;
+  }
+  [data-theme="dark"] .ns-usermenu__plan { background: var(--color-surface-sunken); color: var(--color-brand-300); }
+
+  /* Signed-out cluster. Sign in is quiet, sign up is THE primary — one
+     screen, one solid blue thing (Principle 3). */
+  .ns-topnav__auth { display: flex; align-items: center; gap: var(--space-2); }
+
+  /* --- Theme toggle --------------------------------------------------------
+     Two forms, one behaviour, both from window.nsTheme so the Ghost theme and
+     the app cannot disagree about what "dark" means.
+
+     The segmented form is a real radiogroup of three: Light / System / Dark.
+     SYSTEM IS A CHOICE and it is the default — a two-state toggle silently
+     converts every visitor into someone with an explicit preference, and
+     then their OS switching to dark at sunset does nothing. The sliding
+     thumb is a pseudo-element positioned by :has() reading aria-checked, so
+     there is no class and no JS for the animation. */
+  .ns-themetoggle {
+    --_opt: var(--space-14);  /* one cell; the thumb travels in multiples of it */
+    position: relative; display: inline-flex; align-items: center;
+    padding: var(--space-0-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken);
+  }
+  .ns-themetoggle::before {
+    content: ""; position: absolute; z-index: var(--z-base);
+    inset-block: var(--space-0-5); inline-size: var(--_opt);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    translate: 0 0;
+    transition: translate var(--duration-base) var(--ease-out);
+  }
+  /* Mono uppercase, not glyphs: "auto" has no icon anyone reads correctly —
+     every product draws it differently — and a mono label is this system's
+     own material anyway. Cells are a fixed width so the sliding thumb is
+     arithmetic rather than measurement. */
+  .ns-themetoggle__opt {
+    position: relative; z-index: var(--z-raised);
+    inline-size: var(--_opt); min-block-size: calc(var(--target-comfy) - var(--space-2));
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 0; border-radius: var(--radius-pill);
+    background: transparent; color: var(--color-muted); cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-themetoggle__opt:hover { color: var(--color-ink); }
+  .ns-themetoggle__opt[aria-checked="true"] { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-themetoggle__opt[aria-checked="true"] { color: var(--color-brand-300); }
+  .ns-themetoggle__opt:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: calc(-1 * var(--focus-ring-width)); }
+  /* Thumb position = index of the checked option. Three rules, no state. */
+  .ns-themetoggle:has(> .ns-themetoggle__opt:nth-of-type(1)[aria-checked="true"])::before { translate: 0 0; }
+  .ns-themetoggle:has(> .ns-themetoggle__opt:nth-of-type(2)[aria-checked="true"])::before { translate: var(--_opt) 0; }
+  .ns-themetoggle:has(> .ns-themetoggle__opt:nth-of-type(3)[aria-checked="true"])::before { translate: calc(2 * var(--_opt)) 0; }
+  /* On a navy bar. */
+  .ns-topnav--dark .ns-themetoggle, .ns-topnav--transparent .ns-themetoggle {
+    border-color: var(--color-on-dark-border); background: var(--color-on-dark-wash);
+  }
+  .ns-topnav--dark .ns-themetoggle::before, .ns-topnav--transparent .ns-themetoggle::before {
+    background: var(--color-on-dark-wash); border-color: var(--color-on-dark-border);
+  }
+  .ns-topnav--dark .ns-themetoggle__opt, .ns-topnav--transparent .ns-themetoggle__opt { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-themetoggle__opt[aria-checked="true"],
+  .ns-topnav--transparent .ns-themetoggle__opt[aria-checked="true"] { color: var(--color-on-brand); }
+
+  /* The switch form — the default in a bar, and a real switch: a track and a
+     round knob that slides, with the CURRENT mode's glyph riding inside the
+     knob. Not two glyphs side by side — that reads as a two-option segmented
+     control, and the whole point of a switch is that it has one moving part.
+
+     The knob's position and its glyph both come from data-theme on <html>,
+     in CSS — so they are correct in the first painted frame, before any
+     script runs, and they follow the OS flipping at sunset for free.
+
+     The visible track is 1.5rem tall; the BUTTON is --target-comfy, so the
+     hit area is a full control even though the switch reads as small. */
+  .ns-themeswitch {
+    position: relative; flex: none;
+    inline-size: var(--space-10); block-size: var(--target-comfy);
+    padding: 0; border: 0; background: transparent; cursor: pointer;
+  }
+  .ns-themeswitch::before {
+    content: ""; position: absolute; inset-inline: 0;
+    inset-block: calc((var(--target-comfy) - var(--space-6)) / 2);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken); border: 1px solid var(--color-border);
+    transition: background-color var(--duration-base) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-themeswitch:hover::before { border-color: var(--color-brand-300); }
+  .ns-themeswitch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); border-radius: var(--radius-pill); }
+  .ns-themeswitch__knob {
+    position: absolute;
+    inset-block-start: calc((var(--target-comfy) - var(--space-5)) / 2);
+    inset-inline-start: var(--space-0-5);
+    inline-size: var(--space-5); block-size: var(--space-5);
+    display: inline-flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface); border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card);
+    transition: translate var(--duration-base) var(--ease-out);
+  }
+  [data-theme="dark"] .ns-themeswitch__knob { translate: var(--space-4) 0; }
+  .ns-themeswitch__knob i {
+    position: absolute; font-size: var(--size-label); line-height: 1;
+    color: var(--color-brand-600);
+    transition: opacity var(--duration-base) var(--ease-out), rotate var(--duration-base) var(--ease-out);
+  }
+  .ns-themeswitch .ph-moon { opacity: 0; rotate: -90deg; }
+  [data-theme="dark"] .ns-themeswitch .ph-sun { opacity: 0; rotate: 90deg; }
+  [data-theme="dark"] .ns-themeswitch .ph-moon { opacity: 1; rotate: 0deg; color: var(--color-brand-300); }
+  .ns-topnav--dark .ns-themeswitch::before, .ns-topnav--transparent .ns-themeswitch::before {
+    background: var(--color-on-dark-wash); border-color: var(--color-on-dark-border);
+  }
+
+  /* The icon form: one button, sun and moon stacked in the same box so the
+     swap is a crossfade-and-turn in place rather than a glyph substitution
+     that jumps. Still a switch, still with an accessible name. */
+  .ns-themetoggle-icon {
+    position: relative; flex: none;
+    inline-size: var(--target-comfy); block-size: var(--target-comfy);
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: transparent; color: var(--color-muted); cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-themetoggle-icon:hover { color: var(--color-ink); border-color: var(--color-brand-300); }
+  .ns-themetoggle-icon:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-themetoggle-icon > i {
+    position: absolute; display: inline-flex;
+    transition: opacity var(--duration-base) var(--ease-out), rotate var(--duration-base) var(--ease-out);
+  }
+  .ns-themetoggle-icon .ph-sun { opacity: 1; rotate: 0deg; }
+  .ns-themetoggle-icon .ph-moon { opacity: 0; rotate: -90deg; }
+  [data-theme="dark"] .ns-themetoggle-icon .ph-sun { opacity: 0; rotate: 90deg; }
+  [data-theme="dark"] .ns-themetoggle-icon .ph-moon { opacity: 1; rotate: 0deg; }
+  .ns-topnav--dark .ns-themetoggle-icon, .ns-topnav--transparent .ns-themetoggle-icon {
+    border-color: var(--color-on-dark-border); color: var(--color-on-dark);
+  }
+  .ns-topnav--dark .ns-themetoggle-icon:hover, .ns-topnav--transparent .ns-themetoggle-icon:hover {
+    border-color: var(--color-on-dark-border-hover); color: var(--color-on-brand);
+  }
+
+  /* --- Course bar ----------------------------------------------------------
+     The bar for a page you are INSIDE rather than a site you are browsing:
+     the lesson player and everything downstream of "start learning". It
+     answers three questions the site bar never has to — where am I in this
+     course, how far through am I, and what is next — and it drops the site
+     navigation entirely, because a link row here is an invitation to leave
+     in the middle of a lesson.
+
+     Same shell as .ns-topnav (sticky, one hairline, --navbar-h) so the two
+     bars are visibly the same object with a different payload. */
+  .ns-coursenav {
+    position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-4);
+    block-size: var(--navbar-h); padding-inline: var(--space-4);
+    background: var(--color-surface); border-block-end: 1px solid var(--color-border);
+  }
+  /* Leaving is one control, at the start, and it says where it goes. A bare
+     chevron with no destination is how people end up using the browser back
+     button and losing their place in the video. */
+  .ns-coursenav__back {
+    flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
+    min-block-size: var(--target-comfy); padding-inline: var(--space-2);
+    border-radius: var(--radius-btn);
+    color: var(--color-muted); text-decoration: none; font-size: var(--size-small);
+    transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-coursenav__back:hover { color: var(--color-ink); background: var(--color-surface-sunken); }
+  .ns-coursenav__back:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+
+  /* Identity: mono position line above, lesson title below. The position is
+     mono because it is data — "07 / 24" is a coordinate, not a sentence. */
+  .ns-coursenav__id { min-inline-size: 0; display: flex; flex-direction: column; justify-content: center; }
+  .ns-coursenav__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label); white-space: nowrap;
+  }
+  .ns-coursenav__title {
+    font-size: var(--size-small); font-weight: var(--weight-medium); color: var(--color-ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* Course completion, inline. A 2px rule and a mono percentage — the same
+     measure device as the reading-progress line, but here it is information
+     the learner acts on, so it is labelled and announced. */
+  .ns-coursenav__progress {
+    flex: 1; min-inline-size: 0;
+    display: flex; align-items: center; gap: var(--space-3);
+    max-inline-size: 22rem; margin-inline: auto;
+  }
+  .ns-coursenav__bar {
+    flex: 1; min-inline-size: 0; block-size: 2px;
+    background: var(--color-border); border-radius: var(--radius-pill); overflow: hidden;
+  }
+  .ns-coursenav__bar > span {
+    display: block; block-size: 100%; inline-size: calc(var(--p, 0) * 1%);
+    background: var(--color-brand-500);
+    transition: inline-size var(--duration-base) var(--ease-out);
+  }
+  .ns-coursenav__pct {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
+  .ns-coursenav__actions { flex: none; margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-2); }
+  .ns-coursenav--dark { background: var(--color-brand-900); border-block-end-color: color-mix(in srgb, var(--color-on-dark) 15%, transparent); }
+  .ns-coursenav--dark .ns-coursenav__title { color: var(--color-on-brand); }
+  .ns-coursenav--dark .ns-coursenav__back, .ns-coursenav--dark .ns-coursenav__kicker,
+  .ns-coursenav--dark .ns-coursenav__pct { color: var(--color-on-dark); }
+  .ns-coursenav--dark .ns-coursenav__back:hover { background: var(--color-on-dark-wash); color: var(--color-on-brand); }
+  .ns-coursenav--dark .ns-coursenav__bar { background: var(--color-on-dark-border); }
+  .ns-coursenav--dark .ns-navicon { color: var(--color-on-dark); }
+
+  /* A mono metric in a bar — streak, seats left, minutes today. Dashboards
+     want one or two of these; three is a stat band, and that belongs on the
+     page, not in the chrome. */
+  .ns-navstat {
+    flex: none; display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding-inline: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label); white-space: nowrap;
+  }
+  .ns-navstat strong { color: var(--color-ink); font-weight: var(--weight-label); }
+  .ns-navstat i { color: var(--color-brand-600); font-size: var(--size-small); }
+  [data-theme="dark"] .ns-navstat i { color: var(--color-brand-300); }
+
+  /* --- Hamburger -----------------------------------------------------------
+     Three 2px rules — the hairline vocabulary, not an icon font glyph, so it
+     can animate into the close X. aria-expanded drives both the shape and
+     the announcement. Hidden at lg and up, where the link row is visible. */
+  .ns-burger {
+    display: none; flex: none;
+    inline-size: var(--target-comfy); block-size: var(--target-comfy);
+    position: relative;
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: transparent; cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-burger:hover { border-color: var(--color-brand-300); }
+  .ns-burger:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-burger__bar {
+    position: absolute; inset-inline-start: 50%; inline-size: var(--space-5); block-size: 2px;
+    margin-inline-start: calc(-1 * var(--space-2-5));
+    background: var(--color-ink); border-radius: var(--radius-pill);
+    transition: translate var(--duration-base) var(--ease-out),
+                rotate var(--duration-base) var(--ease-out),
+                opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-burger__bar:nth-child(1) { inset-block-start: calc(50% - var(--space-2)); }
+  .ns-burger__bar:nth-child(2) { inset-block-start: calc(50% - 1px); }
+  .ns-burger__bar:nth-child(3) { inset-block-start: calc(50% + var(--space-1-5)); }
+  .ns-burger[aria-expanded="true"] .ns-burger__bar:nth-child(1) { translate: 0 var(--space-2); rotate: 45deg; }
+  .ns-burger[aria-expanded="true"] .ns-burger__bar:nth-child(2) { opacity: 0; }
+  .ns-burger[aria-expanded="true"] .ns-burger__bar:nth-child(3) { translate: 0 calc(-1 * var(--space-2)); rotate: -45deg; }
+  .ns-topnav--dark .ns-burger, .ns-topnav--transparent .ns-burger { border-color: var(--color-on-dark-border); }
+  .ns-topnav--dark .ns-burger__bar, .ns-topnav--transparent .ns-burger__bar { background: var(--color-on-dark); }
+
+  /* --- Mobile sheet --------------------------------------------------------
+     A <dialog>, so the focus trap, Esc, inert background and top-layer
+     stacking come from the platform (see overlay.css). It covers the whole
+     viewport rather than sliding in from the side: on a phone a 20rem drawer
+     leaves a strip of unusable page, and the links get to be large enough to
+     hit. Sections are <details> so a long site map is still one thumb-reach.
+
+     The rows are mono-indexed, the same numbering device as List and
+     Curriculum — the site map reads as a table of contents, which is what it
+     is. */
+  .ns-navsheet {
+    padding: 0; border: 0; margin: 0;
+    inline-size: 100vw; max-inline-size: 100vw;
+    block-size: 100dvh; max-block-size: 100dvh;
+    background: var(--color-surface); color: var(--color-ink);
+    animation: ns-fade-in var(--duration-fast) var(--ease-out);
+  }
+  /* The display switch is on [open], NOT on the base rule. An author
+     `display: flex` beats the UA's `dialog:not([open]) { display: none }`
+     whatever its specificity, so a base display here would leave the sheet
+     rendered in the page flow on every desktop page that includes one. */
+  .ns-navsheet[open] { display: flex; flex-direction: column; }
+  .ns-navsheet::backdrop { background: var(--color-scrim); }
+  .ns-navsheet__head {
+    flex: none; display: flex; align-items: center; gap: var(--space-3);
+    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-6);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-navsheet__close { margin-inline-start: auto; }
+  .ns-navsheet__body { flex: 1; overflow-y: auto; padding: var(--space-4) var(--space-6) var(--space-8); }
+  .ns-navsheet__label {
+    display: block; margin-block: var(--space-5) var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-navsheet__link {
+    display: flex; align-items: center; gap: var(--space-4);
+    padding: var(--space-3) var(--space-2);
+    border-block-end: 1px solid var(--color-border);
+    color: var(--color-ink); text-decoration: none;
+    font-size: var(--size-h4); font-weight: var(--weight-medium);
+    box-shadow: inset 2px 0 0 transparent;
+    transition: box-shadow var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-navsheet__link:active { box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-navsheet__link[aria-current="page"] { color: var(--color-brand-600); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  [data-theme="dark"] .ns-navsheet__link[aria-current="page"] { color: var(--color-brand-300); }
+  .ns-navsheet__index {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
+  .ns-navsheet__link i { margin-inline-start: auto; color: var(--color-muted); font-size: var(--size-body); }
+  /* Nested group: a <details> whose summary is a sheet row. */
+  .ns-navsheet__group > summary { list-style: none; cursor: pointer; }
+  .ns-navsheet__group > summary::-webkit-details-marker { display: none; }
+  .ns-navsheet__group[open] > summary i { rotate: 180deg; }
+  .ns-navsheet__group > summary i { transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-navsheet__sub { padding-inline-start: var(--space-6); }
+  .ns-navsheet__sub .ns-navsheet__link { font-size: var(--size-body); font-weight: var(--weight-regular); color: var(--color-muted); }
+  /* The foot is pinned: sign-up is the reason the sheet exists on a
+     marketing site, and it must not depend on scrolling to the end. */
+  .ns-navsheet__foot {
+    flex: none; display: grid; gap: var(--space-2);
+    padding: var(--space-4) var(--space-6);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  .ns-navsheet__meta {
+    display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+    padding-block-start: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* --- Responsive ----------------------------------------------------------
+     One breakpoint, at lg: above it the link row; below it the hamburger.
+     Everything else about the bar is identical, so there is one bar with two
+     link surfaces rather than two bars. */
+  @media (max-width: 63.999rem) {
+    .ns-topnav__links, .ns-topnav__divider, .ns-navsearch:not(.ns-navsearch--icon) { display: none; }
+    /* The segmented toggle and the auth pair are repeated in the sheet — in
+       the bar they would push the burger off a 360px screen. The compact
+       icon toggle stays, because it costs one square. */
+    .ns-topnav .ns-themetoggle, .ns-topnav__auth { display: none; }
+    .ns-burger { display: inline-flex; align-items: center; justify-content: center; }
+    .ns-topnav__brand-tag { display: none; }
+    .ns-topnav { padding-inline: var(--space-4); }
+    .ns-usermenu__name { display: none; }
+  }
+  /* The course bar sheds in a fixed order: the back button's word, then the
+     inline progress meter (it is repeated above the curriculum rail), then
+     the mono position line. The lesson title and Next never go. */
+  @media (max-width: 47.999rem) {
+    .ns-coursenav__back span, .ns-coursenav__progress { display: none; }
+    .ns-coursenav__next-label { display: none; }
+  }
+
+  /* Motion: the panels and the burger all animate. Honour the OS setting —
+     Principle 5 says motion is instant, and for some users it is zero. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-navmenu, .ns-megamenu, .ns-usermenu__panel, .ns-burger__bar,
+    .ns-themetoggle::before, .ns-themetoggle-icon > i,
+    .ns-themeswitch__knob, .ns-themeswitch__knob i,
+    .ns-topnav__progress, .ns-coursenav__bar > span {
+      transition-duration: 1ms; /* lint-ok: the point of this block is to remove the duration, and 0 would cancel transitionend listeners */
+    }
+    .ns-navsheet[open], .ns-navsheet[open] .ns-navsheet__body > *,
+    .ns-navsheet::backdrop { animation: none; }
+  }
+}

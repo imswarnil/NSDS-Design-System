@@ -1,5 +1,5 @@
 <!--
-  Namaste UI template — theme toggle
+  Namaste UI template — theme controls
   =====================================================================
   Framework-agnostic markup: the same .ns-* classes the React components
   render. Adapt the marked slots to your stack:
@@ -9,24 +9,39 @@
     Next.js → prefer the React components in components/; this file is the
               markup contract they implement.
     Static  → use directly.
+
+  Requires assets/js/theme-init.js INLINED in <head> before any stylesheet,
+  and assets/js/nav.js (defer) to wire the controls. Which glyph shows is
+  decided in CSS from data-theme, so the icon is right in the first painted
+  frame, before any script has run.
 -->
-<!-- Requires assets/js/theme-init.js inlined in <head> BEFORE any stylesheet. -->
-<button type="button" class="ns-btn ns-btn--outline ns-btn--icon ns-btn--sm"
-        role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
-  <i class="ph ph-moon" aria-hidden="true" data-ns-theme-icon></i>
+
+<!-- The switch. The default in a bar: it shows BOTH states and which one is
+     current, instead of asking you to infer the current mode from the icon
+     of the other one. The knob's position comes from data-theme in CSS, so
+     it is right in the first painted frame. -->
+<button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
+        aria-label="Dark mode" data-ns-theme-toggle>
+  <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
 </button>
-<script>
-  (function () {
-    var btn = document.querySelector('[data-ns-theme-toggle]');
-    if (!btn) return;
-    var icon = btn.querySelector('[data-ns-theme-icon]');
-    var sync = function () {
-      var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-      btn.setAttribute('aria-checked', String(dark));
-      if (icon) icon.className = 'ph ' + (dark ? 'ph-sun' : 'ph-moon');
-    };
-    btn.addEventListener('click', function () { window.nsTheme && window.nsTheme.toggle(); });
-    sync();
-    new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-  })();
-</script>
+
+<!-- One square button, sun ⇄ moon crossfading in place. For a bar with no
+     room left — the course bar on a phone. -->
+<button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false"
+        aria-label="Dark mode" data-ns-theme-toggle>
+  <i class="ph ph-sun" aria-hidden="true"></i>
+  <i class="ph ph-moon" aria-hidden="true"></i>
+</button>
+
+<!-- Light · Auto · Dark. The honest form, and the one to prefer wherever
+     there is room: "Auto" is the default, and a two-state toggle silently
+     converts every visitor into someone with an explicit preference — after
+     which their OS switching at sunset does nothing. -->
+<div class="ns-themetoggle" role="radiogroup" aria-label="Colour theme" data-ns-theme>
+  <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false"
+          aria-label="Light" data-ns-theme-value="light">Light</button>
+  <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="true"
+          aria-label="Match the system setting" data-ns-theme-value="system">Auto</button>
+  <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false"
+          aria-label="Dark" data-ns-theme-value="dark">Dark</button>
+</div>

@@ -1589,33 +1589,520 @@ export const COMPONENTS = [
   /* ===================================================== Navigation ==== */
   {
     id: "topnav", title: "Navbar", family: "Navigation",
-    summary: "The product's top bar: brand, links, actions, one hairline below. The active link wears the 2px brand underline — the accent-line device, horizontal. Sticky by default; --dark rides a navy hero.",
-    use: ["The one global bar at the top of every page", "aria-current=\"page\" on exactly one link"],
-    not: ["Secondary navigation inside a page — Tabs or Sidebar", "Marketing mega-menus — this system does not have them on purpose"],
-    a11y: ["A <nav> landmark with a label", "aria-current=\"page\" marks location for assistive tech and paints the underline — one attribute, both jobs"],
+    summary: "The one piece of chrome on every page: brand, links, actions, one hairline below, <code>--navbar-h</code> (3.5rem) tall — chrome, and every row it takes is a row of content the reader does not get. The current page wears the 2px brand underline — the accent-line device, horizontal — because the page you are already on is not an action and must not look like a button. Sticky by default; the surface variants ride a hero, float, or go quiet.",
+    use: ["The single global bar at the top of every page", "aria-current=\"page\" on exactly one link", "Pair it with the mobile sheet below lg — the bar is one component with two link surfaces"],
+    not: ["Secondary navigation inside a page — Tabs or Sidebar", "A second bar under the first — if the page needs two rows of navigation, the information architecture is the problem", "Hiding the bar on scroll-down: it saves 3.5rem and costs everyone the ability to predict where navigation is"],
+    a11y: ["A &lt;nav&gt; landmark with a label, so \"skip to navigation\" lands somewhere", "aria-current=\"page\" marks location for assistive tech AND paints the underline — one attribute, both jobs", "The bar is the first thing in the tab order after the skip link, and the skip link's target carries tabindex=\"-1\""],
     variants: [
-      { name: "Default", html: `<nav class="ns-topnav" aria-label="Main" style="position:static;inline-size:100%">
-  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt="">Namaste Salesforce</a>
+      { name: "Anatomy", flush: true, note: "Brand · link row · divider · search · theme · action, in that order (the signed-in and signed-out ends of the bar are on the <a href=\"./c-usermenu.html\">Account menu</a> page). Everything after the link row sits in <code>.ns-topnav__actions</code>, which takes the remaining space with <code>margin-inline-start:auto</code> — so adding an action never re-centres the links. Live: the whole bar on this page is operable.", html: `<nav class="ns-topnav" aria-label="Anatomy example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span><span class="ns-topnav__brand-tag">Learn</span></a>
   <ul class="ns-topnav__links">
     <li><a href="#" aria-current="page">Courses</a></li>
-    <li><a href="#">Training</a></li>
-    <li><a href="#">Docs</a></li>
-    <li><a href="#">Blog</a></li>
+    <li><a href="#">Docs <span class="ns-topnav__flag">New</span></a></li>
   </ul>
   <div class="ns-topnav__actions">
-    <button class="ns-btn ns-btn--quiet ns-btn--sm">Sign in</button>
-    <button class="ns-btn ns-btn--primary ns-btn--sm">Start learning</button>
+    <button type="button" class="ns-navsearch">
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+      <span class="ns-navsearch__text">Search courses…</span>
+      <kbd class="ns-navsearch__kbd">⌘K</kbd>
+    </button>
+    <span class="ns-topnav__divider" aria-hidden="true"></span>
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+    </button>
+    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Sign up</a>
   </div>
 </nav>` },
-      { name: "On dark", note: "For the hero band; same anatomy, on-dark inks.", dark: true, html: `<nav class="ns-topnav ns-topnav--dark" aria-label="Main" style="position:static;inline-size:100%">
-  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt="">Namaste Salesforce</a>
+      { name: "Contained", flush: true, note: "<code>.ns-topnav__inner</code> caps the contents at the page container so the brand sits exactly above the page's first column. Without it the bar is edge-to-edge — right for an app, wrong for a 72rem marketing page. <code>--wide</code> switches the cap to the wide container.", html: `<nav class="ns-topnav" aria-label="Contained example">
+  <div class="ns-topnav__inner">
+    <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+    <ul class="ns-topnav__links">
+      <li><a href="#" aria-current="page">Courses</a></li>
+      <li><a href="#">Pricing</a></li>
+    </ul>
+    <div class="ns-topnav__actions"><a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a></div>
+  </div>
+</nav>` },
+      { name: "Signed in — app bar", flush: true, note: "Compact height, search first, account menu last. No sign-up button: the member already signed up, and leaving it there is how a product tells a paying customer it has not noticed them.", html: `<nav class="ns-topnav ns-topnav--compact" aria-label="App bar example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page">My learning</a></li>
+    <li><a href="#">Catalog</a></li>
+  </ul>
+  <div class="ns-topnav__actions">
+    <button type="button" class="ns-navsearch ns-navsearch--icon" aria-label="Search"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
+    <button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+      <i class="ph ph-sun" aria-hidden="true"></i><i class="ph ph-moon" aria-hidden="true"></i>
+    </button>
+    <span class="ns-topnav__divider" aria-hidden="true"></span>
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="app-account" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span><span class="ns-usermenu__name">Aarti K.</span>
+      </button>
+      <div class="ns-usermenu__panel" id="app-account">
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity"><span class="ns-usermenu__fullname">Aarti Kulkarni</span><span class="ns-usermenu__email">aarti@example.com</span></span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="#"><i class="ph ph-user" aria-hidden="true"></i> My learning</a>
+        <a class="ns-menu__item" href="#"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
+      </div>
+    </div>
+  </div>
+</nav>` },
+      { name: "With icons", flush: true, note: "Icons in the link row are OFF by default and this is the case they exist for: an app bar, where the links are PLACES in a product rather than pages of a site and the shape helps someone find the row again. On a marketing bar, where every link is a page, a glyph on each one means nothing. The icon rides the link's colour, so current and hover need no extra rule.", html: `<nav class="ns-topnav ns-topnav--compact" aria-label="Icon links example">
+  BRAND
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page"><i class="ph ph-squares-four" aria-hidden="true"></i> Dashboard</a></li>
+    <li><a href="#"><i class="ph ph-books" aria-hidden="true"></i> My courses</a></li>
+    <li><a href="#"><i class="ph ph-seal-check" aria-hidden="true"></i> Certificates</a></li>
+  </ul>
+  <div class="ns-topnav__actions">
+    <span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
+    <a class="ns-navicon" href="#" aria-label="Notifications — 3 unread"><i class="ph ph-bell" aria-hidden="true"></i><span class="ns-navicon__badge" aria-hidden="true">3</span></a>
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+    </button>
+  </div>
+</nav>` },
+      { name: "Search panel", note: "The bar's search is a BUTTON shaped like a field, and this is what it opens: the shared search dialog (<code>templates/search-modal.html</code>), where results have room and ⌘K reaches it from anywhere. Live — click it or press ⌘K/Ctrl-K. Typing in the bar itself would mean teleporting the text into a dialog on the first keystroke, which is the version of this that feels broken.", script: `(function () {
+  var dlg = document.getElementById('doc-search');
+  if (!dlg) return;
+  var open = function () { if (!dlg.open) dlg.showModal(); dlg.querySelector('input').focus(); };
+  document.querySelectorAll('[data-ns-search]').forEach(function (b) { b.addEventListener('click', open); });
+  dlg.querySelector('[data-ns-search-close]').addEventListener('click', function () { dlg.close(); });
+  document.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); open(); }
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+})();`, html: `<button type="button" class="ns-navsearch" data-ns-search>
+  <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+  <span class="ns-navsearch__text">Search courses…</span>
+  <kbd class="ns-navsearch__kbd">⌘K</kbd>
+</button>
+<button type="button" class="ns-navsearch ns-navsearch--icon" aria-label="Search" data-ns-search>
+  <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+</button>
+<dialog class="ns-modal ns-modal--lg" id="doc-search" aria-label="Search">
+  <div class="ns-modal__header">
+    <div style="flex:1">
+      <label class="ns-visually-hidden" for="doc-search-input">Search courses and documentation</label>
+      <input id="doc-search-input" class="ns-input ns-input--has-icon" type="search" placeholder="Search courses, lessons, docs…" autocomplete="off">
+    </div>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Close search" data-ns-search-close><i class="ph ph-x" aria-hidden="true"></i></button>
+  </div>
+  <div class="ns-modal__body" role="status" aria-live="polite">
+    <div class="ns-empty" style="border:0">
+      <i class="ph ph-magnifying-glass ns-empty__icon" aria-hidden="true"></i>
+      <p class="ns-empty__text">Start typing to search.</p>
+    </div>
+  </div>
+</dialog>` },
+      { name: "GitHub star", note: "For an open-source product this is the bar's one piece of social proof, and it is a <em>link to the repo</em> rather than a widget: the count is a number, rendered mono like every other number here, and it is divided by a hairline so the pill reads as one control. One per bar. Below lg the words drop and the mark stands alone. The mark itself is filled rather than restroked — a logo has to be itself.", html: `<a class="ns-navstar" href="#" aria-label="Star Namaste Salesforce on GitHub — 1.2k stars">
+  <span class="ns-navstar__label"><i class="ph ph-github-logo" aria-hidden="true"></i> <span>Star</span></span>
+  <span class="ns-navstar__count" aria-hidden="true">1.2k</span>
+</a>
+<a class="ns-navicon" href="#" aria-label="GitHub repository"><i class="ph ph-github-logo" aria-hidden="true"></i></a>` },
+      { name: "Blog bar", flush: true, note: "Centred links, a reading-progress line along the bottom edge, and tags instead of products — on a blog the useful navigation is by subject. The progress line is set here to 38% for the specimen; in product <code>assets/js/nav.js</code> drives it from scroll. Full page: <a href=\"./demo-navbar-blog.html\">open the blog bar demo ↗</a>", html: `<nav class="ns-topnav ns-topnav--center" aria-label="Blog bar example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span><span class="ns-topnav__brand-tag">Blog</span></a>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page">Latest</a></li>
+    <li><a href="#">Admin</a></li>
+    <li><a href="#">Developer</a></li>
+    <li><a href="#">Architect</a></li>
+  </ul>
+  <div class="ns-topnav__actions">
+    <button type="button" class="ns-navsearch ns-navsearch--icon" aria-label="Search the blog"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
+    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Subscribe</a>
+  </div>
+  <div class="ns-topnav__progress" style="--p:38" aria-hidden="true"></div>
+</nav>` },
+      { name: "On a hero", dark: true, flush: true, note: "<code>--dark</code> is the navy bar; <code>--transparent</code> is the same anatomy with no background at all, for sitting on a hero image — it swaps to this navy once the page scrolls (<code>data-scrolled</code>, one passive listener). Deliberately NOT a translucent blur: backdrop-filter costs real repaint budget on mid-range Android, and \"calm and fast\" is a product value, not a slogan.", html: `<nav class="ns-topnav ns-topnav--dark" aria-label="Dark bar example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span><span class="ns-topnav__brand-tag">Learn</span></a>
   <ul class="ns-topnav__links">
     <li><a href="#" aria-current="page">Courses</a></li>
     <li><a href="#">Training</a></li>
     <li><a href="#">Docs</a></li>
   </ul>
   <div class="ns-topnav__actions">
-    <button class="ns-btn ns-btn--white ns-btn--sm">Start learning</button>
+    <button type="button" class="ns-navsearch">
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+      <span class="ns-navsearch__text">Search courses…</span>
+      <kbd class="ns-navsearch__kbd">⌘K</kbd>
+    </button>
+    <a class="ns-btn ns-btn--white ns-btn--sm" href="#">Start learning</a>
+  </div>
+</nav>` },
+      { name: "Floating and sunken", flush: true, note: "<code>--floating</code> detaches the bar with a gutter and a raised shadow — marketing pages that want air. <code>--sunken</code> drops it onto the sunken surface, which is how it should look above a white content column. Neither belongs in app chrome, where a bar that does not touch the edges wastes the one row of height it costs.", html: `<div style="background:var(--color-surface-sunken);padding-block:var(--space-4)">
+  <nav class="ns-topnav ns-topnav--floating" aria-label="Floating example">
+    <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+    <ul class="ns-topnav__links"><li><a href="#" aria-current="page">Courses</a></li><li><a href="#">Pricing</a></li></ul>
+    <div class="ns-topnav__actions"><a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a></div>
+  </nav>
+</div>
+<nav class="ns-topnav ns-topnav--sunken" aria-label="Sunken example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <ul class="ns-topnav__links"><li><a href="#" aria-current="page">Courses</a></li><li><a href="#">Pricing</a></li></ul>
+  <div class="ns-topnav__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="#">Sign in</a></div>
+</nav>` },
+      { name: "Announcement above", flush: true, note: "News, not chrome — so it sits ABOVE the sticky bar and scrolls away with the page. Pinning it to the viewport is how a banner becomes an ad. <code>--quiet</code> is the same bar on the sunken surface, for a notice that is useful rather than promotional.", html: `<div class="ns-announce">
+  <span class="ns-announce__kicker">New</span>
+  <span class="ns-announce__text">Flow Builder deep-dive — 14 lessons, free this month.</span>
+  <a class="ns-announce__link" href="#">Start the course</a>
+  <button type="button" class="ns-announce__close" aria-label="Dismiss announcement"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>
+<nav class="ns-topnav" aria-label="Announcement example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <ul class="ns-topnav__links"><li><a href="#" aria-current="page">Courses</a></li><li><a href="#">Docs</a></li></ul>
+  <div class="ns-topnav__actions"><a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a></div>
+</nav>` },
+      { name: "The whole thing", note: "Announcement, mega menu, dropdown, search, theme, auth, hamburger and sheet — assembled, at full page width, from <code>templates/navbar.html</code>: <a href=\"./demo-navbar.html\">open the full navbar demo ↗</a>. Resize below 64rem to get the hamburger and the mobile sheet.", html: `<a class="ns-btn ns-btn--outline" href="./demo-navbar.html">Open the full navbar demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline" href="./demo-navbar-blog.html">Open the blog navbar demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>` },
+    ],
+  },
+  {
+    id: "navmenu", title: "Nav menu", family: "Navigation",
+    summary: "The panels that hang off a navbar link: a dropdown for a handful of destinations, a mega panel for a section of the site. Both are DISCLOSURES, not ARIA menus — the rows are links to pages, so they behave like links, and the only state is <code>aria-expanded</code> on the trigger, which is exactly what the CSS reads to show the panel.",
+    use: ["A link that leads to four or more related pages", "Destinations that need a line of explanation — \"Architect · patterns, scale, governance\"", "The mega panel when one section has three columns' worth of pages and a thing worth featuring"],
+    not: ["An actions menu (Duplicate, Delete…) — that is Menu in Overlays, with role=\"menu\" and its own keyboard rules", "Hover-only opening: it is unreachable by touch and fires by accident with a passing cursor", "More than one promo per mega panel — two is an ad break, and a mega menu that is mostly marketing has stopped being navigation"],
+    a11y: ["The trigger is a &lt;button&gt; with aria-expanded and aria-controls; the state attribute and the visual state are the same fact", "Esc closes and RETURNS FOCUS to the trigger — without that, Esc silently drops a keyboard user at the top of the document", "ArrowDown opens and moves into the panel; Tab out of the panel closes it", "The rows are &lt;a&gt; elements, so they are crawlable, middle-clickable, and announced as links because that is what they are"],
+    variants: [
+      { name: "Dropdown", flush: true, note: "Icon tile, title, one line of description. The description is not garnish — it is the whole reason a menu is navigable by someone who does not already know the product. Live: click <strong>Resources</strong>.", html: `<nav class="ns-topnav" aria-label="Dropdown example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page">Courses</a></li>
+    <li class="ns-navitem">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-resources">Resources</button>
+      <div class="ns-navmenu" id="doc-resources">
+        <p class="ns-navmenu__label">Read</p>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-article" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Blog</span><span class="ns-navmenu__desc">Release notes, deep dives, opinions</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Docs</span><span class="ns-navmenu__desc">The theme and the design system</span></span>
+        </a>
+        <hr class="ns-navmenu__sep">
+        <p class="ns-navmenu__label">Watch</p>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-video" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">YouTube</span><span class="ns-navmenu__desc">Two videos a week, Hindi and English</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-github-logo" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">GitHub</span><span class="ns-navmenu__desc">The theme and this system, MIT</span></span>
+        </a>
+        <div class="ns-navmenu__foot">
+          <span>New this week</span>
+          <a href="#">Winter release →</a>
+        </div>
+      </div>
+    </li>
+    <li><a href="#">Pricing</a></li>
+  </ul>
+</nav>` },
+      { name: "Mega panel", flush: true, note: "<code>.ns-navitem--mega</code> makes the wrapper <code>static</code>, so the panel's containing block is the BAR and it spans the full width. Columns of the same rows, one promo, and a hairline foot bar for the odds and ends. Live: click <strong>Learn</strong>.", html: `<nav class="ns-topnav" aria-label="Mega menu example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <ul class="ns-topnav__links">
+    <li><a href="#">Courses</a></li>
+    <li class="ns-navitem ns-navitem--mega">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-learn">Learn</button>
+      <div class="ns-megamenu" id="doc-learn">
+        <div class="ns-megamenu__inner">
+          <div class="ns-megamenu__col">
+            <p class="ns-megamenu__label">By role</p>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span></a>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span></a>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span></a>
+          </div>
+          <div class="ns-megamenu__col">
+            <p class="ns-megamenu__label">By product</p>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Flow</span><span class="ns-navmenu__desc">Automation without code</span></span></a>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-lightning" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Lightning</span><span class="ns-navmenu__desc">App Builder and components</span></span></a>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-database" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Data Cloud</span><span class="ns-navmenu__desc">Ingest, unify, activate</span></span></a>
+          </div>
+          <div class="ns-megamenu__col">
+            <p class="ns-megamenu__label">Free</p>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-map-trifold" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Roadmaps</span><span class="ns-navmenu__desc">What to learn, in order</span></span></a>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-exam" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Practice exams</span><span class="ns-navmenu__desc">Timed, with explanations</span></span></a>
+            <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-terminal-window" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Code snippets</span><span class="ns-navmenu__desc">Copy-paste Apex and LWC</span></span></a>
+          </div>
+          <div class="ns-megamenu__feature">
+            <span class="ns-megamenu__feature-kicker">Featured</span>
+            <p class="ns-megamenu__feature-title">Admin → Developer in 12 weeks</p>
+            <p class="ns-megamenu__feature-text">The full trail: Apex, testing, deployment, and the interview prep at the end.</p>
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="#">See the trail</a>
+          </div>
+        </div>
+        <div class="ns-megamenu__foot">
+          <a href="#"><i class="ph ph-play-circle" aria-hidden="true"></i> Latest lesson</a>
+          <a href="#"><i class="ph ph-users-three" aria-hidden="true"></i> Community</a>
+          <a href="#"><i class="ph ph-question" aria-hidden="true"></i> Help centre</a>
+        </div>
+      </div>
+    </li>
+    <li><a href="#">Pricing</a></li>
+  </ul>
+</nav>` },
+      { name: "Panel, open", flush: true, note: "The panel on its own, held open so the parts are readable: label, rows, hairline, foot. This specimen's trigger deliberately omits <code>data-ns-menu</code>, which is why clicking elsewhere does not close it.", html: `<nav class="ns-topnav" aria-label="Open panel example" style="block-size:auto;padding-block-end:14rem">
+  <ul class="ns-topnav__links">
+    <li class="ns-navitem">
+      <button type="button" class="ns-topnav__trigger" aria-expanded="true">Resources</button>
+      <div class="ns-navmenu">
+        <p class="ns-navmenu__label">Read</p>
+        <a class="ns-navmenu__item" href="#" aria-current="page">
+          <span class="ns-navmenu__icon"><i class="ph ph-article" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Blog</span><span class="ns-navmenu__desc">You are here — the row shows it with the left accent</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Docs</span><span class="ns-navmenu__desc">The theme and the design system</span></span>
+        </a>
+      </div>
+    </li>
+  </ul>
+</nav>` },
+    ],
+  },
+  {
+    id: "usermenu", title: "Account menu", family: "Navigation",
+    summary: "The signed-in end of the navbar: an avatar trigger opening a panel that states WHO you are before it offers anything to do. Signed out, the same slot is two buttons — quiet sign-in beside the one solid blue thing on the page.",
+    use: ["Every signed-in surface — the panel is where account, progress and sign-out live", "Ghost Members: wrap it in {{#if @member}} and the signed-out pair in the {{else}}"],
+    not: ["A bare avatar with no name anywhere — an avatar is not an accessible name", "Burying sign-out three levels deep; it is the one item people go looking for", "Duplicating the whole site map inside it — that is the navbar's job"],
+    a11y: ["The trigger names the account: aria-label=\"Account menu for Aarti Kulkarni\", because the initials disc is aria-hidden", "The identity block is real text, so a screen reader reads the account before the actions", "Sign out is a &lt;button&gt; — it changes state, it does not navigate", "Below lg the name is hidden visually; the accessible name on the trigger keeps it announced"],
+    variants: [
+      { name: "Signed out", note: "Sign in is quiet, sign up is THE primary. Two primaries here is the most common navbar mistake in the wild — it makes the user choose between two equally loud things at the exact moment they know least.", html: `<div class="ns-topnav__auth">
+  <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#">Sign in</a>
+  <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a>
+</div>` },
+      { name: "Signed in", flush: true, note: "Live: click the avatar. Identity, then progress, then actions, then sign out behind a hairline — the order is the order people look for them.", html: `<nav class="ns-topnav" aria-label="Account menu example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <div class="ns-topnav__actions">
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-account" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span>
+        <span class="ns-usermenu__name">Aarti K.</span>
+      </button>
+      <div class="ns-usermenu__panel" id="doc-account">
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity">
+            <span class="ns-usermenu__fullname">Aarti Kulkarni</span>
+            <span class="ns-usermenu__email">aarti@example.com</span>
+          </span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <div class="ns-usermenu__progress">
+          <span class="ns-usermenu__progress-label"><span>Admin trail</span><span>64%</span></span>
+          <progress class="ns-progress" value="64" max="100" aria-label="Admin trail progress">64%</progress>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="#"><i class="ph ph-user" aria-hidden="true"></i> My learning</a>
+        <a class="ns-menu__item" href="#"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Bookmarks</a>
+        <a class="ns-menu__item" href="#"><i class="ph ph-seal-check" aria-hidden="true"></i> Certificates</a>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="#"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
+        <a class="ns-menu__item" href="#"><i class="ph ph-question" aria-hidden="true"></i> Help</a>
+        <hr class="ns-menu__sep">
+        <button type="button" class="ns-menu__item ns-menu__item--danger"><i class="ph ph-arrow-square-out" aria-hidden="true"></i> Sign out</button>
+      </div>
+    </div>
+  </div>
+</nav>` },
+      { name: "Triggers", note: "Avatar only for a dense app bar; avatar plus short name where there is room — the name is what tells a shared-computer household which account they are about to post from. Photo, initials and a progress ring all fit the same disc (see Avatar).", html: `<div class="ns-usermenu">
+  <button type="button" class="ns-usermenu__trigger" aria-expanded="false" aria-label="Account menu for Aarti Kulkarni">
+    <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span>
+  </button>
+</div>
+<div class="ns-usermenu">
+  <button type="button" class="ns-usermenu__trigger" aria-expanded="false" aria-label="Account menu for Aarti Kulkarni">
+    <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span>
+    <span class="ns-usermenu__name">Aarti K.</span>
+  </button>
+</div>
+<div class="ns-usermenu">
+  <button type="button" class="ns-usermenu__trigger" aria-expanded="true" aria-label="Account menu for Ravi Sharma — expanded">
+    <span class="ns-avatar-ring" style="--p:64"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">RS</span></span>
+    <span class="ns-usermenu__name">Ravi S.</span>
+  </button>
+</div>` },
+    ],
+  },
+  {
+    id: "mobilenav", title: "Mobile nav", family: "Navigation",
+    summary: "Below 64rem the link row is replaced by a hamburger and a full-screen sheet. Not a 20rem side drawer: on a phone a drawer leaves a useless strip of page behind it and forces the links to be small. The sheet is a real <code>&lt;dialog&gt;</code>, so the focus trap, Esc and the inert background come from the platform.",
+    use: ["Every navbar — the bar is one component with two link surfaces, not two bars", "Sections with more than four children, as native &lt;details&gt; so the sheet stays one thumb-reach", "A pinned foot for the action the sheet exists to make possible"],
+    not: ["A hamburger on desktop when there is room for the links — hiding navigation that fits is a cost with no benefit", "A hand-rolled &lt;div class=\"drawer\"&gt; — you would be reimplementing focus trapping, scroll locking, inert and Esc, and shipping three of the four", "A bottom tab bar: this is a content site, not an app shell"],
+    a11y: ["The burger is a &lt;button aria-expanded aria-haspopup=\"dialog\" aria-controls&gt; — the arrow and the announcement can never disagree because they read the same attribute", "Opened with showModal(), so focus is trapped and the page behind is inert", "Every way of closing it runs through the dialog's close event, which returns focus to the burger", "Rows are large: font-size steps up to --size-h4 and the hit area is the full width"],
+    variants: [
+      { name: "Hamburger", note: "Three hairline rules — the system's own vocabulary, not an icon-font glyph — rotating into the close X. One control for both states, so the user can see where the thing they opened went. Live: click either (the second is held open).", html: `<button type="button" class="ns-burger" aria-expanded="false" aria-label="Menu" style="display:inline-flex" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') !== 'true')">
+  <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
+</button>
+<button type="button" class="ns-burger" aria-expanded="true" aria-label="Close menu" style="display:inline-flex" onclick="this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') !== 'true')">
+  <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
+</button>` },
+      { name: "The sheet", note: "Shown here in the page flow (a non-modal <code>&lt;dialog open&gt;</code>) so the anatomy is readable: head with brand and close, mono-indexed rows, &lt;details&gt; groups, and the pinned foot. In product it is opened with showModal() and covers the viewport.", html: `<dialog class="ns-navsheet" open aria-label="Site menu specimen" style="position:static;inline-size:24rem;max-inline-size:100%;block-size:auto;max-block-size:none;border:1px solid var(--color-border);border-radius:var(--radius-card)">
+  <div class="ns-navsheet__head">
+    <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-navsheet__close" aria-label="Close menu"><i class="ph ph-x" aria-hidden="true"></i></button>
+  </div>
+  <div class="ns-navsheet__body">
+    <a class="ns-navsheet__link" href="#" aria-current="page"><span class="ns-navsheet__index">01</span> Courses <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <details class="ns-navsheet__group">
+      <summary class="ns-navsheet__link"><span class="ns-navsheet__index">02</span> Learn <i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+      <div class="ns-navsheet__sub">
+        <a class="ns-navsheet__link" href="#">Administrator</a>
+        <a class="ns-navsheet__link" href="#">Developer</a>
+        <a class="ns-navsheet__link" href="#">Architect</a>
+      </div>
+    </details>
+    <a class="ns-navsheet__link" href="#"><span class="ns-navsheet__index">03</span> Pricing <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <p class="ns-navsheet__label">Theme</p>
+    <div class="ns-themetoggle" role="radiogroup" aria-label="Colour theme">
+      <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Light">Light</button>
+      <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="true" aria-label="Match the system setting">Auto</button>
+      <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Dark">Dark</button>
+    </div>
+  </div>
+  <div class="ns-navsheet__foot">
+    <a class="ns-btn ns-btn--primary" href="#">Start learning</a>
+    <a class="ns-btn ns-btn--outline" href="#">Sign in</a>
+    <p class="ns-navsheet__meta"><span>Free · no card</span><span>12,400 learners</span></p>
+  </div>
+</dialog>` },
+      { name: "At phone width", phone: true, note: "The real thing, in a 24rem frame — an iframe rather than a narrow div, because media queries answer to the viewport and a narrow div would keep showing the desktop bar. Tap the hamburger.", html: `<iframe src="./demo-navbar.html" title="Navbar at phone width" loading="lazy"></iframe>` },
+    ],
+  },
+  {
+    id: "coursenav", title: "Course & dashboard bars", family: "Navigation",
+    summary: "Two bars for the signed-in product. The <strong>course bar</strong> is chrome for a page you are <em>inside</em>: where am I in this course, how far through, what is next — and no site navigation at all, because a link row in a lesson is an invitation to leave halfway through. The <strong>dashboard bar</strong> is the site bar with the marketing removed: places instead of pages, a Continue menu instead of a mega panel, and no sign-up anything, because they already did.",
+    use: ["The course bar above the lesson player (templates/course-player.html)", "The dashboard bar on every signed-in app screen", "Icons in the link row here — this is the case they exist for"],
+    not: ["The marketing bar's mega menu on either — a learner mid-course does not need the catalog's information architecture", "A second row of tabs under the course bar; the curriculum rail is the course's navigation", "Three metrics in the chrome — that is a stat band, and it belongs on the page"],
+    a11y: ["Course progress is a real progressbar with aria-valuenow: unlike the blog's reading line it is a number the learner acts on, so it is labelled and announced", "The back control names its destination — a bare chevron sends people to the browser's back button, and out of the video", "Every icon-only control (previous, notes, curriculum, notifications) carries an aria-label, and the notification badge is a count that appears in that label too", "Below md the bar sheds in a fixed order — the back label, then the inline meter, then the button labels. The lesson title and Next never go"],
+    variants: [
+      { name: "Course bar", flush: true, note: "Back · position · title · completion · the one primary. Full page: <a href=\"./demo-navbar-course.html\">open the course bar demo ↗</a>", html: `<nav class="ns-coursenav" aria-label="Course example">
+  <a class="ns-coursenav__back" href="#"><i class="ph ph-arrow-left" aria-hidden="true"></i> <span>Salesforce Admin</span></a>
+  <span class="ns-topnav__divider" aria-hidden="true"></span>
+  <span class="ns-coursenav__id">
+    <span class="ns-coursenav__kicker">Module 02 · Lesson 07 / 24</span>
+    <span class="ns-coursenav__title">Objects, fields &amp; relationships</span>
+  </span>
+  <div class="ns-coursenav__progress">
+    <span class="ns-coursenav__pct">29%</span>
+    <div class="ns-coursenav__bar" role="progressbar" aria-label="Course progress" aria-valuenow="29" aria-valuemin="0" aria-valuemax="100" style="--p:29"><span></span></div>
+  </div>
+  <div class="ns-coursenav__actions">
+    <button type="button" class="ns-navicon" aria-label="Previous lesson"><i class="ph ph-caret-left" aria-hidden="true"></i></button>
+    <button type="button" class="ns-navicon" aria-label="Notes"><i class="ph ph-note" aria-hidden="true"></i></button>
+    <button type="button" class="ns-navicon" aria-label="Toggle curriculum" aria-expanded="true"><i class="ph ph-sidebar" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--primary ns-btn--sm"><i class="ph ph-check" aria-hidden="true"></i> <span class="ns-coursenav__next-label">Complete &amp; next</span></button>
+  </div>
+</nav>` },
+      { name: "Course bar on the stage", dark: true, flush: true, note: "<code>--dark</code> for a player whose video stage stays navy in both themes — the bar meets the stage rather than framing it in white.", html: `<nav class="ns-coursenav ns-coursenav--dark" aria-label="Dark course example">
+  <a class="ns-coursenav__back" href="#"><i class="ph ph-arrow-left" aria-hidden="true"></i> <span>Apex for Admins</span></a>
+  <span class="ns-topnav__divider" aria-hidden="true"></span>
+  <span class="ns-coursenav__id">
+    <span class="ns-coursenav__kicker">Lesson 12 / 31</span>
+    <span class="ns-coursenav__title">Writing your first trigger</span>
+  </span>
+  <div class="ns-coursenav__progress">
+    <span class="ns-coursenav__pct">38%</span>
+    <div class="ns-coursenav__bar" role="progressbar" aria-label="Course progress" aria-valuenow="38" aria-valuemin="0" aria-valuemax="100" style="--p:38"><span></span></div>
+  </div>
+  <div class="ns-coursenav__actions">
+    <button type="button" class="ns-navicon" aria-label="Previous lesson"><i class="ph ph-caret-left" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--white ns-btn--sm"><i class="ph ph-check" aria-hidden="true"></i> Complete</button>
+  </div>
+</nav>` },
+      { name: "Dashboard bar", flush: true, note: "Places, not pages: icons earn their space, the trigger opens what you were last in, and the avatar wears the trail's progress ring. Live: click <strong>Continue</strong> or the avatar. Full page: <a href=\"./demo-navbar-dashboard.html\">open the dashboard bar demo ↗</a>", html: `<nav class="ns-topnav ns-topnav--compact" aria-label="Dashboard example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page"><i class="ph ph-squares-four" aria-hidden="true"></i> Dashboard</a></li>
+    <li class="ns-navitem">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-continue"><i class="ph ph-play-circle" aria-hidden="true"></i> Continue</button>
+      <div class="ns-navmenu" id="doc-continue">
+        <p class="ns-navmenu__label">Pick up where you left off</p>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-play" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Objects &amp; fields</span><span class="ns-navmenu__desc">Salesforce Admin · lesson 07 of 24</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Apex triggers</span><span class="ns-navmenu__desc">Developer trail · lesson 03 of 31</span></span>
+        </a>
+        <div class="ns-navmenu__foot"><span>2 in progress</span><a href="#">All courses →</a></div>
+      </div>
+    </li>
+  </ul>
+  <div class="ns-topnav__actions">
+    <span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
+    <a class="ns-navicon" href="#" aria-label="Notifications — 3 unread"><i class="ph ph-bell" aria-hidden="true"></i><span class="ns-navicon__badge" aria-hidden="true">3</span></a>
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+    </button>
+    <span class="ns-topnav__divider" aria-hidden="true"></span>
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-dash-account" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar-ring" style="--p:29"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span></span>
+      </button>
+      <div class="ns-usermenu__panel" id="doc-dash-account">
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity"><span class="ns-usermenu__fullname">Aarti Kulkarni</span><span class="ns-usermenu__email">aarti@example.com</span></span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <div class="ns-usermenu__progress">
+          <span class="ns-usermenu__progress-label"><span>Admin trail</span><span>29%</span></span>
+          <progress class="ns-progress" value="29" max="100" aria-label="Admin trail progress">29%</progress>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="#"><i class="ph ph-user" aria-hidden="true"></i> Profile</a>
+        <a class="ns-menu__item" href="#"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
+      </div>
+    </div>
+  </div>
+</nav>` },
+      { name: "Bar pieces", note: "The two parts these bars add to the vocabulary. <code>.ns-navicon</code> is the icon-only action — square, hairline on hover, an aria-label always, and a badge that is a COUNT rather than a bare dot, because a dot tells a screen-reader user nothing. <code>.ns-navstat</code> is one mono metric; two at most.", html: `<button type="button" class="ns-navicon" aria-label="Notifications"><i class="ph ph-bell" aria-hidden="true"></i></button>
+<button type="button" class="ns-navicon" aria-label="Notifications — 3 unread"><i class="ph ph-bell" aria-hidden="true"></i><span class="ns-navicon__badge" aria-hidden="true">3</span></button>
+<button type="button" class="ns-navicon" aria-label="Toggle curriculum" aria-expanded="true"><i class="ph ph-sidebar" aria-hidden="true"></i></button>
+<button type="button" class="ns-navicon" aria-label="Notes"><i class="ph ph-note" aria-hidden="true"></i></button>
+<span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
+<span class="ns-navstat"><i class="ph ph-timer" aria-hidden="true"></i> <strong>48</strong> min today</span>` },
+    ],
+  },
+  {
+    id: "themetoggle", title: "Theme toggle", family: "Navigation",
+    summary: "Three forms of one control, all flipping the theme through <code>window.nsTheme</code> so the Ghost theme and the app can never disagree about what dark means. The segmented form offers Light · Auto · Dark, and <strong>Auto is the default</strong> — a two-state toggle silently converts every visitor into someone with an explicit preference, after which their OS switching at sunset does nothing.",
+    use: ["The switch in the navbar actions cluster — the default", "The segmented form where Auto matters: settings pages, and the mobile sheet", "The icon square in a bar with nothing left to give — the course bar on a phone"],
+    not: ["Deciding the initial theme in the component — assets/js/theme-init.js sets it before first paint, and doing it after hydration IS the white flash everyone complains about", "An unlabelled icon button — aria-label or it is a mystery control", "Animating the whole page on switch: the swap is instant, only the glyph turns"],
+    a11y: ["Segmented is a real radiogroup: one tab stop, arrow keys inside, aria-checked on the selected option", "The icon form is role=\"switch\" with aria-checked and an accessible name", "Which glyph shows is decided in CSS from data-theme, so it is correct in the first painted frame with no JavaScript having run", "prefers-reduced-motion drops the crossfade and the thumb slide to instant"],
+    variants: [
+      { name: "Switch", note: "Live — it drives this page. The default in a bar, and a real switch: one moving part, a knob that slides along a track carrying the <em>current</em> mode's glyph. Both the position and the glyph are read from <code>data-theme</code> in CSS rather than from JavaScript state, so they are right in the first painted frame, before any script runs. The visible track is 1.5rem; the button around it is a full 2.5rem target.", html: `<button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+  <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+</button>` },
+      { name: "Segmented", note: "Live — it drives this page. Mono words rather than glyphs: every product draws the \"auto\" icon differently and none of them is read correctly, while a mono label is this system's own material. The thumb is a pseudo-element positioned by :has() reading aria-checked, so there is no state class and no JavaScript in the animation.", html: `<div class="ns-themetoggle" role="radiogroup" aria-label="Colour theme" data-ns-theme>
+  <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Light" data-ns-theme-value="light">Light</button>
+  <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="true" aria-label="Match the system setting" data-ns-theme-value="system">Auto</button>
+  <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Dark" data-ns-theme-value="dark">Dark</button>
+</div>` },
+      { name: "Icon switch", note: "Live. Both glyphs are always in the DOM, stacked in the same box, so the swap is a crossfade-and-turn in place rather than a substitution that jumps the layout.", html: `<button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+  <i class="ph ph-sun" aria-hidden="true"></i>
+  <i class="ph ph-moon" aria-hidden="true"></i>
+</button>` },
+      { name: "On a navy bar", dark: true, flush: true, note: "Both forms pick up the on-dark inks from the bar, so neither needs a variant of its own.", html: `<nav class="ns-topnav ns-topnav--dark" aria-label="Theme on dark example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <div class="ns-topnav__actions">
+    <div class="ns-themetoggle" role="radiogroup" aria-label="Colour theme">
+      <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Light">Light</button>
+      <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="true" aria-label="Match the system setting">Auto</button>
+      <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Dark">Dark</button>
+    </div>
+    <button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false" aria-label="Dark mode">
+      <i class="ph ph-sun" aria-hidden="true"></i><i class="ph ph-moon" aria-hidden="true"></i>
+    </button>
   </div>
 </nav>` },
     ],

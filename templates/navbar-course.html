@@ -1,0 +1,67 @@
+<!--
+  Namaste UI template — course bar (lesson player)
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+
+  The bar for a page you are INSIDE. It answers where am I, how far through,
+  and what is next — and carries no site navigation at all, because a link
+  row here is an invitation to leave in the middle of a lesson. Sits above
+  templates/course-player.html.
+
+  Behaviour: assets/js/nav.js (defer) for the account menu and theme switch.
+-->
+<nav class="ns-coursenav" aria-label="Course">
+  <!-- Leaving is one control, and it says where it goes. -->
+  <a class="ns-coursenav__back" href="/courses/salesforce-admin/">
+    <i class="ph ph-arrow-left" aria-hidden="true"></i>
+    <span>Salesforce Admin</span>
+  </a>
+
+  <span class="ns-topnav__divider" aria-hidden="true"></span>
+
+  <span class="ns-coursenav__id">
+    <span class="ns-coursenav__kicker">Module 02 · Lesson 07 / 24</span>
+    <span class="ns-coursenav__title">Objects, fields &amp; relationships</span>
+  </span>
+
+  <!-- Course completion. Labelled and announced: unlike the blog's reading
+       line, this is a number the learner acts on. -->
+  <div class="ns-coursenav__progress">
+    <span class="ns-coursenav__pct">29%</span>
+    <div class="ns-coursenav__bar" role="progressbar" aria-label="Course progress"
+         aria-valuenow="29" aria-valuemin="0" aria-valuemax="100" style="--p:29">
+      <span></span>
+    </div>
+    <span class="ns-coursenav__pct">7 / 24</span>
+  </div>
+
+  <div class="ns-coursenav__actions">
+    <button type="button" class="ns-navicon" aria-label="Previous lesson">
+      <i class="ph ph-caret-left" aria-hidden="true"></i>
+    </button>
+    <button type="button" class="ns-navicon" aria-label="Notes">
+      <i class="ph ph-note" aria-hidden="true"></i>
+    </button>
+    <button type="button" class="ns-navicon" aria-label="Toggle curriculum" aria-expanded="true" aria-controls="player-rail">
+      <i class="ph ph-sidebar" aria-hidden="true"></i>
+    </button>
+
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
+            aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+    </button>
+
+    <!-- The one primary: finish this lesson and go to the next. -->
+    <button type="button" class="ns-btn ns-btn--primary ns-btn--sm">
+      <i class="ph ph-check" aria-hidden="true"></i>
+      <span class="ns-coursenav__next-label">Complete &amp; next</span>
+    </button>
+  </div>
+</nav>

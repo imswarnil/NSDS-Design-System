@@ -222,17 +222,20 @@ conventions someone has to remember.
   `fonts.css`, `typography.css`, `effects.css`, `base.css`, plus the generated
   `tokens.json` / `tokens.js` / `tokens.d.ts` / `tailwind.css` exports.
 - `components/css/` — the portable component layer both products render:
-  `button`, `form`, `overlay`, `navigation`, `feedback`, `progress`, `icon`,
-  `sections`, `admin`, `a11y`.
+  `button`, `form`, `overlay`, `navigation`, `navbar`, `feedback`, `progress`,
+  `icon`, `sections`, `admin`, `a11y`.
 - `components/core/` — Button, Kicker, Chip, Badge, Input, AvatarRing, Logo,
   Navbar, Footer, Hero, TableOfContents, TimelineStepper, CodeBlock, CodePanel,
-  **ThemeToggle**, **SkipLink**.
+  **ThemeToggle**, **ThemeSwitcher**, **SkipLink**.
 - `components/forms/` — **Field**, Input, **Select**, **Textarea**,
   **Checkbox**, **Radio**, **Switch**, **Fieldset**.
 - `components/overlays/` — **Modal**, **ConfirmModal**, **Drawer**, **Menu**,
   **Tooltip**.
 - `components/navigation/` — **Tabs**, **Accordion**, **Breadcrumb**,
-  **Pagination**, **DocsSidebar**.
+  **Pagination**, **DocsSidebar**, and the navbar family: **Topnav**,
+  **NavBrand**, **NavLinks**, **NavLink**, **NavMenu**, **MegaMenu**,
+  **NavSearch**, **UserMenu**, **AuthActions**, **Burger**, **NavSheet**,
+  **AnnounceBar**, **ReadingProgress**, **NavIcon**, **NavStat**, **CourseNav**.
 - `components/feedback/` — **Alert**, **ToastProvider**/`useToast`,
   **Skeleton**, **Spinner**, **EmptyState**, **ErrorState**, **Status**.
 - `components/progress/` — **ProgressBar**, **Steps**, **ScoreMeter**,
@@ -261,13 +264,20 @@ conventions someone has to remember.
   `ICON_NAMES`.
 - `templates/` — framework-agnostic HTML for the full surfaces: sign-in,
   sign-up, subscribe, search dialog, account, error page, ticket form, course
-  player, pagination, skip link, theme toggle — plus the admin surfaces
+  player, pagination, skip link, theme toggle, and the four bars —
+  **navbar**, **blog navbar**, **course navbar**, **dashboard navbar** —
+  plus the admin surfaces
   (`admin-dashboard`, `admin-course-new`, `admin-lesson-editor`) and the
   composed marketing page (`sections-home`). Each has a full-screen demo in
   the styleguide (`preview/demo-*.html`).
 - `assets/js/theme-init.js` — the shared no-flash theme bootstrap. Inlined
   verbatim by both products, using one storage key so a reader keeps their
   theme moving between the marketing site and the app.
+- `assets/js/nav.js` — the navbar's progressive enhancement for the Ghost
+  theme: it flips `aria-expanded` / `aria-checked` / `data-scrolled` and adds
+  the disclosure keyboard contract; the CSS does everything visual, and the
+  React components set the same attributes from state. Deferred, optional —
+  with it absent the bar still navigates.
 - `guidelines/` — foundation specimen cards, including **Spacing & Layout**,
   **Interaction States**, **Accessibility**, **Data Visualization** and
   **Content Design**.

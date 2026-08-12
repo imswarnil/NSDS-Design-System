@@ -15,6 +15,118 @@ semver, with one design-system-specific reading of it:
 A color *value* changing is a **major** even though nothing breaks at build
 time: every screen in both products moves.
 
+## [Unreleased]
+
+### Added — the navbar, as a family of documented components
+
+The bar had one page and two variants. It is the piece of chrome every
+visitor meets first, so it now has its own stylesheet
+(`components/css/navbar.css`, split out of `navigation.css`) and five
+styleguide pages — Navbar, Nav menu, Account menu, Mobile nav, Theme toggle.
+
+- **The bar** — `.ns-topnav__inner` (width-capped contents), brand lockup with
+  a mono tag, `__flag`, `__divider`, `__progress` (reading progress), and the
+  surface variants `--transparent` (over a hero, solid on scroll via
+  `data-scrolled`, no backdrop blur), `--floating`, `--sunken`, `--compact`,
+  `--center`, `--wide`.
+- **Announcement bar** (`.ns-announce`) — above the sticky bar, scrolls away
+  with the page; `--quiet` for notices rather than promotions.
+- **Search affordance** (`.ns-navsearch`) — a button shaped like a field, with
+  the ⌘K hint; opens the existing search modal.
+- **Dropdown and mega panel** (`.ns-navitem`, `.ns-navmenu`, `.ns-megamenu`) —
+  icon/title/description rows, section labels, a foot bar, and at most one
+  promo per mega panel. Disclosures, not ARIA menus: the rows are links.
+- **Account menu** (`.ns-usermenu`) — avatar trigger, identity block, plan
+  chip, trail progress, actions, sign out; `.ns-topnav__auth` for signed out.
+- **Mobile** — `.ns-burger` (three hairlines rotating into the close X) and
+  `.ns-navsheet`, a full-viewport `<dialog>` with mono-indexed rows, native
+  `<details>` groups and a pinned foot.
+- **Theme controls** — `.ns-themetoggle` (Light · Auto · Dark radiogroup with
+  a `:has()`-positioned thumb, no state class) and `.ns-themetoggle-icon`
+  (sun/moon crossfade in place, driven from `data-theme` in CSS).
+- `assets/js/nav.js` — the Ghost-side behaviour: it only ever writes
+  `aria-expanded` / `aria-checked` / `data-scrolled`, plus Esc-and-return-focus,
+  ArrowDown-into-panel, close-on-tab-out, `showModal()` for the sheet, and one
+  passive scroll listener. React sets the same attributes from state.
+- React renderers in `components/navigation/Navbar.jsx` (+ `.d.ts`) and
+  templates `templates/navbar.html`, `templates/navbar-blog.html`, each with a
+  full-width styleguide demo (`preview/demo-navbar*.html`).
+
+### Added — the signed-in bars
+
+- **Course bar** (`.ns-coursenav`) — chrome for a page you are *inside*: a
+  back control that names its destination, the mono position line, the lesson
+  title, a labelled `role="progressbar"` completion meter, and one primary
+  ("Complete & next"). No site navigation at all, and a `--dark` twin for a
+  player whose stage stays navy. `templates/navbar-course.html`.
+- **Dashboard bar** — the site bar with the marketing removed: icons in the
+  link row (the case they exist for), a *Continue* menu instead of a mega
+  panel, the trail's progress ring on the avatar.
+  `templates/navbar-dashboard.html`.
+- `.ns-navicon` (+ `__badge`) — the icon-only bar action, with a count badge
+  rather than a bare dot, and `.ns-navstat` — one mono metric in the chrome.
+- React: `CourseNav`, `NavIcon`, `NavStat`.
+
+### Changed
+
+- **The theme control is a real switch by default** — `.ns-themeswitch`: one
+  moving part, a knob sliding along a track carrying the *current* mode's
+  glyph. Both the position and the glyph are read from `data-theme` in CSS,
+  so they are right in the first painted frame; the visible track is 1.5rem
+  and the button around it is a full 2.5rem target. The icon square
+  (`ThemeToggle variant="icon"`) and the Light · Auto · Dark segmented form
+  both remain.
+- **The bars are tighter.** Bar gutter and gap 1.5rem → 1rem, link padding
+  and row gaps down a step, dropdown/mega padding and column widths reduced,
+  mega columns 13rem → 12rem. Account-menu rows are 2rem with 0.25rem
+  padding rather than a 2.5rem touch target each — eight rows at
+  `--target-comfy` is a column of air, and these are pointer menus in
+  chrome, not a phone keypad.
+- **Panels open with a longer, softer move** — `--duration-base` with a
+  0.5rem drop and a hair of scale from the top edge; the mobile sheet drops
+  in from the bar it belongs to, its backdrop fades with it, and its rows
+  arrive in four stagger steps. All of it collapses under
+  `prefers-reduced-motion`.
+- **GitHub** — `.ns-navstar`, the star pill (a link to the repo; the count is
+  mono, divided by a hairline; the words drop below lg leaving the mark), the
+  mark itself added to `icons/icons-gap.css` as the one filled glyph in that
+  file, and a GitHub row in the resources dropdown and the mobile sheet.
+  React: `NavStar`.
+- **The bar's search opens the search dialog** —
+  `templates/search-modal.html` now answers `[data-ns-search]` as well as
+  `[data-ns-search-open]`, and guards against `showModal()` on an already
+  open dialog. The navbar demos ship it alongside the bar.
+- Marketing bar links carry icons in the shipped template, as an example of
+  the option rather than a change to the default.
+- **`--navbar-h` is 3.5rem**, down from 4rem — tall enough for a 2.5rem
+  control plus its breathing room. Every consumer of the token (sticky
+  sidebars, the TOC, the player rail, heading scroll-margin) follows.
+- **`ThemeToggle` renders the new icon switch** — default `className` is now
+  `ns-themeswitch` and both glyphs are always in the DOM (which one reads as
+  current is decided in CSS from `data-theme`). The `showLabel` prop is gone;
+  use `ThemeSwitcher` where Auto matters. This moves the control's appearance
+  in a consuming product, so releasing it is a **major** bump.
+- `components/core/Navbar.jsx` no longer styles itself inline — it composes
+  the `.ns-topnav` parts, so the Ghost theme can render it. One entry off the
+  known-debt list in `scripts/check-components.mjs` (23 → 22).
+- The styleguide inlines `assets/js/theme-init.js` and loads `nav.js`, so the
+  navbar demos are operable and the theme controls really drive the page.
+
+### Fixed
+
+- **A closed `.ns-modal` / `.ns-drawer` was rendered in the page flow** —
+  same root cause as the sheet below: an author `display: flex` on the base
+  rule beats the UA's `dialog:not([open]) { display: none }`, so every page
+  that included the search dialog showed it inline, unfocusable, wherever it
+  happened to sit in the document. The display switch is now on `[open]`.
+- **The link-row rule reached inside the panels** —
+  `.ns-topnav__links a` also matched every `<a>` in a dropdown or mega panel,
+  giving each row the bar's own 3.5rem height. Scoped to
+  `.ns-topnav__links > li > a`.
+- A closed `.ns-navsheet` is no longer rendered in the page flow: the
+  `display` switch is on `[open]`, since an author `display` beats the UA's
+  `dialog:not([open]) { display: none }` whatever the specificity.
+
 ## [2.3.0] — 2026-08-11
 
 ### Added — the builder's console (admin & creation surfaces)

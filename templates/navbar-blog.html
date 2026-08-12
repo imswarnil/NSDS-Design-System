@@ -1,0 +1,138 @@
+<!--
+  Namaste UI template — blog navbar (signed in)
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+
+  The reading bar. Three things separate it from the marketing bar:
+    · a reading-progress line along its bottom edge (data-ns-progress),
+    · the account menu instead of the sign-up pair — the member is already
+      here, so the primary action becomes "subscribe" only for free tiers,
+    · tag links instead of product links, because on a blog the useful
+      navigation is by subject.
+
+  Behaviour: assets/js/nav.js (defer). Theme: assets/js/theme-init.js inlined
+  in <head> before any stylesheet.
+-->
+<nav class="ns-topnav ns-topnav--center" aria-label="Main">
+  <a class="ns-topnav__brand" href="/">
+    <img src="../assets/logo/favicon.svg" alt="">
+    <span class="ns-topnav__brand-name">Namaste Salesforce</span>
+    <span class="ns-topnav__brand-tag">Blog</span>
+  </a>
+
+  <ul class="ns-topnav__links">
+    <li><a href="/" aria-current="page">Latest</a></li>
+    <li><a href="/tag/admin/">Admin</a></li>
+    <li><a href="/tag/developer/">Developer</a></li>
+    <li><a href="/tag/architect/">Architect</a></li>
+    <li class="ns-navitem">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="blog-more">More</button>
+      <div class="ns-navmenu" id="blog-more">
+        <p class="ns-navmenu__label">Browse</p>
+        <a class="ns-navmenu__item" href="/tag/release-notes/">
+          <span class="ns-navmenu__icon"><i class="ph ph-newspaper" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Release notes</span><span class="ns-navmenu__desc">Every seasonal release, summarised</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="/tag/career/">
+          <span class="ns-navmenu__icon"><i class="ph ph-briefcase" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Career</span><span class="ns-navmenu__desc">Interviews, certs, salary reports</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="/authors/">
+          <span class="ns-navmenu__icon"><i class="ph ph-users-three" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Authors</span><span class="ns-navmenu__desc">Who writes here</span></span>
+        </a>
+        <hr class="ns-navmenu__sep">
+        <a class="ns-navmenu__item" href="/rss/">
+          <span class="ns-navmenu__icon"><i class="ph ph-rss-simple" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">RSS</span><span class="ns-navmenu__desc">Read it in your own reader</span></span>
+        </a>
+      </div>
+    </li>
+  </ul>
+
+  <div class="ns-topnav__actions">
+    <button type="button" class="ns-navsearch ns-navsearch--icon" aria-label="Search the blog" data-ns-search>
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+    </button>
+
+    <a class="ns-navicon" href="https://github.com/namaste-salesforce" aria-label="GitHub repository">
+      <i class="ph ph-github-logo" aria-hidden="true"></i>
+    </a>
+
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
+            aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+    </button>
+
+    <span class="ns-topnav__divider" aria-hidden="true"></span>
+
+    <!-- Signed in. Ghost: wrap in {{#if @member}} … {{/if}} and pair with the
+         signed-out block from templates/navbar.html in the {{else}}. -->
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="account-menu" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span>
+        <span class="ns-usermenu__name">Aarti K.</span>
+      </button>
+      <div class="ns-usermenu__panel" id="account-menu">
+        <!-- Identity first. A menu that opens straight into actions is how
+             people post from the wrong account. -->
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity">
+            <span class="ns-usermenu__fullname">Aarti Kulkarni</span>
+            <span class="ns-usermenu__email">aarti@example.com</span>
+          </span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <div class="ns-usermenu__progress">
+          <span class="ns-usermenu__progress-label"><span>Admin trail</span><span>64%</span></span>
+          <progress class="ns-progress" value="64" max="100" aria-label="Admin trail progress">64%</progress>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/"><i class="ph ph-user" aria-hidden="true"></i> My learning</a>
+        <a class="ns-menu__item" href="/account/bookmarks/"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Bookmarks</a>
+        <a class="ns-menu__item" href="/account/certificates/"><i class="ph ph-seal-check" aria-hidden="true"></i> Certificates</a>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/settings/"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
+        <a class="ns-menu__item" href="/help/"><i class="ph ph-question" aria-hidden="true"></i> Help</a>
+        <hr class="ns-menu__sep">
+        <button type="button" class="ns-menu__item ns-menu__item--danger" data-members-signout><i class="ph ph-arrow-square-out" aria-hidden="true"></i> Sign out</button>
+      </div>
+    </div>
+
+    <button type="button" class="ns-burger" data-ns-sheet="blog-nav" aria-expanded="false" aria-label="Menu" aria-haspopup="dialog">
+      <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
+    </button>
+  </div>
+
+  <!-- Decorative: the percentage is also announced by the article's own
+       progress control where one exists, so this line is aria-hidden. -->
+  <div class="ns-topnav__progress" data-ns-progress aria-hidden="true"></div>
+</nav>
+
+<dialog class="ns-navsheet" id="blog-nav" aria-label="Blog menu">
+  <div class="ns-navsheet__head">
+    <a class="ns-topnav__brand" href="/"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Blog</span></a>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-navsheet__close" data-ns-sheet-close aria-label="Close menu"><i class="ph ph-x" aria-hidden="true"></i></button>
+  </div>
+  <div class="ns-navsheet__body">
+    <a class="ns-navsheet__link" href="/" aria-current="page"><span class="ns-navsheet__index">01</span> Latest <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <a class="ns-navsheet__link" href="/tag/admin/"><span class="ns-navsheet__index">02</span> Admin <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <a class="ns-navsheet__link" href="/tag/developer/"><span class="ns-navsheet__index">03</span> Developer <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <a class="ns-navsheet__link" href="/tag/architect/"><span class="ns-navsheet__index">04</span> Architect <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <p class="ns-navsheet__label">Account</p>
+    <a class="ns-navsheet__link" href="/account/">My learning <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+    <a class="ns-navsheet__link" href="/account/settings/">Settings <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+  </div>
+  <div class="ns-navsheet__foot">
+    <a class="ns-btn ns-btn--primary" href="/account/">Continue the Admin trail</a>
+    <p class="ns-navsheet__meta"><span>Signed in as Aarti K.</span><span>Pro</span></p>
+  </div>
+</dialog>
