@@ -884,24 +884,35 @@ const CSS = `
 
   /* Two-column body: content + a sticky on-this-page rail. The page header
      and any hero band above .cols stay full width. */
-  .cols { display: grid; grid-template-columns: minmax(0, 1fr) 12rem; gap: var(--space-10); align-items: start; }
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr) 13rem; gap: var(--space-10); align-items: start; }
   .cols--full { grid-template-columns: minmax(0, 1fr); }
   .colmain { min-inline-size: 0; max-inline-size: 68rem; }
   .toc {
-    position: sticky; inset-block-start: var(--space-6);
+    position: sticky; inset-block-start: var(--space-8);
     border: 1px solid var(--color-border); border-radius: var(--radius-card);
-    padding: var(--space-4); background: var(--color-surface);
-    max-block-size: calc(100dvh - var(--space-12)); overflow-y: auto;
+    padding: var(--space-5) var(--space-5) var(--space-6); background: var(--color-surface);
+    max-block-size: calc(100dvh - var(--space-16)); overflow-y: auto;
+    transition: border-color var(--duration-fast) var(--ease-out);
   }
+  .toc:hover { border-color: var(--color-brand-300); }
   .toc__title { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
                 letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
-                margin-block-end: var(--space-2); }
-  .toc nav a { display: block; padding: var(--space-1) 0 var(--space-1) var(--space-2-5); font-size: var(--size-label);
-               color: var(--color-muted); text-decoration: none; border-inline-start: 2px solid var(--color-border);
-               transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out); }
-  .toc nav a:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
-  .toc nav a[aria-current="true"] { color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500); }
+                margin-block-end: var(--space-4); padding-block-end: var(--space-3);
+                border-block-end: 1px solid var(--color-border); }
+  .toc nav { display: flex; flex-direction: column; gap: var(--space-1); }
+  .toc nav a { display: block; padding: var(--space-1-5) 0 var(--space-1-5) var(--space-3);
+               font-size: var(--size-small); line-height: var(--leading-snug, 1.4);
+               color: var(--color-muted); text-decoration: none;
+               border-inline-start: 2px solid var(--color-border);
+               overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+               transition: color var(--duration-fast) var(--ease-out),
+                           border-color var(--duration-fast) var(--ease-out),
+                           padding-inline-start var(--duration-fast) var(--ease-out); }
+  .toc nav a:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); padding-inline-start: var(--space-4); }
+  .toc nav a[aria-current="true"] { color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500); font-weight: var(--weight-medium); }
   [data-theme="dark"] .toc nav a[aria-current="true"] { color: var(--color-brand-300); }
+  /* Anchor targets land clear of the viewport edge. */
+  .sub[id] { scroll-margin-block-start: var(--space-8); }
   @media (max-width: 74.999rem) { .cols { grid-template-columns: minmax(0, 1fr); } .toc { display: none; } }
   .top { display: flex; align-items: flex-start; gap: var(--space-4); margin-block-end: var(--space-6); }
   .top h1 { font-size: var(--size-h2); line-height: var(--leading-tight); }
