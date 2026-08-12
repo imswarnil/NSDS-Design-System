@@ -18,7 +18,7 @@
                script: demo-only wiring (dialogs need showModal).
                dark: render this demo on a forced dark navy band. */
 
-export const FAMILIES = ["Actions", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "Sections", "Admin"];
+export const FAMILIES = ["Actions", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "CMS", "Sections"];
 
 export const COMPONENTS = [
 
@@ -786,7 +786,255 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "player", title: "Course player", family: "Surfaces",
+    id: "course-card", title: "Course card", family: "LMS",
+    summary: "The Card with course anatomy: level tag riding the media, mono meta row, and a progress foot with the real <progress> element. A row of these is the catalog; one with progress is \"continue learning\".",
+    use: ["Catalog grids, related-course shelves, continue-learning rows"],
+    not: ["The course detail hero — that page IS the course, no card around it"],
+    a11y: ["The title link is stretched over the card — one real link", "progress carries an aria-label with the human numbers"],
+    variants: [
+      { name: "Default", html: `<div class="ns-card ns-ccard" style="max-inline-size:18rem">
+  <span class="ns-ccard__mediawrap">
+    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-tag ns-ccard__level">Beginner</span>
+  </span>
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Course</span>
+    <a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a>
+    <p class="ns-card__text">The platform's own language, from zero to first deploy.</p>
+    <span class="ns-ccard__meta"><span>12 lessons</span><span>3h 40m</span></span>
+  </div>
+</div>` },
+      { name: "With progress", note: "Continue learning: the foot swaps meta for the real progress element.", html: `<div class="ns-card ns-ccard" style="max-inline-size:18rem">
+  <span class="ns-ccard__mediawrap">
+    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-tag ns-ccard__level">Intermediate</span>
+  </span>
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Course</span>
+    <a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a>
+    <span class="ns-ccard__meta"><span>Next: 07 · Approval flows</span></span>
+  </div>
+  <div class="ns-ccard__progress">
+    <progress class="ns-progress" value="6" max="12" aria-label="6 of 12 lessons complete"></progress>
+    <span class="ns-ccard__pct">6/12</span>
+  </div>
+</div>` },
+      { name: "Row — continue learning", note: "The horizontal form for the dashboard's resume shelf.", html: `<div class="ns-card ns-card--row ns-ccard" style="max-inline-size:30rem">
+  <img class="ns-card__media" src="../assets/img/training-trail.svg" alt="">
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Continue</span>
+    <a class="ns-card__link" href="#"><span class="ns-card__title">Admin certification path</span></a>
+    <span class="ns-ccard__meta"><span>Lesson 08 of 14</span><span>21:15 left</span></span>
+    <progress class="ns-progress" value="8" max="14" aria-label="8 of 14 lessons complete"></progress>
+  </div>
+</div>` },
+      { name: "Members-only", note: "Locked stays a real link — to the join page; the lock is a tag, never an overlay wash.", html: `<div class="ns-card ns-ccard" style="max-inline-size:18rem">
+  <span class="ns-ccard__mediawrap">
+    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-tag ns-ccard__level"><i class="ph ph-lock-simple" aria-hidden="true"></i> Members</span>
+  </span>
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Course</span>
+    <a class="ns-card__link" href="#"><span class="ns-card__title">Bulk-safe Apex patterns</span></a>
+    <span class="ns-ccard__meta"><span>9 lessons</span><span>2h 10m</span></span>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "curriculum", title: "Curriculum", family: "LMS",
+    summary: "The course's table of contents on the detail page: mono-indexed section heads over the SAME .ns-lesson rows the player rail uses — a lesson looks identical before and during the course. Free-preview rows say so; locked rows link to joining.",
+    use: ["The course detail page, below the description", "Anywhere the full course structure is promised"],
+    not: ["Inside the player — that is the player's own rail", "Editing — Curriculum builder (CMS)"],
+    a11y: ["Rows are links; state is spelled in visually-hidden text, not only drawn", "Section heads are headings, so the rotor jumps section to section"],
+    variants: [
+      { name: "Two sections", html: `<div class="ns-curriculum" style="max-inline-size:26rem;inline-size:100%">
+  <section class="ns-curriculum__section">
+    <header class="ns-curriculum__head">
+      <span class="ns-curriculum__index">01</span>
+      <h3 class="ns-curriculum__title">Getting oriented</h3>
+      <span class="ns-curriculum__meta">3 lessons · 32m</span>
+    </header>
+    <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span><span class="ns-lesson__title">What is an org?<span class="ns-visually-hidden"> (completed)</span></span><span class="ns-lesson__time">08:12</span></a>
+    <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">02</span><span class="ns-lesson__title">Objects &amp; fields</span><span class="ns-lesson__time">12:40</span></a>
+    <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">03</span><span class="ns-lesson__title">Navigation that sticks</span><span class="ns-lesson__time">11:08</span></a>
+  </section>
+  <section class="ns-curriculum__section">
+    <header class="ns-curriculum__head">
+      <span class="ns-curriculum__index">02</span>
+      <h3 class="ns-curriculum__title">Your first automation</h3>
+      <span class="ns-curriculum__meta">2 lessons · 41m</span>
+    </header>
+    <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">04</span><span class="ns-lesson__title">Flow builder basics</span><span class="ns-lesson__time">20:00</span></a>
+    <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">05</span><span class="ns-lesson__title">Approval flows<span class="ns-visually-hidden"> (locked — members only)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+  </section>
+</div>` },
+      { name: "Free preview", note: "The free rows carry the tag; everything else reads as it will after joining.", html: `<div class="ns-curriculum" style="max-inline-size:26rem;inline-size:100%">
+  <section class="ns-curriculum__section">
+    <header class="ns-curriculum__head">
+      <span class="ns-curriculum__index">01</span>
+      <h3 class="ns-curriculum__title">Start here</h3>
+      <span class="ns-curriculum__meta">2 free · 4 total</span>
+    </header>
+    <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">01</span><span class="ns-lesson__title">Welcome &amp; setup</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
+    <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">02</span><span class="ns-lesson__title">The data model tour</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
+    <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">03</span><span class="ns-lesson__title">Security model<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+  </section>
+</div>` },
+    ],
+  },
+  {
+    id: "lesson-nav", title: "Lesson navigation", family: "LMS",
+    summary: "Prev / progress / next, plus the mono \"up to course\" crumb. The standalone version of the player's bar, so an article-type lesson gets identical chrome; --sticky pins it on long reads.",
+    use: ["The foot of every lesson — video, article or lab", "--sticky on long article lessons"],
+    not: ["Course-to-course navigation — that is the catalog"],
+    a11y: ["Prev/next are links with real names; ←/→ shortcuts mirror them in the player", "The progress element carries the human numbers in aria-label"],
+    variants: [
+      { name: "Default", html: `<div style="max-inline-size:34rem;inline-size:100%">
+  <a class="ns-lesson-nav__up" href="#"><i class="ph ph-caret-up" aria-hidden="true"></i> apex basics · section 2</a>
+  <div class="ns-lesson-nav">
+    <a class="ns-btn ns-btn--outline ns-btn--sm" href="#"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</a>
+    <div class="ns-progress-row">
+      <progress class="ns-progress" value="6" max="12" aria-label="6 of 12 lessons"></progress>
+      <span class="ns-progress-row__value">6/12</span>
+    </div>
+    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Next lesson <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+  </div>
+</div>` },
+      { name: "End of course", note: "The last lesson's next action is the completion, not a dead arrow.", html: `<div class="ns-lesson-nav" style="max-inline-size:34rem;inline-size:100%">
+  <a class="ns-btn ns-btn--outline ns-btn--sm" href="#"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</a>
+  <div class="ns-progress-row">
+    <progress class="ns-progress" value="12" max="12" aria-label="12 of 12 lessons"></progress>
+    <span class="ns-progress-row__value">12/12</span>
+  </div>
+  <a class="ns-btn ns-btn--primary ns-btn--sm" href="#"><i class="ph ph-seal-check" aria-hidden="true"></i> Finish course</a>
+</div>` },
+    ],
+  },
+  {
+    id: "lesson-panel", title: "Lesson panel (mobile)", family: "LMS",
+    summary: "Below lg the player's curriculum rail becomes this: a bottom bar naming where you are, opening the full lesson list in a Drawer. The bar is the rail's handle — always visible, one tap from any lesson.",
+    use: ["The player below the lg breakpoint", "Any lesson page where the rail has collapsed"],
+    not: ["Desktop — the rail is already on screen"],
+    a11y: ["The bar's button names its job: \"Lessons — 6 of 12 complete\"", "The drawer is a dialog: focus moves in, Esc closes, focus returns to the bar"],
+    variants: [
+      { name: "Bottom bar", note: "Sticky at the viewport bottom in product (--fixed); static here.", html: `<div class="ns-panelbar" style="max-inline-size:26rem;inline-size:100%">
+  <span class="ns-panelbar__now">
+    <span class="ns-panelbar__kicker">lesson 07 of 12</span>
+    <span class="ns-panelbar__title">SOQL joins: relationships</span>
+  </span>
+  <button class="ns-btn ns-btn--outline ns-btn--sm" data-open-panel><i class="ph ph-list" aria-hidden="true"></i> Lessons</button>
+</div>` },
+      { name: "Opened panel", note: "The system Drawer with the same lesson rows — nothing new to learn.", script: `document.querySelectorAll('[data-open-panel]').forEach(function (b) {
+  var dlg = document.getElementById('lesson-panel-demo');
+  if (dlg) b.addEventListener('click', function () { dlg.showModal(); });
+});`, html: `<div class="ns-panelbar" style="max-inline-size:26rem;inline-size:100%">
+  <span class="ns-panelbar__now">
+    <span class="ns-panelbar__kicker">lesson 07 of 12</span>
+    <span class="ns-panelbar__title">SOQL joins: relationships</span>
+  </span>
+  <button class="ns-btn ns-btn--outline ns-btn--sm" data-open-panel><i class="ph ph-list" aria-hidden="true"></i> Lessons</button>
+</div>
+<dialog class="ns-modal" id="lesson-panel-demo" aria-label="Lessons" style="max-inline-size:22rem;inline-size:90%;padding:0">
+  <header class="ns-curriculum__head" style="border-block-start:0">
+    <span class="ns-curriculum__index">02</span>
+    <h3 class="ns-curriculum__title">SOQL &amp; data</h3>
+    <form method="dialog" style="margin-inline-start:auto"><button class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Close"><i class="ph ph-x" aria-hidden="true"></i></button></form>
+  </header>
+  <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span><span class="ns-lesson__title">SELECT and WHERE</span><span class="ns-lesson__time">14:02</span></a>
+  <a class="ns-lesson" href="#" aria-current="true"><span class="ns-lesson__index" aria-hidden="true">07</span><span class="ns-lesson__title">SOQL joins: relationships</span><span class="ns-lesson__time">21:15</span></a>
+  <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">08</span><span class="ns-lesson__title">Aggregate queries</span><span class="ns-lesson__time">18:40</span></a>
+</dialog>` },
+    ],
+  },
+  {
+    id: "course-detail", title: "Course detail page", family: "LMS",
+    summary: "The course's landing: dark hero (title, meta, the one primary action), then description + curriculum in the content column with a sticky rail — includes, instructor, the enroll card. One primary button on the whole page.",
+    use: ["Every course's public page, both products"],
+    not: ["The lesson experience — Course player"],
+    a11y: ["The hero's enroll button and the rail's are the same action — one label, both reachable", "The curriculum is the real component, so its row semantics come along"],
+    variants: [
+      { name: "Anatomy — content + sticky rail", note: "The grid at documentation scale; open the full-screen demo for the real thing.", html: `<div class="ns-course-detail" style="inline-size:100%">
+  <div>
+    <span class="ns-kicker">// Course · Beginner</span>
+    <h2 style="font-size:var(--size-h3);margin-block:var(--space-2) var(--space-3)">Apex basics</h2>
+    <p style="color:var(--color-muted);font-size:var(--size-small);max-inline-size:34rem">Objects, triggers and your first deploy — the platform's own language from zero. Concept, concrete example, bridge to the next step: every lesson, same shape.</p>
+    <div class="ns-curriculum" style="margin-block-start:var(--space-5)">
+      <section class="ns-curriculum__section">
+        <header class="ns-curriculum__head"><span class="ns-curriculum__index">01</span><h3 class="ns-curriculum__title">Getting oriented</h3><span class="ns-curriculum__meta">3 lessons</span></header>
+        <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">01</span><span class="ns-lesson__title">What is an org?</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
+        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">02</span><span class="ns-lesson__title">Objects &amp; fields</span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+      </section>
+    </div>
+  </div>
+  <aside class="ns-course-detail__rail">
+    <div class="ns-railbox">
+      <p class="ns-railbox__head">This course</p>
+      <p style="font-size:var(--size-small);color:var(--color-muted)">12 lessons · 3h 40m · certificate</p>
+      <button class="ns-btn ns-btn--primary ns-btn--block" style="margin-block-start:var(--space-3)">Start learning free</button>
+    </div>
+    <div class="ns-railbox">
+      <p class="ns-railbox__head">Instructor</p>
+      <div style="display:flex;align-items:center;gap:var(--space-3)">
+        <span class="ns-avatar">SW</span>
+        <span style="font-size:var(--size-small)">Swarnil Singhai<br><span style="color:var(--color-muted)">Salesforce architect</span></span>
+      </div>
+    </div>
+  </aside>
+</div>` },
+      { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-detail.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+    ],
+  },
+  {
+    id: "course-listing", title: "Course listing", family: "LMS",
+    summary: "The catalog: a filter row (tags with aria-pressed + a sort Select) over the course-card grid. This demo is LIVE — the tags actually filter the grid; hidden cards keep their colors and order when they return.",
+    use: ["The /courses page, tag archives, search results"],
+    not: ["A shelf of 4 on the home page — Carousel or a plain grid"],
+    a11y: ["Filters are real buttons; the result count is a live region so the change is announced", "An emptied grid shows the Empty state with the one obvious fix — clear filters"],
+    variants: [
+      { name: "Live filter + grid", script: `(function () {
+  var wrap = document.getElementById('cl-demo');
+  if (!wrap) return;
+  var tags = wrap.querySelectorAll('[data-filter]');
+  var count = wrap.querySelector('[data-count]');
+  function apply(val) {
+    var shown = 0;
+    wrap.querySelectorAll('[data-topic]').forEach(function (c) {
+      var hit = val === 'all' || c.getAttribute('data-topic') === val;
+      c.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    count.textContent = shown + ' course' + (shown === 1 ? '' : 's');
+  }
+  tags.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tags.forEach(function (o) { o.setAttribute('aria-pressed', String(o === t)); });
+      apply(t.getAttribute('data-filter'));
+    });
+  });
+  apply('all');
+})();`, html: `<div id="cl-demo" style="inline-size:100%">
+  <div class="ns-course-filters">
+    <button class="ns-tag" data-filter="all" aria-pressed="true">All</button>
+    <button class="ns-tag" data-filter="admin" aria-pressed="false">Admin</button>
+    <button class="ns-tag" data-filter="dev" aria-pressed="false">Developer</button>
+    <span class="ns-ccard__meta" data-count role="status" style="margin-inline-start:var(--space-2)"></span>
+    <select class="ns-select" aria-label="Sort">
+      <option>Newest</option><option>Most popular</option><option>Shortest first</option>
+    </select>
+  </div>
+  <div class="ns-course-grid">
+    <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Beginner</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a><span class="ns-ccard__meta"><span>12 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="admin"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Beginner</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Admin fundamentals</span></a><span class="ns-ccard__meta"><span>14 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="admin"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Intermediate</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Advanced</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Bulk-safe Apex</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
+  </div>
+</div>` },
+      { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-listing.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+    ],
+  },
+  {
+    id: "player", title: "Course player", family: "LMS",
     summary: "The screen a learner lives in: 16:9 stage on brand-900 in both themes, lesson header, prev/next with ←/→ shortcuts, and the curriculum rail with done / current / locked rows. Two columns ≥ lg; below, a single column with the stage always first.",
     use: ["Lesson pages in both products — Ghost via templates/course-player.html, Next.js via CoursePlayer/LessonRail"],
     not: ["Marketing pages with one embedded video — that is just a video in prose"],
@@ -974,7 +1222,7 @@ export const COMPONENTS = [
 
   /* ========================================================== Admin ==== */
   {
-    id: "admin-shell", title: "Admin shell", family: "Admin",
+    id: "admin-shell", title: "Admin shell", family: "CMS",
     summary: "The builder's console: fixed topbar, side nav, scrolling main — one CSS grid, no JS. Below lg the nav becomes a top strip. The mono env tag says which site this console edits.",
     use: ["Every admin screen — dashboard, lists, editors all render inside it"],
     not: ["The learner-facing app — that uses the marketing navbar + page layouts"],
@@ -995,7 +1243,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "admin-nav", title: "Admin nav", family: "Admin",
+    id: "admin-nav", title: "Admin nav", family: "CMS",
     summary: "The console's side navigation: mono indices, section separators, counts at the row end. The current page carries the 2px leading edge — aria-current, never an .active class.",
     use: ["Inside the admin shell's side slot", "Counts for things waiting on the admin (drafts, open tickets)"],
     not: ["Learner-facing docs — DocsSidebar is that component"],
@@ -1011,7 +1259,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "pagehead", title: "Page head", family: "Admin",
+    id: "pagehead", title: "Page head", family: "CMS",
     summary: "Every admin screen opens with one: code-comment kicker, the h1, a meta line, and the screen's actions on the trailing edge. The one primary button per screen lives here.",
     use: ["The top of every screen inside the admin shell"],
     not: ["Marketing pages — bands have their own head grammar"],
@@ -1030,7 +1278,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "stat", title: "Stat card", family: "Admin",
+    id: "stat", title: "Stat card", family: "CMS",
     summary: "The dashboard number: uppercase mono label, big tabular mono value, a worded delta in status ink. The word (“↑ 2 this month”) carries the meaning; the color reinforces it.",
     use: ["4-up dashboard summary rows", "Deltas only when the comparison is real"],
     not: ["Marketing pages — the Stat band section is that surface", "Charts — this is one number, not a trend"],
@@ -1044,7 +1292,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "toolbar", title: "Toolbar", family: "Admin",
+    id: "toolbar", title: "Toolbar", family: "CMS",
     summary: "The row above every list screen: search, filter selects, the mono result count, and the view toggle on the trailing edge. Wraps on narrow screens — never becomes a second navbar.",
     use: ["Above tables and record lists in the admin"],
     not: ["Global navigation or actions that belong in the page head"],
@@ -1066,7 +1314,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "editor-layout", title: "Editor layout", family: "Admin",
+    id: "editor-layout", title: "Editor layout", family: "CMS",
     summary: "The creation screen's two panes: the record on the left, everything ABOUT the record in a sticky rail of hairline RailBox groups — status, thumbnail, tags, visibility. Collapses to one column below lg.",
     use: ["Course creation, lesson editing, any record-with-settings screen"],
     not: ["Simple settings forms — a narrow single column is enough"],
@@ -1088,7 +1336,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "publishbar", title: "Publish bar", family: "Admin",
+    id: "publishbar", title: "Publish bar", family: "CMS",
     summary: "The sticky strip at the foot of a creation screen: the mono save state on the left (a timestamp, not a toast), draft/publish actions on the right. role=status announces saves quietly.",
     use: ["Course and lesson editors — anywhere work can be lost"],
     not: ["List screens — nothing to save there"],
@@ -1103,7 +1351,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "titlebox", title: "Title box & slug", family: "Admin",
+    id: "titlebox", title: "Title box & slug", family: "CMS",
     summary: "A lesson is written, not filled in — so the title is a big borderless input at heading size; the hairline appears under it only on focus. The slug pairs the fixed mono prefix with a mono input.",
     use: ["The title position of every creation screen", "Slugs, IDs — URL parts are data, so they are mono"],
     not: ["Ordinary form fields — those use Field + Input"],
@@ -1116,7 +1364,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "rte", title: "Rich text", family: "Admin",
+    id: "rte", title: "Rich text", family: "CMS",
     summary: "Writing chrome: a quiet icon toolbar over the writing area. Active marks are aria-pressed with the standard brand-tint treatment; the area reads with body type, because lesson prose should look like lesson prose while being written.",
     use: ["Lesson bodies, course descriptions — anywhere an author writes prose"],
     not: ["Single-line values or plain textareas", "Code editing — CodeBlock renders code, your editor edits it"],
@@ -1140,7 +1388,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "builder", title: "Curriculum builder", family: "Admin",
+    id: "builder", title: "Curriculum builder", family: "CMS",
     summary: "The course's structure, editable: section blocks with in-place titles and mono lesson-count meta, lesson rows with grip, index, type badge, duration and hover-revealed actions, and the dashed add rows. The learner curriculum is this, read-only.",
     use: ["Building and reordering a course's sections and lessons", "The grip button reorders with ArrowUp/ArrowDown — keyboard first, drag layered on by the app"],
     not: ["Displaying a curriculum to learners — CurriculumList is the read-only twin"],
@@ -1182,7 +1430,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "dropzone", title: "Dropzone & file row", family: "Admin",
+    id: "dropzone", title: "Dropzone & file row", family: "CMS",
     summary: "The upload target: dashed border (the “nothing here yet” device) resolving to brand on hover, focus or drag-over; the real file input covers the zone. Uploaded files are mono terminal rows with a status chip.",
     use: ["Video, thumbnail and attachment uploads", "compact for the settings rail"],
     not: ["Tiny “change avatar” spots — a plain outline button is enough"],
@@ -1212,7 +1460,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "taginput", title: "Tag input", family: "Admin",
+    id: "taginput", title: "Tag input", family: "CMS",
     summary: "Chips inside an input-shaped box; the entry is a bare input at the end. Enter or comma commits, Backspace on empty removes the last tag, and every chip's remove is a real labelled button.",
     use: ["Course tags, lesson topics — small free-vocabulary sets"],
     not: ["Choosing from a fixed list — Select or checkboxes", "Dozens of tags — curate the vocabulary instead"],

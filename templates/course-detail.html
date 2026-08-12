@@ -1,0 +1,81 @@
+<!--
+  NS Design System template — course detail page
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → adapt hrefs/text to helpers; Next.js → the React
+  components implement this contract; Static → use directly.
+-->
+<section class="ns-band ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <span class="ns-kicker">// Course · Beginner · 12 lessons</span>
+    <h1 class="ns-band__title">Apex basics</h1>
+    <p class="ns-band__lede">Objects, triggers and your first deploy — the platform's own language from zero. Every lesson, same shape: concept, concrete example, bridge to the next step.</p>
+    <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-block-start:var(--space-5)">
+      <a class="ns-btn ns-btn--white" href="#curriculum">Start learning free</a>
+      <a class="ns-btn ns-btn--ghost" href="#curriculum">View curriculum</a>
+    </div>
+  </div>
+</section>
+
+<div class="ns-course-detail" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-10) var(--space-6) var(--space-16)">
+  <div>
+    <div class="ns-prose">
+      <h2>What you'll build</h2>
+      <p>A working trigger, a bulk-safe batch job, and the habits that keep an org healthy. By the end you can read any Apex class in your org and know what it does — and deploy your own without fear.</p>
+      <ul>
+        <li>Objects, fields and relationships — the data model under everything</li>
+        <li>Your first trigger, then the bulk-safe version of it</li>
+        <li>SOQL from SELECT to aggregate queries</li>
+      </ul>
+    </div>
+
+    <h2 id="curriculum" style="font-size:var(--size-h4);margin-block:var(--space-8) var(--space-4)">Curriculum</h2>
+    <div class="ns-curriculum">
+      <section class="ns-curriculum__section">
+        <header class="ns-curriculum__head">
+          <span class="ns-curriculum__index">01</span>
+          <h3 class="ns-curriculum__title">Getting oriented</h3>
+          <span class="ns-curriculum__meta">3 lessons · 32m</span>
+        </header>
+        <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">01</span><span class="ns-lesson__title">What is an org?</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
+        <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">02</span><span class="ns-lesson__title">Objects &amp; fields</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
+        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">03</span><span class="ns-lesson__title">Navigation that sticks<span class="ns-visually-hidden"> (locked — members only)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+      </section>
+      <section class="ns-curriculum__section">
+        <header class="ns-curriculum__head">
+          <span class="ns-curriculum__index">02</span>
+          <h3 class="ns-curriculum__title">Apex, hands on</h3>
+          <span class="ns-curriculum__meta">5 lessons · 1h 44m</span>
+        </header>
+        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">04</span><span class="ns-lesson__title">Classes &amp; triggers<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">05</span><span class="ns-lesson__title">SOQL from zero<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">06</span><span class="ns-lesson__title">Bulk-safe patterns<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+      </section>
+    </div>
+  </div>
+
+  <aside class="ns-course-detail__rail">
+    <div class="ns-railbox">
+      <p class="ns-railbox__head">This course</p>
+      <p style="font-size:var(--size-small);color:var(--color-muted)">12 lessons · 3h 40m<br>Certificate on completion<br>Beginner — no setup needed</p>
+      <a class="ns-btn ns-btn--primary ns-btn--block" href="#" style="margin-block-start:var(--space-3)">Start learning free</a>
+    </div>
+    <div class="ns-railbox">
+      <p class="ns-railbox__head">Instructor</p>
+      <div style="display:flex;align-items:center;gap:var(--space-3)">
+        <span class="ns-avatar">SW</span>
+        <span style="font-size:var(--size-small)">Swarnil Singhai<br><span style="color:var(--color-muted)">Salesforce architect</span></span>
+      </div>
+    </div>
+    <div class="ns-railbox">
+      <p class="ns-railbox__head">Topics</p>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+        <span class="ns-tag">Apex</span><span class="ns-tag">SOQL</span><span class="ns-tag">Triggers</span>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<footer class="ns-footer">
+  <div class="ns-footer__bar"><span>© 2026 Namaste Salesforce</span><span class="ns-footer__spacer"></span><a href="#">Courses</a><a href="#">Training</a></div>
+</footer>

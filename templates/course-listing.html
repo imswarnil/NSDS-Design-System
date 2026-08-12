@@ -1,0 +1,83 @@
+<!--
+  NS Design System template — course listing / catalog
+  =====================================================================
+  Framework-agnostic markup: filter tags + sort select over the course
+  card grid. The filter wiring here is demo JS; in product the same
+  markup is driven by Ghost routes/tags or React state.
+-->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">// Catalog</span>
+      <h1 class="ns-band__title">Every course, one roadmap</h1>
+      <p class="ns-band__lede">Filter by track — each course states its level, length and what you can do afterwards.</p>
+    </header>
+  </div>
+</section>
+
+<div style="max-inline-size:var(--container-page);margin-inline:auto;padding:0 var(--space-6) var(--space-16)">
+  <div class="ns-course-filters">
+    <button class="ns-tag" data-filter="all" aria-pressed="true">All</button>
+    <button class="ns-tag" data-filter="admin" aria-pressed="false">Admin</button>
+    <button class="ns-tag" data-filter="dev" aria-pressed="false">Developer</button>
+    <button class="ns-tag" data-filter="arch" aria-pressed="false">Architect</button>
+    <span class="ns-ccard__meta" data-count role="status"></span>
+    <select class="ns-select" aria-label="Sort courses">
+      <option>Newest</option><option>Most popular</option><option>Shortest first</option>
+    </select>
+  </div>
+
+  <div class="ns-course-grid">
+    <div class="ns-card ns-ccard" data-topic="dev">
+      <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Beginner</span></span>
+      <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a><p class="ns-card__text">The platform's own language, from zero to first deploy.</p><span class="ns-ccard__meta"><span>12 lessons</span><span>3h 40m</span></span></div>
+    </div>
+    <div class="ns-card ns-ccard" data-topic="admin">
+      <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Beginner</span></span>
+      <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Admin fundamentals</span></a><p class="ns-card__text">Users, profiles, permission sets — run the org with confidence.</p><span class="ns-ccard__meta"><span>14 lessons</span><span>4h 05m</span></span></div>
+    </div>
+    <div class="ns-card ns-ccard" data-topic="admin">
+      <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Intermediate</span></span>
+      <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a><p class="ns-card__text">Declarative automation from a blank canvas to approvals.</p><span class="ns-ccard__meta"><span>9 lessons</span><span>2h 51m</span></span></div>
+    </div>
+    <div class="ns-card ns-ccard" data-topic="dev">
+      <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Advanced</span></span>
+      <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Bulk-safe Apex patterns</span></a><p class="ns-card__text">Triggers that survive the 200-record data load.</p><span class="ns-ccard__meta"><span>9 lessons</span><span>2h 10m</span></span></div>
+    </div>
+    <div class="ns-card ns-ccard" data-topic="arch">
+      <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Advanced</span></span>
+      <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Data model design</span></a><p class="ns-card__text">Relationships, rollups and the schema the next admin understands.</p><span class="ns-ccard__meta"><span>11 lessons</span><span>3h 22m</span></span></div>
+    </div>
+    <div class="ns-card ns-ccard" data-topic="dev">
+      <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Intermediate</span></span>
+      <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">LWC from scratch</span></a><p class="ns-card__text">Components the platform way — wire, LDS, events.</p><span class="ns-ccard__meta"><span>11 lessons</span><span>3h 05m</span></span></div>
+    </div>
+  </div>
+</div>
+
+<footer class="ns-footer">
+  <div class="ns-footer__bar"><span>© 2026 Namaste Salesforce</span><span class="ns-footer__spacer"></span><a href="#">Courses</a><a href="#">Training</a></div>
+</footer>
+
+<script>
+(function () {
+  var tags = document.querySelectorAll('[data-filter]');
+  var count = document.querySelector('[data-count]');
+  function apply(val) {
+    var shown = 0;
+    document.querySelectorAll('[data-topic]').forEach(function (c) {
+      var hit = val === 'all' || c.getAttribute('data-topic') === val;
+      c.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    if (count) count.textContent = shown + ' course' + (shown === 1 ? '' : 's');
+  }
+  tags.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tags.forEach(function (o) { o.setAttribute('aria-pressed', String(o === t)); });
+      apply(t.getAttribute('data-filter'));
+    });
+  });
+  apply('all');
+})();
+</script>

@@ -1,0 +1,93 @@
+/* NS Design System — LMS: course card, curriculum, lesson chrome, pages.
+   =========================================================================
+   The learner-facing layer. Everything composes the existing primitives —
+   card frame, lesson rows (player.css), tags, progress, railbox — this file
+   only adds what a course needs that nothing else has: the progress foot,
+   the read-only curriculum, lesson navigation, the mobile lesson panel, and
+   the two page grids (detail, listing). */
+@layer components {
+
+  /* --- Course card ---------------------------------------------------------
+     A Card with course anatomy: level tag riding the media, meta row in
+     mono, and a progress foot where the plain card has a footer. */
+  .ns-ccard__mediawrap { position: relative; }
+  .ns-ccard__level { position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
+                     background: var(--color-surface); }
+  .ns-ccard__meta { display: flex; align-items: center; gap: var(--space-3);
+                    font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+                    text-transform: uppercase; color: var(--color-label); }
+  .ns-ccard__progress { display: flex; align-items: center; gap: var(--space-3);
+                        padding: var(--space-3) var(--pad-card);
+                        border-block-start: 1px solid var(--color-border); }
+  .ns-ccard__progress .ns-progress { flex: 1; }
+  .ns-ccard__pct { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); }
+
+  /* --- Curriculum (read-only) ---------------------------------------------
+     The course's table of contents on the detail page: section heads over
+     the SAME .ns-lesson rows the player rail uses — a lesson looks identical
+     before and during the course. */
+  .ns-curriculum { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; }
+  .ns-curriculum__head {
+    display: flex; align-items: baseline; gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    background: var(--color-surface-sunken);
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-curriculum__section:first-child .ns-curriculum__head { border-block-start: 0; }
+  .ns-curriculum__index { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-label); }
+  .ns-curriculum__title { font-weight: var(--weight-semibold); font-size: var(--size-small); color: var(--color-ink); }
+  .ns-curriculum__meta { margin-inline-start: auto; font-family: var(--font-mono); font-size: var(--size-label);
+                         letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+
+  /* --- Lesson navigation ---------------------------------------------------
+     Prev / progress / next. Standalone version of the player's bar so an
+     article-type lesson gets the same chrome; --sticky pins it to the
+     viewport bottom on long lessons. */
+  .ns-lesson-nav {
+    display: flex; align-items: center; gap: var(--space-4);
+    padding-block: var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-lesson-nav .ns-progress-row { flex: 1; justify-content: center; }
+  .ns-lesson-nav--sticky { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
+  .ns-lesson-nav__up { font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+                       text-transform: uppercase; color: var(--color-muted); text-decoration: none; }
+  .ns-lesson-nav__up:hover { color: var(--color-brand-600); }
+
+  /* --- Mobile lesson panel -------------------------------------------------
+     Below lg the curriculum rail becomes a bottom bar + drawer. The bar
+     shows where you are and opens the full lesson list; the drawer is the
+     system Drawer with lesson rows inside. */
+  .ns-panelbar {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
+  }
+  .ns-panelbar--fixed { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
+  .ns-panelbar__now { min-inline-size: 0; flex: 1; }
+  .ns-panelbar__kicker { display: block; font-family: var(--font-mono); font-size: var(--size-label);
+                         letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+  .ns-panelbar__title { display: block; font-size: var(--size-small); font-weight: var(--weight-medium);
+                        color: var(--color-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* --- Course detail page --------------------------------------------------
+     Content + sticky rail ≥ lg; single column below, rail content flowing
+     after the curriculum. The rail reuses .ns-railbox from the admin layer. */
+  .ns-course-detail { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: var(--space-10); align-items: start; }
+  .ns-course-detail__rail { position: sticky; inset-block-start: var(--space-6);
+                            display: flex; flex-direction: column; gap: var(--space-4); }
+  @media (max-width: 63.999rem) {
+    .ns-course-detail { grid-template-columns: minmax(0, 1fr); }
+    .ns-course-detail__rail { position: static; }
+  }
+
+  /* --- Course listing ------------------------------------------------------
+     Filter row above, card grid below. Filters are Tags (aria-pressed) and
+     a Select — the same controls as everywhere else. */
+  .ns-course-filters { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+                       margin-block-end: var(--space-5); }
+  .ns-course-filters .ns-select { inline-size: auto; margin-inline-start: auto; }
+  .ns-course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); gap: var(--gap-grid); }
+}

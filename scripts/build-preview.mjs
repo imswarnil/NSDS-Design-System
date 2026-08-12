@@ -1358,6 +1358,8 @@ const DEMOS = [
   { out: "demo-admin-course-new.html", tpl: "admin-course-new.html", title: "Create a course — full screen demo", back: "c-admin-shell.html", note: "interactive — build the curriculum, tag it, publish", wrap: "ns-admin__main", interactive: true },
   { out: "demo-admin-lesson-editor.html", tpl: "admin-lesson-editor.html", title: "Lesson editor — full screen demo", back: "c-admin-shell.html", note: "interactive — write, format, upload, publish", wrap: "ns-admin__main", interactive: true },
   { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
+  { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
+  { out: "demo-course-listing.html", tpl: "course-listing.html", title: "Course listing — full page demo", back: "c-course-listing.html", note: "live filters — the tags actually filter the grid" },
 ];
 /* Demo-only wiring for the admin editors. In product this behaviour lives in
    the React components (components/admin/); here it is vanilla JS over the
