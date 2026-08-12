@@ -18,7 +18,7 @@
                script: demo-only wiring (dialogs need showModal).
                dark: render this demo on a forced dark navy band. */
 
-export const FAMILIES = ["Actions", "Forms", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "Sections", "Admin"];
+export const FAMILIES = ["Actions", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "Sections", "Admin"];
 
 export const COMPONENTS = [
 
@@ -79,15 +79,36 @@ export const COMPONENTS = [
     not: ["Choosing from a known list — Select", "Multi-line prose — Textarea"],
     a11y: ["Always inside a Field (or with an explicit label) — placeholder is never a label", "The ⌘K hint is aria-hidden: a keyboard user tabbing in does not need it read out"],
     variants: [
-      { name: "Default / disabled", html: `<input class="ns-input" placeholder="you@example.com" style="max-inline-size:16rem">
-<input class="ns-input" value="Not editable" disabled style="max-inline-size:16rem">` },
-      { name: "Mono — for data", html: `<input class="ns-input ns-input--mono" value="00D5g000004abcEAA" style="max-inline-size:16rem">` },
+      { name: "Types", note: "One class, every HTML type — the type attribute buys the right keyboard, autofill and native pickers for free.", html: `<div style="display:grid;gap:var(--space-3);max-inline-size:20rem;inline-size:100%">
+  <input class="ns-input" type="text" placeholder="Text — a sentence or a name">
+  <input class="ns-input" type="email" placeholder="you@example.com" autocomplete="email">
+  <input class="ns-input" type="password" value="hunter2hunter" autocomplete="current-password">
+  <input class="ns-input" type="number" placeholder="Number — 42" min="0">
+  <input class="ns-input" type="date">
+  <input class="ns-input" type="url" placeholder="https://…">
+</div>` },
+      { name: "States", note: "Hover brightens the hairline; focus draws the 2px brand ring (click into one); active/filled is just the value present — no floating labels. Disabled leaves the tab order; readonly stays readable and copyable.", html: `<div style="display:grid;gap:var(--space-3);max-inline-size:20rem;inline-size:100%">
+  <input class="ns-input" placeholder="Rest — hover me, then click in">
+  <input class="ns-input" value="Filled — the quiet state">
+  <input class="ns-input" value="Read-only value" readonly>
+  <input class="ns-input" value="Disabled" disabled>
+</div>` },
+      { name: "Validation", note: "aria-invalid drives the red hairline; the Field's error names what is wrong AND what to do, and role=\"alert\" announces it. Never color alone, never just \"invalid\".", html: `<div class="ns-field" style="max-inline-size:20rem">
+  <label class="ns-field__label" for="in-v1">Email address</label>
+  <input class="ns-input" id="in-v1" type="email" value="swarnil@gmail" aria-invalid="true" aria-describedby="in-v1-e">
+  <p class="ns-field__error" id="in-v1-e" role="alert">That address is missing its domain — like .com</p>
+</div>
+<div class="ns-field" style="max-inline-size:20rem">
+  <label class="ns-field__label" for="in-v2">Org ID</label>
+  <input class="ns-input ns-input--mono" id="in-v2" value="00D5g000004abcEAA" aria-describedby="in-v2-h">
+  <p class="ns-field__help" id="in-v2-h"><span class="ns-status ns-status--success">Valid</span></p>
+</div>` },
+      { name: "Mono — for data", note: "Org IDs, codes, keys — a value, not a sentence (Principle 2).", html: `<input class="ns-input ns-input--mono" value="00D5g000004abcEAA" style="max-inline-size:16rem">` },
       { name: "Icon and shortcut hint", html: `<span class="ns-input-wrap" style="max-inline-size:20rem">
   <i class="ph ph-magnifying-glass ns-input-wrap__icon" aria-hidden="true"></i>
   <input class="ns-input ns-input--has-icon ns-input--has-hint" type="search" placeholder="Search courses…">
   <kbd class="ns-input-wrap__hint" aria-hidden="true">⌘K</kbd>
 </span>` },
-      { name: "Invalid", html: `<input class="ns-input" value="not-an-email" aria-invalid="true" style="max-inline-size:16rem">` },
     ],
   },
   {
@@ -561,11 +582,11 @@ export const COMPONENTS = [
 
   /* ======================================================= Surfaces ==== */
   {
-    id: "auth", title: "Auth screens", family: "Surfaces",
-    summary: "Sign in, sign up, forgot/reset in one .ns-auth shell. Ghost is passwordless (magic link — templates/signin-form.html); the Next.js app renders the password variants (components/auth). The code-comment kicker makes the screen unmistakably this brand.",
-    use: ["Any screen whose single job is an identity action"],
-    not: ["In-page account settings — the account panel"],
-    a11y: ["Sign-in errors never say WHICH field was wrong — that confirms account existence to a guesser", "The forgot-password confirmation reads the same whether or not the account exists", "autocomplete attributes are what make password managers work — current-password vs new-password matters"],
+    id: "signin", title: "Sign in", family: "Form patterns",
+    summary: "The sign-in card in the .ns-auth shell: password plus a magic-link alternative under one divider. Ghost is passwordless (templates/signin-form.html); the Next.js app renders the password form — same markup, one brand.",
+    use: ["The one screen whose single job is signing in"],
+    not: ["In-page account settings — the account panel", "Sign up — its own page, its own promises"],
+    a11y: ["Sign-in errors never say WHICH field was wrong — that confirms account existence to a guesser", "autocomplete=\"current-password\" is what makes password managers work"],
     variants: [
       { name: "Sign-in card", html: `<div class="ns-auth__card" style="max-inline-size:22rem">
   <p class="ns-auth__kicker">sign in</p>
@@ -590,15 +611,132 @@ export const COMPONENTS = [
   </form>
   <p class="ns-auth__alt">New here? <a href="#">Create an account</a></p>
 </div>` },
-      { name: "Sent confirmation", note: "Replaces the form; echoes the address in mono so the user can catch their own typo.", html: `<div class="ns-auth__sent" role="status" style="max-inline-size:22rem">
-  <p class="ns-auth__sent-title"><i class="ph ph-check-circle" aria-hidden="true"></i> Check your inbox</p>
-  <p>If an account exists for <code>you@example.com</code>, a reset link is on its way. It expires in one hour.</p>
+      { name: "Error state", note: "One message above the fields, deliberately vague about which half was wrong.", html: `<div class="ns-auth__card" style="max-inline-size:22rem">
+  <p class="ns-auth__kicker">sign in</p>
+  <h2 class="ns-auth__title" style="font-size:var(--size-h3)">Welcome back</h2>
+  <div class="ns-alert ns-alert--error" role="alert" style="margin-block-end:var(--space-4)">
+    <i class="ph ph-warning-circle ns-alert__icon" aria-hidden="true"></i>
+    <div class="ns-alert__body"><p class="ns-alert__text">That email and password combination did not match. Try again or use a sign-in link.</p></div>
+  </div>
+  <form class="ns-auth__form" onsubmit="return false">
+    <div class="ns-field">
+      <label class="ns-field__label" for="aue-e">Email address</label>
+      <input class="ns-input" id="aue-e" type="email" value="swarnil@example.com" autocomplete="email">
+    </div>
+    <div class="ns-field">
+      <label class="ns-field__label" for="aue-p">Password</label>
+      <input class="ns-input" id="aue-p" type="password" autocomplete="current-password">
+    </div>
+    <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Sign in</button>
+  </form>
+</div>` },
+    ],
+  },
+  {
+    id: "signup", title: "Sign up", family: "Form patterns",
+    summary: "Create-account card: the shortest form that can honestly create an account — name, email, password with LIVE rules (not a strength bar), and the legal line. Every extra field costs signups; ask later, in the app.",
+    use: ["The one create-account screen"],
+    not: ["Collecting profile details — onboarding, after the account exists"],
+    a11y: ["autocomplete=\"new-password\" tells password managers to OFFER a password", "Password rules are a live list the user can satisfy one by one — announced as they flip"],
+    variants: [
+      { name: "Sign-up card", html: `<div class="ns-auth__card" style="max-inline-size:22rem">
+  <p class="ns-auth__kicker">create account</p>
+  <h2 class="ns-auth__title" style="font-size:var(--size-h3)">Start learning free</h2>
+  <form class="ns-auth__form" onsubmit="return false">
+    <div class="ns-field">
+      <label class="ns-field__label" for="su-n">Name</label>
+      <input class="ns-input" id="su-n" type="text" autocomplete="name">
+    </div>
+    <div class="ns-field">
+      <label class="ns-field__label" for="su-e">Email address</label>
+      <input class="ns-input" id="su-e" type="email" autocomplete="email">
+    </div>
+    <div class="ns-field">
+      <label class="ns-field__label" for="su-p">Password</label>
+      <input class="ns-input" id="su-p" type="password" autocomplete="new-password" aria-describedby="su-rules">
+    </div>
+    <ul class="ns-auth__rules" id="su-rules" style="list-style:none;padding:0;margin:0">
+      <li><span class="ns-status ns-status--success">At least 8 characters</span></li>
+      <li><span class="ns-status ns-status--success">Contains a number</span></li>
+      <li><span class="ns-status ns-status--idle">Contains a symbol</span></li>
+    </ul>
+    <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Create account</button>
+  </form>
+  <p class="ns-auth__alt">By continuing you agree to the <a href="#">terms</a>. Already learning? <a href="#">Sign in</a></p>
 </div>` },
       { name: "Live password rules", note: "Not a strength bar — \"add a symbol\" is actionable, a yellow bar is a mood.", html: `<ul class="ns-auth__rules" style="list-style:none;padding:0;margin:0">
   <li><span class="ns-status ns-status--success">At least 8 characters</span></li>
   <li><span class="ns-status ns-status--success">Contains a number</span></li>
   <li><span class="ns-status ns-status--idle">Contains a symbol</span></li>
 </ul>` },
+    ],
+  },
+  {
+    id: "reset-password", title: "Reset password", family: "Form patterns",
+    summary: "Two tiny screens: request (email only) and set-new-password. The confirmation reads identically whether or not the account exists — the reset flow must never be an account-existence oracle.",
+    use: ["Forgot-password request and the link's landing screen"],
+    not: ["Changing a known password — account settings, with the current password asked"],
+    a11y: ["The confirmation is role=\"status\" and echoes the typed address in mono so the user can catch their own typo", "autocomplete=\"new-password\" on both fields of the set screen"],
+    variants: [
+      { name: "Request", html: `<div class="ns-auth__card" style="max-inline-size:22rem">
+  <p class="ns-auth__kicker">reset password</p>
+  <h2 class="ns-auth__title" style="font-size:var(--size-h3)">Forgot your password?</h2>
+  <form class="ns-auth__form" onsubmit="return false">
+    <div class="ns-field">
+      <label class="ns-field__label" for="rp-e">Email address</label>
+      <input class="ns-input" id="rp-e" type="email" autocomplete="email">
+      <p class="ns-field__help">We'll send a reset link — it expires in one hour.</p>
+    </div>
+    <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Send reset link</button>
+  </form>
+  <p class="ns-auth__alt">Remembered it? <a href="#">Back to sign in</a></p>
+</div>` },
+      { name: "Sent confirmation", note: "Replaces the form; identical wording whether or not the account exists.", html: `<div class="ns-auth__sent" role="status" style="max-inline-size:22rem">
+  <p class="ns-auth__sent-title"><i class="ph ph-check-circle" aria-hidden="true"></i> Check your inbox</p>
+  <p>If an account exists for <code>you@example.com</code>, a reset link is on its way. It expires in one hour.</p>
+</div>` },
+      { name: "Set new password", html: `<div class="ns-auth__card" style="max-inline-size:22rem">
+  <p class="ns-auth__kicker">reset password</p>
+  <h2 class="ns-auth__title" style="font-size:var(--size-h3)">Choose a new password</h2>
+  <form class="ns-auth__form" onsubmit="return false">
+    <div class="ns-field">
+      <label class="ns-field__label" for="np-1">New password</label>
+      <input class="ns-input" id="np-1" type="password" autocomplete="new-password">
+    </div>
+    <div class="ns-field">
+      <label class="ns-field__label" for="np-2">Repeat it</label>
+      <input class="ns-input" id="np-2" type="password" autocomplete="new-password">
+    </div>
+    <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Set password &amp; sign in</button>
+  </form>
+</div>` },
+    ],
+  },
+  {
+    id: "newsletter", title: "Newsletter", family: "Form patterns",
+    summary: "The subscribe pattern: one email field, one button, the promise in the help line. Both response messages exist in the DOM from the start (hidden) — a live region created together with its message announces nothing. Ghost's data-members-* hooks work as-is.",
+    use: ["Blog footers, article ends, the CTA band's form variant"],
+    not: ["Multi-field lead capture — that is a real form with its own page"],
+    a11y: ["The label is real; the placeholder is an example, not the label", "Success is role=\"status\", failure role=\"alert\" — pre-rendered, then unhidden"],
+    variants: [
+      { name: "Inline", note: "The one-liner for article feet and footers.", html: `<form class="ns-field" style="max-inline-size:26rem;inline-size:100%" onsubmit="return false">
+  <label class="ns-field__label" for="nl-e">Email address</label>
+  <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+    <input class="ns-input" id="nl-e" type="email" autocomplete="email" placeholder="you@example.com" style="flex:1;min-inline-size:12rem">
+    <button class="ns-btn ns-btn--primary" type="submit">Subscribe</button>
+  </div>
+  <p class="ns-field__help">Weekly Salesforce lessons. Unsubscribe any time.</p>
+</form>` },
+      { name: "In the CTA band", note: "The dark band closing a page, with the form as its action.", dark: true, html: `<div style="text-align:center;inline-size:100%;max-inline-size:30rem;margin-inline:auto">
+  <span class="ns-kicker">// newsletter</span>
+  <h2 style="color:var(--color-on-brand);font-size:var(--size-h3);margin-block:var(--space-2) var(--space-4)">One lesson a week, in your inbox</h2>
+  <form style="display:flex;gap:var(--space-2);flex-wrap:wrap;justify-content:center" onsubmit="return false">
+    <input class="ns-input" type="email" aria-label="Email address" placeholder="you@example.com" style="flex:1;min-inline-size:12rem">
+    <button class="ns-btn ns-btn--white" type="submit">Subscribe</button>
+  </form>
+</div>` },
+      { name: "Success / failure messages", note: "Rendered hidden from the start; JS only flips the hidden attribute.", html: `<p class="ns-field__help" role="status">Check your inbox — the confirmation link is on its way.</p>
+<p class="ns-field__error" role="alert">That did not work. Check the address and try again.</p>` },
     ],
   },
   {
@@ -1272,6 +1410,30 @@ export const COMPONENTS = [
       { name: "Embed frame", note: "Drop any iframe in — the frame owns ratio, border and radius.", html: `<div class="ns-video" style="max-inline-size:26rem">
   <iframe src="about:blank" title="Lesson video"></iframe>
 </div>` },
+      { name: "YouTube", note: "youtube-nocookie, no autoplay, title on the iframe. In content, pair it with a mono caption via Figure.", html: `<figure class="ns-figure" style="max-inline-size:26rem;inline-size:100%">
+  <div class="ns-video">
+    <iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="Apex basics — lesson 01"
+            allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+  </div>
+  <figcaption>Lesson 01 · What is an org? · 08:12</figcaption>
+</figure>` },
+      { name: "Video modal", note: "A poster on the page; the player loads only inside the dialog when opened — the page never carries a hidden playing embed. Esc and the scrim close it, and closing empties the iframe to stop playback.", script: `document.querySelectorAll('[data-video-modal]').forEach(function (btn) {
+  var dlg = document.getElementById(btn.getAttribute('data-video-modal'));
+  var frame = dlg.querySelector('iframe');
+  btn.addEventListener('click', function () { frame.src = frame.getAttribute('data-src'); dlg.showModal(); });
+  dlg.addEventListener('close', function () { frame.src = 'about:blank'; });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+});`, html: `<div class="ns-video" style="max-inline-size:26rem">
+  <img class="ns-video__poster" src="../assets/img/publication-cover.svg" alt="">
+  <button class="ns-video__play" data-video-modal="vm-demo" aria-label="Play: What is an org?"><i class="ph ph-play" aria-hidden="true"></i></button>
+  <span class="ns-video__dur">08:12</span>
+</div>
+<dialog class="ns-modal" id="vm-demo" aria-label="What is an org? — video" style="max-inline-size:44rem;inline-size:90%">
+  <div class="ns-video" style="border:0;border-radius:0">
+    <iframe src="about:blank" data-src="https://www.youtube-nocookie.com/embed/VIDEO_ID?autoplay=1" title="What is an org?"
+            allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+  </div>
+</dialog>` },
     ],
   },
   {

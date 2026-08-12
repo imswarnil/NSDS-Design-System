@@ -1176,8 +1176,10 @@ const JS = `
 const sidebar = (current) => {
   const link = (p) => `<a href="./${p.file}"${p.file === current ? ' aria-current="page"' : ""}><span class="side__num">${p.num}</span>${esc(p.title)}</a>`;
   const foundations = PAGES.filter((p) => p.kind === "home" || p.kind === "section");
-  const componentNav = `<p class="side__sep">Components</p>\n  ` +
-    PAGES.filter((p) => p.kind === "component").map(link).join("\n  ");
+  const componentNav = FAMILIES.map((fam) => {
+    const pages = PAGES.filter((p) => p.kind === "component" && p.family === fam);
+    return pages.length ? `<p class="side__sep">${esc(fam)}</p>\n  ` + pages.map(link).join("\n  ") : "";
+  }).filter(Boolean).join("\n  ");
   const docNav = ["Charts", "Content creation"].map((side) => {
     const pages = PAGES.filter((p) => p.kind === "doc" && p.side === side);
     return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");
