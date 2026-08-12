@@ -18,7 +18,7 @@
                script: demo-only wiring (dialogs need showModal).
                dark: render this demo on a forced dark navy band. */
 
-export const FAMILIES = ["Actions", "Forms", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Sections", "Admin"];
+export const FAMILIES = ["Actions", "Forms", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "Sections", "Admin"];
 
 export const COMPONENTS = [
 
@@ -1085,6 +1085,261 @@ export const COMPONENTS = [
   <span class="ns-taginput__tag">lightning<button type="button" class="ns-taginput__x" aria-label="Remove lightning"><i class="ph ph-x" aria-hidden="true"></i></button></span>
   <input aria-label="Tags" placeholder="">
 </div>` },
+    ],
+  },
+
+  /* ======================================================= Surfaces ==== */
+  {
+    id: "card", title: "Card", family: "Surfaces",
+    summary: "The generic surface: hairline border, 6px radius, no shadow at rest. Hover brightens the border to brand blue and draws the 2px top accent — elevation by line, never by lift. Course/blog/resource cards are compositions of this.",
+    use: ["Any self-contained unit in a collection — courses, posts, resources", "Clickable cards — one stretched link, whole card is the target"],
+    not: ["A wrapper around a whole page section — use Band", "Nesting cards in cards — flatten to a List inside one card"],
+    a11y: ["Clickable cards use ONE real link (the title) stretched over the card — never a click handler on the div", "Media images are content: alt text or empty alt if decorative"],
+    variants: [
+      { name: "Default", html: `<div class="ns-card" style="max-inline-size:20rem">
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Course</span>
+    <span class="ns-card__title">Apex basics</span>
+    <p class="ns-card__text">Objects, triggers and your first deploy — the platform's own language from zero.</p>
+  </div>
+  <div class="ns-card__foot">12 lessons · 3h 40m</div>
+</div>` },
+      { name: "With media", note: "16:9 media on top; the frame crops, the caption never overlays.", html: `<div class="ns-card" style="max-inline-size:20rem">
+  <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Blog</span>
+    <span class="ns-card__title">Why flows beat process builder</span>
+    <p class="ns-card__text">Every automation you should migrate, in order.</p>
+  </div>
+</div>` },
+      { name: "Clickable", note: "One stretched link on the title; the whole card is its hit area.", html: `<div class="ns-card" style="max-inline-size:20rem">
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Roadmap</span>
+    <a class="ns-card__link" href="#"><span class="ns-card__title">Admin certification path</span></a>
+    <p class="ns-card__text">Six courses, one exam — the whole track in order.</p>
+  </div>
+  <div class="ns-card__foot">Step 01 of 06</div>
+</div>` },
+      { name: "Horizontal", note: "Media beside body — the list-like form for dense collections.", html: `<div class="ns-card ns-card--row" style="max-inline-size:28rem">
+  <img class="ns-card__media" src="../assets/img/training-trail.svg" alt="">
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Training</span>
+    <span class="ns-card__title">Trailhead in a weekend</span>
+    <p class="ns-card__text">The 12 badges that matter, nothing else.</p>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "tag", title: "Tag & pill", family: "Surfaces",
+    summary: "A tag names a taxonomy — topic, level, lesson type — in the mono label voice with a hairline border. The pill SHAPE is reserved for true pills (filters, counts); the default tag stays sharp (Principle 4).",
+    use: ["Topics and levels on cards and pages", "Filter rows — aria-pressed marks the active tag", "Counts — the pill form with a mono count"],
+    not: ["Status — that is Status (dot + text), never a tag", "Actions — a tag that performs an action is a Button"],
+    a11y: ["Filter tags are real buttons with aria-pressed", "Removable tags name their target: aria-label=\"Remove Apex\""],
+    variants: [
+      { name: "Tags", html: `<span class="ns-tag">Apex</span>
+<span class="ns-tag"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Beginner</span>
+<span class="ns-tag">Flow</span>` },
+      { name: "Filter row", note: "Real buttons; the pressed one wears the brand border.", html: `<button class="ns-tag" aria-pressed="true">All</button>
+<button class="ns-tag" aria-pressed="false">Admin</button>
+<button class="ns-tag" aria-pressed="false">Developer</button>` },
+      { name: "Pills", note: "The pill radius is earned by being a true pill — counts and filters.", html: `<span class="ns-tag ns-tag--pill">Apex <span class="ns-tag__count">24</span></span>
+<span class="ns-tag ns-tag--pill">Flows <span class="ns-tag__count">11</span></span>` },
+      { name: "Removable", html: `<span class="ns-tag">Apex <button class="ns-tag__x" aria-label="Remove Apex"><i class="ph ph-x" aria-hidden="true"></i></button></span>
+<span class="ns-tag">SOQL <button class="ns-tag__x" aria-label="Remove SOQL"><i class="ph ph-x" aria-hidden="true"></i></button></span>` },
+    ],
+  },
+  {
+    id: "avatar", title: "Avatar", family: "Surfaces",
+    summary: "People: image or mono initials on a sunken disc. The ring wrapper draws course progress as a conic arc; stacks overlap with a surface ring so faces stay separable.",
+    use: ["Instructors, students, authors — wherever a person appears", "Progress ring — a learner's completion on their own avatar"],
+    not: ["Logos or course art — use Image", "Decoration — an avatar always stands for a real person"],
+    a11y: ["Image avatars carry the person's name as alt", "Initials avatars pair with the visible name or an aria-label — initials alone are not a name"],
+    variants: [
+      { name: "Sizes", html: `<span class="ns-avatar ns-avatar--sm">NS</span>
+<span class="ns-avatar">SW</span>
+<span class="ns-avatar ns-avatar--lg">AR</span>
+<span class="ns-avatar ns-avatar--xl">PK</span>` },
+      { name: "Image", html: `<span class="ns-avatar ns-avatar--lg"><img src="../assets/logo/icon-512.png" alt="Namaste Salesforce"></span>` },
+      { name: "Progress ring", note: "--p is percent complete; the arc is the same conic device as the chart ring.", html: `<span class="ns-avatar-ring" style="--p:25"><span class="ns-avatar">25</span></span>
+<span class="ns-avatar-ring" style="--p:64"><span class="ns-avatar">64</span></span>
+<span class="ns-avatar-ring" style="--p:100"><span class="ns-avatar"><i class="ph ph-check" aria-hidden="true"></i></span></span>` },
+      { name: "Stack", note: "Overlapped with a surface ring; the last disc counts the rest.", html: `<span class="ns-avatar-stack">
+  <span class="ns-avatar">AK</span>
+  <span class="ns-avatar">RS</span>
+  <span class="ns-avatar">MJ</span>
+  <span class="ns-avatar ns-avatar--more">+9</span>
+</span>` },
+    ],
+  },
+  {
+    id: "list", title: "List", family: "Surfaces",
+    summary: "The terminal-row list — this system's way of rendering any collection: mono index, title, meta on the right, one hairline rule per row. Hover draws the 2px left accent. Curriculum, search results, drafts — all this one component.",
+    use: ["Any ordered collection — lessons, results, files, students", "Linked rows — the whole row is the link"],
+    not: ["Prose bullet points — that is ul/ol inside .ns-prose (see Elements)", "Two-dimensional data — Table"],
+    a11y: ["Linked rows are real <a> elements, one per row", "The index is content, not decoration — screen readers read the order too"],
+    variants: [
+      { name: "Indexed", note: "The mono index is a first-class element — the numbering IS the design.", html: `<div class="ns-list" style="inline-size:100%;max-inline-size:30rem">
+  <div class="ns-list__row"><span class="ns-list__index">01</span><span class="ns-list__title">What is an org?</span><span class="ns-list__meta">video · 08:12</span></div>
+  <div class="ns-list__row"><span class="ns-list__index">02</span><span class="ns-list__title">Objects &amp; fields</span><span class="ns-list__meta">video · 12:40</span></div>
+  <div class="ns-list__row"><span class="ns-list__index">03</span><span class="ns-list__title">Your first automation</span><span class="ns-list__meta">lab · 20:00</span></div>
+</div>` },
+      { name: "Linked rows", note: "Real anchors; hover shows the left accent line.", html: `<div class="ns-list" style="inline-size:100%;max-inline-size:30rem">
+  <a class="ns-list__row" href="#"><span class="ns-list__index">01</span><span class="ns-list__title">Apex basics</span><span class="ns-list__meta">12 lessons</span><i class="ph ph-caret-right ns-list__chev" aria-hidden="true"></i></a>
+  <a class="ns-list__row" href="#"><span class="ns-list__index">02</span><span class="ns-list__title">Flows</span><span class="ns-list__meta">9 lessons</span><i class="ph ph-caret-right ns-list__chev" aria-hidden="true"></i></a>
+</div>` },
+      { name: "With status", html: `<div class="ns-list" style="inline-size:100%;max-inline-size:30rem">
+  <div class="ns-list__row"><span class="ns-list__index">01</span><span class="ns-list__title">Setup &amp; navigation</span><span class="ns-list__meta"><span class="ns-status ns-status--success">Complete</span></span></div>
+  <div class="ns-list__row"><span class="ns-list__index">02</span><span class="ns-list__title">Data modeling</span><span class="ns-list__meta"><span class="ns-status ns-status--info">In progress</span></span></div>
+  <div class="ns-list__row"><span class="ns-list__index">03</span><span class="ns-list__title">Security model</span><span class="ns-list__meta"><span class="ns-status ns-status--idle">Not started</span></span></div>
+</div>` },
+      { name: "Boxed", note: "The same list inside the card frame, for placement on sunken pages.", html: `<div class="ns-list ns-list--boxed" style="inline-size:100%;max-inline-size:30rem">
+  <div class="ns-list__row"><span class="ns-list__index">01</span><span class="ns-list__title">Intro to Lightning</span><span class="ns-list__meta">08:12</span></div>
+  <div class="ns-list__row"><span class="ns-list__index">02</span><span class="ns-list__title">App builder</span><span class="ns-list__meta">14:03</span></div>
+</div>` },
+    ],
+  },
+
+  /* ===================================================== Navigation ==== */
+  {
+    id: "topnav", title: "Navbar", family: "Navigation",
+    summary: "The product's top bar: brand, links, actions, one hairline below. The active link wears the 2px brand underline — the accent-line device, horizontal. Sticky by default; --dark rides a navy hero.",
+    use: ["The one global bar at the top of every page", "aria-current=\"page\" on exactly one link"],
+    not: ["Secondary navigation inside a page — Tabs or Sidebar", "Marketing mega-menus — this system does not have them on purpose"],
+    a11y: ["A <nav> landmark with a label", "aria-current=\"page\" marks location for assistive tech and paints the underline — one attribute, both jobs"],
+    variants: [
+      { name: "Default", html: `<nav class="ns-topnav" aria-label="Main" style="position:static;inline-size:100%">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt="">Namaste Salesforce</a>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page">Courses</a></li>
+    <li><a href="#">Training</a></li>
+    <li><a href="#">Docs</a></li>
+    <li><a href="#">Blog</a></li>
+  </ul>
+  <div class="ns-topnav__actions">
+    <button class="ns-btn ns-btn--quiet ns-btn--sm">Sign in</button>
+    <button class="ns-btn ns-btn--primary ns-btn--sm">Start learning</button>
+  </div>
+</nav>` },
+      { name: "On dark", note: "For the hero band; same anatomy, on-dark inks.", dark: true, html: `<nav class="ns-topnav ns-topnav--dark" aria-label="Main" style="position:static;inline-size:100%">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt="">Namaste Salesforce</a>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page">Courses</a></li>
+    <li><a href="#">Training</a></li>
+    <li><a href="#">Docs</a></li>
+  </ul>
+  <div class="ns-topnav__actions">
+    <button class="ns-btn ns-btn--white ns-btn--sm">Start learning</button>
+  </div>
+</nav>` },
+    ],
+  },
+
+  /* ========================================================== Media ==== */
+  {
+    id: "image", title: "Image", family: "Media",
+    summary: "A picture in the card frame: hairline, 6px radius, predictable crops via aspect modifiers. The caption is mono, below the frame — never overlaid on the image.",
+    use: ["Screenshots, diagrams, course art in content", "Anything that needs a caption or a fixed aspect"],
+    not: ["People — Avatar", "Video posters — Video"],
+    a11y: ["alt describes what the image shows; empty alt only if truly decorative", "The caption supplements alt, it does not replace it"],
+    variants: [
+      { name: "Aspect ratios", html: `<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap-grid);inline-size:100%">
+  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>16 : 9</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>4 : 3</figcaption></figure>
+  <figure class="ns-figure ns-figure--square"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>1 : 1</figcaption></figure>
+</div>` },
+      { name: "With caption", html: `<figure class="ns-figure ns-figure--16x9" style="max-inline-size:24rem">
+  <span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt="The training trail illustration"></span>
+  <figcaption>Fig 01 · The training trail</figcaption>
+</figure>` },
+      { name: "Plain", note: "No frame — for transparent illustrations that carry their own shape.", html: `<figure class="ns-figure ns-figure--plain" style="max-inline-size:16rem">
+  <span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt=""></span>
+</figure>` },
+    ],
+  },
+  {
+    id: "video", title: "Video", family: "Media",
+    summary: "The 16:9 frame for an embed or a poster. The play control is the system's one allowed scale-pop; duration sits mono in the corner on a scrim.",
+    use: ["Lesson videos, promo embeds", "Poster + play where the player loads on demand"],
+    not: ["Ambient autoplay background video — this system does not do that"],
+    a11y: ["The play button names its video: aria-label=\"Play: What is an org?\"", "Embedded players keep captions on by default where the platform allows"],
+    variants: [
+      { name: "Poster + play", html: `<div class="ns-video" style="max-inline-size:26rem">
+  <img class="ns-video__poster" src="../assets/img/publication-cover.svg" alt="">
+  <button class="ns-video__play" aria-label="Play: What is an org?"><i class="ph ph-play" aria-hidden="true"></i></button>
+  <span class="ns-video__dur">08:12</span>
+</div>` },
+      { name: "Embed frame", note: "Drop any iframe in — the frame owns ratio, border and radius.", html: `<div class="ns-video" style="max-inline-size:26rem">
+  <iframe src="about:blank" title="Lesson video"></iframe>
+</div>` },
+    ],
+  },
+  {
+    id: "gallery", title: "Gallery", family: "Media",
+    summary: "A grid of figures. Auto-fills to the space; --two and --three lock counts for curated sets. Captions stay under each frame — a gallery is figures, not a mosaic wall.",
+    use: ["Screenshot sets in docs and lessons", "Curated pairs/trios of course art"],
+    not: ["A feed of cards — Card grid", "One image — Image"],
+    a11y: ["Each image keeps its own alt; the gallery adds nothing to announce"],
+    variants: [
+      { name: "Auto grid", html: `<div class="ns-gallery" style="inline-size:100%">
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>Setup</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt=""></span><figcaption>Trail</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>Deploy</figcaption></figure>
+</div>` },
+      { name: "Two-up", note: "Locked pair — before/after, light/dark.", html: `<div class="ns-gallery ns-gallery--two" style="inline-size:100%">
+  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>Before</figcaption></figure>
+  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt=""></span><figcaption>After</figcaption></figure>
+</div>` },
+    ],
+  },
+  {
+    id: "carousel", title: "Carousel", family: "Media",
+    summary: "Scroll-snap, no JS required: slides swipe on touch and scroll-wheel on desktop; prev/next are the system's own outline icon buttons wired to scrollBy. Slides hold cards, figures, quotes — the carousel is only the rail.",
+    use: ["A shelf of courses/resources wider than the viewport", "Testimonials, related lessons at an article's foot"],
+    not: ["Hero carousels that auto-rotate — nothing in this system moves uninvited", "Content users must not miss — a carousel hides everything after slide two"],
+    a11y: ["The track is keyboard-scrollable (tabindex on the region, arrow keys native)", "Prev/next buttons are real buttons with labels; no dots-only navigation"],
+    variants: [
+      { name: "Card shelf", note: "Snap-start slides; the nav buttons scroll one viewport.", script: `document.querySelectorAll('.ns-carousel').forEach(function (c) {
+  var track = c.querySelector('.ns-carousel__track');
+  c.querySelectorAll('[data-dir]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      track.scrollBy({ left: (b.getAttribute('data-dir') === 'next' ? 1 : -1) * track.clientWidth * 0.9, behavior: 'smooth' });
+    });
+  });
+});`, html: `<div class="ns-carousel" style="inline-size:100%">
+  <div class="ns-carousel__track" tabindex="0" role="region" aria-label="Popular courses">
+    <div class="ns-carousel__slide ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><span class="ns-card__title">Apex basics</span><p class="ns-card__text">The platform's own language from zero.</p></div><div class="ns-card__foot">12 lessons</div></div>
+    <div class="ns-carousel__slide ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><span class="ns-card__title">Flows</span><p class="ns-card__text">Declarative automation, end to end.</p></div><div class="ns-card__foot">9 lessons</div></div>
+    <div class="ns-carousel__slide ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><span class="ns-card__title">Admin cert</span><p class="ns-card__text">The exam path, in order.</p></div><div class="ns-card__foot">14 lessons</div></div>
+    <div class="ns-carousel__slide ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><span class="ns-card__title">LWC</span><p class="ns-card__text">Components the platform way.</p></div><div class="ns-card__foot">11 lessons</div></div>
+  </div>
+  <div class="ns-carousel__nav">
+    <button class="ns-btn ns-btn--outline ns-btn--sm ns-btn--icon" data-dir="prev" aria-label="Previous"><i class="ph ph-caret-left" aria-hidden="true"></i></button>
+    <button class="ns-btn ns-btn--outline ns-btn--sm ns-btn--icon" data-dir="next" aria-label="Next"><i class="ph ph-caret-right" aria-hidden="true"></i></button>
+  </div>
+</div>` },
+    ],
+  },
+
+  /* ======================================================= Sections ==== */
+  {
+    id: "footer", title: "Footer", family: "Sections",
+    summary: "Link columns over a mono bottom bar, one hairline on top. Column heads speak the kicker voice; --slim keeps only the bar for app screens; --dark closes a navy page.",
+    use: ["The site footer — columns for product, learn, company", "App screens — the slim bar alone"],
+    not: ["A CTA — that is CTA band, directly above the footer"],
+    a11y: ["A <footer> landmark; column heads are real headings for rotor navigation"],
+    variants: [
+      { name: "Default", html: `<footer class="ns-footer" style="inline-size:100%">
+  <div class="ns-footer__grid">
+    <div class="ns-footer__col"><p class="ns-footer__head">Learn</p><ul><li><a href="#">Courses</a></li><li><a href="#">Training roadmap</a></li><li><a href="#">Docs</a></li></ul></div>
+    <div class="ns-footer__col"><p class="ns-footer__head">Content</p><ul><li><a href="#">Blog</a></li><li><a href="#">YouTube</a></li><li><a href="#">Newsletter</a></li></ul></div>
+    <div class="ns-footer__col"><p class="ns-footer__head">Project</p><ul><li><a href="#">GitHub</a></li><li><a href="#">Design system</a></li><li><a href="#">License</a></li></ul></div>
+  </div>
+  <div class="ns-footer__bar"><span>© 2026 Namaste Salesforce</span><span class="ns-footer__spacer"></span><a href="#">Privacy</a><a href="#">Terms</a></div>
+</footer>` },
+      { name: "Slim", note: "The bar alone — app screens where the page owns the space.", html: `<footer class="ns-footer" style="inline-size:100%">
+  <div class="ns-footer__bar"><span>© 2026 Namaste Salesforce</span><span class="ns-footer__spacer"></span><a href="#">Privacy</a><a href="#">Terms</a></div>
+</footer>` },
     ],
   },
 ];

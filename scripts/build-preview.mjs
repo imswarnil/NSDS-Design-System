@@ -135,6 +135,67 @@ const SECTIONS = [
       <li><strong>Motion is instant, not springy.</strong> 120–180ms plain ease-out; no bounce, no scale-pop, no hover-lift.</li>
     </ul></div></div>
     ${spec(["guidelines/principles.card.html"])}` },
+  { id: "elements", title: "Elements", lede: "The styled content primitives. Put <code>.ns-prose</code> on any reading surface — a lesson body, a blog post, CMS output — and the bare elements inside it (headings, lists, blockquotes, code, tables…) render in the system's voice with no further classes.", body: () => {
+    const PROSE = `<div class="ns-prose">
+  <h2>Working with objects</h2>
+  <p class="ns-lead">Everything in Salesforce is a record on an object — master this and the rest of the platform follows.</p>
+  <p>An <a href="#">object</a> is a table with superpowers. Standard objects like <code>Account</code> ship with the org; custom objects end in <code>__c</code> and belong to you.</p>
+  <h3>The rules that matter</h3>
+  <ul>
+    <li>One object per real-world concept — resist the mega-object</li>
+    <li>Relationships over duplicate fields
+      <ul><li>Lookup when parents are optional</li><li>Master-detail when the child cannot exist alone</li></ul>
+    </li>
+    <li>Name fields for the reader, not the API</li>
+  </ul>
+  <h3>Deploy in three steps</h3>
+  <ol>
+    <li>Create the object in a sandbox</li>
+    <li>Add it to a change set</li>
+    <li>Validate, then deploy on a quiet Friday morning</li>
+  </ol>
+  <blockquote>
+    <p>The best data model is the one the next admin understands without asking you.</p>
+    <footer>— Every senior architect, eventually</footer>
+  </blockquote>
+  <p>Query it with SOQL — press <kbd>Cmd</kbd> <kbd>Enter</kbd> to run:</p>
+  <pre><code>SELECT Id, Name, Industry
+FROM Account
+WHERE AnnualRevenue &gt; 1000000
+ORDER BY Name</code></pre>
+  <dl>
+    <dt>Object</dt><dd>A table: Account, Course__c.</dd>
+    <dt>Record</dt><dd>A row: one account, one enrolled student.</dd>
+    <dt>Field</dt><dd>A column: Name, Level__c, <mark>the part you design</mark>.</dd>
+  </dl>
+  <hr>
+  <table>
+    <thead><tr><th>Relationship</th><th>Child required?</th><th>Rollups</th></tr></thead>
+    <tbody>
+      <tr><td>Lookup</td><td>No</td><td>No</td></tr>
+      <tr><td>Master-detail</td><td>Yes</td><td>Yes</td></tr>
+    </tbody>
+  </table>
+  <p><small>Standard and custom objects share the same query language — the skills transfer 1:1.</small></p>
+</div>`;
+    return `
+    <p class="sub">The reading surface — everything below is bare HTML inside .ns-prose</p>
+    <div class="demo demo--stack">
+${PROSE}
+    </div>
+    <details class="code"><summary>markup</summary><pre><code>${esc(PROSE)}</code></pre></details>
+    <p class="sub">What each element does</p>
+    <div class="use-grid"><div><ul>
+      <li><strong>Headings</strong> — Space Grotesk, air above, little below: a heading belongs to what follows</li>
+      <li><strong>Links</strong> — brand blue, hairline underline solidifying on hover</li>
+      <li><strong>ul</strong> — square markers (sharp geometry, not the default disc); <strong>ol</strong> — mono numerals</li>
+      <li><strong>blockquote</strong> — the 2px brand edge, mono attribution; never an italic wash</li>
+    </ul></div><div><ul>
+      <li><strong>code / pre / kbd</strong> — sunken chips and card-framed blocks in JetBrains Mono</li>
+      <li><strong>dl</strong> — mono terms, hairline-edged definitions</li>
+      <li><strong>table / hr</strong> — hairlines only, mono headers</li>
+      <li><strong>img / figure</strong> — card frame, mono caption below (see Image for the full component)</li>
+    </ul></div></div>`; } },
   { id: "color", title: "Colors", lede: "The complete palette, end to end: primary blue and its ten shades, the secondary navy, the neutral reading layer, status, and how every role flips in dark mode. Each dual chip shows light on the left, dark on the right.", body: () => `
     <p class="sub">Primary — brand blue, ten shades</p>
     <p class="variant-note">The one signal color. 500 is the working blue for fills and active states; 600 is interactive text on light; 300 is interactive text on dark; 50–100 are wash-free — they exist for charts and rare tint borders, never for status washes.</p>
@@ -313,7 +374,7 @@ const SECTIONS = [
 /* Foundations in teaching order: what it looks like (color, surfaces),
    what it reads as (type), how it is spaced and laid out, its shape and
    motion, its glyphs, its data — and the class index as the appendix. */
-const SECTION_ORDER = ["intro", "color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "accessibility", "content-design", "classes"];
+const SECTION_ORDER = ["intro", "elements", "color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "accessibility", "content-design", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
 /* ---- Brand & Content creation docs --------------------------------------
@@ -1115,10 +1176,8 @@ const JS = `
 const sidebar = (current) => {
   const link = (p) => `<a href="./${p.file}"${p.file === current ? ' aria-current="page"' : ""}><span class="side__num">${p.num}</span>${esc(p.title)}</a>`;
   const foundations = PAGES.filter((p) => p.kind === "home" || p.kind === "section");
-  const componentNav = FAMILIES.map((fam) => {
-    const pages = PAGES.filter((p) => p.kind === "component" && p.family === fam);
-    return `<p class="side__sep">${esc(fam)}</p>\n  ` + pages.map(link).join("\n  ");
-  }).join("\n  ");
+  const componentNav = `<p class="side__sep">Components</p>\n  ` +
+    PAGES.filter((p) => p.kind === "component").map(link).join("\n  ");
   const docNav = ["Charts", "Content creation"].map((side) => {
     const pages = PAGES.filter((p) => p.kind === "doc" && p.side === side);
     return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");

@@ -1,0 +1,66 @@
+/* NS Design System — media: image, video, gallery, carousel.
+   =========================================================================
+   Frames for pictures and motion. The frame is always the same hairline +
+   6px radius as every other surface; the media is the only loud thing in
+   it. No lightbox chrome, no filmstrip arrows drawn over the image —
+   controls sit outside the frame in the system's own buttons. */
+@layer components {
+
+  /* --- Image / figure -----------------------------------------------------
+     An image in content wears the card frame; the caption is mono, below,
+     never overlaid. Aspect modifiers crop predictably. */
+  .ns-figure { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-figure__frame { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; background: var(--color-surface-sunken); }
+  .ns-figure img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .ns-figure--16x9 .ns-figure__frame { aspect-ratio: 16 / 9; }
+  .ns-figure--4x3 .ns-figure__frame { aspect-ratio: 4 / 3; }
+  .ns-figure--square .ns-figure__frame { aspect-ratio: 1; }
+  .ns-figure--plain .ns-figure__frame { border: 0; border-radius: 0; background: none; }
+  .ns-figure figcaption {
+    font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* --- Video --------------------------------------------------------------
+     A 16:9 frame for an embed or a poster+play. The play control is the one
+     scale-pop exception the principles allow (video-poster ring). */
+  .ns-video { position: relative; border: 1px solid var(--color-border); border-radius: var(--radius-card);
+              overflow: hidden; aspect-ratio: 16 / 9; background: var(--color-brand-900); }
+  .ns-video > iframe, .ns-video > video { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; border: 0; }
+  .ns-video__poster { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; opacity: 0.85; }
+  .ns-video__play {
+    position: absolute; inset: 0; margin: auto; inline-size: 3.5rem; block-size: 3.5rem;
+    display: grid; place-items: center; border: 0; cursor: pointer;
+    border-radius: var(--radius-pill); background: var(--color-surface);
+    color: var(--color-brand-600); font-size: var(--size-h4);
+    box-shadow: var(--shadow-raised);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+  .ns-video__play:hover { transform: scale(1.05); }
+  .ns-video__dur { position: absolute; inset-block-end: var(--space-2); inset-inline-end: var(--space-2);
+                   padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
+                   background: var(--color-scrim); color: var(--color-on-dark);
+                   font-family: var(--font-mono); font-size: var(--size-label); }
+
+  /* --- Gallery ------------------------------------------------------------
+     A grid of figures. Auto-fills; --two locks two columns for pairs. */
+  .ns-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr)); gap: var(--gap-grid); }
+  .ns-gallery--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ns-gallery--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  @media (max-width: 40rem) { .ns-gallery--three { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* --- Carousel -----------------------------------------------------------
+     Scroll-snap, no JS required: a row of slides the user swipes or scroll-
+     wheels; prev/next are plain outline icon buttons wired to scrollBy.
+     Slides are whatever you put in them — cards, figures, quotes. */
+  .ns-carousel { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-carousel__track {
+    display: flex; gap: var(--gap-grid);
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-1);
+    padding-block-end: var(--space-2); /* keep the scrollbar off the slides */
+  }
+  .ns-carousel__slide { flex: 0 0 min(16rem, 85%); scroll-snap-align: start; min-inline-size: 0; }
+  .ns-carousel__slide--wide { flex-basis: min(24rem, 92%); }
+  .ns-carousel__nav { display: flex; gap: var(--space-2); justify-content: flex-end; }
+}

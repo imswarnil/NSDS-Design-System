@@ -1,0 +1,98 @@
+/* NS Design System — prose: styled content elements.
+   =========================================================================
+   .ns-prose is the reading surface — lesson bodies, blog posts, docs. It
+   styles the BARE elements (h2, p, ul, blockquote, pre…) so CMS output and
+   markdown render correctly with no extra classes. Outside .ns-prose,
+   elements stay unstyled primitives for app layouts to control.
+
+   The voice: Space Grotesk headings, Inter body at a comfortable measure,
+   JetBrains Mono for everything that is data — and the hairline doing the
+   structure (blockquote edge, hr, table rules), never a background wash. */
+@layer components {
+  .ns-prose {
+    font-size: var(--size-body); line-height: var(--leading-body);
+    color: var(--color-ink); max-inline-size: var(--container-prose, 42rem);
+  }
+  .ns-prose > * + * { margin-block-start: var(--stack-md); }
+
+  /* Headings — tightened display face, generous air above, little below:
+     a heading belongs to what follows it. */
+  .ns-prose h2, .ns-prose h3, .ns-prose h4 { line-height: var(--leading-tight); }
+  .ns-prose h2 { font-size: var(--size-h3); margin-block-start: var(--stack-xl); }
+  .ns-prose h3 { font-size: var(--size-h4); margin-block-start: var(--stack-lg); }
+  .ns-prose h4 { font-size: var(--size-body); margin-block-start: var(--stack-lg); }
+  .ns-prose h2 + *, .ns-prose h3 + *, .ns-prose h4 + * { margin-block-start: var(--space-3); }
+
+  /* Lead paragraph — the deck under a title. */
+  .ns-prose .ns-lead { font-size: var(--size-body-lg); color: var(--color-muted); }
+
+  /* Links — brand blue with a hairline underline that solidifies on hover. */
+  .ns-prose a { color: var(--color-brand-600); text-decoration: underline;
+                text-decoration-color: color-mix(in srgb, var(--color-brand-600) 35%, transparent);
+                text-underline-offset: 0.15em;
+                transition: text-decoration-color var(--duration-fast) var(--ease-out); }
+  .ns-prose a:hover { text-decoration-color: currentColor; }
+  [data-theme="dark"] .ns-prose a { color: var(--color-brand-300); }
+
+  /* Lists — real markers, indented into the text block, never flush-left
+     bullets floating in the margin. Nested lists tighten. */
+  .ns-prose ul, .ns-prose ol { padding-inline-start: var(--space-5); margin-block-start: var(--stack-md); }
+  .ns-prose li { margin-block-start: var(--space-2); }
+  .ns-prose li::marker { color: var(--color-label); }
+  .ns-prose ol { list-style: decimal; }
+  .ns-prose ol > li::marker { font-family: var(--font-mono); font-size: var(--size-small); }
+  .ns-prose ul { list-style: square; } /* square = this system's sharp geometry, not the default disc */
+  .ns-prose ul ul, .ns-prose ol ol, .ns-prose ul ol, .ns-prose ol ul { margin-block-start: var(--space-2); }
+
+  /* Definition list — term in mono, definition indented. */
+  .ns-prose dt { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+                 letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+                 margin-block-start: var(--space-4); }
+  .ns-prose dd { margin: var(--space-1) 0 0 0; padding-inline-start: var(--space-4);
+                 border-inline-start: 2px solid var(--color-border); }
+
+  /* Blockquote — the hairline edge device, not an italic wash. The cite
+     line goes mono, like every attribution in the system. */
+  .ns-prose blockquote {
+    margin: var(--stack-lg) 0 0 0; padding: var(--space-1) 0 var(--space-1) var(--space-5);
+    border-inline-start: 2px solid var(--color-brand-500);
+    font-size: var(--size-body-lg); color: var(--color-ink);
+  }
+  .ns-prose blockquote p + p { margin-block-start: var(--space-3); }
+  .ns-prose blockquote footer, .ns-prose blockquote cite {
+    display: block; margin-block-start: var(--space-3); font-style: normal;
+    font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* Code — inline gets a sunken chip; blocks get the card frame. */
+  .ns-prose code { font-size: 0.875em; background: var(--color-surface-sunken);
+                   border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+                   padding: 0 var(--space-1); }
+  .ns-prose pre { background: var(--color-surface-sunken); border: 1px solid var(--color-border);
+                  border-radius: var(--radius-card); padding: var(--space-4);
+                  overflow-x: auto; font-size: var(--size-small); line-height: var(--leading-body); }
+  .ns-prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  .ns-prose kbd { font-family: var(--font-mono); font-size: var(--size-label);
+                  background: var(--color-surface-raised); border: 1px solid var(--color-border);
+                  border-block-end-width: 2px; border-radius: var(--radius-sm); padding: 0 var(--space-1-5); }
+
+  /* Rules & tables — hairlines only. */
+  .ns-prose hr { border: 0; border-block-start: 1px solid var(--color-border); margin-block-start: var(--stack-xl); }
+  .ns-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
+  .ns-prose th { text-align: start; font-family: var(--font-mono); font-size: var(--size-label);
+                 font-weight: var(--weight-label); letter-spacing: var(--tracking-label); text-transform: uppercase;
+                 color: var(--color-label); padding: var(--space-2) var(--space-3);
+                 border-block-end: 1px solid var(--color-border); }
+  .ns-prose td { padding: var(--space-2) var(--space-3); border-block-end: 1px solid var(--color-border); vertical-align: top; }
+
+  /* Media in prose reuses the figure component's look. */
+  .ns-prose img { inline-size: 100%; border: 1px solid var(--color-border); border-radius: var(--radius-card); }
+  .ns-prose figure { margin: var(--stack-lg) 0 0 0; }
+  .ns-prose figcaption { margin-block-start: var(--space-2); font-family: var(--font-mono); font-size: var(--size-label);
+                         letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+
+  /* Small print & highlights. */
+  .ns-prose small { font-size: var(--size-small); color: var(--color-muted); }
+  .ns-prose mark { background: color-mix(in srgb, var(--color-brand-500) 18%, transparent); color: inherit; padding: 0 var(--space-0-5, 2px); }
+}

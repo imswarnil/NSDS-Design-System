@@ -153,4 +153,34 @@
   @media (max-width: 63.999rem) {
     .ns-sidebar { position: static; inline-size: 100%; max-block-size: none; }
   }
+
+  /* --- Top navbar ---------------------------------------------------------
+     The product's top bar: brand · links · actions, one hairline below,
+     sticky. aria-current="page" gets the 2px underline in brand blue —
+     the same accent-line device as everywhere else. --dark rides a hero. */
+  .ns-topnav {
+    position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-6);
+    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-6);
+    background: var(--color-surface); border-block-end: 1px solid var(--color-border);
+  }
+  .ns-topnav__brand { display: inline-flex; align-items: center; gap: var(--space-2);
+                      font-weight: var(--weight-semibold); color: var(--color-ink); text-decoration: none; }
+  .ns-topnav__brand img { inline-size: 1.5rem; block-size: 1.5rem; }
+  .ns-topnav__links { display: flex; align-items: center; gap: var(--space-1); margin: 0; padding: 0; list-style: none; }
+  .ns-topnav__links a {
+    display: inline-flex; align-items: center; block-size: var(--navbar-h, 3.5rem);
+    padding-inline: var(--space-3); font-size: var(--size-small); color: var(--color-muted);
+    text-decoration: none; box-shadow: inset 0 -2px 0 transparent;
+    transition: color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-topnav__links a:hover { color: var(--color-ink); }
+  .ns-topnav__links a[aria-current="page"] { color: var(--color-brand-600); box-shadow: inset 0 -2px 0 var(--color-brand-500); }
+  .ns-topnav__actions { margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-2); }
+  .ns-topnav--dark { background: var(--color-brand-900); border-block-end-color: color-mix(in srgb, var(--color-on-dark) 15%, transparent); }
+  .ns-topnav--dark .ns-topnav__brand { color: var(--color-on-brand); }
+  .ns-topnav--dark .ns-topnav__links a { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-topnav__links a:hover, .ns-topnav--dark .ns-topnav__links a[aria-current="page"] { color: var(--color-on-brand); }
+  [data-theme="dark"] .ns-topnav__links a[aria-current="page"] { color: var(--color-brand-300); }
+  @media (max-width: 63.999rem) { .ns-topnav__links { display: none; } }
 }
