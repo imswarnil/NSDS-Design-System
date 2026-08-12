@@ -830,9 +830,6 @@ ${[["Active learners", "1,284", "up", "▲ 12%", "0,26 29,22 58,24 87,18 116,20 
   </ul></div></div>` },
 ];
 
-const BRAND_DOCS = [
-  { id: "logo", title: "Logo", lede: "The mark, its lockups, and the favicon set — clear space, minimum sizes, and what never happens to it (no stretching, no recoloring, no shadows). Animated uses of the mark — stings and loading — are the Preloader component's five styles.", cards: ["guidelines/brand-logo.card.html", "guidelines/brand-logo-lockups.card.html", "guidelines/brand-favicon.card.html"] },
-];
 const CONTENT_DOCS = [
   { id: "cc-approach", title: "Approach", lede: "What content creation is in this system: every public asset — thumbnail, post, video frame — is built from the same tokens and voice as the product, so the feed is recognizably one brand.", cards: ["brand-content-creation/README.card.html", "brand-content-creation/training/training-pair.card.html", "brand-content-creation/course-lesson-pairs/pairs.card.html"] },
   { id: "cc-schedule", title: "Video series & schedule", lede: "The publishing plan: what ships on which day, and the second-by-second template every video follows — hook, promise, sting, teaching, bridge.", body: SCHEDULE_BODY, cards: ["brand-content-creation/video-structure/first-60-seconds.card.html"] },
@@ -849,7 +846,6 @@ const PAGES = [
   ...FAMILIES.flatMap((fam) =>
     COMPONENTS.filter((c) => c.family === fam)
       .map((c) => ({ file: `c-${c.id}.html`, title: c.title, kind: "component", comp: c, family: fam }))),
-  ...BRAND_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Brand" })),
   ...CHART_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Charts" })),
   ...CONTENT_DOCS.map((d) => ({ file: `${d.id}.html`, title: d.title, kind: "doc", doc: d, side: "Content creation" })),
 ];
@@ -883,7 +879,30 @@ const CSS = `
   [data-theme="dark"] .side nav a[aria-current="page"] { color: var(--color-brand-300); }
   .side__num { font-family: var(--font-mono); font-size: 0.65rem; color: var(--color-label); margin-inline-end: var(--space-2); }
 
-  main { flex: 1; min-inline-size: 0; padding: var(--space-8) var(--space-10) var(--space-24); max-inline-size: 68rem; }
+  main { flex: 1; min-inline-size: 0; padding: var(--space-8) var(--space-10) var(--space-24); max-inline-size: 86rem; }
+  .side__search { margin-block-end: var(--space-4); inline-size: 100%; font-size: var(--size-small); }
+
+  /* Two-column body: content + a sticky on-this-page rail. The page header
+     and any hero band above .cols stay full width. */
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr) 12rem; gap: var(--space-10); align-items: start; }
+  .cols--full { grid-template-columns: minmax(0, 1fr); }
+  .colmain { min-inline-size: 0; max-inline-size: 68rem; }
+  .toc {
+    position: sticky; inset-block-start: var(--space-6);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    padding: var(--space-4); background: var(--color-surface);
+    max-block-size: calc(100dvh - var(--space-12)); overflow-y: auto;
+  }
+  .toc__title { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+                letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+                margin-block-end: var(--space-2); }
+  .toc nav a { display: block; padding: var(--space-1) 0 var(--space-1) var(--space-2-5); font-size: var(--size-label);
+               color: var(--color-muted); text-decoration: none; border-inline-start: 2px solid var(--color-border);
+               transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out); }
+  .toc nav a:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  .toc nav a[aria-current="true"] { color: var(--color-brand-600); border-inline-start-color: var(--color-brand-500); }
+  [data-theme="dark"] .toc nav a[aria-current="true"] { color: var(--color-brand-300); }
+  @media (max-width: 74.999rem) { .cols { grid-template-columns: minmax(0, 1fr); } .toc { display: none; } }
   .top { display: flex; align-items: flex-start; gap: var(--space-4); margin-block-end: var(--space-6); }
   .top h1 { font-size: var(--size-h2); line-height: var(--leading-tight); }
   .top p { color: var(--color-muted); max-inline-size: 46rem; margin-block-start: var(--space-2); font-size: var(--size-small); }
@@ -898,11 +917,11 @@ const CSS = `
 
   /* Entrance: one quiet fade-up per page block, lightly staggered. The
      bundle's prefers-reduced-motion guard collapses it to nothing. */
-  main > * { animation: fade-up var(--duration-base) var(--ease-out) both; }
-  main > *:nth-child(2) { animation-delay: 40ms; }
-  main > *:nth-child(3) { animation-delay: 80ms; }
-  main > *:nth-child(4) { animation-delay: 120ms; }
-  main > *:nth-child(n+5) { animation-delay: 160ms; }
+  .colmain > *, main > .top, main > .ns-band, main > .ns-statband { animation: fade-up var(--duration-base) var(--ease-out) both; }
+  .colmain > *:nth-child(2) { animation-delay: 40ms; }
+  .colmain > *:nth-child(3) { animation-delay: 80ms; }
+  .colmain > *:nth-child(4) { animation-delay: 120ms; }
+  .colmain > *:nth-child(n+5) { animation-delay: 160ms; }
 
   .home-hero { border-radius: var(--radius-card); overflow: hidden;
                padding-block: var(--space-10); margin-block-end: var(--space-4); }
@@ -1040,6 +1059,46 @@ const JS = `
       if (navigator.clipboard) navigator.clipboard.writeText(text).then(done);
     });
   });
+})();
+/* Sidebar search — filters page links and hides emptied groups. */
+(function () {
+  var q = document.getElementById('side-search');
+  if (!q) return;
+  var links = [].slice.call(document.querySelectorAll('.side nav a'));
+  q.addEventListener('input', function () {
+    var t = q.value.trim().toLowerCase();
+    links.forEach(function (a) {
+      a.style.display = !t || a.textContent.toLowerCase().indexOf(t) !== -1 ? '' : 'none';
+    });
+    document.querySelectorAll('.side nav .side__sep').forEach(function (sep) {
+      var el = sep.nextElementSibling, any = false;
+      while (el && !el.classList.contains('side__sep')) {
+        if (el.tagName === 'A' && el.style.display !== 'none') { any = true; break; }
+        el = el.nextElementSibling;
+      }
+      sep.style.display = any ? '' : 'none';
+    });
+  });
+})();
+/* Scrollspy — the TOC marks the section in view. */
+(function () {
+  var toc = document.querySelector('.toc');
+  if (!toc || !('IntersectionObserver' in window)) return;
+  var byId = {};
+  toc.querySelectorAll('a[href^="#"]').forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+  var current = null;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      if (current) current.removeAttribute('aria-current');
+      current = byId[en.target.id];
+      if (current) current.setAttribute('aria-current', 'true');
+    });
+  }, { rootMargin: '0px 0px -70% 0px' });
+  Object.keys(byId).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) io.observe(el);
+  });
 })();`;
 
 const sidebar = (current) => {
@@ -1049,13 +1108,14 @@ const sidebar = (current) => {
     const pages = PAGES.filter((p) => p.kind === "component" && p.family === fam);
     return `<p class="side__sep">${esc(fam)}</p>\n  ` + pages.map(link).join("\n  ");
   }).join("\n  ");
-  const docNav = ["Brand", "Charts", "Content creation"].map((side) => {
+  const docNav = ["Charts", "Content creation"].map((side) => {
     const pages = PAGES.filter((p) => p.kind === "doc" && p.side === side);
     return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");
   }).join("\n  ");
   return `<div class="side">
   <div class="side__brand"><img src="../assets/logo/favicon.svg" alt=""><strong><a href="./index.html">Namaste UI</a></strong></div>
   <span class="side__ver">v${esc(pkg.version)} · ${all.length} tokens</span>
+  <input class="ns-input side__search" type="search" id="side-search" placeholder="Filter pages…" aria-label="Filter pages">
   <nav aria-label="Pages">
   ${foundations.map(link).join("\n  ")}
   ${componentNav}
@@ -1064,9 +1124,31 @@ const sidebar = (current) => {
 </div>`;
 };
 
+/* Give every .sub heading an id and collect them, so the page can carry a
+   sticky on-this-page TOC in the right rail. */
+const tocify = (inner) => {
+  let n = 0;
+  const items = [];
+  const body = inner.replace(/<p class="sub([^"]*)"([^>]*)>([\s\S]*?)<\/p>/g, (m, cls, attrs, text) => {
+    if (/k-do|k-dont/.test(cls)) return m;
+    n += 1;
+    const id = `sec-${n}`;
+    items.push({ id, label: text.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim() });
+    return `<p class="sub${cls}" id="${id}"${attrs}>${text}</p>`;
+  });
+  const toc = items.length >= 2 ? `<aside class="toc" aria-label="On this page">
+    <p class="toc__title">On this page</p>
+    <nav>
+      ${items.map((it) => `<a href="#${it.id}">${esc(it.label)}</a>`).join("\n      ")}
+    </nav>
+  </aside>` : "";
+  return { body, toc };
+};
+
 const shell = (page, inner) => {
   const i = PAGES.indexOf(page);
   const prev = PAGES[i - 1], next = PAGES[i + 1];
+  const { body, toc } = tocify(inner);
   return `<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -1089,11 +1171,17 @@ ${sidebar(page.file)}
       <i class="ph ph-moon" aria-hidden="true"></i>
     </button>
   </div>
-  ${inner}
-  <nav class="pagenav" aria-label="Adjacent pages">
-    ${prev ? `<a class="ns-btn ns-btn--outline ns-btn--sm" href="./${prev.file}"><i class="ph ph-caret-left" aria-hidden="true"></i> ${prev.num} ${esc(prev.title)}</a>` : "<span></span>"}
-    ${next ? `<a class="ns-btn ns-btn--outline ns-btn--sm" href="./${next.file}">${next.num} ${esc(next.title)} <i class="ph ph-caret-right" aria-hidden="true"></i></a>` : "<span></span>"}
-  </nav>
+  ${page.pre || ""}
+  <div class="cols${toc ? "" : " cols--full"}">
+    <div class="colmain">
+      ${body}
+      <nav class="pagenav" aria-label="Adjacent pages">
+        ${prev ? `<a class="ns-btn ns-btn--outline ns-btn--sm" href="./${prev.file}"><i class="ph ph-caret-left" aria-hidden="true"></i> ${prev.num} ${esc(prev.title)}</a>` : "<span></span>"}
+        ${next ? `<a class="ns-btn ns-btn--outline ns-btn--sm" href="./${next.file}">${next.num} ${esc(next.title)} <i class="ph ph-caret-right" aria-hidden="true"></i></a>` : "<span></span>"}
+      </nav>
+    </div>
+    ${toc}
+  </div>
 </main>
 <script>${JS}</script>
 </body>
@@ -1111,7 +1199,7 @@ for (const page of PAGES) {
   let inner = "";
   if (page.kind === "home") {
     page.lede = "One set of tokens, one portable component layer — rendered by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React). Every page here is generated from the real artifacts, so the styleguide cannot drift from the system.";
-    inner = `
+    page.pre = `
   <div class="ns-band ns-band--dark ns-band--grid home-hero">
     <div class="ns-band__inner">
       <span class="ns-kicker">The design system behind Namaste Salesforce</span>
@@ -1124,7 +1212,20 @@ for (const page of PAGES) {
     <div class="ns-statband__cell"><dd class="ns-statband__value">${darkNames.size}</dd><dt class="ns-statband__label">Flip in dark</dt></div>
     <div class="ns-statband__cell"><dd class="ns-statband__value">${Object.values(classIndex).flat().length}</dd><dt class="ns-statband__label">.ns-* classes</dt></div>
     <div class="ns-statband__cell"><dd class="ns-statband__value">${COMPONENTS.length}</dd><dt class="ns-statband__label">Doc pages</dt></div>
-  </dl>
+  </dl>`;
+    inner = `
+  <p class="sub">The mark</p>
+  <p class="variant-note">The logo, its lockups, and the favicon set — clear space, minimum sizes, and what never happens to it (no stretching, no recoloring, no shadows).</p>
+  ${spec(["guidelines/brand-logo.card.html", "guidelines/brand-logo-lockups.card.html", "guidelines/brand-favicon.card.html"])}
+  <p class="sub">The mark in motion — five sting / loading styles</p>
+  <p class="variant-note">Live below: pulse, ring, orbit, flip and bar — the only animated uses of the logo. Markup and usage rules on the <a href="./c-preloader.html">Preloader page</a>.</p>
+  <div class="demo" style="justify-content:space-between">
+    <div class="ns-preloader ns-preloader--pulse" role="status"><span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span><span class="ns-preloader__label">pulse</span></div>
+    <div class="ns-preloader ns-preloader--ring" role="status"><span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span><span class="ns-preloader__label">ring</span></div>
+    <div class="ns-preloader ns-preloader--orbit" role="status"><span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span><span class="ns-preloader__label">orbit</span></div>
+    <div class="ns-preloader ns-preloader--flip" role="status"><span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span><span class="ns-preloader__label">flip</span></div>
+    <div class="ns-preloader" role="status"><span class="ns-preloader__mark"><img class="ns-preloader__logo" src="../assets/logo/favicon.svg" alt=""></span><span class="ns-preloader__bar" aria-hidden="true"></span><span class="ns-preloader__label">bar</span></div>
+  </div>
   <p class="sub">Foundations</p>
   <div class="dir">
     ${PAGES.filter((p) => p.kind === "section").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong></a>`).join("\n    ")}
@@ -1132,10 +1233,6 @@ for (const page of PAGES) {
   <p class="sub">Components — one page each: usage, variants, markup</p>
   <div class="dir">
     ${PAGES.filter((p) => p.kind === "component").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong><span>${esc(p.family)}</span></a>`).join("\n    ")}
-  </div>
-  <p class="sub">Brand</p>
-  <div class="dir">
-    ${PAGES.filter((p) => p.kind === "doc" && p.side === "Brand").map((p) => `<a href="./${p.file}"><span class="side__num">${p.num}</span><strong>${esc(p.title)}</strong></a>`).join("\n    ")}
   </div>
   <p class="sub">Charts</p>
   <div class="dir">
@@ -1381,4 +1478,4 @@ ${body}
 `);
 }
 
-console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${COMPONENTS.length} components + ${BRAND_DOCS.length + CHART_DOCS.length + CONTENT_DOCS.length} brand/chart/content docs), ${all.length} tokens, ${cards.length} specimens embedded in place`);
+console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${COMPONENTS.length} components + ${CHART_DOCS.length + CONTENT_DOCS.length} chart/content docs), ${all.length} tokens, ${cards.length} specimens embedded in place`);
