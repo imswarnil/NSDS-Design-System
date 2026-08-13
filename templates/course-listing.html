@@ -15,7 +15,72 @@
   </div>
 </section>
 
-<div style="max-inline-size:var(--container-page);margin-inline:auto;padding:0 var(--space-6) var(--space-16)">
+<!-- Rail + grid. The rail is a real sidebar ≥ lg and a drawer below it:
+     filters are the second most used control on this page and must not be a
+     link to another screen. Everything in it is a native form control, so
+     the page still filters with JavaScript off and the form submits.
+     assets/js/lms.js adds the conveniences — the applied chips, the price
+     range's clamp and fill. -->
+<div data-filters class="ns-course-listing" style="max-inline-size:var(--container-page);margin-inline:auto;padding:0 var(--gutter) var(--space-16)">
+  <form class="ns-filters ns-course-listing__rail" method="get">
+    <div class="ns-filters__head">
+      <span class="ns-filters__title">Filters</span>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs ns-filters__clear" data-clear-filters hidden>Clear all</button>
+    </div>
+
+    <details class="ns-filters__group" open>
+      <summary class="ns-filters__legend">Track <i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+      <div class="ns-filters__list">
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="track" value="admin"><span>Admin</span><span class="ns-filters__count">24</span></label>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="track" value="dev"><span>Developer</span><span class="ns-filters__count">18</span></label>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="track" value="arch"><span>Architect</span><span class="ns-filters__count">9</span></label>
+      </div>
+    </details>
+
+    <details class="ns-filters__group" open>
+      <summary class="ns-filters__legend">Level <i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+      <div class="ns-filters__list">
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="level" value="beginner"><span>Beginner</span><span class="ns-filters__count">21</span></label>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="level" value="intermediate"><span>Intermediate</span><span class="ns-filters__count">19</span></label>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="level" value="advanced"><span>Advanced</span><span class="ns-filters__count">11</span></label>
+      </div>
+    </details>
+
+    <!-- Two real sliders on one track: keyboard, screen reader and mobile
+         all work because the controls are native. The numeric pair is not a
+         duplicate — it is how someone types an exact figure. -->
+    <details class="ns-filters__group" open>
+      <summary class="ns-filters__legend">Price <i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+      <div class="ns-range">
+        <div class="ns-range__track">
+          <span class="ns-range__fill"></span>
+          <input type="range" data-range="from" name="price_min" min="0" max="200" value="0" step="5" aria-label="Minimum price">
+          <input type="range" data-range="to" name="price_max" min="0" max="200" value="200" step="5" aria-label="Maximum price">
+        </div>
+        <div class="ns-range__values">
+          <input class="ns-input" type="number" data-range-out value="0" min="0" max="200" aria-label="Minimum price, exact">
+          <span class="ns-range__sep">—</span>
+          <input class="ns-input" type="number" data-range-out value="200" min="0" max="200" aria-label="Maximum price, exact">
+        </div>
+      </div>
+    </details>
+
+    <details class="ns-filters__group">
+      <summary class="ns-filters__legend">Lesson type <i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+      <div class="ns-filters__list">
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="type" value="video"><span>Video</span><span class="ns-filters__count">31</span></label>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="type" value="lab"><span>Hands-on labs</span><span class="ns-filters__count">14</span></label>
+        <label class="ns-choice"><input class="ns-checkbox" type="checkbox" name="type" value="live"><span>Live sessions</span><span class="ns-filters__count">3</span></label>
+      </div>
+    </details>
+
+    <noscript><button class="ns-btn ns-btn--primary ns-btn--block" style="margin-block-start:var(--space-4)">Apply filters</button></noscript>
+  </form>
+
+  <div>
+  <!-- The applied set, echoed above the grid: a filter you cannot see is a
+       filter you forget you set. Each chip removes its own facet. -->
+  <div class="ns-filters__applied" data-applied hidden></div>
   <div class="ns-course-filters">
     <button class="ns-tag" data-filter="all" aria-pressed="true">All</button>
     <button class="ns-tag" data-filter="admin" aria-pressed="false">Admin</button>
@@ -51,6 +116,7 @@
     <div class="ns-card ns-ccard" data-topic="dev">
       <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Intermediate</span></span>
       <div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">LWC from scratch</span></a><p class="ns-card__text">Components the platform way — wire, LDS, events.</p><span class="ns-ccard__meta"><span>11 lessons</span><span>3h 05m</span></span></div>
+    </div>
     </div>
   </div>
 </div>

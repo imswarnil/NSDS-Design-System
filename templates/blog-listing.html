@@ -1,0 +1,138 @@
+<!--
+  NS Design System template — blog index
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → index.hbs / tag.hbs with {{#foreach posts}}; Next.js →
+  the markup contract the components implement; Static → use directly.
+
+  One featured post, a grid of the rest, a rail carrying categories, the
+  archive and the newsletter. Deliberately NOT masonry: a masonry index
+  pushes the second post below the fold to make the first one taller, which
+  is a layout serving itself rather than the reader.
+
+  For a tag or author archive, drop the featured card and keep everything
+  else — the shape is the same page with one fewer element.
+-->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <div class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Writing</span>
+        <h1 class="ns-band__title">Notes from the platform</h1>
+        <p class="ns-band__lede">What breaks in production, why it broke, and the pattern that stops it happening twice.</p>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn ns-btn--outline ns-btn--sm" href="/rss"><i class="ph ph-rss-simple" aria-hidden="true"></i> RSS</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ns-blog-listing" style="max-inline-size:var(--container-page);margin-inline:auto;padding:0 var(--gutter) var(--space-16)">
+  <div>
+    <!-- Featured: exactly one. Two featured posts is no featured post. -->
+    <article class="ns-card ns-bcard ns-bcard--wide" style="margin-block-end:var(--space-8)">
+      <span class="ns-bcard__cover">
+        <img src="/assets/img/training-trail.svg" alt="">
+        <span class="ns-tag ns-bcard__cat">Architecture</span>
+      </span>
+      <div class="ns-card__body">
+        <a class="ns-card__link" href="/the-data-model-is-the-product"><h2 class="ns-bcard__title">The data model is the product</h2></a>
+        <p class="ns-bcard__excerpt">Every automation problem I have been called in to fix was a schema problem wearing a costume. Here is how to tell the difference before you write a line of Apex.</p>
+        <div class="ns-postmeta">
+          <span><img class="ns-postmeta__avatar" src="/assets/logo/favicon.svg" alt=""><span class="ns-postmeta__author">Swarnil Singhai</span></span>
+          <span><time datetime="2026-07-28">28 Jul 2026</time></span>
+          <span>12 min read</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- SLOT: repeat one .ns-bcard per post. -->
+    <div class="ns-blog-grid">
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <img class="ns-card__media" src="/assets/img/publication-cover.svg" alt="">
+          <span class="ns-tag ns-bcard__cat">Apex</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/why-your-trigger-fails"><h3 class="ns-bcard__title">Why your trigger fails at 201 records</h3></a>
+          <p class="ns-bcard__excerpt">Governor limits are per transaction, not per record — and the fix is a pattern, not a setting.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-08-04">4 Aug 2026</time></span><span>6 min read</span></div>
+        </div>
+      </article>
+
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <img class="ns-card__media" src="/assets/img/training-trail.svg" alt="">
+          <span class="ns-tag ns-bcard__cat">SOQL</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/query-planner"><h3 class="ns-bcard__title">What the query planner actually does</h3></a>
+          <p class="ns-bcard__excerpt">Selectivity, indexes, and why your report times out at 50,000 rows.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-14">14 Jul 2026</time></span><span>9 min read</span></div>
+        </div>
+      </article>
+
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover ns-bcard__cover--empty" aria-hidden="true"><i class="ph ph-article"></i></span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/naming-things"><h3 class="ns-bcard__title">Notes on naming things</h3></a>
+          <p class="ns-bcard__excerpt">A short argument for boring, predictable API names.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-06-11">11 Jun 2026</time></span><span>3 min read</span></div>
+        </div>
+      </article>
+
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <img class="ns-card__media" src="/assets/img/publication-cover.svg" alt="">
+          <span class="ns-tag ns-bcard__cat">Flows</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/flow-or-apex"><h3 class="ns-bcard__title">Flow or Apex? A decision table</h3></a>
+          <p class="ns-bcard__excerpt">Six questions that settle it, and the two answers that mean "either".</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-02">2 Jul 2026</time></span><span>5 min read</span></div>
+        </div>
+      </article>
+    </div>
+
+    <nav class="ns-pagination" aria-label="Pagination" style="margin-block-start:var(--space-10)">
+      <a class="ns-pagination__link" href="#" aria-current="page">1</a>
+      <a class="ns-pagination__link" href="#">2</a>
+      <a class="ns-pagination__link" href="#">3</a>
+      <span class="ns-pagination__ellipsis">…</span>
+      <a class="ns-pagination__link" href="#">9</a>
+    </nav>
+  </div>
+
+  <aside class="ns-blog-listing__rail">
+    <nav aria-label="Categories">
+      <p class="ns-toc__title" style="padding-inline:0">Categories</p>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--space-2)">
+        <a class="ns-tag ns-tag--pill" href="/tag/apex">Apex <span class="ns-tag__count">24</span></a>
+        <a class="ns-tag ns-tag--pill" href="/tag/flows">Flows <span class="ns-tag__count">18</span></a>
+        <a class="ns-tag ns-tag--pill" href="/tag/soql">SOQL <span class="ns-tag__count">9</span></a>
+        <a class="ns-tag ns-tag--pill" href="/tag/architecture">Architecture <span class="ns-tag__count">7</span></a>
+        <a class="ns-tag ns-tag--pill" href="/tag/testing">Testing <span class="ns-tag__count">6</span></a>
+      </div>
+    </nav>
+
+    <div>
+      <p class="ns-toc__title" style="padding-inline:0">Recent</p>
+      <div class="ns-blog-archive">
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">14 Jul</span><span class="ns-blog-archive__title">What the query planner actually does</span><span class="ns-blog-archive__read">9m</span></a>
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">02 Jul</span><span class="ns-blog-archive__title">Flow or Apex? A decision table</span><span class="ns-blog-archive__read">5m</span></a>
+      </div>
+    </div>
+
+    <!-- The existing Newsletter pattern (.ns-field + .ns-input + Button),
+         stacked for a narrow rail. Not a second subscribe component. -->
+    <form class="ns-field">
+      <label class="ns-field__label" for="blog-sub">Get new posts</label>
+      <input class="ns-input" id="blog-sub" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button>
+      <p class="ns-field__help">One email when something ships. No course pitches.</p>
+    </form>
+  </aside>
+</div>

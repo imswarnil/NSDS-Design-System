@@ -87,7 +87,12 @@
   --ns-surface-sunken: #f4f6f8;
   --ns-border: #dddbda;
   --ns-ink: #181818;
-  --ns-muted: #706e6b;
+  /* Secondary reading ink. Was #706e6b (4.93:1 on white) — which clears AA
+     and nothing else: on --color-surface-sunken it drops to 4.6:1, and at
+     --size-small it is the exact grey people mean when they say a page
+     "looks washed out". #5c5a57 is 6.87:1 on white, 6.34:1 on sunken, and
+     still unmistakably the quieter of the two inks. */
+  --ns-muted: #5c5a57;
   --ns-label: #45566b; /* mono/uppercase structural-label ink */
   --ns-grid: rgba(3, 45, 96, 0.055); /* hairline grid tint, light */
   color-scheme: light;
@@ -112,6 +117,36 @@
      modal reads as this product dimming, not a generic lightbox. */
   --ns-scrim: rgb(3 45 96 / 0.35);
   --color-scrim: var(--ns-scrim);
+
+  /* --- Syntax palette -----------------------------------------------------
+     The code block is the one place this system is allowed more than one hue,
+     because a syntax highlighter that only says "keyword" is not a syntax
+     highlighter. It is still not a rainbow: blue anchors it (keywords are the
+     brand blue, because a keyword IS the structure), green/plum/amber are the
+     three supporting hues, and comments recede rather than compete. Every
+     light value clears 4.5:1 on --color-surface and on the sunken surface the
+     code block actually sits on; every dark value clears 4.5:1 on the navy
+     console. Roles, not languages — the tokenizer maps any grammar onto
+     these seven. */
+  --ns-code-keyword: #0b5cab;   /* keywords, operators, directives */
+  --ns-code-string: #0a6b47;    /* strings, template literals, SOQL literals */
+  --ns-code-comment: #5f6f84;   /* comments, doc blocks */
+  --ns-code-number: #a3286b;    /* numbers, booleans, null */
+  --ns-code-function: #7a4a02;  /* function and method names at the call site */
+  --ns-code-type: #4338a8;      /* types, classes, annotations, JSX tags */
+  --ns-code-punct: #46546b;     /* braces, semicolons, the connective tissue */
+  --ns-code-added: #0a6b47;     /* diff gutter + line tint */
+  --ns-code-removed: #ba0017;
+
+  --color-code-keyword: var(--ns-code-keyword);
+  --color-code-string: var(--ns-code-string);
+  --color-code-comment: var(--ns-code-comment);
+  --color-code-number: var(--ns-code-number);
+  --color-code-function: var(--ns-code-function);
+  --color-code-type: var(--ns-code-type);
+  --color-code-punct: var(--ns-code-punct);
+  --color-code-added: var(--ns-code-added);
+  --color-code-removed: var(--ns-code-removed);
 
   --color-surface: var(--ns-surface);
   --color-surface-raised: var(--ns-surface-raised);
@@ -143,4 +178,17 @@
   --ns-warning-ink: #ffb15c;
   --ns-error-ink: #ff7b7b;
   --ns-info-ink: var(--color-brand-300);
+
+  /* Syntax palette, dark. Same seven roles, re-solved against the navy
+     console rather than lightened mechanically — the light plum and amber go
+     muddy on navy if you only raise their L. */
+  --ns-code-keyword: #7cbeff;
+  --ns-code-string: #7ce3b0;
+  --ns-code-comment: #7d95b0;
+  --ns-code-number: #f9a8c8;
+  --ns-code-function: #ffd479;
+  --ns-code-type: #c3b2ff;
+  --ns-code-punct: #b8c7dc;
+  --ns-code-added: #5fca82;
+  --ns-code-removed: #ff7b7b;
 }

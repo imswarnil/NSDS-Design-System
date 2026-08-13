@@ -39,6 +39,16 @@
   --ease-out: var(--ns-ease-out); /* @kind cubicBezier */
   --duration-fast: 120ms; /* @kind other */
   --duration-base: 180ms; /* @kind other */
+  /* Two longer steps, and they exist for ONE job each: a typographic effect
+     that draws itself (a highlighter sweep, a circle, a rule) has to be slow
+     enough to read as a gesture. Nothing interactive may use these — a
+     control that takes 700ms to respond is a broken control. */
+  --duration-slow: 420ms;   /* @kind other */
+  --duration-draw: 700ms;   /* @kind other */
+  /* The draw eases differently from the UI: a marker stroke starts fast and
+     settles, which is the opposite of a UI transition's ease-out curve. */
+  --ns-ease-draw: cubic-bezier(0.65, 0, 0.35, 1); /* @kind cubicBezier */
+  --ease-draw: var(--ns-ease-draw); /* @kind cubicBezier */
 }
 
 @keyframes fade-up {

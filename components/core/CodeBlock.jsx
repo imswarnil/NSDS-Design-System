@@ -1,4 +1,10 @@
 import React from "react";
+/* DEPRECATED — use SyntaxHighlighter instead.
+   This component styles itself with inline style objects, which means the
+   Ghost theme cannot render it and the two products would need two copies
+   of one code block. SyntaxHighlighter carries the whole anatomy (title,
+   copy, ask AI, share, run, tabs, diff marking) as .ns-* classes both
+   products render. Kept only so existing imports keep working. */
 /* Formalizes the theme's own .ns-code motif: a navy console bar with a mono
    filename tab + copy button, flush white/surface code area, all-blue token
    palette (never a rainbow highlighter) — matches prompt.md's brand voice. */

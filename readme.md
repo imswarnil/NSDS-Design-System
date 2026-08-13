@@ -18,7 +18,7 @@ A design system for **Namaste Salesforce**, an open-source Ghost theme (`imswarn
 This system is not "brand blue on white Tailwind cards." It follows **five explicit rules**, borrowed from developer-tool product design (Mux, Vercel, Linear) rather than marketing-site conventions — every component in `components/` inherits them, and any new component should be checked against this list before it ships.
 
 1. **The hairline is the structure, not the shadow.** Cards, inputs, and tags are built from a single `1px` border (`--color-border`). Soft drop-shadows are almost entirely retired (`--shadow-card` is nearly flat) — elevation comes from a border brightening to brand-blue on hover, never a floating lift.
-2. **Monospace is a structural material, not a code-block accessory.** JetBrains Mono renders every index, duration, timestamp, status tag and section kicker — Inter is reserved for prose and headings. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
+2. **Monospace is a structural material, not a code-block accessory.** N&M Mono renders every index, duration, timestamp, status tag and section kicker — N&M Text is reserved for prose, N&M Display for headings. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
 3. **One signal color.** Brand blue (`#0176D3`) is the only color that means "interactive" or "active." Status (success/warning/error) shows as a small dot + mono text, never a background wash — so a screen with a solid blue button on it has exactly one obvious next action.
 4. **Sharp, specific geometry.** `--radius-card` (6px) and `--radius-btn` (4px) replace the generic "12px + pill-everywhere" look; `--radius-pill` is reserved for true pills (tags). Nothing is rounded just because rounding is the default.
 5. **Motion is instant, not springy.** State changes (hover, press, active) resolve in 120–180ms with a plain ease-out — no bounce, no scale-pop, no translateY lift on hover. The one exception is the small float loop on decorative illustrations. This is what makes the UI feel like a precise tool, not a marketing page.
@@ -44,20 +44,21 @@ Governed by the five Design Principles above. In short:
 
 - **Color:** one working blue (`#0176D3`) carries every interactive/active signal. Status colors show as a dot + mono text, never a tinted background fill.
 - **Dark mode:** semantic role tokens (`--color-surface`, `--color-ink`, `--color-muted`, `--color-border`) flip under `[data-theme="dark"]` on `<html>`, resolving to the brand navy scale (`--color-brand-800`/`900`) rather than a generic slate — dark mode is *this brand's* console, not a GitHub reskin.
-- **Type:** Inter for headings/prose (800 heading weight, 400 body); JetBrains Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`).
+- **Type:** N&M Display for headings (800), N&M Text for prose at **450 — "Book", not Regular** (`--weight-body`; see *Font pairing* for why 400 reads grey in this face); N&M Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
 - **Geometry:** `--radius-card` 6px, `--radius-btn` 4px — sharp and specific, not "rounded because rounded." `--radius-pill` only for true pill tags.
 - **Elevation:** a `1px` hairline border is the primary structuring device; hover brightens the border to brand-blue (or draws a left/top accent line), it never lifts on a shadow.
 - **Spacing:** a 4px scale (`--space-*`) whose index matches Tailwind's 1:1, so `p-4` in a Handlebars template and `var(--space-4)` in a React component are the same 16px. Semantic aliases (`--pad-card`, `--gap-grid`, `--stack-lg`) carry the repeated structural relationships.
 - **Backgrounds:** a faint hairline grid dissolving via a radial mask, used behind dark hero sections only. No photography, no gradients, no hand-drawn illustration.
 - **Motion:** fade-up entrance + one gentle float loop (illustrations only); everything else is a 120–180ms plain ease-out. No springs, no bounce, no hover-lift.
 - **Hover/press:** hover = border brightens to brand-blue + an accent line (top on cards, left on rows); press = instant opacity dim. No color-lightening, no scale-pop except the video-poster play ring and card-media zoom (1.03–1.05x).
+- **Buttons:** the default is a `--size-small` label at a 40px target — a control lives *inside* something, and a default button set at body size is visually larger than the card title above it. Height is the accessibility property, type size the typographic one, and they are set independently. Sections never define their own action; they leave `.ns-band__actions` and the page puts a button in it.
 - **Cards:** `1px` hairline border + `6px` radius, no shadow at rest; brand-blue border + top accent line on hover.
 
 ## Iconography
 
 - **Phosphor icons**, self-hosted and **subsetted** to the ~130 glyphs the theme actually uses (`icons/phosphor-subset.woff2` + `phosphor-fill-subset.woff2`, generated by the source repo's `scripts/subset-icons.py`). Use via `<i class="ph ph-name">`; filled variants use `ph-fill`. See `icons/phosphor.css` for the full generated class list.
 - **A bespoke sprite** (`icons/namaste-icons.svg`) carries the ~20 LMS-specific glyphs Phosphor has no word for — course, lesson types, roadmap, org, Apex, flow, publish… — drawn on the same 24px grid at the same 1.7 stroke, so the two sets mix in one row. Use via `<svg class="ns-icon"><use href="icons/namaste-icons.svg#ns-i-name"/></svg>` (or the `Icon` React component): 1em square, currentColor, baseline-aligned like a letter. The full vocabulary is on the styleguide's **Icons** page.
-- **`assets/css/icons-gap.css`** fills the subset's gaps: ~28 `ph-*` classes the component layer references but the upstream subset lacks (carets, plus, pencil, upload, the text-formatting set…), each drawn as a currentColor SVG mask to the same spec. Delete a block there if the real subset ever gains the glyph.
+- **`icons/icons-gap.css`** fills the subset's gaps: ~31 `ph-*` classes the component layer references but the upstream subset lacks (carets, plus, pencil, upload, the text-formatting set…), each drawn as a currentColor SVG mask to the same spec. Delete a block there if the real subset ever gains the glyph.
 - No PNG icon library, no unicode-symbol icons, no emoji as icons.
 - A handful of inline-SVG *chrome* icons (nav, theme toggle) exist in the original theme's `partials/icons/` — not present in the attached repo, so this system uses Phosphor for those spots too (a reasonable substitution: same stroke weight, same visual family).
 
@@ -163,7 +164,8 @@ NS-Design-System/
 │   ├── course/        LMS-specific React components
 │   └── forms/ overlays/ navigation/ feedback/ progress/
 ├── icons/             both icon sets: Phosphor subset (font + classes) + bespoke sprite
-├── typography/        the three typefaces: Space Grotesk, Inter, JetBrains Mono
+├── fonts/             the N&M family (Display, Text, Mono) — variable woff2s, the
+│                   static OFL package in fonts/static/, weight docs in its README
 ├── patterns/          nine hairline background patterns (pure CSS)
 ├── templates/         framework-agnostic HTML for full surfaces
 ├── assets/            logo, images, theme-init.js
@@ -223,10 +225,17 @@ conventions someone has to remember.
   `tokens.json` / `tokens.js` / `tokens.d.ts` / `tailwind.css` exports.
 - `components/css/` — the portable component layer both products render:
   `button`, `form`, `overlay`, `navigation`, `navbar`, `feedback`, `progress`,
-  `icon`, `sections`, `admin`, `a11y`.
+  `icon`, `sections`, `admin`, `a11y`, **`code`** (the syntax highlighter),
+  **`type-fx`** (the typographic effects), `lms` (course card, curriculum,
+  lesson chrome), **`catalog`** (course hero, enrol card, filter rail,
+  testimonials) and **`blog`** (post card, post header, post layout, TOC,
+  callouts, author box).
 - `components/core/` — Button, Kicker, Chip, Badge, Input, AvatarRing, Logo,
-  Navbar, Footer, Hero, TableOfContents, TimelineStepper, CodeBlock, CodePanel,
-  **ThemeToggle**, **ThemeSwitcher**, **SkipLink**.
+  Navbar, Footer, Hero, TableOfContents, TimelineStepper,
+  **SyntaxHighlighter** (+ `highlight.js`, the shared tokenizer),
+  **ThemeToggle**, **ThemeSwitcher**, **SkipLink**. `CodeBlock` and
+  `CodePanel` are **deprecated** — both style themselves inline, so the Ghost
+  theme cannot render either; SyntaxHighlighter replaces both.
 - `components/forms/` — **Field**, Input, **Select**, **Textarea**,
   **Checkbox**, **Radio**, **Switch**, **Fieldset**.
 - `components/overlays/` — **Modal**, **ConfirmModal**, **Drawer**, **Menu**,
@@ -264,23 +273,45 @@ conventions someone has to remember.
   `ICON_NAMES`.
 - `templates/` — framework-agnostic HTML for the full surfaces: sign-in,
   sign-up, subscribe, search dialog, account, error page, ticket form, course
-  player, pagination, skip link, theme toggle, and the four bars —
+  player, blog post, blog index, pagination, skip link, theme toggle, and the four bars —
   **navbar**, **blog navbar**, **course navbar**, **dashboard navbar** —
   plus the admin surfaces
-  (`admin-dashboard`, `admin-course-new`, `admin-lesson-editor`) and the
-  composed marketing page (`sections-home`). Each has a full-screen demo in
+  (`admin-dashboard`, `admin-course-new`, `admin-lesson-editor`), the composed
+  marketing page (`sections-home`) and the full **type specimen**
+  (`type-specimen`). Each has a full-screen demo in
   the styleguide (`preview/demo-*.html`).
 - `assets/js/theme-init.js` — the shared no-flash theme bootstrap. Inlined
   verbatim by both products, using one storage key so a reader keeps their
   theme moving between the marketing site and the app.
+- `assets/js/code.js` — the code block's wiring: copy, wrap, expand, Run and
+  the tab strip, all delegated from the document so blocks added after load
+  work with no re-init. The Ask-AI and Share menus use the native popover API
+  and need no JS at all.
+- `assets/js/blog.js` — the post page's wiring: the table of contents'
+  scroll-spy, and building that outline from the article's own headings when
+  a CMS emits a body but no outline. The TOC is real anchor links either way.
+- `assets/js/lms.js` — the learner layer's wiring: curriculum expand-all, the
+  price range's clamp and fill, applied-filter chips, article reading
+  progress and the star fills. Entirely progressive enhancement — without it
+  the curriculum still collapses (native `<details>`), the filters still
+  filter (native form controls), and the range is still two working sliders.
+- `assets/js/type-fx.js` — the effects wiring: the IntersectionObserver that
+  sets `[data-fx-in]`, the matrix-style scrambler (which also re-fires on a
+  responsive re-wrap), the circular-text `<textPath>` builder, and the exact
+  path lengths the drawn circles need. Entirely progressive enhancement.
 - `assets/js/nav.js` — the navbar's progressive enhancement for the Ghost
   theme: it flips `aria-expanded` / `aria-checked` / `data-scrolled` and adds
   the disclosure keyboard contract; the CSS does everything visual, and the
   React components set the same attributes from state. Deferred, optional —
   with it absent the bar still navigates.
 - `guidelines/` — foundation specimen cards, including **Spacing & Layout**,
-  **Interaction States**, **Accessibility**, **Data Visualization** and
-  **Content Design**.
+  **Interaction States**, **Accessibility**, **Data Visualization**,
+  **Content Design**, and the four type cards: **Text Effects**, **Display
+  Typography**, **Circular Text / Links / Citations** and **Typographic
+  Accessibility**.
+- `fonts/` — the N&M family: three variable woff2s, `OFL.txt`, and the static
+  OFL package in `fonts/static/`. `scripts/build-fonts.py` regenerates the
+  statics; `fonts/README.md` is the weight and optical-rules reference.
 - `scripts/` — the build, the five checks, and the preview generator + server.
 - `docs/` — `INTEGRATION.md` (wiring both products), `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
 
@@ -305,31 +336,51 @@ it is not. One neutral copy, adapted at the edge, keeps the contract single.
 
 ## Font pairing
 
-Two families, chosen for maximum role contrast rather than similarity:
+The **N&M type system** — three custom-named cuts, one per role. The files
+are OFL-licensed faces renamed into the brand's own family (the same move as
+Airbnb Cereal): N&M Display is a Manrope cut, N&M Text a Nunito Sans cut,
+N&M Mono a Red Hat Mono cut. The OFL credit is embedded in each woff2's name
+table.
 
-| Role | Face | Why |
-|---|---|---|
-| Prose & headings | **Inter** (variable) | A grotesque built for screens; at 800 with tightened tracking it does display work without needing a third face. |
-| Structure: indexes, labels, timestamps, kickers, code | **JetBrains Mono** (variable) | A true coding mono — the "developer console" identity is literally set in it. |
+| Role | Face | Weights | Why |
+|---|---|---|---|
+| Headings & display | **N&M Display** (variable 200–800) | 800 headings, 700 sub-heads | Tight, geometric, but warm — reads "product", not "marketing". |
+| Prose & UI copy | **N&M Text** (variable 200–1000) | **450 body**, 600 bold | The friendliest reading face that still holds a grid. |
+| Structure: indexes, labels, timestamps, kickers, code | **N&M Mono** (variable 300–700) | 400 code, 700 labels | Open, legible mono — the "developer console" identity without the terminal chill. |
 
-The pairing works because the two faces **never compete for a job**: if it is
-a sentence, it is Inter; if it is data, it is JetBrains Mono, uppercase and
-tracked (`--tracking-label`). That hard rule is Principle 2, and it is what
-lets the system skip a third display face entirely — professional pairings
-are usually two faces used strictly, not three used loosely.
+The pairing works because the three faces **never compete for a job**: if it
+is display, it is N&M Display; if it is a sentence, it is N&M Text; if it is
+data, it is N&M Mono, uppercase and tracked (`--tracking-label`). That hard
+rule is Principle 2. All three share open, rounded counters, so the system
+reads as one family at three volumes rather than three fonts negotiating.
 
-Optical corrections applied (the part generic Inter deployments miss):
+Optical corrections applied (the part generic deployments miss):
 
-- **`--tracking-tight` (-0.018em) on h1–h3.** Inter's default metrics run
-  loose at display sizes; every serious Inter deployment (GitHub, Linear,
-  Vercel) tightens large headings. Body text is never tightened — negative
-  tracking at reading sizes hurts legibility.
+- **`--tracking-tight` (-0.022em) on h1–h3.** N&M Display, like most
+  geometric grotesques, sets loose at display sizes; large headings tighten.
+  Body text is never tightened — negative tracking at reading sizes hurts
+  legibility.
 - **`text-wrap: balance` on headings**, so a two-line title breaks evenly
   instead of leaving one orphaned word.
 - **Tabular numerals** (`font-variant-numeric: tabular-nums`) on every
   duration, count and score, so digits align in columns.
-- Both fonts are **self-hosted variable woff2s** with metric-matched
-  fallbacks (`Inter Fallback`) — no FOUT jump, no third-party font host.
+- **Body copy is 450, not 400.** N&M Text's true Regular renders *grey*
+  rather than black at 16px — the one real complaint about a Nunito-derived
+  face. The system's reading regular is **Book (450)**, one interpolation
+  step up the `wght` axis: free on a variable font, and a named weight rather
+  than an ad-hoc value, so the static package ships it too. Two changes travel
+  with it — greyscale antialiasing is now **dark-mode only** (forcing it
+  globally strips about a quarter-step of apparent weight off every glyph),
+  and `--color-muted` was darkened from 4.93:1 to 6.87:1 on white.
+- All three cuts are **self-hosted variable woff2s** with metric-matched
+  fallbacks (`N&M Text Fallback`) — no FOUT jump, no third-party font host.
+
+`fonts/` is a complete, redistributable **OFL package**: the three variable
+files, `OFL.txt`, and a full static family in `fonts/static/` (21 cuts × woff2
++ ttf, plus a ready `@font-face` sheet) generated by
+`python3 scripts/build-fonts.py`. Nothing in the system loads the static
+files — they exist so the family can be installed, printed with, or
+open-sourced on its own. Weight tables and optical rules: `fonts/README.md`.
 
 ## Dark mode
 

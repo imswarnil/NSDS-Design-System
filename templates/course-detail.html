@@ -4,78 +4,264 @@
   Framework-agnostic markup: the same .ns-* classes the React components
   render. Ghost → adapt hrefs/text to helpers; Next.js → the React
   components implement this contract; Static → use directly.
+
+  The page in order, and the order is the argument:
+    1. Hero        what it is, and whether it is any good (the meta strip)
+    2. Outcomes    what you will be able to do afterwards
+    3. Curriculum  collapsible; the section holding lesson 01 ships open
+    4. Instructor  who is teaching it, and their credential
+    5. Testimonials what people who finished it say
+    6. Requirements a collapsible band — secondary, so it may fold
+    7. Related     a scroll-snapped strip of compact cards
+  The enrol card rides all of it in a sticky rail, and becomes a fixed
+  bottom bar below 64rem. Swap ns-chero--split for --cover / --video /
+  --minimal / --console; every version carries the same parts.
 -->
-<section class="ns-band ns-band--dark ns-band--grid">
-  <div class="ns-band__inner">
-    <span class="ns-kicker">// Course · Beginner · 12 lessons</span>
-    <h1 class="ns-band__title">Apex basics</h1>
-    <p class="ns-band__lede">Objects, triggers and your first deploy — the platform's own language from zero. Every lesson, same shape: concept, concrete example, bridge to the next step.</p>
-    <div style="display:flex;gap:var(--space-3);flex-wrap:wrap;margin-block-start:var(--space-5)">
-      <a class="ns-btn ns-btn--white" href="#curriculum">Start learning free</a>
-      <a class="ns-btn ns-btn--ghost" href="#curriculum">View curriculum</a>
+<section class="ns-chero ns-chero--split">
+  <div class="ns-chero__inner">
+    <div class="ns-chero__grid">
+      <div class="ns-chero__body">
+        <div class="ns-chero__badges">
+          <span class="ns-tag">Bestseller</span>
+          <span class="ns-tag">Updated Aug 2026</span>
+        </div>
+        <span class="ns-chero__kicker">// Course · Developer track</span>
+        <h1 class="ns-chero__title">Apex, from zero to first deploy</h1>
+        <p class="ns-chero__lede">The platform's own language, taught in the order you actually need it: the data model first, then classes, then the deploy that puts it live.</p>
+        <div class="ns-chero__meta">
+          <span class="ns-rating" data-value="4.8" data-of="5">
+            <span class="ns-rating__value">4.8</span>
+            <span class="ns-rating__stars" aria-hidden="true">
+              <span><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i></span>
+              <span class="ns-rating__fill"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></span>
+            </span>
+            <span class="ns-rating__count">(1,240)</span>
+          </span>
+          <span><i class="ph ph-users-three" aria-hidden="true"></i>8,410 learners</span>
+          <span><i class="ph ph-clock" aria-hidden="true"></i>6h 20m</span>
+          <span><i class="ph ph-list" aria-hidden="true"></i>24 lessons</span>
+          <span><i class="ph ph-gauge" aria-hidden="true"></i>Beginner</span>
+          <span><i class="ph ph-globe" aria-hidden="true"></i>English</span>
+        </div>
+        <div class="ns-chero__actions">
+          <a class="ns-btn ns-btn--primary ns-btn--lg" href="#enrol">Enrol — $49</a>
+          <a class="ns-btn ns-btn--soft ns-btn--lg" href="#curriculum"><i class="ph ph-play" aria-hidden="true"></i> Preview 2 lessons</a>
+        </div>
+        <div class="ns-authors" style="margin-block-start:var(--space-5)">
+          <span class="ns-authors__stack" aria-hidden="true">
+            <img class="ns-authors__avatar" src="/assets/logo/favicon.svg" alt="">
+            <img class="ns-authors__avatar" src="/assets/logo/favicon.svg" alt="">
+          </span>
+          <span class="ns-authors__names">Taught by <b>Swarnil Singhai</b> and <b>Priya Raman</b></span>
+        </div>
+      </div>
+      <div class="ns-chero__media">
+        <img src="/assets/img/publication-cover.svg" alt="">
+        <button type="button" class="ns-chero__play" aria-label="Play the course preview"><i class="ph ph-play-circle" aria-hidden="true"></i></button>
+        <span class="ns-chero__caption">Preview · 02:14</span>
+      </div>
     </div>
   </div>
 </section>
 
-<div class="ns-course-detail" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-10) var(--space-6) var(--space-16)">
-  <div>
-    <div class="ns-prose">
-      <h2>What you'll build</h2>
-      <p>A working trigger, a bulk-safe batch job, and the habits that keep an org healthy. By the end you can read any Apex class in your org and know what it does — and deploy your own without fear.</p>
-      <ul>
-        <li>Objects, fields and relationships — the data model under everything</li>
-        <li>Your first trigger, then the bulk-safe version of it</li>
-        <li>SOQL from SELECT to aggregate queries</li>
+<div class="ns-course-detail" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-10) var(--gutter) var(--space-16)">
+  <main>
+    <section>
+      <p class="ns-kicker">What you'll learn</p>
+      <ul class="ns-outcomes">
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load.</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Read a governor-limit error and know which line caused it.</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Query selectively, and know when an index is being used.</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Deploy with SFDX, with 75%+ coverage that means something.</span></li>
       </ul>
-    </div>
+    </section>
 
-    <h2 id="curriculum" style="font-size:var(--size-h4);margin-block:var(--space-8) var(--space-4)">Curriculum</h2>
-    <div class="ns-curriculum">
-      <section class="ns-curriculum__section">
-        <header class="ns-curriculum__head">
-          <span class="ns-curriculum__index">01</span>
-          <h3 class="ns-curriculum__title">Getting oriented</h3>
-          <span class="ns-curriculum__meta">3 lessons · 32m</span>
-        </header>
-        <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">01</span><span class="ns-lesson__title">What is an org?</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
-        <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">02</span><span class="ns-lesson__title">Objects &amp; fields</span><span class="ns-lesson__time"><span class="ns-tag">Free</span></span></a>
-        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">03</span><span class="ns-lesson__title">Navigation that sticks<span class="ns-visually-hidden"> (locked — members only)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
-      </section>
-      <section class="ns-curriculum__section">
-        <header class="ns-curriculum__head">
-          <span class="ns-curriculum__index">02</span>
-          <h3 class="ns-curriculum__title">Apex, hands on</h3>
-          <span class="ns-curriculum__meta">5 lessons · 1h 44m</span>
-        </header>
-        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">04</span><span class="ns-lesson__title">Classes &amp; triggers<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
-        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">05</span><span class="ns-lesson__title">SOQL from zero<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
-        <a class="ns-lesson" href="#" data-state="locked"><span class="ns-lesson__index" aria-hidden="true">06</span><span class="ns-lesson__title">Bulk-safe patterns<span class="ns-visually-hidden"> (locked)</span></span><span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
-      </section>
-    </div>
-  </div>
+    <section class="ns-prose" style="margin-block-start:var(--space-10)">
+      <h2>About this course</h2>
+      <p>Salesforce is a platform before it is a product, and Apex is how you extend it. This course starts where every other one should: the data model, the security model, and what actually happens when a record is saved.</p>
+      <p>Every lesson has the same shape — a plain-English concept, one concrete example you build yourself, and a bridge to the next step.</p>
+    </section>
+
+    <section id="curriculum" style="margin-block-start:var(--space-10)">
+      <p class="ns-kicker">Curriculum</p>
+      <div class="ns-curriculum" style="margin-block-start:var(--space-4)">
+        <div class="ns-curriculum__bar">
+          <span class="ns-curriculum__totals">5 sections · 24 lessons · 6h 20m</span>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" data-curriculum-toggle aria-expanded="false">
+            <span data-curriculum-label>Expand all</span>
+          </button>
+        </div>
+
+        <!-- The section holding the first (or current) lesson ships `open`. -->
+        <details class="ns-curriculum__section" open>
+          <summary class="ns-curriculum__head">
+            <span class="ns-curriculum__index">01</span>
+            <h3 class="ns-curriculum__title">Getting oriented</h3>
+            <span class="ns-curriculum__meta">
+              <span>3 lessons</span><span>32m</span>
+              <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+            </span>
+          </summary>
+          <a class="ns-lesson" href="/lesson/what-is-an-org">
+            <span class="ns-lesson__index" aria-hidden="true">01</span>
+            <span class="ns-lesson__body">
+              <span class="ns-lesson__title">What is an org?</span>
+              <span class="ns-lesson__sub">
+                <span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span>
+                <span class="ns-lesson__badge">Preview</span>
+              </span>
+            </span>
+            <span class="ns-lesson__time">08:12</span>
+          </a>
+          <a class="ns-lesson" href="/lesson/objects-and-fields">
+            <span class="ns-lesson__index" aria-hidden="true">02</span>
+            <span class="ns-lesson__body">
+              <span class="ns-lesson__title">Objects &amp; fields</span>
+              <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--article"><i class="ph ph-article" aria-hidden="true"></i>Article</span></span>
+            </span>
+            <span class="ns-lesson__time">12:40</span>
+          </a>
+          <a class="ns-lesson" href="/join" data-state="locked">
+            <span class="ns-lesson__index" aria-hidden="true">03</span>
+            <span class="ns-lesson__body">
+              <span class="ns-lesson__title">Navigation that sticks<span class="ns-visually-hidden"> (locked — members only)</span></span>
+              <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span></span>
+            </span>
+            <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
+          </a>
+        </details>
+
+        <details class="ns-curriculum__section">
+          <summary class="ns-curriculum__head">
+            <span class="ns-curriculum__index">02</span>
+            <h3 class="ns-curriculum__title">Your first automation</h3>
+            <span class="ns-curriculum__meta">
+              <span>4 lessons</span><span>1h 02m</span>
+              <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+            </span>
+          </summary>
+          <a class="ns-lesson" href="/join" data-state="locked">
+            <span class="ns-lesson__index" aria-hidden="true">04</span>
+            <span class="ns-lesson__body">
+              <span class="ns-lesson__title">Build it: an approval flow<span class="ns-visually-hidden"> (locked)</span></span>
+              <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--lab"><i class="ph ph-flask" aria-hidden="true"></i>Hands-on lab</span></span>
+            </span>
+            <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
+          </a>
+        </details>
+      </div>
+    </section>
+
+    <section style="margin-block-start:var(--space-10)">
+      <p class="ns-kicker">Your instructors</p>
+      <div class="ns-instructors" style="margin-block-start:var(--space-4)">
+        <div class="ns-instructor">
+          <img class="ns-instructor__avatar" src="/assets/logo/favicon.svg" alt="">
+          <div>
+            <p class="ns-instructor__name">Swarnil Singhai</p>
+            <p class="ns-instructor__role">Salesforce Architect · 11× certified</p>
+            <div class="ns-instructor__stats">
+              <span><i class="ph ph-star" aria-hidden="true"></i>4.8 rating</span>
+              <span><i class="ph ph-users-three" aria-hidden="true"></i>24,100 learners</span>
+              <span><i class="ph ph-books" aria-hidden="true"></i>9 courses</span>
+            </div>
+            <p class="ns-instructor__bio">Eleven years building on the platform, most of them cleaning up other people's triggers.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-block-start:var(--space-10)">
+      <p class="ns-kicker">What learners say</p>
+      <div class="ns-testimonials" style="margin-block-start:var(--space-4)">
+        <blockquote class="ns-testimonial">
+          <span class="ns-rating" data-value="5" data-of="5">
+            <span class="ns-rating__value">5.0</span>
+            <span class="ns-rating__stars" aria-hidden="true">
+              <span><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i><i class="ph ph-star"></i></span>
+              <span class="ns-rating__fill"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></span>
+            </span>
+          </span>
+          <p class="ns-testimonial__quote">The labs are the difference. Watching someone build a trigger is not the same as building one, and this course knows it.</p>
+          <footer class="ns-testimonial__who">
+            <img class="ns-testimonial__avatar" src="/assets/logo/favicon.svg" alt="">
+            <span><span class="ns-testimonial__name">Marcus Ellery</span><span class="ns-testimonial__role">Admin → Developer</span></span>
+          </footer>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- Secondary, so it may fold. The band that answers "what is this"
+         never folds — a collapsed section is one a reader has to decide to
+         open, and most will not. -->
+    <details class="ns-band ns-band--tight ns-band--collapsible" style="padding-block:var(--space-8) 0">
+      <div class="ns-band__inner" style="padding-inline:0">
+        <summary class="ns-band__toggle">
+          <h2 class="ns-band__title">Requirements</h2>
+          <span class="ns-band__toggle-hint">
+            <span class="ns-band__toggle-open">Show</span><span class="ns-band__toggle-close">Hide</span>
+            <i class="ph ph-caret-down" aria-hidden="true"></i>
+          </span>
+        </summary>
+        <div class="ns-band__panel">
+          <ul class="ns-outcomes ns-outcomes--plain ns-outcomes--single">
+            <li><i class="ph ph-circle" aria-hidden="true"></i><span>A free Developer org — we set one up in lesson 01.</span></li>
+            <li><i class="ph ph-circle" aria-hidden="true"></i><span>No prior Apex. Experience with any programming language helps.</span></li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <section style="margin-block-start:var(--space-10)">
+      <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
+        <div><p class="ns-kicker">Related</p><h2 class="ns-band__title" style="font-size:var(--size-h3)">Learners also took</h2></div>
+        <div class="ns-band__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="/courses">All courses <i class="ph ph-arrow-right ns-btn__arrow" aria-hidden="true"></i></a></div>
+      </div>
+      <div class="ns-course-strip">
+        <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">SOQL, properly</span></a><span class="ns-ccard__meta"><span>6 lessons</span><span>1h 05m</span></span></div></div>
+        <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">LWC from scratch</span></a><span class="ns-ccard__meta"><span>14 lessons</span><span>4h 10m</span></span></div></div>
+        <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Integration patterns</span></a><span class="ns-ccard__meta"><span>11 lessons</span><span>3h 30m</span></span></div></div>
+        <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Testing &amp; coverage</span></a><span class="ns-ccard__meta"><span>8 lessons</span><span>2h 05m</span></span></div></div>
+      </div>
+    </section>
+  </main>
 
   <aside class="ns-course-detail__rail">
-    <div class="ns-railbox">
-      <p class="ns-railbox__head">This course</p>
-      <p style="font-size:var(--size-small);color:var(--color-muted)">12 lessons · 3h 40m<br>Certificate on completion<br>Beginner — no setup needed</p>
-      <a class="ns-btn ns-btn--primary ns-btn--block" href="#" style="margin-block-start:var(--space-3)">Start learning free</a>
-    </div>
-    <div class="ns-railbox">
-      <p class="ns-railbox__head">Instructor</p>
-      <div style="display:flex;align-items:center;gap:var(--space-3)">
-        <span class="ns-avatar">SW</span>
-        <span style="font-size:var(--size-small)">Swarnil Singhai<br><span style="color:var(--color-muted)">Salesforce architect</span></span>
+    <div class="ns-buybox" id="enrol">
+      <img class="ns-buybox__media" src="/assets/img/publication-cover.svg" alt="">
+      <div class="ns-buybox__body">
+        <span class="ns-price">
+          <span class="ns-price__now">$49</span>
+          <s class="ns-price__was">$129</s>
+          <span class="ns-price__off">62% off</span>
+        </span>
+        <div class="ns-buybox__actions">
+          <a class="ns-btn ns-btn--primary ns-btn--lg ns-btn--block" href="/checkout">Enrol now</a>
+          <a class="ns-btn ns-btn--outline ns-btn--block" href="#curriculum"><i class="ph ph-play" aria-hidden="true"></i> Preview 2 lessons</a>
+        </div>
+        <p class="ns-buybox__note">30-day refund, no questions asked.</p>
+        <ul class="ns-buybox__list">
+          <li><i class="ph ph-video" aria-hidden="true"></i>6h 20m of video</li>
+          <li><i class="ph ph-flask" aria-hidden="true"></i>5 hands-on labs</li>
+          <li><i class="ph ph-download-simple" aria-hidden="true"></i>Downloadable source</li>
+          <li><i class="ph ph-infinity" aria-hidden="true"></i>Lifetime access</li>
+          <li><i class="ph ph-medal" aria-hidden="true"></i>Certificate of completion</li>
+        </ul>
+        <div class="ns-share">
+          <span class="ns-share__label">Share</span>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></button>
+        </div>
       </div>
-    </div>
-    <div class="ns-railbox">
-      <p class="ns-railbox__head">Topics</p>
-      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
-        <span class="ns-tag">Apex</span><span class="ns-tag">SOQL</span><span class="ns-tag">Triggers</span>
-      </div>
+      <p class="ns-buybox__foot">142 enrolled in the last 30 days</p>
     </div>
   </aside>
 </div>
 
-<footer class="ns-footer">
-  <div class="ns-footer__bar"><span>© 2026 Namaste Salesforce</span><span class="ns-footer__spacer"></span><a href="#">Courses</a><a href="#">Training</a></div>
-</footer>
+<!-- The phone counterpart of the enrol card. display:none above 64rem, so
+     the two never appear together. -->
+<div class="ns-buybox ns-buybox--bar">
+  <span class="ns-price ns-price--sm"><span class="ns-price__now">$49</span><s class="ns-price__was">$129</s></span>
+  <a class="ns-btn ns-btn--primary" href="/checkout">Enrol now</a>
+</div>

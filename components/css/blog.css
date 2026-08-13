@@ -1,0 +1,402 @@
+/* NS Design System — blog: post card, post page, TOC, author, listing.
+   =========================================================================
+   The writing half of the product. It shares almost everything with the rest
+   of the system — .ns-prose is the reading surface, .ns-card is the frame,
+   .ns-strip is the shelf, .ns-lprogress--article is the reading line — so
+   this file is deliberately small: it adds the post's own anatomy and
+   nothing that already exists somewhere else.
+
+   The one idea that governs it: on a blog the CONTENT is the interface.
+   Every element here either carries the text, tells you where you are in it,
+   or gets out of its way. There is no chrome for chrome's sake, and the
+   measure is capped everywhere text is set.
+
+   Contents:
+     .ns-bcard      the post card — five shapes, one anatomy
+     .ns-postmeta   author · date · reading time, the line every post carries
+     .ns-posthead   the post header — five versions
+     .ns-post       the article page: TOC rail | prose | share rail
+     .ns-toc        sticky table of contents with a scroll-spy state
+     .ns-callout    the aside inside prose: note / tip / warn
+     .ns-series     "part 3 of 6" — the box that makes a series navigable
+     .ns-authorbox  the bio that closes a post
+     .ns-postnav    prev / next post, by title
+     .ns-blog-*     the listing grids */
+@layer components {
+
+  /* ========================================================= Post card ====
+     Composes .ns-card. Five shapes, because a post in the index, in a
+     related shelf, in a sidebar and as the one featured piece is the same
+     object at four sizes:
+
+       (default)  vertical, cover on top — the index grid
+       --row      horizontal, small cover — search results, archives
+       --wide     the featured post: two columns, larger title, excerpt
+       --minimal  no cover, hairline rule — a dense list or a sidebar
+       --overlay  title on the cover itself, for a photo-led post */
+  .ns-bcard__cover { position: relative; overflow: hidden; display: block; }
+  .ns-bcard__cover img { display: block; inline-size: 100%; block-size: 100%; object-fit: cover; }
+  /* The category rides the cover, because on an index the category is how a
+     reader triages — it has to be visible before the title is read. */
+  .ns-bcard__cat {
+    position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
+    background: var(--color-surface); color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-bcard__cat { color: var(--color-brand-300); }
+  /* No cover art? Then the card says so with the system's own glyph rather
+     than a grey rectangle pretending an image failed to load. */
+  .ns-bcard__cover--empty {
+    display: grid; place-items: center; aspect-ratio: 16 / 9;
+    background: var(--color-surface-sunken); color: var(--color-brand-300);
+    font-size: var(--size-h1);
+  }
+  .ns-bcard__title { font-size: var(--size-body-lg); line-height: var(--leading-heading); text-wrap: balance; }
+  /* Two lines of excerpt, clamped. An index whose cards are different heights
+     because one post has a longer summary is an index that reads as broken. */
+  .ns-bcard__excerpt {
+    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .ns-bcard--row { flex-direction: row; align-items: stretch; }
+  .ns-bcard--row .ns-bcard__cover { flex: none; inline-size: 12rem; }
+  .ns-bcard--row .ns-bcard__cover img { block-size: 100%; }
+
+  .ns-bcard--wide { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); }
+  .ns-bcard--wide .ns-bcard__cover { grid-row: 1 / -1; }
+  .ns-bcard--wide .ns-bcard__cover img { block-size: 100%; min-block-size: 15rem; }
+  .ns-bcard--wide .ns-bcard__title { font-size: var(--size-h2); letter-spacing: var(--tracking-tight); }
+  .ns-bcard--wide .ns-bcard__excerpt { -webkit-line-clamp: 3; font-size: var(--size-body); }
+  .ns-bcard--wide .ns-card__body { padding: var(--pad-card-lg); gap: var(--space-3); justify-content: center; }
+
+  .ns-bcard--minimal { border-color: transparent; background: none; border-radius: 0; }
+  .ns-bcard--minimal .ns-card__body { padding: var(--space-4) 0; border-block-end: 1px solid var(--color-border); }
+  .ns-bcard--minimal .ns-bcard__title { font-size: var(--size-body); }
+
+  /* Text on the image. The scrim is not optional — a title over an arbitrary
+     photograph has no contrast guarantee, and a card whose legibility depends
+     on which picture the editor chose is broken by design. */
+  .ns-bcard--overlay { position: relative; min-block-size: 16rem; }
+  .ns-bcard--overlay .ns-bcard__cover { position: absolute; inset: 0; }
+  .ns-bcard--overlay .ns-card__body {
+    position: relative; margin-block-start: auto; color: var(--color-on-dark);
+    background: linear-gradient(to top, color-mix(in srgb, var(--color-brand-900) 92%, transparent), transparent);
+  }
+  .ns-bcard--overlay .ns-bcard__title, .ns-bcard--overlay .ns-card__title { color: var(--color-on-dark); }
+  .ns-bcard--overlay .ns-postmeta { color: color-mix(in srgb, var(--color-on-dark) 78%, transparent); }
+
+  @media (max-width: 47.999rem) {
+    .ns-bcard--wide { grid-template-columns: minmax(0, 1fr); }
+    .ns-bcard--wide .ns-bcard__cover img { min-block-size: 0; aspect-ratio: 16 / 9; }
+    .ns-bcard--wide .ns-bcard__title { font-size: var(--size-h3); }
+    .ns-bcard--row .ns-bcard__cover { inline-size: 7.5rem; }
+  }
+
+  /* ========================================================= Post meta ====
+     Author · date · reading time. The same line on the card, in the header
+     and in the footer, so a reader learns it once. Mono, because it is data
+     about the text rather than part of it. */
+  .ns-postmeta {
+    display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-postmeta > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+  .ns-postmeta__avatar { inline-size: var(--space-6); block-size: var(--space-6); border-radius: var(--radius-pill); object-fit: cover; background: var(--color-surface-sunken); }
+  .ns-postmeta__author { color: var(--color-ink); }
+  .ns-postmeta a { color: inherit; text-decoration: none; }
+  .ns-postmeta a:hover { color: var(--color-brand-600); }
+  /* A separator that is not a character in the DOM: middots typed between
+     spans get read out one by one by a screen reader. */
+  .ns-postmeta--dotted > * + *::before { content: "·"; margin-inline-end: var(--space-3); color: var(--color-border); }
+
+  /* ====================================================== Post header ====
+     Five versions, same parts in the same order (category, title, standfirst,
+     meta, cover), so the page does not re-teach itself when the art
+     direction changes:
+
+       (default)  centred, cover below — the workhorse
+       --cover    full-bleed image behind, scrimmed
+       --wide     left-aligned at the wide container, cover beside
+       --minimal  type only, hairline under — for a post with no art
+       --console  the brand navy + hairline grid; needs no assets at all */
+  .ns-posthead { position: relative; padding-block: var(--space-10) var(--space-8); overflow: hidden; }
+  .ns-posthead__inner {
+    position: relative; z-index: var(--z-raised);
+    max-inline-size: var(--container-narrow); margin-inline: auto; padding-inline: var(--gutter);
+  }
+  .ns-posthead__cat { display: inline-flex; margin-block-end: var(--space-4); }
+  .ns-posthead__title {
+    font-size: var(--size-display); line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+  }
+  /* The standfirst: one sentence, larger than body, that says what the piece
+     argues. Not the first paragraph repeated. */
+  .ns-posthead__standfirst {
+    margin-block-start: var(--space-4);
+    font-size: var(--size-body-lg); line-height: var(--leading-body);
+    color: var(--color-muted); text-wrap: pretty;
+    max-inline-size: var(--measure-prose);
+  }
+  .ns-posthead .ns-postmeta { margin-block-start: var(--space-6); }
+  .ns-posthead__cover {
+    display: block; inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover;
+    margin-block-start: var(--space-8);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+  }
+  .ns-posthead__credit {
+    display: block; margin-block-start: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+
+  .ns-posthead--center { text-align: center; }
+  .ns-posthead--center .ns-posthead__standfirst { margin-inline: auto; }
+  .ns-posthead--center .ns-postmeta { justify-content: center; }
+
+  .ns-posthead--wide .ns-posthead__inner { max-inline-size: var(--container-page); }
+  .ns-posthead--wide .ns-posthead__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-10); align-items: center; }
+  .ns-posthead--wide .ns-posthead__cover { margin-block-start: 0; }
+
+  .ns-posthead__bg { position: absolute; inset: 0; z-index: var(--z-base); }
+  .ns-posthead__bg > img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  .ns-posthead__bg::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to top, color-mix(in srgb, var(--color-brand-900) 94%, transparent), color-mix(in srgb, var(--color-brand-900) 66%, transparent));
+  }
+  .ns-posthead--cover, .ns-posthead--console { color: var(--color-on-dark); }
+  .ns-posthead--cover .ns-posthead__title, .ns-posthead--console .ns-posthead__title { color: var(--color-on-dark); }
+  .ns-posthead--cover .ns-posthead__standfirst, .ns-posthead--console .ns-posthead__standfirst { color: color-mix(in srgb, var(--color-on-dark) 78%, transparent); }
+  .ns-posthead--cover .ns-postmeta, .ns-posthead--console .ns-postmeta { color: color-mix(in srgb, var(--color-on-dark) 72%, transparent); }
+  .ns-posthead--cover .ns-postmeta__author, .ns-posthead--console .ns-postmeta__author { color: var(--color-on-dark); }
+  .ns-posthead--cover { padding-block: var(--space-20) var(--space-12); }
+  .ns-posthead--console { background: var(--color-brand-900); }
+  .ns-posthead--minimal { padding-block: var(--space-8) var(--space-6); border-block-end: 1px solid var(--color-border); }
+
+  @media (max-width: 63.999rem) {
+    .ns-posthead--wide .ns-posthead__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .ns-posthead--cover { padding-block: var(--space-12) var(--space-8); }
+  }
+
+  /* ====================================================== Post layout ====
+     TOC rail | article | share rail. Three columns is a claim that the two
+     rails earn their width, so they are narrow, sticky, and the first thing
+     dropped: below 80rem the share rail goes, below 64rem the TOC becomes a
+     collapsed <details> above the text. The article column NEVER widens to
+     fill the space they leave — the measure is the point. */
+  .ns-post {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, var(--container-prose)) 3.5rem;
+    gap: var(--space-10);
+    justify-content: center;
+    align-items: start;
+    padding-block: var(--space-10) var(--space-16);
+    padding-inline: var(--gutter);
+  }
+  .ns-post__rail, .ns-post__aside {
+    position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-6));
+    max-block-size: calc(100dvh - var(--navbar-h) - var(--space-10)); overflow-y: auto;
+  }
+  .ns-post__body { min-inline-size: 0; }
+  .ns-post__aside { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+
+  @media (max-width: 79.999rem) {
+    .ns-post { grid-template-columns: 14rem minmax(0, var(--container-prose)); }
+    .ns-post__aside { display: none; }
+  }
+  @media (max-width: 63.999rem) {
+    .ns-post { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); justify-content: stretch; }
+    .ns-post__rail { position: static; max-block-size: none; overflow: visible; }
+    .ns-post__body { max-inline-size: var(--container-prose); margin-inline: auto; }
+  }
+
+  /* ============================================================= TOC ====
+     Where you are in a long piece. The hairline is the rail and the active
+     item takes the 2px brand edge — the same current-item device the navbar
+     and the lesson row use, so it needs no explanation.
+
+     It is a real nav of real anchor links: it works with JS off, and the
+     scroll-spy only adds [aria-current] to whichever one is on screen. */
+  .ns-toc { display: flex; flex-direction: column; border-inline-start: 1px solid var(--color-border); }
+  .ns-toc__title {
+    padding: 0 var(--space-3) var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-toc__link {
+    display: block; padding: var(--space-1-5) var(--space-3);
+    margin-inline-start: -1px; border-inline-start: 2px solid transparent;
+    font-size: var(--size-small); line-height: var(--leading-heading);
+    color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-toc__link:hover { color: var(--color-ink); }
+  .ns-toc__link[aria-current="true"] { border-inline-start-color: var(--color-brand-500); color: var(--color-brand-600); font-weight: var(--weight-medium); }
+  [data-theme="dark"] .ns-toc__link[aria-current="true"] { color: var(--color-brand-300); }
+  /* h3s indent. Two levels is the limit: a table of contents that needs
+     three is a table of contents for a page that needs splitting. */
+  .ns-toc__link--sub { padding-inline-start: var(--space-6); font-size: var(--size-fine); }
+  /* Below lg the TOC folds into a disclosure above the text — a sticky rail
+     with nowhere to stick. */
+  .ns-toc--collapsible > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3); cursor: pointer; list-style: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-toc--collapsible > summary::-webkit-details-marker { display: none; }
+  .ns-toc--collapsible > summary i { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-toc--collapsible[open] > summary i { rotate: 180deg; }
+
+  /* ======================================================== Callout ====
+     The aside inside prose: a note, a tip, a warning. A 3px leading edge and
+     a tint — never a full box with a heavy border, which stops the eye at
+     the top of the paragraph instead of carrying it through.
+
+     The word in the label is the signal; the colour agrees with it. A
+     warning that is only orange is not a warning to a monochromat. */
+  .ns-callout {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3);
+    padding: var(--space-4);
+    border-inline-start: 3px solid var(--color-brand-500);
+    border-radius: 0 var(--radius-card) var(--radius-card) 0;
+    background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
+    font-size: var(--size-small); line-height: var(--leading-body);
+  }
+  .ns-callout > i { color: var(--color-brand-500); font-size: var(--size-body-lg); }
+  .ns-callout__label {
+    display: block;
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-brand-600);
+    margin-block-end: var(--space-1);
+  }
+  .ns-callout--tip { border-inline-start-color: var(--color-success); background: color-mix(in srgb, var(--color-success) 7%, transparent); }
+  .ns-callout--tip > i, .ns-callout--tip .ns-callout__label { color: var(--color-success-ink); }
+  .ns-callout--warn { border-inline-start-color: var(--color-warning); background: color-mix(in srgb, var(--color-warning) 9%, transparent); }
+  .ns-callout--warn > i, .ns-callout--warn .ns-callout__label { color: var(--color-warning-ink); }
+  .ns-callout--danger { border-inline-start-color: var(--color-error); background: color-mix(in srgb, var(--color-error) 7%, transparent); }
+  .ns-callout--danger > i, .ns-callout--danger .ns-callout__label { color: var(--color-error-ink); }
+  [data-theme="dark"] .ns-callout__label { color: var(--color-brand-300); }
+
+  /* ========================================================= Series ====
+     "Part 3 of 6". A post that belongs to a series has to say so above the
+     fold, and link both directions — otherwise the reader lands on part 3
+     from search and has no idea parts 1 and 2 exist. */
+  .ns-series {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+  }
+  .ns-series__label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-series__list { display: flex; flex-direction: column; gap: var(--space-1); counter-reset: ns-series; }
+  .ns-series__item {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2); align-items: baseline;
+    font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
+  }
+  .ns-series__item::before {
+    counter-increment: ns-series; content: counter(ns-series, decimal-leading-zero);
+    font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label);
+  }
+  a.ns-series__item:hover { color: var(--color-brand-600); }
+  .ns-series__item[aria-current="true"] { color: var(--color-ink); font-weight: var(--weight-body-strong); }
+  .ns-series__item[data-state="done"]::before { color: var(--color-success-ink); }
+
+  /* ====================================================== Author box ====
+     The bio that closes a post. One author or several; with several each
+     gets the same block, because ranking co-authors by layout is a claim the
+     page should not be making silently. */
+  .ns-authorbox {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-4);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-authorbox__avatar { inline-size: 3.5rem; block-size: 3.5rem; border-radius: var(--radius-pill); object-fit: cover; background: var(--color-surface-sunken); }
+  .ns-authorbox__name { font-family: var(--font-heading); font-size: var(--size-body-lg); font-weight: var(--weight-semibold); }
+  .ns-authorbox__name a { color: inherit; text-decoration: none; }
+  .ns-authorbox__name a:hover { color: var(--color-brand-600); }
+  .ns-authorbox__role {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-authorbox__bio { margin-block-start: var(--space-2); font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-prose); }
+  .ns-authorbox__links { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-3); }
+  .ns-authorbox--stack { grid-template-columns: minmax(0, 1fr); }
+  .ns-authorboxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: var(--space-4); }
+
+  /* ======================================================== Post nav ====
+     Prev / next by TITLE, like the lesson nav — an arrow pair with no titles
+     makes the reader click to find out where they are going. Two equal
+     halves with the hairline between them. */
+  .ns-postnav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+  .ns-postnav__link {
+    display: flex; flex-direction: column; gap: var(--space-1);
+    padding: var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    text-decoration: none; color: var(--color-ink);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-postnav__link:hover { border-color: var(--color-brand-500); }
+  .ns-postnav__link--next { text-align: end; }
+  .ns-postnav__dir {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-postnav__link--next .ns-postnav__dir { justify-content: end; }
+  .ns-postnav__title { font-size: var(--size-small); font-weight: var(--weight-semibold); line-height: var(--leading-heading); }
+  /* One-sided nav still occupies both columns, so the "next" link does not
+     slide under the "previous" one at the end of an archive. */
+  .ns-postnav__link--empty { visibility: hidden; }
+  @media (max-width: 47.999rem) {
+    .ns-postnav { grid-template-columns: minmax(0, 1fr); }
+    .ns-postnav__link--empty { display: none; }
+  }
+
+  /* ==================================================== Share rail ====
+     The vertical share column beside a post. Icon buttons with real names;
+     it is the same set as .ns-share (catalog.css), stacked. */
+  .ns-share--rail { flex-direction: column; gap: var(--space-1); }
+  .ns-share--rail .ns-share__label { writing-mode: vertical-rl; margin: 0 0 var(--space-2); }
+
+  /* ====================================================== Listing ====
+     Rail + grid, the same shape as the course listing so a reader who has
+     used one has used both. --masonry is deliberately absent: a masonry blog
+     index puts the second post below the fold to make the first one taller,
+     which is a layout serving itself. */
+  .ns-blog-listing { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: var(--space-10); align-items: start; }
+  .ns-blog-listing__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4)); display: flex; flex-direction: column; gap: var(--space-6); }
+  @media (max-width: 63.999rem) {
+    .ns-blog-listing { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    .ns-blog-listing__rail { position: static; }
+  }
+  .ns-blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr)); gap: var(--gap-grid); }
+  .ns-blog-list { display: flex; flex-direction: column; gap: var(--space-4); }
+  /* The archive: a dense, coverless list where the DATE is the index. */
+  .ns-blog-archive { display: flex; flex-direction: column; }
+  .ns-blog-archive__row {
+    display: grid; grid-template-columns: 6rem minmax(0, 1fr) auto;
+    gap: var(--space-4); align-items: baseline;
+    padding-block: var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+    text-decoration: none; color: var(--color-ink);
+  }
+  .ns-blog-archive__row:hover .ns-blog-archive__title { color: var(--color-brand-600); }
+  .ns-blog-archive__date, .ns-blog-archive__read {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-blog-archive__title { font-size: var(--size-small); font-weight: var(--weight-medium); }
+  @media (max-width: 47.999rem) {
+    .ns-blog-archive__row { grid-template-columns: minmax(0, 1fr) auto; }
+    .ns-blog-archive__date { grid-column: 1 / -1; }
+  }
+}

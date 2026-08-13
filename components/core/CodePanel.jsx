@@ -1,4 +1,10 @@
 import React from "react";
+/* DEPRECATED — use SyntaxHighlighter instead.
+   This component styles itself with inline style objects, which means the
+   Ghost theme cannot render it and the two products would need two copies
+   of one code block. SyntaxHighlighter carries the whole anatomy (title,
+   copy, ask AI, share, run, tabs, diff marking) as .ns-* classes both
+   products render. Kept only so existing imports keep working. */
 /* SLDS-flavored code panel: a proper multi-token syntax highlighter (keywords,
    strings, comments, numbers, functions) with an in-panel light/dark toggle.
    Unlike CodeBlock (the restrained all-blue inline motif), this is the full

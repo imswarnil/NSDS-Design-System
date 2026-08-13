@@ -46,8 +46,8 @@ const rebaseUrls = {
     if (!decl.value.includes("url(")) return;
     // Only the font files' relative hops need rewriting; data: URIs, absolute
     // paths and bare filenames are left exactly as they are. Text fonts live
-    // in typography/ (tokens/fonts.css says ../typography/ — already right
-    // from dist/, one level deep either way); the Phosphor icon fonts sit
+    // in fonts/ (tokens/fonts.css says ../fonts/ — already right from
+    // dist/, one level deep either way); the Phosphor icon fonts sit
     // beside icons/phosphor.css (./phosphor-*.woff2 → ../icons/ from dist/).
     decl.value = decl.value.replace(/url\((['"]?)\.\/(phosphor[^'")]+)/g, "url($1../icons/$2");
   },

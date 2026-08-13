@@ -17,6 +17,253 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — Blog, as its own family
+
+The writing half of the product now has a section of its own, sharing
+everything it can with the rest of the system: `.ns-prose` is still the
+reading surface, `.ns-card` the frame, `.ns-strip` the shelf, and
+`.ns-lprogress--article` the reading line — the same control on a lesson and
+on a post, so it has one implementation. New stylesheet
+`components/css/blog.css`; wiring in `assets/js/blog.js`.
+
+- **Post card** (`.ns-bcard`) — five shapes over one anatomy: default,
+  `--row`, `--wide` (the one featured post), `--minimal` (no cover, for a
+  sidebar), `--overlay` (title on the image, scrimmed). Cover with the
+  category riding it, balanced title, two-line clamped excerpt, and an
+  explicit **empty-cover state** — most posts have no art, and saying so with
+  the system's glyph beats a grey rectangle pretending an image failed.
+- **Post header** (`.ns-posthead`) — five versions, same parts in the same
+  order: default/centred, `--cover`, `--wide`, `--minimal`, `--console`. The
+  **standfirst** is one sentence saying what the piece argues, not the first
+  paragraph repeated.
+- **Post meta** (`.ns-postmeta`) — author · date · reading time, identical on
+  the card, in the header and in the footer, so a reader learns it once.
+- **Post layout** (`.ns-post`) — TOC rail | article | share rail. Both rails
+  are droppable (share below 80rem, TOC folds to a `<details>` below 64rem)
+  and the article column never widens to fill the space they leave: the
+  measure is the point of the page.
+- **Table of contents** (`.ns-toc`) — a real `<nav>` of real anchor links
+  that works with JS off. `assets/js/blog.js` adds a scroll-spy that marks
+  the current section with `aria-current`, and will build the outline from
+  the article's own h2/h3 (adding ids where they are missing) when given
+  `data-toc-from`. Deliberately a rAF-throttled scroll read rather than an
+  IntersectionObserver: the question is "which heading did I last pass",
+  which an observer cannot answer when a section is taller than the viewport.
+- **Callout** (`.ns-callout`) — note / tip / warn / danger. A 3px leading
+  edge and a tint, never a heavy box. The WORD is the signal and the colour
+  only agrees with it.
+- **Series** (`.ns-series`), **author box** (`.ns-authorbox`), **post nav**
+  (`.ns-postnav`, prev/next by title), **listing** (`.ns-blog-listing`,
+  `.ns-blog-grid`, `.ns-blog-archive`).
+
+Two page templates: `templates/blog-post.html` and
+`templates/blog-listing.html`, both with full-screen demos in the styleguide.
+
+### Changed — the shelf is a shared primitive
+
+`.ns-strip` moved to `components/css/display.css`: the scroll-snapped shelf
+is not a course-specific object, and the blog renders the identical one.
+`.ns-course-strip` is kept as an alias so existing markup does not break.
+
+### Fixed — a strip no longer widens the column it is dropped into
+
+`grid-auto-columns: minmax(14rem, 1fr)` is a **definite** track minimum, so
+four cards gave the shelf a 944px min-content that propagated up through its
+ancestors — a related-posts strip inside a 42rem reading column dragged the
+author box and the prev/next row out with it, past the share rail. Both
+strips now use `minmax(min(14rem, 100%), 1fr)`, the same resolvable-minimum
+idiom the card grids already used.
+
+### Changed — the default button is smaller
+
+**Visual change in both products.** The default `.ns-btn` carried a
+`--size-body` label at 40px tall, which is visually larger than the card
+title it usually sits under — the most common proportion bug in a design
+system. The default now carries a **`--size-small`** label with tighter
+padding. The touch target is untouched: `min-block-size` is still
+`--target-comfy` (40px). Height is the accessibility property, type size is
+the typographic one, and they are now set independently.
+
+The size scale is four steps plus one: `--xs` (28px, mono/uppercase, for a
+dense inline control with a larger sibling beside it), `--sm` (32px), the
+default (40px), `--lg` (44px), and `--xl` (52px) — which exists for exactly
+one thing, the single primary action in a hero.
+
+New button variants: `--soft` (a brand tint between outline and primary, for
+a secondary action an outline loses), `--pill`, `--block-sm` (full width on a
+phone only), `--swap` (two labels in one grid cell, so a toggle does not
+change width when it flips), `.ns-btn__arrow` (a trailing arrow may travel
+2px — the arrow doing its job, not a lift), `.ns-btn__count`,
+`.ns-btn__kbd`, `.ns-btn-group--pill`, `.ns-btn-group--block`, and a generic
+`[aria-pressed="true"]` toggle state.
+
+### Fixed — `[hidden]` now actually hides
+
+The attribute's `display: none` lives in the UA stylesheet and loses to any
+author rule, so every component that set its own display (`.ns-btn` is
+`inline-flex`, `.ns-filters__applied` is `flex`) silently ignored it — a
+"hidden" button sat there fully visible. `tokens/base.css` now declares
+`[hidden] { display: none !important }`. This is the one place `!important`
+is correct: it is not a style preference, it is the meaning of the attribute.
+
+### Added — the LMS layer, properly
+
+**Course card** (`.ns-ccard`) — five shapes over one anatomy (default,
+`--row`, `--compact`, `--featured`, `--minimal`), plus corner flags, the
+runtime chip on the media, a play affordance, and the **lesson peek**: the
+first few lessons expand on hover *and on keyboard focus*, as real DOM
+content collapsed with a `grid-template-rows` transition rather than
+`display: none`, so find-in-page reaches it — and simply open where hover
+does not exist.
+
+**Small parts** — `.ns-rating` (the number is the content, the stars are a
+clipped overlay), `.ns-authors` (an avatar stack capped at four then a
+count), `.ns-price` (current and struck prices at deliberately different
+sizes), and `.ns-ltype`, the lesson-type identifier: video, article, quiz,
+lab, live, download, always icon **plus word**.
+
+**Curriculum** — rebuilt on native `<details>`, so collapse, keyboard
+operation and in-page find come from the platform. Adds a toolbar with
+totals and expand/collapse-all, per-section completion, and three looks:
+`--timeline` (a connector with state dots), `--compact`, and rows carrying
+stills. Lesson rows gained `__body`/`__sub` (a second line for the type and
+duration), `__thumb`, `__badge` ("Preview"), and `--compact` / `--roomy`.
+
+**Lesson navigation** — prev/next by NAME, with a still or the type glyph, a
+locked state that still navigates (to the upgrade page), and a way back to
+the full list. Below 48rem the thumbs and progress row are dropped, not
+shrunk: the two named buttons *are* the navigation on a phone.
+
+**Course player** — `.ns-player--fixed` locks the player to one viewport: the
+page stops scrolling and the two columns scroll independently, with the
+stage sticky and capped at `62dvh` so the lesson title never lands below the
+fold. Padding through the column dropped from `--pad-card-lg` to
+`--pad-card`. Below lg it reverts to the scrolling variant automatically.
+
+**Per-type lesson progress** (`.ns-lprogress`) — `--video` (elapsed/total
+with chapter ticks), `--article` (a 2px reading hairline, no widget),
+`--quiz` (pips plus the score). One bar for all three is how a quiz ends up
+claiming you are 60% *correct* when you are 60% *finished*.
+
+**Course hero** (`.ns-chero`) — five versions over one anatomy: `--split`,
+`--cover`, `--video` (a muted loop, hidden under `prefers-reduced-motion`,
+which leaves exactly `--cover`), `--minimal`, `--console`. The scrim on the
+image versions is not optional: text over an arbitrary photograph has no
+contrast guarantee.
+
+**Enrol card** (`.ns-buybox`) — sticky in the rail, and `--bar` as a fixed
+bottom bar on a phone with `env(safe-area-inset-bottom)` respected.
+
+**Filter rail** (`.ns-filters`, `.ns-range`) — facet groups as `<details>`, a
+dual-thumb price range built from two real `<input type="range">` (clamped,
+never swapped), and the applied set echoed as removable chips. Everything is
+a native form control, so the page filters with JavaScript off.
+
+**Also**: `.ns-testimonials`, `.ns-instructor`/`.ns-instructors`,
+`.ns-outcomes`, `.ns-share`, `.ns-course-strip` (scroll-snapped related
+courses), `.ns-course-listing` (rail + grid), and `.ns-panelbar__line`.
+
+New stylesheet `components/css/catalog.css`; `components/css/lms.css` and
+`player.css` substantially extended. Wiring in `assets/js/lms.js` — all of
+it progressive enhancement.
+
+### Added — sections leave room for the action
+
+`.ns-band__actions` is a slot: a band no longer defines its own button, the
+page puts one in it at whatever variant and size that page needs. Baking the
+action into the section is how a system ends up with six section components
+that each hard-code a differently-sized button — and why buttons drift out
+of proportion with the cards beside them. `--between` puts the head and the
+actions on one line. `.ns-band--collapsible` folds a secondary section on
+native `<details>`.
+
+### Changed — body copy is 450, and the reading ink is darker
+
+**Visual change in both products.** N&M Text's true Regular renders *grey*
+rather than black at 16px, which is the single most common complaint about a
+Nunito-derived face. Three changes fix it together:
+
+- **`--weight-body: 450`** ("Book") is the new reading weight, applied on
+  `body` in `tokens/base.css`. `--weight-regular` (400) survives for dense UI
+  furniture — table cells, meta rows — where light *is* the intent.
+  `--weight-body-strong: 600` is the new inline `<strong>`: against Book,
+  700 is a shout.
+- **`-webkit-font-smoothing: antialiased` is now dark-mode only.** Forcing
+  greyscale antialiasing globally strips roughly a quarter-step of apparent
+  weight off every glyph on macOS. On the navy console surface the trade
+  flips and it stays.
+- **`--color-muted` darkened** `#706e6b` → `#5c5a57`: 4.93:1 → 6.87:1 on
+  white, 4.6:1 → 6.34:1 on the sunken surface.
+
+Also added: `--size-mega`, `--size-fine`, `--tracking-mega`, `--tracking-wide`,
+`--leading-mega`, `--measure-prose` (68ch), `--measure-narrow` (46ch),
+`--duration-slow`, `--duration-draw`, `--ease-draw`, and the nine
+`--color-code-*` syntax roles (light + dark). `h1`–`h6` now carry a default
+weight and leading in the base layer, and `time`/`output`/`.ns-num`/
+`[data-numeric]` get `tabular-nums` automatically.
+
+### Added — SyntaxHighlighter, the code surface
+
+A real code block: title bar with the file name, copy / ask-AI / share / wrap
+actions, line numbers, diff-marked lines, and a footer whose one job is Run.
+Three chromes — `block`, `--mac` (traffic lights, centred title), `--vscode`
+(tab strip + brand status bar) — differ **only** in the bar.
+
+- `components/css/code.css`, `components/core/SyntaxHighlighter.jsx`,
+  `components/core/highlight.js` (the shared tokenizer — one implementation
+  for React, the styleguide generator and any server), `assets/js/code.js`.
+- Highlighting happens at **build time** and maps any grammar onto seven
+  roles. Adding a language is a keyword list, never a colour.
+- Run does not execute anything: it raises `ns:code-run` / calls `onRun` and
+  waits for the host to call `done()`.
+- The Ask-AI and Share menus are native popovers — light-dismiss, Esc and
+  top-layer placement come from the platform, and `position-area` hangs each
+  off its own button via the implicit popover anchor.
+- **Deprecates `CodeBlock` and `CodePanel`.** Both style themselves inline and
+  cannot be rendered by the Ghost theme. They still work; new code should not
+  use them.
+
+### Added — typographic effects (`components/css/type-fx.css`)
+
+Highlight, strike, circle, frame, scan line, matrix scramble, line reveals,
+display/poster type, drop cap, pull-quote, kinetic strip, circular text
+(`<textPath>`), the three link treatments, citations and heading anchors —
+plus `.ns-measure`, `.ns-balance`, `.ns-caps`, `.ns-label` and the numeral
+utilities. Wired by `assets/js/type-fx.js`, all of it progressive enhancement.
+
+Three rules hold the file together: the effect is never the meaning (struck
+text is `<s>`, a highlight is `<mark>`, a citation links to a real footnote);
+it draws once; and every "start hidden" state sits inside
+`@media (scripting: enabled)` so nothing is invisible when the script is not
+there.
+
+### Added — the fonts are an open-source package
+
+`fonts/` is now redistributable on its own: `OFL.txt`, and a full static
+family in `fonts/static/` (21 named cuts × woff2 + ttf, plus a ready
+`@font-face` sheet) generated from the variable files by
+`scripts/build-fonts.py` (`npm run build:fonts`). The script instances each
+weight off the `wght` axis and fixes the name table and `OS/2` bits so
+installers show a real family menu.
+
+### Removed
+
+- **`typography/`** — the retired first-generation faces (Inter, Space
+  Grotesk, JetBrains Mono). Nothing referenced them; `fonts/` is the only
+  font directory now. Consumers copying assets into a Ghost theme should copy
+  `fonts/` and `icons/` (see `docs/INTEGRATION.md`).
+- **The Content design styleguide page** — folded into **Typography**, where
+  voice and casing belong. The specimen card (`guidelines/content-design.card.html`)
+  is unchanged and now renders on the Typography page.
+
+### Added — Typography is now the whole typographic contract
+
+One page carrying the scale, the reading weight and why it is 450, measure,
+numerals, the effects, display/poster type, circular text, links, citations,
+anchors, content design, and the typographic accessibility floor — plus a
+full-page specimen at `templates/type-specimen.html`
+(`preview/demo-type-specimen.html`).
+
 ### Added — the navbar, as a family of documented components
 
 The bar had one page and two variants. It is the piece of chrome every

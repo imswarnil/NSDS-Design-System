@@ -5,8 +5,8 @@
    markdown render correctly with no extra classes. Outside .ns-prose,
    elements stay unstyled primitives for app layouts to control.
 
-   The voice: Space Grotesk headings, Inter body at a comfortable measure,
-   JetBrains Mono for everything that is data — and the hairline doing the
+   The voice: N&M Display headings, N&M Text body at a comfortable measure,
+   N&M Mono for everything that is data — and the hairline doing the
    structure (blockquote edge, hr, table rules), never a background wash. */
 @layer components {
   .ns-prose {

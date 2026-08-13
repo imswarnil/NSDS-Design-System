@@ -39,6 +39,58 @@
   .ns-band__lede { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
 
+  /* --- The actions slot ----------------------------------------------------
+     A band does NOT define its own action. It leaves a slot and the page
+     puts a Button in it — with whatever variant and size that page needs.
+     Baking the action into the section is how a design system ends up with
+     six section components that each hard-code a differently-sized button,
+     and why buttons drift out of proportion with the cards around them.
+
+     --between puts the head and the actions on one line, which is the shape
+     a "Latest courses … View all →" band wants. */
+  .ns-band__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+  .ns-band__head .ns-band__actions { margin-block-start: var(--space-5); }
+  .ns-band__head--center .ns-band__actions { justify-content: center; }
+  .ns-band__head--between {
+    display: flex; align-items: end; justify-content: space-between; gap: var(--space-6);
+    max-inline-size: none;
+  }
+  .ns-band__head--between .ns-band__actions { margin-block-start: 0; flex: none; }
+  @media (max-width: 47.999rem) {
+    .ns-band__head--between { display: block; }
+    .ns-band__head--between .ns-band__actions { margin-block-start: var(--space-4); }
+  }
+
+  /* --- Collapsible band ----------------------------------------------------
+     A section that folds. Native <details>, so keyboard operation, in-page
+     find and the open/closed state all come from the platform, and a band
+     that must start open simply ships with `open`.
+
+     This is for SECONDARY sections on a long page — requirements, the full
+     syllabus, FAQ groups. The band that answers "what is this" never folds:
+     a collapsed section is one a reader has to decide to open, and most
+     will not. */
+  .ns-band--collapsible > .ns-band__inner > .ns-band__toggle {
+    display: flex; align-items: center; gap: var(--space-3);
+    inline-size: 100%; cursor: pointer; list-style: none;
+    padding-block-end: var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-band__toggle::-webkit-details-marker { display: none; }
+  .ns-band__toggle:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-band__toggle .ns-band__title { font-size: var(--size-h3); }
+  .ns-band__toggle-hint {
+    margin-inline-start: auto; display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    flex: none;
+  }
+  .ns-band__toggle-hint i { transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-band--collapsible[open] .ns-band__toggle-hint i { rotate: 180deg; }
+  .ns-band--collapsible[open] .ns-band__toggle-hint .ns-band__toggle-open { display: none; }
+  .ns-band--collapsible:not([open]) .ns-band__toggle-hint .ns-band__toggle-close { display: none; }
+  .ns-band__panel { padding-block-start: var(--space-6); }
+
   /* --- Hero ----------------------------------------------------------------
      The page opener. Text-first: kicker, display heading, lede, two actions,
      one mono proof line. The dark variant carries the hairline-grid motif

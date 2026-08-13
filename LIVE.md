@@ -53,8 +53,9 @@ history are all excluded. What ships:
 | `/styles.css` | the entry stylesheet the specimen cards link as `../styles.css` |
 | `/tokens/` | authored token CSS + generated `tokens.json` / `tokens.js` / `tailwind.css` |
 | `/components/css/` | the portable `.ns-*` component layer both products render |
-| `/assets/` | self-hosted fonts (Inter, JetBrains Mono), icon fonts, logo, `theme-init` |
-| `/icons/`, `/typography/`, `/patterns/`, `/templates/` | specimen source directories |
+| `/fonts/` | the N&M family — variable woff2s + the static OFL package |
+| `/assets/` | icon fonts, logo, images, `theme-init` |
+| `/icons/`, `/patterns/`, `/templates/` | specimen source directories |
 | `/**/*.card.html` | every specimen, at its real repo-relative path (the preview iframes them) |
 | `/.nojekyll` | tells Pages to serve `_`-prefixed paths verbatim, no Jekyll pass |
 

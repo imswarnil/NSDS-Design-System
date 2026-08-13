@@ -1,0 +1,172 @@
+<!--
+  NS Design System template — blog post page
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → paste into post.hbs, swap the slots for helpers
+  ({{title}}, {{content}}, {{primary_author}}, {{#post}}…); Next.js → the
+  markup contract the components implement; Static → use directly.
+
+  The page in order:
+    1. Reading progress   a 2px hairline, the only chrome the page carries
+    2. Post header        five versions; swap the modifier, keep the parts
+    3. Series box         only when the post belongs to one — and near the
+                          TOP, because a reader landing on part 3 from
+                          search has no idea parts 1 and 2 exist
+    4. TOC | article | share   three columns, both rails droppable
+    5. Author box, prev/next, related shelf
+
+  The article column never widens when a rail is dropped: the measure is
+  the point of the page.
+-->
+<span class="ns-lprogress ns-lprogress--article" data-target="#post-body"
+      role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
+
+<header class="ns-posthead ns-posthead--center">
+  <div class="ns-posthead__inner">
+    <a class="ns-tag ns-posthead__cat" href="/tag/apex">Apex</a>
+    <h1 class="ns-posthead__title">Why your trigger fails at 201 records</h1>
+    <p class="ns-posthead__standfirst">Governor limits are per transaction, not per record. Once that lands, bulkification stops being a rule you follow and becomes the only design that makes sense.</p>
+    <div class="ns-postmeta">
+      <span>
+        <img class="ns-postmeta__avatar" src="/assets/logo/favicon.svg" alt="">
+        <a class="ns-postmeta__author" href="/author/swarnil">Swarnil Singhai</a>
+      </span>
+      <span><time datetime="2026-08-04">4 August 2026</time></span>
+      <span>6 min read</span>
+    </div>
+    <img class="ns-posthead__cover" src="/assets/img/publication-cover.svg" alt="">
+    <span class="ns-posthead__credit">Illustration · Namaste Salesforce</span>
+  </div>
+</header>
+
+<div class="ns-post">
+  <!-- Hand-author the outline, OR give the nav data-toc-from="#post-body"
+       and assets/js/blog.js builds it from the article's own h2/h3 and adds
+       ids to any heading missing one. Either way it is real anchor links
+       that work with JavaScript off. -->
+  <nav class="ns-post__rail ns-toc" aria-label="On this page" data-toc-from="#post-body">
+    <p class="ns-toc__title">On this page</p>
+  </nav>
+
+  <article class="ns-post__body">
+    <!-- The series box sits above the text, not at the foot. -->
+    <div class="ns-series" style="margin-block-end:var(--space-8)">
+      <span class="ns-series__label">Part 3 of 6 · Bulk-safe Apex</span>
+      <div class="ns-series__list">
+        <a class="ns-series__item" href="#" data-state="done">Triggers, and when not to write one</a>
+        <a class="ns-series__item" href="#" data-state="done">Collections, maps and sets</a>
+        <span class="ns-series__item" aria-current="true">Why your trigger fails at 201 records</span>
+        <a class="ns-series__item" href="#">Governor limits in practice</a>
+        <a class="ns-series__item" href="#">Testing at scale</a>
+        <a class="ns-series__item" href="#">Deploying without fear</a>
+      </div>
+    </div>
+
+    <!-- SLOT: the post body. In Ghost this is {{content}}; .ns-prose styles
+         the bare elements, so CMS output needs no extra classes.
+
+         #post-body is on the PROSE, not on the <article>: it is what the TOC
+         scans and what the reading line measures, and the footer below
+         (author box, prev/next, related) must be in neither. -->
+    <div class="ns-prose" id="post-body">
+      <p class="ns-lead">Every Apex developer meets this bug once: the trigger that worked all through development, then failed the first time someone imported a spreadsheet.</p>
+
+      <h2>The limit is the transaction</h2>
+      <p>Governor limits are counted per <em>transaction</em>, not per record. A trigger that runs one query per record does not use one query — it uses as many queries as the data load has rows, and the platform stops it at 101.</p>
+
+      <div class="ns-callout">
+        <i class="ph ph-info" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Note</span>The 101 is not a typo. The hundredth query succeeds; the hundred-and-first is what raises the exception.</div>
+      </div>
+
+      <h3>Counting the wrong thing</h3>
+      <p>The instinct is to count records. The platform counts statements, and the difference is the entire lesson.</p>
+
+      <h2>The fix is a pattern</h2>
+      <p>Collect the ids first, query once, put the results in a map, then loop. It is three lines longer and it does not care whether the load is one record or two hundred.</p>
+
+      <!-- Code blocks use the syntax highlighter; see components/css/code.css. -->
+      <figure class="ns-code" data-lang="apex">
+        <figcaption class="ns-code__bar">
+          <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>CaseRouter.cls</span></span>
+          <span class="ns-code__actions">
+            <span class="ns-code__lang">apex</span>
+            <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+          </span>
+        </figcaption>
+        <div class="ns-code__body">
+          <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4</pre>
+          <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-type">Map</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">String</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Id</span><span class="ns-tok-punct">&gt;</span> queues <span class="ns-tok-punct">=</span> <span class="ns-tok-fn">queueMap</span><span class="ns-tok-punct">();</span></span><span class="ns-code__line"><span class="ns-tok-kw">for</span> <span class="ns-tok-punct">(</span><span class="ns-tok-type">Case</span> c <span class="ns-tok-punct">:</span> cases<span class="ns-tok-punct">)</span> <span class="ns-tok-punct">{</span></span><span class="ns-code__line">  c<span class="ns-tok-punct">.</span><span class="ns-tok-type">OwnerId</span> <span class="ns-tok-punct">=</span> queues<span class="ns-tok-punct">.</span><span class="ns-tok-fn">get</span><span class="ns-tok-punct">(</span>c<span class="ns-tok-punct">.</span><span class="ns-tok-type">Origin</span><span class="ns-tok-punct">);</span></span><span class="ns-code__line"><span class="ns-tok-punct">}</span></span></code></pre>
+        </div>
+      </figure>
+
+      <div class="ns-callout ns-callout--warn">
+        <i class="ph ph-warning" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Watch out</span>A map keyed on a field that is not unique silently drops records. Key on the id unless you can prove otherwise.</div>
+      </div>
+
+      <h2>Testing it honestly</h2>
+      <p>A test that inserts one record proves nothing about the case that broke. Insert two hundred.</p>
+
+      <div class="ns-callout ns-callout--tip">
+        <i class="ph ph-lightbulb" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Tip</span>Put the 200 in a constant your factory reads. When the limit changes, one edit fixes every test.</div>
+      </div>
+
+      <hr>
+      <p>Next in the series: what actually counts against each limit, and how to read the debug log that tells you.</p>
+    </div>
+
+    <!-- Footer: bio, prev/next, related. -->
+    <div style="display:grid;gap:var(--space-8);margin-block-start:var(--space-12)">
+      <div class="ns-authorbox">
+        <img class="ns-authorbox__avatar" src="/assets/logo/favicon.svg" alt="">
+        <div>
+          <p class="ns-authorbox__name"><a href="/author/swarnil">Swarnil Singhai</a></p>
+          <p class="ns-authorbox__role">Salesforce Architect · 11× certified</p>
+          <p class="ns-authorbox__bio">Eleven years building on the platform, most of them cleaning up other people's triggers. Writes about the model first and the syntax second.</p>
+          <div class="ns-authorbox__links">
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="/author/swarnil">All posts</a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#" aria-label="X"><i class="ph ph-x-logo" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <nav class="ns-postnav" aria-label="More posts">
+        <a class="ns-postnav__link" href="#">
+          <span class="ns-postnav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+          <span class="ns-postnav__title">Collections, maps and sets</span>
+        </a>
+        <a class="ns-postnav__link ns-postnav__link--next" href="#">
+          <span class="ns-postnav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+          <span class="ns-postnav__title">Governor limits in practice</span>
+        </a>
+      </nav>
+
+      <section>
+        <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
+          <div><span class="ns-kicker">Related</span><h2 class="ns-band__title" style="font-size:var(--size-h3)">More on Apex</h2></div>
+          <div class="ns-band__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="/tag/apex">All Apex posts <i class="ph ph-arrow-right ns-btn__arrow" aria-hidden="true"></i></a></div>
+        </div>
+        <div class="ns-strip">
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Flow or Apex? A decision table</h3></a><div class="ns-postmeta"><span>5 min read</span></div></div></article>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Test data factories that survive a refactor</h3></a><div class="ns-postmeta"><span>7 min read</span></div></div></article>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Notes on naming things</h3></a><div class="ns-postmeta"><span>3 min read</span></div></div></article>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Five orgs, one deployment pipeline</h3></a><div class="ns-postmeta"><span>11 min read</span></div></div></article>
+        </div>
+      </section>
+    </div>
+  </article>
+
+  <aside class="ns-post__aside ns-share ns-share--rail">
+    <span class="ns-share__label">Share</span>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save for later"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
+  </aside>
+</div>

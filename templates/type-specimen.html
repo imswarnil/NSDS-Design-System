@@ -1,0 +1,110 @@
+<!-- NS Design System — type specimen.
+     A full-page specimen of the N&M family: the alphabet, the weight range,
+     the scale ladder, real paragraphs at the real measure, and the
+     typographic effects in place rather than in a list. Open it, print it,
+     or hand it to someone deciding whether this system reads well.
+     Uses only .ns-* classes and tokens — no styles of its own. -->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <p class="ns-label">// N&amp;M type system · specimen</p>
+
+    <h1 class="ns-display ns-display--mega ns-display--stack" style="margin-block:var(--space-6)">
+      <span class="ns-reveal"><span>Display speaks.</span></span>
+      <span class="ns-reveal"><span class="ns-display--outline ns-display--outline-brand">Text explains.</span></span>
+      <span class="ns-reveal"><span>Mono keeps</span></span>
+      <span class="ns-reveal"><span>the records.</span></span>
+    </h1>
+
+    <p class="ns-measure" style="font-size:var(--size-body-lg);color:var(--color-muted)">
+      Three cuts, one voice. <strong>N&amp;M Display</strong> (a Manrope cut) carries every heading;
+      <strong>N&amp;M Text</strong> (Nunito Sans) carries every sentence, set at
+      <mark class="ns-mark ns-mark--animate">450, not 400</mark>, because this face's Regular reads grey rather
+      than black; <strong>N&amp;M Mono</strong> (Red Hat Mono) carries every index, timestamp and label.
+      All three are latin-subset variable woff2s — about 77&thinsp;KB for the whole family.
+    </p>
+  </div>
+</section>
+
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <p class="ns-label">// The character set</p>
+    <p class="ns-display" style="font-size:var(--size-h1);word-spacing:0.15em;margin-block-start:var(--space-4)">
+      ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 &amp; ? ! @ # % / — “ ” ‘ ’
+    </p>
+    <p style="font-family:var(--font-mono);font-size:var(--size-h3);margin-block-start:var(--space-6)">
+      0123456789 {} [] () &lt;&gt; =&gt; != === /* */ // &amp;&amp; ||
+    </p>
+  </div>
+</section>
+
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <p class="ns-label">// The weight range — one axis, seven stops</p>
+    <div style="display:grid;gap:var(--space-2);margin-block-start:var(--space-4)">
+      <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:200">200 ExtraLight — display only</span>
+      <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:400">400 Regular</span>
+      <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:600">600 SemiBold — nav, tabs</span>
+      <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:700">700 Bold — h4, cards, buttons</span>
+      <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:800">800 ExtraBold — h1–h3, hero</span>
+    </div>
+  </div>
+</section>
+
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <p class="ns-label">// The reading layer, at the real measure</p>
+    <div class="ns-prose ns-dropcap" style="margin-block-start:var(--space-4)">
+      <p>Salesforce is a platform before it is a product, and the difference is the whole reason this
+      curriculum exists. Learn the platform — the data model, the security model, the automation
+      model — and every product built on top of it becomes a variation you already understand
+      rather than a new thing to memorise.</p>
+      <p>Set at <code>--size-body</code> over <code>--leading-body</code>, capped at
+      <code>--measure-prose</code>. Past roughly eighty characters a line the eye starts losing the
+      return, which is a measurable reading cost and not a matter of taste.<span class="ns-cite"><a class="ns-cite__ref" href="#spec-note-1" id="spec-ref-1">1</a><span class="ns-cite__src">Legibility research is unusually consistent on this: 45–75 characters is the comfortable band for continuous reading.<cite>Bringhurst, The Elements of Typographic Style</cite></span></span></p>
+      <blockquote class="ns-pullquote">The hairline is the structure. Everything else is negotiable.</blockquote>
+      <ol class="ns-notes" id="spec-note-1"><li>Robert Bringhurst, <em>The Elements of Typographic Style</em>. <a class="ns-link" href="#spec-ref-1">↩</a></li></ol>
+    </div>
+  </div>
+</section>
+
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <p class="ns-label">// Effects, in place</p>
+    <div class="ns-measure" style="display:grid;gap:var(--space-4);margin-block-start:var(--space-4);font-size:var(--size-body-lg)">
+      <p>Bulkify <span class="ns-circle ns-circle--animate">every trigger<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 C216,42 150,54 92,52 C40,50 4,42 8,28 C11,16 60,6 130,8"/></svg></span> — the circle is for one phrase per screen.</p>
+      <p><s class="ns-strike ns-strike--animate ns-strike--muted">One record at a time</s> <strong>collections, always</strong>.</p>
+      <p><span class="ns-frame ns-frame--animate">Governor limits</span> are per transaction, and <span class="ns-frame ns-frame--brackets">RunLocalTests</span> is the deploy gate.</p>
+      <h2 class="ns-scramble" style="font-size:var(--size-h2)">Metadata deploy complete</h2>
+    </div>
+  </div>
+</section>
+
+<section class="ns-band">
+  <div class="ns-band__inner" style="display:flex;align-items:center;gap:var(--space-8);flex-wrap:wrap">
+    <span class="ns-curve ns-curve--spin" style="color:var(--color-brand-600)">Namaste Salesforce · Learn the platform ·
+      <span class="ns-curve__center"><i class="ph ph-seal-check" aria-hidden="true" style="font-size:2.5rem;color:var(--color-brand-500)"></i></span>
+    </span>
+    <div style="flex:1;min-inline-size:16rem">
+      <p class="ns-label">// Mono keeps the records</p>
+      <p style="font-family:var(--font-mono);font-size:var(--size-mono);margin-block-start:var(--space-3);line-height:var(--leading-body)">
+        01 &middot; APEX BASICS &middot; 12:40 &middot; COMPLETE<br>
+        02 &middot; SOQL &amp; SOSL &middot; 18:05 &middot; IN PROGRESS<br>
+        03 &middot; TRIGGERS &middot; 24:12 &middot; NOT STARTED
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="ns-kinetic" aria-hidden="true">
+  <div class="ns-kinetic__track">
+    <span class="ns-kinetic__item">APEX</span><span class="ns-kinetic__item ns-kinetic__item--outline">LWC</span>
+    <span class="ns-kinetic__item">FLOW</span><span class="ns-kinetic__item ns-kinetic__item--outline">SOQL</span>
+    <span class="ns-kinetic__item">ADMIN</span><span class="ns-kinetic__item ns-kinetic__item--outline">INTEGRATION</span>
+  </div>
+  <div class="ns-kinetic__track">
+    <span class="ns-kinetic__item">APEX</span><span class="ns-kinetic__item ns-kinetic__item--outline">LWC</span>
+    <span class="ns-kinetic__item">FLOW</span><span class="ns-kinetic__item ns-kinetic__item--outline">SOQL</span>
+    <span class="ns-kinetic__item">ADMIN</span><span class="ns-kinetic__item ns-kinetic__item--outline">INTEGRATION</span>
+  </div>
+</div>
+<script src="../assets/js/type-fx.js" defer></script>

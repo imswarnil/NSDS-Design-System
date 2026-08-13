@@ -1,0 +1,49 @@
+<!-- @dsCard group="Type" viewport="760x560" name="Display Typography" subtitle="Poster scale, outline, gradient, stacked, drop cap, pull-quote and the kinetic strip" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
+<style>
+body{margin:0;padding:22px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);overflow-x:hidden}
+.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 10px}
+.row{margin:0 0 26px}
+.note{font-size:12px;line-height:1.6;color:var(--color-muted);margin:8px 0 0;max-width:52ch}
+</style></head><body>
+
+<div class="row">
+  <p class="k">Mega — <code>.ns-display--mega</code></p>
+  <p class="ns-display ns-display--mega ns-display--stack">
+    <span>Build on</span>
+    <span class="ns-display--outline ns-display--outline-brand">the platform</span>
+  </p>
+  <p class="note">Poster scale is a graphic element, not a heading: it sets solid (<code>--leading-mega</code>, 0.94), tightens to <code>--tracking-mega</code>, and is capped against the viewport rather than a container. The outlined line is the counter-form — present without being loud.</p>
+</div>
+
+<div class="row">
+  <p class="k">Gradient &amp; scan</p>
+  <p class="ns-display ns-display--gradient" style="font-size:var(--size-display)">One signal colour, two steps of it</p>
+  <p class="note">A two-hue gradient on text is a 2014 tell. A brand-500 → brand-800 ramp is depth, and it still flips correctly in dark mode.</p>
+</div>
+
+<div class="row">
+  <p class="k">Drop cap &amp; pull-quote</p>
+  <p class="ns-dropcap ns-measure" style="font-size:var(--size-body);line-height:var(--leading-body)">Salesforce is a platform before it is a product, and the difference is the whole reason this curriculum exists. Learn the platform and every product on top of it becomes a variation you already understand.</p>
+  <blockquote class="ns-pullquote" style="margin-top:18px">The hairline is the structure. Everything else is negotiable.</blockquote>
+  <p class="note"><code>initial-letter</code> does the drop cap properly — three lines deep, optically aligned, no floats. The pull-quote hangs on the same 2px brand edge as every other quotation in the system.</p>
+</div>
+
+<div class="row">
+  <p class="k">Kinetic strip — <code>.ns-kinetic</code></p>
+  <div class="ns-kinetic" aria-hidden="true">
+    <div class="ns-kinetic__track">
+      <span class="ns-kinetic__item">APEX</span><span class="ns-kinetic__item ns-kinetic__item--outline">LWC</span>
+      <span class="ns-kinetic__item">FLOW</span><span class="ns-kinetic__item ns-kinetic__item--outline">SOQL</span>
+      <span class="ns-kinetic__item">ADMIN</span>
+    </div>
+    <div class="ns-kinetic__track">
+      <span class="ns-kinetic__item">APEX</span><span class="ns-kinetic__item ns-kinetic__item--outline">LWC</span>
+      <span class="ns-kinetic__item">FLOW</span><span class="ns-kinetic__item ns-kinetic__item--outline">SOQL</span>
+      <span class="ns-kinetic__item">ADMIN</span>
+    </div>
+  </div>
+  <p class="note">Two identical tracks translated 50% — the only implementation that loops without a seam. It is infinite, so it is <code>aria-hidden</code> and may never carry information: pause it on hover, and never put a word here the reader needs.</p>
+</div>
+
+</body></html>

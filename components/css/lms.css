@@ -2,49 +2,303 @@
    =========================================================================
    The learner-facing layer. Everything composes the existing primitives —
    card frame, lesson rows (player.css), tags, progress, railbox — this file
-   only adds what a course needs that nothing else has: the progress foot,
-   the read-only curriculum, lesson navigation, the mobile lesson panel, and
-   the two page grids (detail, listing). */
+   only adds what a course needs that nothing else has.
+
+   The organising idea: a LESSON looks the same everywhere. The row in the
+   catalogue's curriculum, the row in the player's rail, and the row in the
+   mobile drawer are one component (.ns-lesson, in player.css) wearing
+   different containers. A learner who has seen the syllabus already knows
+   how to read the rail.
+
+   Contents:
+     Course card      .ns-ccard — five shapes, one anatomy
+     Small parts      .ns-rating · .ns-authors · .ns-price · .ns-ltype
+     Curriculum       .ns-curriculum — collapsible, timeline, compact, thumbs
+     Lesson nav       .ns-lesson-nav — prev/next by NAME, not by arrow
+     Mobile panel     .ns-panelbar — where you are + a way to the list
+     Page grids       .ns-course-detail · .ns-course-grid */
 @layer components {
 
-  /* --- Course card ---------------------------------------------------------
-     A Card with course anatomy: level tag riding the media, meta row in
-     mono, and a progress foot where the plain card has a footer. */
-  .ns-ccard__mediawrap { position: relative; }
+  /* ======================================================= Course card ====
+     A Card with course anatomy. Five shapes share one set of parts, because
+     a course in a grid, in a search result, in a "keep learning" rail and in
+     a related-courses strip is the same object at four sizes — and four
+     bespoke cards is how the meta rows drift apart.
+
+       (default)   vertical, media on top — the catalogue grid
+       --row       horizontal, small media — search results, lists
+       --compact   vertical, no media — dense rails, related strips
+       --featured  wide, two-column, more meta — the one promoted course
+       --minimal   hairline only, title + meta — inside another card */
+  .ns-ccard__mediawrap { position: relative; overflow: hidden; }
   .ns-ccard__level { position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
                      background: var(--color-surface); }
-  .ns-ccard__meta { display: flex; align-items: center; gap: var(--space-3);
+  /* Corner flag for the ONE thing worth flagging — bestseller, new, updated.
+     Two flags on one card is two things competing to be the reason to look,
+     which is none. */
+  .ns-ccard__badge {
+    position: absolute; inset-block-start: var(--space-2); inset-inline-end: var(--space-2);
+    padding: var(--space-0-5, 2px) var(--space-2);
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-500); color: var(--color-on-brand);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+  }
+  .ns-ccard__badge--new { background: var(--color-success); }
+  .ns-ccard__badge--updated { background: var(--color-warning); color: var(--color-brand-900); }
+  /* Runtime, bottom-right of the media — the one number a learner checks
+     before clicking. Dark chip because it sits on an unknown image. */
+  .ns-ccard__dur {
+    position: absolute; inset-block-end: var(--space-2); inset-inline-end: var(--space-2);
+    padding: 0 var(--space-1-5);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-brand-900) 82%, transparent);
+    color: var(--color-on-dark);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-variant-numeric: tabular-nums;
+  }
+  /* The play affordance: present at rest at low opacity so the card reads as
+     playable on touch too, and never revealed only on hover. */
+  .ns-ccard__play {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: var(--color-on-dark); font-size: var(--size-h1);
+    opacity: 0; transition: opacity var(--duration-base) var(--ease-out);
+    background: color-mix(in srgb, var(--color-brand-900) 25%, transparent);
+    pointer-events: none;
+  }
+  .ns-card:hover .ns-ccard__play, .ns-card:focus-within .ns-ccard__play { opacity: 1; }
+  @media (hover: none) { .ns-ccard__play { opacity: 0.9; background: none; } }
+
+  .ns-ccard__meta { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3);
                     font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
-                    text-transform: uppercase; color: var(--color-label); }
+                    text-transform: uppercase; color: var(--color-label); font-variant-numeric: tabular-nums; }
+  .ns-ccard__meta > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .ns-ccard__meta i { font-size: var(--size-small); opacity: 0.8; }
+
   .ns-ccard__progress { display: flex; align-items: center; gap: var(--space-3);
                         padding: var(--space-3) var(--pad-card);
                         border-block-start: 1px solid var(--color-border); }
   .ns-ccard__progress .ns-progress { flex: 1; }
   .ns-ccard__pct { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); }
 
-  /* --- Curriculum (read-only) ---------------------------------------------
-     The course's table of contents on the detail page: section heads over
-     the SAME .ns-lesson rows the player rail uses — a lesson looks identical
-     before and during the course. */
+  /* --- The lesson peek ----------------------------------------------------
+     What is actually IN this course, without leaving the grid. It expands on
+     hover and on keyboard focus, and it is real content in the DOM at all
+     times — collapsed with a grid-template-rows transition rather than
+     display:none, so it is findable by in-page search and reachable by a
+     screen reader whether or not the card is hovered.
+
+     It shows the first few lessons and a count. A peek that lists twenty
+     rows is not a peek, it is the syllabus in the wrong place. */
+  .ns-ccard__peek {
+    display: grid; grid-template-rows: 0fr;
+    transition: grid-template-rows var(--duration-base) var(--ease-out);
+    border-block-start: 1px solid transparent;
+  }
+  .ns-ccard__peek > div { overflow: hidden; min-block-size: 0; }
+  .ns-card:hover > .ns-ccard__peek, .ns-card:focus-within > .ns-ccard__peek {
+    grid-template-rows: 1fr; border-block-start-color: var(--color-border);
+  }
+  .ns-ccard__peek .ns-lesson { padding-block: var(--space-1-5); min-block-size: 0; font-size: var(--size-fine); }
+  .ns-ccard__peek-more {
+    display: block; padding: var(--space-2) var(--pad-card) var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-brand-600);
+  }
+  /* The peek is a hover nicety. Where hover does not exist it is simply open,
+     because the alternative is content no touch user can ever reach. */
+  @media (hover: none) {
+    .ns-ccard__peek { grid-template-rows: 1fr; border-block-start-color: var(--color-border); }
+  }
+
+  /* --- Shapes ------------------------------------------------------------- */
+  .ns-ccard--row { flex-direction: row; align-items: stretch; }
+  .ns-ccard--row .ns-ccard__mediawrap { flex: none; inline-size: 12rem; }
+  .ns-ccard--row .ns-ccard__mediawrap .ns-card__media { block-size: 100%; aspect-ratio: auto; }
+  .ns-ccard--row .ns-ccard__peek { display: none; } /* a row is already wide; a peek would double its height */
+
+  .ns-ccard--compact .ns-card__body { padding: var(--space-3); gap: var(--space-1-5); }
+  .ns-ccard--compact .ns-card__title { font-size: var(--size-small); }
+  .ns-ccard--compact .ns-ccard__progress { padding: var(--space-2) var(--space-3); }
+
+  .ns-ccard--featured { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  .ns-ccard--featured .ns-ccard__mediawrap { grid-row: 1 / -1; }
+  .ns-ccard--featured .ns-card__media { block-size: 100%; aspect-ratio: auto; min-block-size: 14rem; }
+  .ns-ccard--featured .ns-card__title { font-size: var(--size-h3); }
+  .ns-ccard--featured .ns-card__body { padding: var(--pad-card-lg); gap: var(--space-3); }
+
+  .ns-ccard--minimal { border-color: transparent; background: none; }
+  .ns-ccard--minimal .ns-card__body { padding: var(--space-3) 0; border-block-end: 1px solid var(--color-border); }
+
+  @media (max-width: 47.999rem) {
+    .ns-ccard--featured { grid-template-columns: minmax(0, 1fr); }
+    .ns-ccard--featured .ns-card__media { min-block-size: 0; aspect-ratio: 16 / 9; }
+    .ns-ccard--row .ns-ccard__mediawrap { inline-size: 7.5rem; }
+  }
+
+  /* ========================================================== Rating ====
+     Stars are DECORATION. The number is the content, and it comes first in
+     the DOM, so a screen reader hears "4.8 out of 5, 1,240 ratings" rather
+     than counting glyphs. The partial star is a width clip on a second copy
+     of the row — no half-star glyph, no rounding to the nearest half. */
+  .ns-rating { display: inline-flex; align-items: center; gap: var(--space-1-5); font-variant-numeric: tabular-nums; }
+  .ns-rating__value { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label); color: var(--color-ink); }
+  .ns-rating__stars { position: relative; display: inline-flex; color: var(--color-border); }
+  .ns-rating__stars > span { display: inline-flex; }
+  .ns-rating__fill {
+    position: absolute; inset-block: 0; inset-inline-start: 0;
+    inline-size: var(--fx-rating, 100%);
+    overflow: hidden; color: var(--color-warning);
+  }
+  .ns-rating__count { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); }
+
+  /* ========================================================= Authors ====
+     A stack of overlapping avatars plus names. Overlap is capped at four and
+     then a count, because five overlapping circles is a texture rather than
+     a list of people. */
+  .ns-authors { display: inline-flex; align-items: center; gap: var(--space-2); min-inline-size: 0; }
+  .ns-authors__stack { display: inline-flex; }
+  .ns-authors__stack > * { margin-inline-start: calc(var(--space-2) * -1); border: 2px solid var(--color-surface); border-radius: var(--radius-pill); }
+  .ns-authors__stack > *:first-child { margin-inline-start: 0; }
+  .ns-authors__avatar { inline-size: var(--space-7); block-size: var(--space-7); object-fit: cover; background: var(--color-surface-sunken); }
+  .ns-authors__more {
+    display: inline-grid; place-items: center;
+    inline-size: var(--space-7); block-size: var(--space-7);
+    background: var(--color-surface-sunken); color: var(--color-label);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+  }
+  .ns-authors__names { min-inline-size: 0; font-size: var(--size-fine); color: var(--color-muted);
+                       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-authors__names b { font-weight: var(--weight-body-strong); color: var(--color-ink); }
+  .ns-authors--sm .ns-authors__avatar, .ns-authors--sm .ns-authors__more { inline-size: var(--space-6); block-size: var(--space-6); }
+
+  /* =========================================================== Price ====
+     The current price is the loud one and the old price is struck. They are
+     never the same size: a discount that renders as two equal numbers makes
+     the reader do arithmetic to find out which one they pay. */
+  .ns-price { display: inline-flex; align-items: baseline; gap: var(--space-2); font-variant-numeric: tabular-nums; }
+  .ns-price__now { font-family: var(--font-heading); font-size: var(--size-h3); font-weight: var(--weight-heading); color: var(--color-ink); }
+  .ns-price__was { font-size: var(--size-small); color: var(--color-muted); text-decoration: line-through; }
+  .ns-price__off {
+    padding: 0 var(--space-1-5); border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-success) 14%, transparent);
+    color: var(--color-success-ink);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+  }
+  .ns-price--free .ns-price__now { color: var(--color-success-ink); }
+  .ns-price--sm .ns-price__now { font-size: var(--size-body-lg); }
+
+  /* ====================================================== Lesson type ====
+     Every lesson says what KIND of thing it is before you open it — a
+     14-minute video and a 14-minute lab are not interchangeable. Icon plus
+     word: the icon carries it at a glance, the word carries it for anyone
+     the icon fails, and the two never appear apart. */
+  .ns-ltype {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-ltype i { font-size: var(--size-small); }
+  .ns-ltype--video { color: var(--color-brand-600); }
+  .ns-ltype--article { color: var(--color-label); }
+  .ns-ltype--quiz { color: var(--color-warning-ink); }
+  .ns-ltype--lab { color: var(--color-success-ink); }
+  .ns-ltype--live { color: var(--color-error-ink); }
+  [data-theme="dark"] .ns-ltype--video { color: var(--color-brand-300); }
+  /* Icon-only, for a dense row where the word does not fit. The accessible
+     name moves to the row's own label — it is never simply dropped. */
+  .ns-ltype--icon span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  /* ====================================================== Curriculum ====
+     The course's table of contents. Sections are native <details>, so
+     collapse, keyboard operation and in-page find all come from the platform
+     — and a section containing the current lesson simply ships with `open`.
+
+     Four looks, one markup:
+       (default)    hairline rows
+       --timeline   a connector line down the index column, dots per section
+       --compact    tighter rows for a long syllabus or a narrow rail
+       --thumbs     a small still per lesson, for video-heavy courses */
   .ns-curriculum { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; }
+
+  /* Toolbar above the sections: totals, and one control that expands or
+     collapses all of them. */
+  .ns-curriculum__bar {
+    display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;
+    padding: var(--space-3) var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-curriculum__totals {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-curriculum__bar .ns-btn { margin-inline-start: auto; }
+
   .ns-curriculum__head {
-    display: flex; align-items: baseline; gap: var(--space-3);
+    display: flex; align-items: center; gap: var(--space-3);
     padding: var(--space-3) var(--space-4);
     background: var(--color-surface-sunken);
     border-block-start: 1px solid var(--color-border);
+    cursor: pointer; list-style: none;
+    transition: background-color var(--duration-fast) var(--ease-out);
   }
+  .ns-curriculum__head::-webkit-details-marker { display: none; }
+  .ns-curriculum__head:hover { background: color-mix(in srgb, var(--color-brand-500) 6%, transparent); }
+  .ns-curriculum__head:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
   .ns-curriculum__section:first-child .ns-curriculum__head { border-block-start: 0; }
-  .ns-curriculum__index { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-label); }
+  .ns-curriculum__index { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-label); font-variant-numeric: tabular-nums; }
   .ns-curriculum__title { font-weight: var(--weight-semibold); font-size: var(--size-small); color: var(--color-ink); }
-  .ns-curriculum__meta { margin-inline-start: auto; font-family: var(--font-mono); font-size: var(--size-label);
+  .ns-curriculum__meta { margin-inline-start: auto; display: inline-flex; align-items: center; gap: var(--space-3);
+                         font-family: var(--font-mono); font-size: var(--size-label);
                          letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+  /* The caret is the only thing that moves, and it points where the section
+     is going rather than where it is. */
+  .ns-curriculum__toggle { transition: rotate var(--duration-fast) var(--ease-out); color: var(--color-muted); }
+  .ns-curriculum__section[open] .ns-curriculum__toggle { rotate: 180deg; }
+  /* Per-section completion, as a fraction rather than a percentage: at three
+     lessons a percentage is false precision. */
+  .ns-curriculum__done { color: var(--color-success-ink); }
 
-  /* --- Lesson navigation ---------------------------------------------------
-     Prev / progress / next. Standalone version of the player's bar so an
-     article-type lesson gets the same chrome; --sticky pins it to the
-     viewport bottom on long lessons. */
+  /* Timeline — the connector runs behind the index column and stops at the
+     last section, so it reads as a path with an end rather than a rule that
+     ran off the card. */
+  .ns-curriculum--timeline .ns-curriculum__section { position: relative; }
+  .ns-curriculum--timeline .ns-curriculum__section::before {
+    content: ""; position: absolute; inset-block: 0; inset-inline-start: calc(var(--space-4) + var(--space-2));
+    inline-size: 1px; background: var(--color-border);
+  }
+  .ns-curriculum--timeline .ns-curriculum__section:last-child::before { inset-block-end: 50%; }
+  .ns-curriculum--timeline .ns-curriculum__index {
+    position: relative; z-index: var(--z-raised);
+    display: grid; place-items: center;
+    inline-size: var(--space-5); block-size: var(--space-5);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border); background: var(--color-surface);
+    font-size: var(--size-label);
+  }
+  .ns-curriculum--timeline .ns-curriculum__section[data-state="done"] .ns-curriculum__index {
+    background: var(--color-success); border-color: var(--color-success); color: var(--color-on-brand);
+  }
+  .ns-curriculum--timeline .ns-curriculum__section[data-state="current"] .ns-curriculum__index {
+    background: var(--color-brand-500); border-color: var(--color-brand-500); color: var(--color-on-brand);
+  }
+  .ns-curriculum--timeline .ns-lesson { padding-inline-start: var(--space-10); }
+
+  .ns-curriculum--compact .ns-curriculum__head { padding-block: var(--space-2); }
+  .ns-curriculum--compact .ns-lesson { padding-block: var(--space-1-5); min-block-size: 0; font-size: var(--size-fine); }
+
+  /* ===================================================== Lesson nav ====
+     Prev / next by NAME. An arrow pair with no titles makes the learner
+     click to find out where they are going, and on a phone the two arrows
+     are the whole navigation — so the name is the control and the arrow is
+     the decoration, not the other way round. */
   .ns-lesson-nav {
-    display: flex; align-items: center; gap: var(--space-4);
+    display: flex; align-items: center; gap: var(--space-3);
     padding-block: var(--space-3);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface);
@@ -55,13 +309,57 @@
                        text-transform: uppercase; color: var(--color-muted); text-decoration: none; }
   .ns-lesson-nav__up:hover { color: var(--color-brand-600); }
 
-  /* --- Mobile lesson panel -------------------------------------------------
+  /* The named prev/next control. A grid so the direction label, the title
+     and the thumb hold their columns whatever the title's length. */
+  .ns-lesson-nav__btn {
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    align-items: center; gap: var(--space-2) var(--space-3);
+    max-inline-size: 18rem; min-inline-size: 0;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    text-decoration: none; color: var(--color-ink); background: var(--color-surface);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-lesson-nav__btn:hover { border-color: var(--color-brand-500); }
+  .ns-lesson-nav__btn--next { text-align: end; grid-template-columns: minmax(0, 1fr) auto; }
+  .ns-lesson-nav__dir {
+    grid-row: 1; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-lesson-nav__name {
+    grid-row: 2; grid-column: 2; min-inline-size: 0; font-size: var(--size-small); font-weight: var(--weight-medium);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-lesson-nav__btn--next .ns-lesson-nav__dir { grid-column: 1; }
+  .ns-lesson-nav__btn--next .ns-lesson-nav__name { grid-column: 1; }
+  /* A 16:9 still where there is one, the lesson-type glyph where there is
+     not — never an empty box. */
+  .ns-lesson-nav__thumb {
+    grid-row: 1 / 3; inline-size: 3.5rem; aspect-ratio: 16 / 9; flex: none;
+    object-fit: cover; border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    display: grid; place-items: center; color: var(--color-label);
+  }
+  .ns-lesson-nav__btn--next .ns-lesson-nav__thumb { grid-column: 2; }
+  /* A locked next lesson still navigates — to the upgrade page. A dead
+     button at the end of a lesson explains nothing. */
+  .ns-lesson-nav__btn[data-state="locked"] { color: var(--color-muted); }
+  .ns-lesson-nav__btn[data-state="locked"] .ns-lesson-nav__thumb { color: var(--color-warning-ink); }
+
+  @media (max-width: 47.999rem) {
+    /* The two named buttons are the navigation on a phone; the progress row
+       is already in the panel bar above. */
+    .ns-lesson-nav .ns-progress-row { display: none; }
+    .ns-lesson-nav__btn { flex: 1; max-inline-size: none; }
+    .ns-lesson-nav__thumb { display: none; }
+  }
+
+  /* =================================================== Mobile panel ====
      Below lg the curriculum rail becomes a bottom bar + drawer. The bar
-     shows where you are and opens the full lesson list; the drawer is the
-     system Drawer with lesson rows inside. */
+     shows where you are, how far in, and opens the full lesson list. */
   .ns-panelbar {
     display: flex; align-items: center; gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
+    padding: var(--space-2) var(--space-4);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface-raised);
   }
@@ -71,23 +369,54 @@
                          letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
   .ns-panelbar__title { display: block; font-size: var(--size-small); font-weight: var(--weight-medium);
                         color: var(--color-ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* A hairline progress line along the bar's own top edge — the bar is
+     already there, so the progress costs no extra height. */
+  .ns-panelbar__line {
+    position: absolute; inset-block-start: 0; inset-inline-start: 0;
+    block-size: 2px; background: var(--color-brand-500);
+    inline-size: var(--fx-progress, 0%);
+    transition: inline-size var(--duration-base) var(--ease-out);
+  }
+  .ns-panelbar { position: relative; }
 
-  /* --- Course detail page --------------------------------------------------
+  /* ==================================================== Page layouts ====
      Content + sticky rail ≥ lg; single column below, rail content flowing
-     after the curriculum. The rail reuses .ns-railbox from the admin layer. */
-  .ns-course-detail { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: var(--space-10); align-items: start; }
-  .ns-course-detail__rail { position: sticky; inset-block-start: var(--space-6);
-                            display: flex; flex-direction: column; gap: var(--space-4); }
+     after the curriculum. */
+  .ns-course-detail { display: grid; grid-template-columns: minmax(0, 1fr) 20rem; gap: var(--space-10); align-items: start; }
+  .ns-course-detail__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4));
+                            display: flex; flex-direction: column; gap: var(--space-4);
+                            max-block-size: calc(100dvh - var(--navbar-h) - var(--space-8)); overflow-y: auto; }
   @media (max-width: 63.999rem) {
-    .ns-course-detail { grid-template-columns: minmax(0, 1fr); }
-    .ns-course-detail__rail { position: static; }
+    .ns-course-detail { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    .ns-course-detail__rail { position: static; max-block-size: none; overflow: visible; }
   }
 
-  /* --- Course listing ------------------------------------------------------
-     Filter row above, card grid below. Filters are Tags (aria-pressed) and
-     a Select — the same controls as everywhere else. */
+  /* Listing: filter rail + grid. The rail is a real sidebar ≥ lg and a
+     drawer below it — filters are the second most used control on the page
+     and must not be a link to another screen. */
+  .ns-course-listing { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+  .ns-course-listing__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4)); }
+  @media (max-width: 63.999rem) {
+    .ns-course-listing { grid-template-columns: minmax(0, 1fr); }
+    .ns-course-listing__rail { position: static; }
+  }
+
   .ns-course-filters { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
                        margin-block-end: var(--space-5); }
   .ns-course-filters .ns-select { inline-size: auto; margin-inline-start: auto; }
   .ns-course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(15rem, 100%), 1fr)); gap: var(--gap-grid); }
+  .ns-course-grid--list { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+
+  /* ALIAS of .ns-strip (display.css). The shelf is not a course-specific
+     object — the blog renders the identical one — so it lives in the display
+     layer and this name is kept so existing markup does not break. Use
+     .ns-strip in new work. */
+  .ns-course-strip {
+    display: grid; grid-auto-flow: column;
+    grid-auto-columns: minmax(min(14rem, 100%), 1fr); /* see .ns-strip for why min() */
+    gap: var(--gap-card); overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-block-end: var(--space-2); scrollbar-width: thin;
+    min-inline-size: 0;
+  }
+  .ns-course-strip > * { scroll-snap-align: start; }
 }

@@ -1,0 +1,391 @@
+/* NS Design System — typographic effects.
+   =========================================================================
+   Type that does something: a highlighter that draws itself, a rule that
+   crosses a word out, a circle around a phrase, a scan line, text on a
+   circle, and the small hover/citation/anchor treatments that make a reading
+   page feel handled rather than dumped.
+
+   Three rules govern everything in this file, and they are what keep it from
+   becoming a pile of party tricks:
+
+   1. THE EFFECT IS NEVER THE MEANING. Every one of these is decoration over
+      text that already reads correctly without it. Crossed-out text is
+      wrapped in <s>/<del>; a highlight is <mark>; a citation is a real link
+      to a real footnote. Turn this stylesheet off and the page still says
+      the same thing.
+   2. IT DRAWS ONCE. These animate on entry (JS adds [data-fx-in] when the
+      element scrolls into view) and then stop. A thing that loops forever in
+      the middle of a paragraph is an ad.
+   3. IT SURVIVES ITS OWN MACHINERY. Every "start hidden" state sits inside
+      @media (scripting: enabled), so with JS off the text is simply there
+      rather than translated off its own line waiting for an observer that
+      will never run. This matters most for .ns-reveal, whose hidden state is
+      not opt-in.
+   4. IT COLLAPSES UNDER REDUCED MOTION. tokens/effects.css already flattens
+      every animation globally under prefers-reduced-motion; each effect here
+      is authored so its FINAL state is the correct one, so flattening leaves
+      a drawn highlight rather than an invisible one.
+
+   Wiring: assets/js/type-fx.js — an IntersectionObserver that sets
+   [data-fx-in], the text scrambler, and the circular-text builder. Every
+   effect that can work without JS does (hover states, static frames). */
+@layer components {
+
+  /* ======================================================== Highlight ==== */
+  /* A marker sweep. The brand tint is painted as a background that grows from
+     0 to 100% width, sitting behind the baseline like a real highlighter —
+     hence the slight vertical offset and the fact that it does not cover the
+     ascenders. */
+  .ns-mark {
+    /* <mark>'s UA default is a solid yellow background, and it sits UNDER the
+       gradient rather than being replaced by it — so without this the brand
+       tint is painted over yellow. */
+    background-color: transparent;
+    background-image: linear-gradient(to right, color-mix(in srgb, var(--color-brand-500) 26%, transparent), color-mix(in srgb, var(--color-brand-500) 26%, transparent));
+    background-repeat: no-repeat;
+    background-position: 0 0.12em;
+    background-size: 100% 0.72em;
+    padding-inline: var(--space-1);
+    color: inherit;
+    box-decoration-break: clone;
+  }
+  @media (scripting: enabled) { .ns-mark--animate { background-size: 0 0.72em; } }
+  .ns-mark--animate[data-fx-in] { animation: ns-fx-mark var(--duration-draw) var(--ease-draw) forwards; }
+  /* The four supporting tints. Highlight is the one place a non-brand hue is
+     allowed inline, because a highlighter that is always blue cannot mark two
+     different things on one page. */
+  .ns-mark--success { background-image: linear-gradient(to right, color-mix(in srgb, var(--color-success) 26%, transparent), color-mix(in srgb, var(--color-success) 26%, transparent)); }
+  .ns-mark--warning { background-image: linear-gradient(to right, color-mix(in srgb, var(--color-warning) 32%, transparent), color-mix(in srgb, var(--color-warning) 32%, transparent)); }
+  .ns-mark--error { background-image: linear-gradient(to right, color-mix(in srgb, var(--color-error) 22%, transparent), color-mix(in srgb, var(--color-error) 22%, transparent)); }
+  /* Ink-fill: the highlight goes solid and the text flips to on-brand. For a
+     single phrase in a display line, never for a run of body copy. */
+  .ns-mark--solid {
+    background-image: linear-gradient(to right, var(--color-brand-500), var(--color-brand-500));
+    background-position: 0 0; background-size: 100% 100%;
+    color: var(--color-on-brand);
+    border-radius: var(--radius-sm);
+  }
+  @media (scripting: enabled) { .ns-mark--solid.ns-mark--animate { background-size: 0 100%; } }
+  @keyframes ns-fx-mark { from { background-size: 0 var(--fx-mark-h, 0.72em); } to { background-size: 100% var(--fx-mark-h, 0.72em); } }
+  .ns-mark--solid { --fx-mark-h: 100%; }
+
+  /* =========================================================== Strike ==== */
+  /* Crossing out. text-decoration cannot be animated, so the rule is a drawn
+     pseudo-element — which is also the only way to get the slight overshoot
+     that makes it read as a pen stroke rather than a CSS property. */
+  .ns-strike { position: relative; text-decoration: none; }
+  .ns-strike::after {
+    content: ""; position: absolute; inset-inline: calc(var(--space-1) * -1); inset-block-start: 55%;
+    block-size: 2px; background: currentColor; border-radius: var(--radius-pill);
+    transform: scaleX(1); transform-origin: left center;
+  }
+  @media (scripting: enabled) { .ns-strike--animate::after { transform: scaleX(0); } }
+  .ns-strike--animate[data-fx-in]::after { animation: ns-fx-strike var(--duration-slow) var(--ease-draw) forwards; }
+  /* The correction pattern: old price / wrong answer struck through, the
+     replacement immediately after. The struck text goes muted so the eye
+     lands on the live value, which is the entire point of the device. */
+  .ns-strike--muted { color: var(--color-muted); }
+  .ns-strike--error::after { background: var(--color-error); }
+  @keyframes ns-fx-strike { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* =========================================================== Circle ==== */
+  /* A hand-drawn ellipse around a phrase. It is an inline SVG child rather
+     than a border-radius pseudo-element for one reason: a real path can be
+     slightly wonky and can be drawn with stroke-dasharray, and a perfect CSS
+     ellipse always looks like a form validation error. */
+  .ns-circle { position: relative; display: inline-block; padding: var(--space-1) var(--space-3); }
+  .ns-circle > svg {
+    position: absolute; inset: 0; inline-size: 100%; block-size: 100%;
+    overflow: visible; pointer-events: none; color: var(--color-brand-500);
+  }
+  .ns-circle > svg path {
+    fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round;
+    /* Set by the JS off the real path length; the fallback covers the
+       no-JS case with a value comfortably longer than any of these paths. */
+    stroke-dasharray: var(--fx-len, 1000); stroke-dashoffset: 0;
+  }
+  @media (scripting: enabled) { .ns-circle--animate > svg path { stroke-dashoffset: var(--fx-len, 1000); } }
+  .ns-circle--animate[data-fx-in] > svg path { animation: ns-fx-draw var(--duration-draw) var(--ease-draw) forwards; }
+  .ns-circle--accent > svg { color: var(--color-warning); }
+  @keyframes ns-fx-draw { to { stroke-dashoffset: 0; } }
+
+  /* ============================================================ Frame ==== */
+  /* Boxed text. Two pseudo-elements, each drawing two sides, so the frame
+     traces round the word instead of fading in as a finished rectangle. */
+  .ns-frame { position: relative; display: inline-block; padding: var(--space-1-5) var(--space-3); }
+  .ns-frame::before, .ns-frame::after {
+    content: ""; position: absolute; inset: 0; border-radius: var(--radius-sm);
+    border: 2px solid var(--color-brand-500);
+  }
+  .ns-frame::before { border-inline-end-color: transparent; border-block-end-color: transparent; }
+  .ns-frame::after { border-inline-start-color: transparent; border-block-start-color: transparent; }
+  @media (scripting: enabled) { .ns-frame--animate::before, .ns-frame--animate::after { transform: scale(0.94); opacity: 0; } }
+  .ns-frame--animate[data-fx-in]::before { animation: ns-fx-frame var(--duration-slow) var(--ease-draw) forwards; }
+  .ns-frame--animate[data-fx-in]::after { animation: ns-fx-frame var(--duration-slow) var(--ease-draw) var(--duration-fast) forwards; }
+  /* Corner-bracket variant — the console/terminal read: only two opposite
+     corners are drawn, which frames without enclosing. Each pseudo-element
+     shrinks to an L in its own corner rather than being clipped out of a
+     full rectangle. */
+  .ns-frame--brackets::before, .ns-frame--brackets::after { inset: auto; inline-size: 40%; block-size: 60%; border-radius: 0; }
+  .ns-frame--brackets::before { inset-block-start: 0; inset-inline-start: 0; border-block-end: 0; border-inline-end: 0; }
+  .ns-frame--brackets::after { inset-block-end: 0; inset-inline-end: 0; border-block-start: 0; border-inline-start: 0; }
+  .ns-frame--quiet::before, .ns-frame--quiet::after { border-color: var(--color-border); border-width: 1px; }
+  @keyframes ns-fx-frame { to { transform: none; opacity: 1; } }
+
+  /* ========================================================== Scanline ==== */
+  /* A CRT pass over a heading — the console motif taken literally. The line
+     itself is a gradient band swept across the text with a mask, so it
+     brightens the glyphs rather than sitting on top of them. */
+  .ns-scan { position: relative; display: inline-block; overflow: hidden; }
+  .ns-scan::after {
+    content: ""; position: absolute; inset-inline: 0; block-size: 28%;
+    inset-block-start: -30%;
+    background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-brand-400) 55%, transparent), transparent);
+    mix-blend-mode: screen; pointer-events: none;
+  }
+  .ns-scan[data-fx-in]::after { animation: ns-fx-scan 2.4s var(--ease-out) 2; } /* lint-ok: a scan pass is a 2.4s gesture; the motion tokens top out at 700ms by design */
+  /* --lines adds the static raster the sweep travels over. Kept very faint:
+     visible texture over body copy is a legibility problem, so this is for
+     display type only. */
+  .ns-scan--lines { background-image: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 7%, transparent) 0 1px, transparent 1px 3px); background-clip: text; }
+  .ns-scan--loop[data-fx-in]::after { animation-iteration-count: infinite; }
+  @keyframes ns-fx-scan { from { inset-block-start: -30%; } to { inset-block-start: 110%; } }
+
+  /* ========================================================== Reveals ==== */
+  /* Line-by-line entrance for display copy. Each line is its own element with
+     its own overflow clip, so the text rises out of the line above rather
+     than fading in as a block — the difference between a title card and a
+     PowerPoint transition. */
+  .ns-reveal { display: block; overflow: hidden; }
+  .ns-reveal > span { display: block; }
+  @media (scripting: enabled) { .ns-reveal > span { transform: translateY(100%); } }
+  .ns-reveal[data-fx-in] > span { animation: ns-fx-rise var(--duration-draw) var(--ease-draw) forwards; }
+  .ns-reveal:nth-of-type(2)[data-fx-in] > span { animation-delay: 80ms; } /* lint-ok: stagger offsets are a rhythm, not a transition duration */
+  .ns-reveal:nth-of-type(3)[data-fx-in] > span { animation-delay: 160ms; } /* lint-ok: see above */
+  @keyframes ns-fx-rise { to { transform: none; } }
+
+  /* ========================================================== Scramble ==== */
+  /* The "matrix" treatment. JS (assets/js/type-fx.js) swaps in random glyphs
+     and settles them left-to-right; this styles the in-flight characters so
+     the noise reads as machinery rather than as a rendering bug.
+
+     It runs on ENTRY and on RESPONSIVE BREAK — the second is the useful one:
+     when a layout shift forces a heading to re-wrap, re-scrambling makes the
+     reflow look intentional instead of like a jump. */
+  .ns-scramble { font-variant-ligatures: none; font-variant-numeric: tabular-nums; }
+  .ns-scramble [data-fx-char] { color: var(--color-brand-500); opacity: 0.75; }
+  .ns-scramble[data-fx-settled] [data-fx-char] { color: inherit; opacity: 1; }
+
+  /* ======================================================= Text shift ==== */
+  /* Smooth reflow. When a container changes size — a sidebar collapsing, a
+     breakpoint crossing — text normally teleports to its new position. These
+     hand the browser enough information to animate it instead.
+
+     view-transition-name is the honest tool for it and degrades to nothing
+     where unsupported, which is exactly the right failure mode for a
+     nicety. */
+  .ns-shift { view-transition-name: var(--fx-shift-name, none); }
+  @media (prefers-reduced-motion: no-preference) {
+    /* interpolate-size lets a height:auto change animate at all. Without it
+       the container snaps and the text inside it snaps with it. */
+    .ns-shift-group { interpolate-size: allow-keywords; transition: font-size var(--duration-base) var(--ease-out), line-height var(--duration-base) var(--ease-out), letter-spacing var(--duration-base) var(--ease-out), max-inline-size var(--duration-base) var(--ease-out); }
+  }
+
+  /* ==================================================== Circular text ==== */
+  /* Text on a circle. The layout is genuinely SVG's job — <textPath> is the
+     only thing that positions glyphs along a curve correctly, including the
+     per-glyph rotation. JS builds the markup; this sizes and spins it.
+     Used for seals, badges and the "scroll" motif, never for anything the
+     reader has to actually read in sequence. */
+  .ns-curve { display: inline-grid; place-items: center; inline-size: var(--fx-curve-size, 9rem); aspect-ratio: 1; }
+  .ns-curve > svg { grid-area: 1 / 1; inline-size: 100%; block-size: 100%; }
+  .ns-curve text {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; fill: currentColor;
+  }
+  .ns-curve__center { grid-area: 1 / 1; display: grid; place-items: center; }
+  .ns-curve--spin > svg { animation: ns-fx-spin 18s linear infinite; } /* lint-ok: a seal rotates at reading speed; that is 18s, not a motion token */
+  .ns-curve--spin:hover > svg { animation-play-state: paused; }
+  @keyframes ns-fx-spin { to { transform: rotate(1turn); } }
+
+  /* ==================================================== Link & hover ==== */
+  /* The three link treatments, in order of loudness. All three animate the
+     UNDERLINE, never the text position: a link that moves on hover is a link
+     you have to chase. */
+  .ns-link {
+    color: var(--color-brand-600); text-decoration: none;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat; background-position: 0 100%; background-size: 100% 1px;
+    transition: background-size var(--duration-base) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    padding-block-end: 1px;
+  }
+  .ns-link:hover { background-size: 100% 2px; }
+  [data-theme="dark"] .ns-link { color: var(--color-brand-300); }
+  /* --grow: the rule draws in from the leading edge. The default for prose
+     links that are not already underlined. */
+  .ns-link--grow { background-size: 0 2px; }
+  .ns-link--grow:hover, .ns-link--grow:focus-visible { background-size: 100% 2px; }
+  /* --wipe: the rule retreats and returns from the other side, so the hover
+     has a direction. */
+  .ns-link--wipe { background-position: 100% 100%; background-size: 100% 1px; }
+  .ns-link--wipe:hover { background-position: 0 100%; background-size: 100% 2px; }
+  /* --roll: the label rolls over to a copy of itself. Reserved for nav and
+     buttons — inside a paragraph it changes the line height. */
+  .ns-link--roll { display: inline-grid; overflow: hidden; background: none; }
+  .ns-link--roll > span { grid-area: 1 / 1; transition: transform var(--duration-base) var(--ease-out); }
+  .ns-link--roll > span:last-child { transform: translateY(100%); }
+  .ns-link--roll:hover > span:first-child { transform: translateY(-100%); }
+  .ns-link--roll:hover > span:last-child { transform: none; }
+  /* --fill: the text itself fills with brand from left to right. Display
+     sizes only — at 16px the partially-filled state is unreadable. */
+  .ns-link--fill {
+    background-image: linear-gradient(to right, var(--color-brand-500), var(--color-brand-500));
+    background-size: 0 100%; background-position: 0 0;
+    -webkit-background-clip: text; background-clip: text;
+    transition: background-size var(--duration-slow) var(--ease-out);
+  }
+  .ns-link--fill:hover { background-size: 100% 100%; }
+
+  /* ========================================================= Citation ==== */
+  /* A real footnote reference: a superscript link to a real target, with the
+     source shown on hover/focus as supplementary detail. The visible marker
+     is the accessible one — the popover only ever repeats information that
+     is also at the destination. */
+  .ns-cite { position: relative; display: inline; font-variant-position: super; }
+  .ns-cite__ref {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    color: var(--color-brand-600); text-decoration: none;
+    vertical-align: super; line-height: 0;
+    padding-inline: 1px;
+    border-block-end: 1px dotted currentColor;
+  }
+  .ns-cite__ref:hover { color: var(--color-brand-500); }
+  [data-theme="dark"] .ns-cite__ref { color: var(--color-brand-300); }
+  .ns-cite__src {
+    position: absolute; inset-block-end: calc(100% + var(--space-2)); inset-inline-start: 50%;
+    translate: -50% 0;
+    inline-size: max-content; max-inline-size: 20rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+    font-family: var(--font-sans); font-size: var(--size-fine); line-height: var(--leading-body);
+    color: var(--color-ink); text-align: start;
+    opacity: 0; visibility: hidden;
+    transition: opacity var(--duration-fast) var(--ease-out), visibility var(--duration-fast) var(--ease-out);
+    z-index: var(--z-dropdown);
+  }
+  .ns-cite:hover .ns-cite__src, .ns-cite:focus-within .ns-cite__src { opacity: 1; visibility: visible; }
+  .ns-cite__src cite { display: block; font-style: normal; font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+  /* The footnote list at the bottom of a prose page. */
+  .ns-notes { border-block-start: 1px solid var(--color-border); padding-block-start: var(--space-4); font-size: var(--size-small); color: var(--color-muted); }
+  .ns-notes li { scroll-margin-block-start: var(--space-16); }
+  .ns-notes li:target { background: color-mix(in srgb, var(--color-brand-500) 10%, transparent); }
+
+  /* =========================================================== Anchor ==== */
+  /* The § that appears beside a heading you can link to. It is present in the
+     DOM at all times with a real accessible name — revealing a control only
+     on hover hides it from touch and from keyboard-only users, so this fades
+     opacity and never display. */
+  .ns-anchor { position: relative; }
+  .ns-anchor__link {
+    position: absolute; inset-inline-end: 100%; padding-inline-end: var(--space-2);
+    color: var(--color-brand-500); text-decoration: none;
+    font-family: var(--font-mono); font-weight: var(--weight-regular);
+    opacity: 0; transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-anchor:hover .ns-anchor__link, .ns-anchor__link:focus-visible { opacity: 1; }
+  .ns-anchor:target { scroll-margin-block-start: var(--space-16); }
+  @media (max-width: 64rem) {
+    /* No margin to hang it in — it goes inline after the text instead of
+       disappearing, because on a phone the hover state never arrives. */
+    .ns-anchor__link { position: static; opacity: 0.6; padding-inline: var(--space-2) 0; }
+  }
+
+  /* ====================================================== Display type ==== */
+  /* The big stuff. --mega is poster scale and is capped at the viewport, not
+     at a container: type this size is a graphic element and has to be laid
+     out against the screen edge. */
+  .ns-display {
+    font-family: var(--font-heading); font-size: var(--size-display);
+    font-weight: var(--weight-heading); line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+  }
+  .ns-display--mega {
+    font-size: var(--size-mega); line-height: var(--leading-mega);
+    letter-spacing: var(--tracking-mega);
+  }
+  /* Outlined display — the counter-form version, for a word that should be
+     present without being loud. Falls back to solid ink where
+     text-stroke is unsupported, which is the right failure. */
+  .ns-display--outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-ink);
+  }
+  .ns-display--outline-brand { -webkit-text-stroke-color: var(--color-brand-500); }
+  /* Gradient display — one hue, two steps of it. A two-colour gradient on
+     text is a 2014 tell; a brand-500 → brand-800 ramp is depth. */
+  .ns-display--gradient {
+    background-image: linear-gradient(120deg, var(--color-brand-500), var(--color-brand-800));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  [data-theme="dark"] .ns-display--gradient { background-image: linear-gradient(120deg, var(--color-brand-300), var(--color-brand-500)); }
+  /* Stacked: each line its own block, set solid, so a three-word headline
+     builds a shape. --tight is the poster setting where lines nearly touch. */
+  .ns-display--stack { display: grid; justify-items: start; line-height: var(--leading-mega); }
+  .ns-display--stack > span { display: block; }
+  .ns-display--center { text-align: center; justify-items: center; }
+
+  /* Drop cap — the opening letter of a feature article, three lines deep.
+     initial-letter does the whole job where supported; the float fallback
+     keeps it from being a giant floating letter on the line. */
+  .ns-dropcap::first-letter {
+    initial-letter: 3 3;
+    -webkit-initial-letter: 3 3;
+    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    color: var(--color-brand-600);
+    margin-inline-end: var(--space-2);
+  }
+
+  /* Pull quote — the display face at reading scale, hung on the hairline
+     edge like every other quotation in the system. */
+  .ns-pullquote {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-medium); line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-tight);
+    max-inline-size: var(--measure-narrow);
+    border-inline-start: 2px solid var(--color-brand-500);
+    padding-inline-start: var(--space-5);
+    text-wrap: balance;
+  }
+
+  /* Kinetic strip — a marquee of display type. Two copies, translated 50%,
+     which is the only implementation that loops without a seam. Paused on
+     hover and, because it is infinite, it is the one effect on this page
+     that must never carry information. */
+  .ns-kinetic { display: flex; overflow: hidden; mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); } /* lint-ok: a mask's black is an alpha stop, not a colour — a theme token here would make the edges fade wrongly */
+  .ns-kinetic__track { display: flex; flex: none; gap: var(--space-6); padding-inline-end: var(--space-6); animation: marquee 28s linear infinite; } /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+  .ns-kinetic:hover .ns-kinetic__track { animation-play-state: paused; }
+  .ns-kinetic__item { font-family: var(--font-heading); font-size: var(--size-h1); font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight); white-space: nowrap; color: var(--color-ink); }
+  .ns-kinetic__item--outline { color: transparent; -webkit-text-stroke: 1px var(--color-brand-500); }
+
+  /* ====================================================== Utilities ==== */
+  /* The two measure caps, as classes, because "how wide is a paragraph" is
+     the single most common typographic mistake in a product. */
+  .ns-measure { max-inline-size: var(--measure-prose); }
+  .ns-measure--narrow { max-inline-size: var(--measure-narrow); }
+  .ns-balance { text-wrap: balance; }
+  .ns-pretty { text-wrap: pretty; }
+  /* Optical alignment for a quotation mark or a bullet that should hang
+     outside the text block rather than indent it. */
+  .ns-hanging { hanging-punctuation: first last; }
+  .ns-nums-tabular { font-variant-numeric: tabular-nums; }
+  .ns-nums-old { font-variant-numeric: oldstyle-nums; }
+  .ns-caps { text-transform: uppercase; letter-spacing: var(--tracking-wide); font-weight: var(--weight-medium); }
+  /* The mono structural label, as a class — it is written out by hand in a
+     dozen components, and it is the same six declarations every time. */
+  .ns-label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+}

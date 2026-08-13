@@ -10,7 +10,8 @@
      preview/            the generated styleguide
      dist/               the flat CSS bundle the preview links
      styles.css + tokens/ + components/css/   what the cards link (../styles.css)
-     assets/             fonts, icons, logo, theme-init
+     assets/             icons, logo, theme-init, the runtime scripts
+     fonts/              the N&M family + the static OFL package
      * / *.card.html     every specimen, at its real path (iframe srcs)
 
    Plus an index.html redirect at the root, so the site opens on the preview.
@@ -35,7 +36,7 @@ rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 /* Whole directories the preview references. */
-const DIRS = ["preview", "dist", "assets", "icons", "typography", "patterns", "tokens", "components/css", "templates"];
+const DIRS = ["preview", "dist", "assets", "icons", "fonts", "patterns", "tokens", "components/css", "templates"];
 for (const d of DIRS) cpSync(join(ROOT, d), join(OUT, d), { recursive: true });
 
 /* styles.css imports tokens/ + components/css/ (copied above), so the cards'

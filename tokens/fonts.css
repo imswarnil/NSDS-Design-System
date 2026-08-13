@@ -1,29 +1,37 @@
+/* The N&M type system — three custom-named cuts, self-hosted variable woff2s.
+   Built on SIL OFL 1.1 faces (Manrope, Nunito Sans, Red Hat Mono), renamed in
+   the font name tables per the OFL's derivative-work terms; the credit lives
+   in each file's nameID 3. Latin subset only — re-subset upstream if a page
+   ever needs extended coverage. Files + weight documentation: fonts/README.md */
 @font-face {
-  font-family: "Inter";
-  src: url("../typography/inter-var-latin.woff2") format("woff2-variations"), url("../typography/inter-var-latin.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "N&M Display";
+  src: url("../fonts/nmdisplay-var-latin.woff2") format("woff2-variations"), url("../fonts/nmdisplay-var-latin.woff2") format("woff2");
+  font-weight: 200 800;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "JetBrains Mono";
-  src: url("../typography/jetbrains-mono-var-latin.woff2") format("woff2-variations"), url("../typography/jetbrains-mono-var-latin.woff2") format("woff2");
-  font-weight: 100 800;
+  font-family: "N&M Text";
+  src: url("../fonts/nmtext-var-latin.woff2") format("woff2-variations"), url("../fonts/nmtext-var-latin.woff2") format("woff2");
+  font-weight: 200 1000;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Space Grotesk";
-  src: url("../typography/space-grotesk-var-latin.woff2") format("woff2-variations"), url("../typography/space-grotesk-var-latin.woff2") format("woff2");
+  font-family: "N&M Mono";
+  src: url("../fonts/nmmono-var-latin.woff2") format("woff2-variations"), url("../fonts/nmmono-var-latin.woff2") format("woff2");
   font-weight: 300 700;
   font-style: normal;
   font-display: swap;
 }
+/* Metric-matched system fallback so text doesn't jump when N&M Text arrives.
+   Nunito Sans runs a little wider and taller than Helvetica/Arial; these
+   overrides pull the fallback to the same line rhythm. */
 @font-face {
-  font-family: "Inter Fallback";
+  font-family: "N&M Text Fallback";
   src: local("Helvetica Neue"), local("Arial"), local("Segoe UI"), local("Roboto");
-  size-adjust: 107%;
-  ascent-override: 90%;
-  descent-override: 22%;
+  size-adjust: 104%;
+  ascent-override: 97%;
+  descent-override: 34%;
   line-gap-override: 0%;
 }

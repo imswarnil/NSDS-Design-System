@@ -14,11 +14,11 @@
     display: inline-flex; align-items: center; justify-content: center;
     gap: var(--gap-inline);
     min-block-size: var(--target-comfy);
-    padding: var(--space-2-5) var(--space-5);
+    padding: var(--space-2) var(--space-4);
     border: 1px solid transparent;
     border-radius: var(--radius-btn);
-    font-family: var(--font-sans); font-size: var(--size-body); font-weight: var(--weight-semibold);
-    line-height: 1; text-decoration: none; cursor: pointer;
+    font-family: var(--font-sans); font-size: var(--size-small); font-weight: var(--weight-semibold);
+    line-height: 1; text-decoration: none; cursor: pointer; white-space: nowrap;
     transition: background-color var(--duration-fast) var(--ease-out),
                 border-color var(--duration-fast) var(--ease-out),
                 color var(--duration-fast) var(--ease-out),
@@ -29,9 +29,34 @@
   .ns-btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-btn:disabled, .ns-btn[aria-disabled="true"] { opacity: var(--opacity-disabled); cursor: not-allowed; }
 
-  .ns-btn--sm { min-block-size: var(--space-8); padding: var(--space-1-5) var(--space-3-5); font-size: var(--size-small); }
-  .ns-btn--lg { min-block-size: 3rem; padding: var(--space-3) var(--space-6); font-size: var(--size-body-lg); }
+  /* --- Size scale ---------------------------------------------------------
+     Four steps, and the DEFAULT is deliberately not the biggest one. A button
+     is a control inside something — a card, a row, a toolbar — and the most
+     common bug in a design system is a default button set at body size and
+     44px tall, which is visually larger than the card title it sits under.
+     So the default carries a --size-small label at --target-comfy (40px): the
+     touch target is untouched, the visual bulk is not.
+
+     Height is the accessibility property here and size is the typographic
+     one, and they are set independently on purpose. --xs drops below the
+     comfortable target and is only legitimate where the token file already
+     allows it: a dense inline control with a larger sibling target beside it
+     (a card's overflow menu, a chip's dismiss, a table row action). */
+  .ns-btn--xs { min-block-size: var(--space-7); padding: var(--space-1) var(--space-2-5); font-size: var(--size-label); font-weight: var(--weight-label); letter-spacing: var(--tracking-label); text-transform: uppercase; }
+  .ns-btn--sm { min-block-size: var(--space-8); padding: var(--space-1-5) var(--space-3); font-size: var(--size-fine); }
+  .ns-btn--lg { min-block-size: 2.75rem; padding: var(--space-3) var(--space-5); font-size: var(--size-body); }
+  /* --xl exists for exactly one thing: the single primary action in a hero.
+     If it appears anywhere else, that screen has a hierarchy problem. */
+  .ns-btn--xl { min-block-size: 3.25rem; padding: var(--space-4) var(--space-8); font-size: var(--size-body-lg); }
+
   .ns-btn--block { inline-size: 100%; }
+  /* Full width on a phone, intrinsic above it — the correct default for a
+     form's submit and a buy box's CTA, and the thing every product ends up
+     writing by hand in a media query. */
+  @media (max-width: 39.999rem) { .ns-btn--block-sm { inline-size: 100%; } }
+  /* Pill geometry is a deliberate exception (Principle 4 reserves it for true
+     pills), allowed here for filter/toggle rows where the button IS a chip. */
+  .ns-btn--pill { border-radius: var(--radius-pill); }
 
   .ns-btn--primary { background: var(--color-brand-500); border-color: var(--color-brand-500); color: var(--color-on-brand); }
   .ns-btn--primary:hover:not(:disabled) { background: var(--color-brand-600); border-color: var(--color-brand-600); }
@@ -45,6 +70,14 @@
 
   .ns-btn--outline { background: transparent; border-color: var(--color-border); color: var(--color-ink); }
   .ns-btn--outline:hover:not(:disabled) { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+
+  /* The step between outline and primary: a brand TINT, no solid fill. For a
+     secondary action that still needs to be found — "Preview", "Add to
+     list" — where an outline disappears in a busy card. It does not violate
+     the one-solid-button rule because it is not solid. */
+  .ns-btn--soft { background: color-mix(in srgb, var(--color-brand-500) 10%, transparent); border-color: transparent; color: var(--color-brand-600); }
+  .ns-btn--soft:hover:not(:disabled) { background: color-mix(in srgb, var(--color-brand-500) 16%, transparent); }
+  [data-theme="dark"] .ns-btn--soft { color: var(--color-brand-300); }
 
   /* Lowest-emphasis action — no border at rest, so it reads as a link that
      happens to be a button. For "Cancel" next to a destructive confirm. */
@@ -72,7 +105,10 @@
      with no accessible name is an unlabelled control, and this is the single
      most common a11y defect in a component library. */
   .ns-btn--icon { padding: 0; inline-size: var(--target-comfy); min-inline-size: var(--target-comfy); }
+  .ns-btn--icon.ns-btn--xs { inline-size: var(--space-7); min-inline-size: var(--space-7); }
   .ns-btn--icon.ns-btn--sm { inline-size: var(--space-8); min-inline-size: var(--space-8); }
+  .ns-btn--icon.ns-btn--lg { inline-size: 2.75rem; min-inline-size: 2.75rem; }
+  .ns-btn--icon.ns-btn--pill { border-radius: var(--radius-pill); }
 
   /* Busy state. The label STAYS in the DOM (dimmed) rather than being swapped
      for a spinner, so the button does not change width mid-submit and the
@@ -86,6 +122,38 @@
     animation: ns-spin 700ms linear infinite;
   }
 
+  /* --- Interaction --------------------------------------------------------
+     The one piece of motion a button is allowed. NOT a lift, NOT a scale —
+     Principle 5 rules both out — but a trailing arrow may travel a couple of
+     pixels in the direction it points, because that is the arrow doing its
+     job rather than the button pretending to be a physical object. */
+  .ns-btn__arrow { transition: translate var(--duration-fast) var(--ease-out); }
+  .ns-btn:hover:not(:disabled) .ns-btn__arrow { translate: 0.15rem 0; }
+  .ns-btn--back:hover:not(:disabled) .ns-btn__arrow { translate: -0.15rem 0; }
+
+  /* A count or shortcut riding inside the label. Kept mono and dimmed so it
+     reads as metadata rather than as part of the action's name. */
+  .ns-btn__count, .ns-btn__kbd {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-variant-numeric: tabular-nums; opacity: 0.7;
+  }
+  .ns-btn__kbd { padding-inline: var(--space-1); border: 1px solid currentColor; border-radius: var(--radius-sm); opacity: 0.5; }
+
+  /* A toggle button — filters, view switchers, "saved". aria-pressed is the
+     state, so the visual and the announced state cannot drift apart. */
+  .ns-btn[aria-pressed="true"]:not(.ns-btn--primary) {
+    border-color: var(--color-brand-500); color: var(--color-brand-600);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, transparent);
+  }
+  [data-theme="dark"] .ns-btn[aria-pressed="true"]:not(.ns-btn--primary) { color: var(--color-brand-300); }
+
+  /* Two labels, one width: the button does not resize when it flips state,
+     which is what makes a toolbar stop twitching. */
+  .ns-btn--swap { display: inline-grid; grid-auto-flow: column; }
+  .ns-btn--swap > [data-when] { grid-area: 1 / 1; }
+  .ns-btn--swap[aria-pressed="false"] > [data-when="on"],
+  .ns-btn--swap[aria-pressed="true"] > [data-when="off"] { visibility: hidden; }
+
   /* A button group reads as one segmented control: shared hairlines, only
      the outer corners rounded. */
   .ns-btn-group { display: inline-flex; }
@@ -93,6 +161,10 @@
   .ns-btn-group > .ns-btn + .ns-btn { margin-inline-start: -1px; }
   .ns-btn-group > .ns-btn:first-child { border-start-start-radius: var(--radius-btn); border-end-start-radius: var(--radius-btn); }
   .ns-btn-group > .ns-btn:last-child { border-start-end-radius: var(--radius-btn); border-end-end-radius: var(--radius-btn); }
+  .ns-btn-group--pill > .ns-btn:first-child { border-start-start-radius: var(--radius-pill); border-end-start-radius: var(--radius-pill); padding-inline-start: var(--space-4); }
+  .ns-btn-group--pill > .ns-btn:last-child { border-start-end-radius: var(--radius-pill); border-end-end-radius: var(--radius-pill); padding-inline-end: var(--space-4); }
+  .ns-btn-group--block { display: flex; inline-size: 100%; }
+  .ns-btn-group--block > .ns-btn { flex: 1; }
   /* Keep the focused/active member's border above its neighbour's, or the
      -1px overlap clips the ring on one side. */
   .ns-btn-group > .ns-btn:focus-visible, .ns-btn-group > .ns-btn[aria-pressed="true"] { position: relative; z-index: var(--z-raised); }

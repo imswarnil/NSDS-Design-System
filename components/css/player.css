@@ -26,6 +26,39 @@
 
   .ns-player__main { min-inline-size: 0; display: flex; flex-direction: column; }
 
+  /* --- Fixed to the viewport ----------------------------------------------
+     The default player scrolls with the page, which is right for a lesson
+     that is mostly an article. --fixed is right for a lesson that is mostly
+     a video: the room stops moving. The player becomes exactly one viewport
+     tall, the PAGE stops scrolling, and the two columns scroll
+     independently inside it — so scrubbing the video never pushes the stage
+     off the top, and a 40-lesson rail scrolls beside a pinned frame.
+
+     The stage stays put inside the scrolling column via position:sticky
+     rather than position:fixed, so it still participates in the grid and
+     nothing has to be measured in JS. */
+  .ns-player--fixed { block-size: calc(100dvh - var(--navbar-h)); min-block-size: 0; overflow: hidden; }
+  .ns-player--fixed .ns-player__main { overflow-y: auto; overscroll-behavior: contain; }
+  .ns-player--fixed .ns-player__stage {
+    position: sticky; inset-block-start: 0; z-index: var(--z-raised);
+    /* Capped by HEIGHT as well as by aspect. On a wide column a 16:9 box is
+       taller than the viewport, so the lesson title lands below the fold in
+       the one layout whose entire point is that nothing moves. The frame
+       keeps its width and letterboxes on the navy stage — which is what a
+       theatre mode does, and why the stage was navy in the first place. */
+    max-block-size: 62dvh;
+  }
+  .ns-player--fixed .ns-player__stage > video,
+  .ns-player--fixed .ns-player__stage > iframe,
+  .ns-player--fixed .ns-player__stage > img { object-fit: contain; }
+  /* The nav is pinned to the bottom of the column in the scrolling variant;
+     when the column itself scrolls it belongs at the end of the content. */
+  .ns-player--fixed .ns-player__nav { margin-block-start: var(--space-6); }
+  /* The page behind a fixed player must not scroll too, or a trackpad flick
+     that overshoots the rail moves the whole document. Set on <html> by the
+     route that renders the fixed player. */
+  [data-player="fixed"] { overflow: hidden; }
+
   /* --- Stage --------------------------------------------------------------
      aspect-ratio reserves the box before the video loads, so the page never
      jumps when metadata arrives. The <video>/<iframe> child fills it. */
@@ -35,20 +68,28 @@
     background: var(--color-brand-900);
     border-block-end: 1px solid var(--color-border);
   }
+  /* img is in this list because a poster frame is the most common thing to
+     put in the slot before a player is wired up — and left in normal flow it
+     renders at its natural size and blows straight through the box. */
   .ns-player__stage > video,
-  .ns-player__stage > iframe {
+  .ns-player__stage > iframe,
+  .ns-player__stage > img {
     position: absolute; inset: 0;
     inline-size: 100%; block-size: 100%;
     border: 0; display: block;
+    object-fit: cover;
   }
 
   /* --- Lesson header ------------------------------------------------------
      Kicker (mono index + section), title, meta row. The prev/next controls
      live HERE, next to the content they change — not floating over the
      video where they fight the player's own chrome. */
+  /* Padding here is deliberately tighter than a marketing surface's. This
+     column is a workspace, and every row of chrome is a row of the lesson
+     the reader does not get. */
   .ns-player__head {
     display: flex; flex-direction: column; gap: var(--space-2);
-    padding: var(--pad-card-lg) var(--pad-card-lg) var(--space-4);
+    padding: var(--pad-card) var(--pad-card) var(--space-3);
   }
   .ns-player__kicker {
     display: flex; align-items: center; gap: var(--space-2);
@@ -65,7 +106,7 @@
 
   .ns-player__nav {
     display: flex; align-items: center; gap: var(--space-2);
-    padding: 0 var(--pad-card-lg) var(--pad-card-lg);
+    padding: 0 var(--pad-card) var(--pad-card);
     margin-block-start: auto; /* pins to the bottom of the column on tall screens */
   }
   .ns-player__nav .ns-progress-row { flex: 1; margin-inline: var(--space-4); }
@@ -73,7 +114,71 @@
   /* Body content under the header (tabs: notes / transcript / resources
      reuse .ns-tabs; prose respects the reading measure even though the
      column is wider). */
-  .ns-player__body { padding: 0 var(--pad-card-lg) var(--pad-card-lg); max-inline-size: var(--container-prose); }
+  .ns-player__body { padding: 0 var(--pad-card) var(--pad-card); max-inline-size: var(--container-prose); }
+
+  /* --- Per-type lesson progress -------------------------------------------
+     "How far through this lesson am I" has three different honest answers,
+     so it has three different controls. Using one bar for all three is how a
+     quiz ends up claiming you are 60% correct when you are 60% finished.
+
+       --video    elapsed / total, with chapter ticks. Time is the unit.
+       --article  proportion of the text scrolled past. Scroll is the unit,
+                  and it is a hairline at the top edge, never a widget.
+       --quiz     answered / total as discrete pips, plus the score, because
+                  a quiz has TWO numbers and they are not the same number. */
+  .ns-lprogress { display: flex; align-items: center; gap: var(--space-3); font-variant-numeric: tabular-nums; }
+  .ns-lprogress__label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    flex: none;
+  }
+  .ns-lprogress__time { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); flex: none; }
+
+  /* Video: the track carries chapter marks, so the bar doubles as the shape
+     of the lesson rather than only its position. */
+  .ns-lprogress--video .ns-lprogress__track {
+    position: relative; flex: 1; block-size: 0.375rem;
+    border-radius: var(--radius-pill); background: var(--color-surface-sunken); overflow: hidden;
+  }
+  .ns-lprogress--video .ns-lprogress__fill {
+    position: absolute; inset-block: 0; inset-inline-start: 0;
+    inline-size: var(--fx-progress, 0%); background: var(--color-brand-500);
+    border-radius: var(--radius-pill);
+    transition: inline-size var(--duration-base) linear;
+  }
+  .ns-lprogress__chapter {
+    position: absolute; inset-block: 0; inline-size: 2px;
+    inset-inline-start: var(--fx-at, 0%);
+    background: var(--color-surface); opacity: 0.9;
+  }
+
+  /* Article: a hairline across the top of the reading column. It is 2px and
+     it is the only chrome — a reading-progress widget with a percentage
+     label is a distraction from the thing it is measuring. */
+  .ns-lprogress--article {
+    position: sticky; inset-block-start: 0; z-index: var(--z-raised);
+    display: block; block-size: 2px; background: var(--color-surface-sunken);
+  }
+  .ns-lprogress--article::after {
+    content: ""; display: block; block-size: 100%;
+    inline-size: var(--fx-progress, 0%); background: var(--color-brand-500);
+  }
+
+  /* Quiz: pips, not a bar. Each one is a question, and its state says
+     answered / correct / wrong — a length cannot say that. */
+  .ns-lprogress--quiz .ns-lprogress__pips { display: flex; gap: var(--space-1); flex: 1; flex-wrap: wrap; }
+  .ns-lprogress__pip {
+    inline-size: var(--space-2-5); block-size: var(--space-2-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-surface-sunken); border: 1px solid var(--color-border);
+  }
+  .ns-lprogress__pip[data-state="correct"] { background: var(--color-success); border-color: var(--color-success); }
+  .ns-lprogress__pip[data-state="wrong"] { background: var(--color-error); border-color: var(--color-error); }
+  .ns-lprogress__pip[data-state="current"] { border-color: var(--color-brand-500); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-500) 25%, transparent); }
+  .ns-lprogress__score {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    color: var(--color-ink); flex: none;
+  }
 
   /* --- Curriculum rail ----------------------------------------------------
      Its own scroll region so a 40-lesson course scrolls beside a pinned
@@ -135,6 +240,46 @@
     font-variant-numeric: tabular-nums;
   }
   .ns-lesson__title { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* --- The two-line row ---------------------------------------------------
+     The single-line row above is still the default — it is what a dense rail
+     wants. Where there is room, __body wraps the title and a __sub line
+     carrying the lesson TYPE, its duration and any badge, so a learner knows
+     a 14-minute video from a 14-minute lab before opening it.
+
+     Both shapes are the same grid; __body simply occupies the middle cell. */
+  .ns-lesson__body { min-inline-size: 0; display: flex; flex-direction: column; gap: 2px; } /* lint-ok: 2px is a hairline gap between two lines of one label, not a spacing step */
+  .ns-lesson__sub {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* A still where there is one, the type glyph where there is not. The index
+     column is reused, so the row's geometry does not change. */
+  .ns-lesson__thumb {
+    inline-size: 3.25rem; aspect-ratio: 16 / 9; flex: none;
+    object-fit: cover; border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    display: grid; place-items: center; color: var(--color-label);
+  }
+  /* "Preview" is the single most valuable badge in a locked curriculum: it
+     is the row that turns a browser into a learner, so it gets the brand
+     rather than a neutral chip. */
+  .ns-lesson__badge {
+    padding: 0 var(--space-1-5); border-radius: var(--radius-sm);
+    border: 1px solid var(--color-brand-500); color: var(--color-brand-600);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+  }
+  [data-theme="dark"] .ns-lesson__badge { color: var(--color-brand-300); }
+  .ns-lesson__badge--quiet { border-color: var(--color-border); color: var(--color-label); }
+
+  /* Denser and roomier rows. --compact is for a rail or a card peek;
+     --roomy is for the syllabus on a marketing page, where the row is the
+     content rather than the navigation. */
+  .ns-lesson--compact { padding-block: var(--space-1-5); min-block-size: 0; font-size: var(--size-fine); }
+  .ns-lesson--roomy { padding-block: var(--space-3-5, var(--space-4)); }
   .ns-lesson__time {
     font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-muted); font-variant-numeric: tabular-nums;
@@ -153,14 +298,25 @@
   [data-theme="dark"] .ns-lesson[aria-current="true"] .ns-lesson__index { color: var(--color-brand-300); }
 
   /* Locked lesson (paid tier ahead): muted, a lock instead of duration, and
-     kept as a link to the upgrade page — a dead row explains nothing. */
-  .ns-lesson[data-state="locked"] { opacity: 0.55; }
+     kept as a link to the upgrade page — a dead row explains nothing.
+     Opacity is NOT the whole signal: at 0.55 the row still has to clear
+     contrast, so the lock glyph carries it too. */
+  .ns-lesson[data-state="locked"] { opacity: 0.7; }
+  .ns-lesson[data-state="locked"] .ns-lesson__time { color: var(--color-warning-ink); }
+  .ns-lesson[data-state="locked"]:hover { border-inline-start-color: var(--color-warning); }
 
   /* --- Responsive ---------------------------------------------------------
      One column below lg. The rail becomes a normal section capped at a
      scrollable height, after the header — the learner is here to watch. */
   @media (max-width: 63.999rem) {
     .ns-player { grid-template-columns: 1fr; min-block-size: 0; }
+    /* A viewport-locked two-pane layout on a phone is a viewport-locked
+       one-pane layout with the content amputated. Below lg the fixed variant
+       reverts to the scrolling one, and the rail becomes the panel bar +
+       drawer (.ns-panelbar, lms.css). */
+    .ns-player--fixed { block-size: auto; overflow: visible; }
+    .ns-player--fixed .ns-player__main { overflow: visible; }
+    .ns-player--fixed .ns-player__stage { position: static; }
     .ns-player__side {
       position: static; max-block-size: 24rem;
       border-inline-start: 0; border-block-start: 1px solid var(--color-border);

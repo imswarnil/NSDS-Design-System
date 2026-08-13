@@ -73,11 +73,12 @@ Copy the self-hosted assets into the theme's `assets/` so Ghost serves them
 from its own origin (Ghost does not serve files out of `node_modules`):
 
 ```bash
-cp -R node_modules/@namaste-salesforce/design-system/assets/fonts assets/
+cp -R node_modules/@namaste-salesforce/design-system/fonts assets/
+cp -R node_modules/@namaste-salesforce/design-system/icons assets/
 ```
 
 The `@font-face` URLs in the bundle resolve relative to the stylesheet, so
-they must sit at `typography/` and `icons/` next to the compiled CSS.
+`fonts/` and `icons/` must sit next to the compiled CSS.
 
 ### 4. Theme bootstrap — before anything else
 

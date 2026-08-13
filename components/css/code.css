@@ -1,0 +1,360 @@
+/* NS Design System — syntax highlighter / code block.
+   =========================================================================
+   The one surface in this system where code is a first-class citizen rather
+   than a `<pre>` with a border. It is built as an anatomy, not a widget:
+
+     .ns-code            the frame
+       __bar             title bar — file name, language, actions
+         __dots            traffic lights (mac chrome only)
+         __tabs / __tab    editor tabs (vscode chrome only)
+         __file            the file name — always present, always mono
+         __actions         copy · ask AI · share · wrap
+       __body            gutter + code, the only scrolling region
+         __gutter          line numbers, aria-hidden — they are decoration
+         __pre > code      the highlighted source
+         __line            one row, so a line can be marked/added/removed
+       __foot            run · status · meta (lines, bytes, runtime)
+       __out             the result of Run, when there is one
+
+   Chrome variants — .ns-code--mac, .ns-code--vscode, and the default block —
+   change ONLY the bar. The body, the palette, the footer and every
+   interaction are identical across all three, because they are the same
+   component wearing a different hat, and a code block whose copy button
+   moves depending on its skin is two components pretending to be one.
+
+   Everything stays inside the system's own vocabulary: 1px hairlines, 4-6px
+   radii, mono labels in uppercase, the navy console for the dark surface —
+   the SLDS developer-console read, not a marketing-site gradient card.
+
+   The seven syntax roles are tokens (--color-code-*, tokens/colors.css), not
+   values, so the palette flips with the theme like everything else.
+
+   Wiring: assets/js/code.js (copy, wrap, run, tabs). The Ask-AI and Share
+   menus are native popovers — no JS at all. */
+@layer components {
+
+  /* --- Frame --------------------------------------------------------------
+     A code block is a card that happens to contain code, so it wears the
+     card's geometry. --dark forces the console surface on a light page,
+     which is what docs and lesson bodies want: code should look like code,
+     not like an indented paragraph. */
+  .ns-code {
+    --code-surface: var(--color-surface);
+    --code-bar: var(--color-surface-sunken);
+    --code-ink: var(--color-ink);
+    --code-rule: var(--color-border);
+    --code-gutter-ink: var(--color-muted);
+    --code-chrome-ink: var(--color-muted);
+    /* The code body's own rhythm. Kept as component-scoped custom properties
+       so a dense variant is one override rather than six. */
+    --code-leading: 1.7;
+    --code-size: var(--size-small);
+
+    display: flex; flex-direction: column;
+    margin: 0;
+    border: 1px solid var(--code-rule); border-radius: var(--radius-card);
+    background: var(--code-surface); color: var(--code-ink);
+    overflow: hidden;
+    font-family: var(--font-mono);
+  }
+  .ns-code--dark, [data-theme="dark"] .ns-code {
+    --code-surface: var(--color-brand-900);
+    --code-bar: color-mix(in srgb, var(--color-brand-900) 70%, #000); /* lint-ok: a bar must be DARKER than the darkest brand step; there is no token below 900 */
+    --code-ink: var(--color-on-dark);
+    --code-rule: var(--color-on-dark-border);
+    --code-gutter-ink: color-mix(in srgb, var(--color-on-dark) 38%, transparent);
+    --code-chrome-ink: color-mix(in srgb, var(--color-on-dark) 72%, transparent);
+  }
+  /* Inside a dark page the frame's own border would be a second hairline on
+     top of the surrounding surface's — one is the structure, two is noise. */
+  [data-theme="dark"] .ns-code { border-color: var(--color-border); }
+
+  /* --- Title bar ----------------------------------------------------------
+     Grid, not flex: the file name gets the flexible column and truncates,
+     the actions never wrap onto a second row, and the mac variant can centre
+     the title by swapping the template rather than by absolute positioning. */
+  .ns-code__bar {
+    display: flex; align-items: center; gap: var(--space-3);
+    min-block-size: var(--target-comfy);
+    padding: var(--space-2) var(--space-3);
+    background: var(--code-bar);
+    border-block-end: 1px solid var(--code-rule);
+  }
+  .ns-code__file {
+    display: inline-flex; align-items: center; gap: var(--gap-inline);
+    min-inline-size: 0;
+    font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--code-ink);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ns-code__file i { font-size: var(--size-body); color: var(--color-brand-500); }
+  /* The language chip. A tag, deliberately — the language IS a taxonomy, and
+     this system already has one shape for that. */
+  .ns-code__lang {
+    flex: none;
+    padding: 0 var(--space-1-5);
+    border: 1px solid var(--code-rule); border-radius: var(--radius-sm);
+    font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--code-chrome-ink);
+  }
+  .ns-code__actions { display: flex; align-items: center; gap: var(--space-1); margin-inline-start: auto; }
+
+  /* Chrome buttons — quiet by default and only as loud as they need to be on
+     hover. These sit ON the code, so a solid button here would compete with
+     the content it belongs to. */
+  .ns-code__btn {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    min-block-size: var(--target-min); min-inline-size: var(--target-min);
+    justify-content: center;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid transparent; border-radius: var(--radius-btn);
+    background: transparent; color: var(--code-chrome-ink);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-code__btn:hover { color: var(--code-ink); border-color: var(--code-rule); }
+  .ns-code__btn[aria-pressed="true"], .ns-code__btn[aria-expanded="true"] {
+    color: var(--color-brand-500); border-color: var(--code-rule);
+  }
+  .ns-code__btn i { font-size: var(--size-body); }
+  /* Copy confirms in place. A toast for "copied" is a notification about a
+     thing you are already looking at. */
+  .ns-code__btn[data-copied="true"] { color: var(--color-success-ink); border-color: currentColor; }
+  .ns-code__btn[data-copied="true"] .ns-code__btn-label::after { content: "Copied"; }
+  .ns-code__btn[data-copied="true"] .ns-code__btn-label span { display: none; }
+  .ns-code__btn--icon { padding-inline: var(--space-1); }
+
+  /* --- mac chrome ---------------------------------------------------------
+     Traffic lights are drawn from the STATUS tokens, not from literal red /
+     amber / green: the shape is a quotation of macOS, the palette is still
+     this system's. They are decoration and carry no behaviour — a window
+     control that does not control a window must not be a button. */
+  .ns-code--mac .ns-code__bar { justify-content: start; }
+  .ns-code__dots { display: inline-flex; gap: var(--space-1-5); flex: none; }
+  .ns-code__dots i {
+    inline-size: 0.75rem; block-size: 0.75rem; border-radius: var(--radius-pill);
+    background: var(--color-error); opacity: 0.9;
+  }
+  .ns-code__dots i:nth-child(2) { background: var(--color-warning); }
+  .ns-code__dots i:nth-child(3) { background: var(--color-success); }
+  /* Centred title is the whole mac signature. It centres against the BAR,
+     not against the remaining space, so it does not drift when an action is
+     added — hence the symmetric spacer. */
+  .ns-code--mac .ns-code__file {
+    position: absolute; inset-inline: 0; justify-content: center;
+    pointer-events: none;
+  }
+  .ns-code--mac .ns-code__bar { position: relative; }
+  .ns-code--mac .ns-code__actions { position: relative; }
+
+  /* --- vscode chrome ------------------------------------------------------
+     A tab strip above the code and a brand-blue status bar below it. The tabs
+     are real tabs — role="tab" + aria-selected — because they behave like
+     tabs; faking them with divs is how a code sample becomes unreachable by
+     keyboard. */
+  .ns-code--vscode { --code-bar: color-mix(in srgb, var(--color-surface-sunken) 88%, var(--color-brand-900)); }
+  .ns-code--vscode.ns-code--dark, [data-theme="dark"] .ns-code--vscode {
+    --code-bar: color-mix(in srgb, var(--color-brand-900) 55%, #000); /* lint-ok: see --dark above — the editor chrome sits below brand-900 */
+  }
+  .ns-code__tabs {
+    display: flex; align-items: stretch; gap: 0;
+    background: var(--code-bar);
+    border-block-end: 1px solid var(--code-rule);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .ns-code__tab {
+    display: inline-flex; align-items: center; gap: var(--gap-inline);
+    padding: var(--space-2) var(--space-4);
+    border: 0; border-inline-end: 1px solid var(--code-rule);
+    background: transparent; color: var(--code-chrome-ink);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    white-space: nowrap; cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-code__tab:hover { color: var(--code-ink); }
+  /* The active tab is the one whose background matches the code below it —
+     the tab is a piece cut out of the editor surface, which is the entire
+     visual idea of a tab. The 2px top accent is this system's current-item
+     device, the same one the navbar uses. */
+  .ns-code__tab[aria-selected="true"] {
+    background: var(--code-surface); color: var(--code-ink);
+    box-shadow: inset 0 2px 0 var(--color-brand-500);
+  }
+  .ns-code__tab i { font-size: var(--size-body); color: var(--color-brand-500); }
+  .ns-code--vscode .ns-code__foot {
+    background: var(--color-brand-700); color: var(--color-on-brand);
+    border-block-start-color: var(--color-brand-700);
+  }
+  /* Everything in the status bar is on-brand ink. The default chrome ink is
+     --color-muted, which is a grey solved for a WHITE surface and reads at
+     about 2:1 on brand-700 — so the bar has to restate all of it. */
+  .ns-code--vscode .ns-code__foot .ns-code__btn,
+  .ns-code--vscode .ns-code__foot .ns-code__status,
+  .ns-code--vscode .ns-code__foot .ns-code__status i { color: var(--color-on-brand); }
+  .ns-code--vscode .ns-code__foot .ns-code__btn:hover { border-color: var(--color-on-dark-border); }
+  .ns-code--vscode .ns-code__meta { color: color-mix(in srgb, var(--color-on-brand) 78%, transparent); }
+
+  /* --- Body ---------------------------------------------------------------
+     The gutter does not scroll with the code horizontally, so line numbers
+     stay readable while a long line is inspected. */
+  .ns-code__body { display: flex; align-items: stretch; overflow: hidden; }
+  .ns-code__gutter {
+    flex: none; margin: 0;
+    padding: var(--space-4) var(--space-2) var(--space-4) var(--space-4);
+    text-align: end;
+    font-size: var(--code-size); line-height: var(--code-leading);
+    color: var(--code-gutter-ink);
+    background: color-mix(in srgb, var(--code-bar) 55%, transparent);
+    border-inline-end: 1px solid var(--code-rule);
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-code__pre {
+    flex: 1; min-inline-size: 0; margin: 0;
+    padding: var(--space-4);
+    overflow-x: auto;
+    font-size: var(--code-size); line-height: var(--code-leading);
+    tab-size: 2;
+  }
+  .ns-code__pre code { font-family: inherit; font-size: inherit; background: none; border: 0; padding: 0; }
+  /* One element per line, so a line can be a diff row or a callout target.
+     display:block rather than a flex row: a code line has to keep its
+     whitespace behaviour exactly. */
+  .ns-code__line { display: block; min-block-size: 1lh; }
+  .ns-code__line--add { background: color-mix(in srgb, var(--color-code-added) 14%, transparent); box-shadow: inset 2px 0 0 var(--color-code-added); }
+  .ns-code__line--del { background: color-mix(in srgb, var(--color-code-removed) 12%, transparent); box-shadow: inset 2px 0 0 var(--color-code-removed); }
+  .ns-code__line--mark { background: color-mix(in srgb, var(--color-brand-500) 12%, transparent); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  /* The marked lines' left accent has to reach the frame edge, and the pre's
+     padding sits in the way — so the tint is painted outside it. */
+  .ns-code__line--add, .ns-code__line--del, .ns-code__line--mark {
+    margin-inline: calc(var(--space-4) * -1); padding-inline: var(--space-4);
+  }
+
+  /* Wrap toggle — off by default (a horizontal scroll is honest about a long
+     line; a soft wrap silently changes what the code looks like), on when the
+     reader asks for it. */
+  .ns-code[data-wrap="true"] .ns-code__pre { overflow-x: visible; }
+  .ns-code[data-wrap="true"] .ns-code__pre code { white-space: pre-wrap; overflow-wrap: anywhere; }
+  /* Wrapped lines break the 1:1 line-number mapping, so the gutter goes away
+     rather than lie. */
+  .ns-code[data-wrap="true"] .ns-code__gutter { display: none; }
+
+  /* Collapsed — long samples open at a fixed height with a fade and an
+     expander, so a 200-line file does not own the whole page. */
+  .ns-code[data-collapsed="true"] .ns-code__body { max-block-size: 18rem; position: relative; }
+  .ns-code[data-collapsed="true"] .ns-code__body::after {
+    content: ""; position: absolute; inset-inline: 0; inset-block-end: 0; block-size: var(--space-16);
+    background: linear-gradient(to bottom, transparent, var(--code-surface));
+    pointer-events: none;
+  }
+
+  /* --- Syntax roles -------------------------------------------------------
+     Seven classes, one per role. The tokenizer's whole job is to map a
+     grammar onto these — add a language, not a colour. */
+  .ns-tok-kw { color: var(--color-code-keyword); font-weight: var(--weight-semibold); }
+  .ns-tok-str { color: var(--color-code-string); }
+  .ns-tok-com { color: var(--color-code-comment); font-style: italic; }
+  .ns-tok-num { color: var(--color-code-number); }
+  .ns-tok-fn { color: var(--color-code-function); }
+  .ns-tok-type { color: var(--color-code-type); }
+  .ns-tok-punct { color: var(--color-code-punct); }
+
+  /* --- Footer -------------------------------------------------------------
+     Run lives here and nowhere else: it is the one action in this component
+     that changes something, and putting it beside Copy would make a
+     destructive-ish action one pixel from a harmless one. */
+  .ns-code__foot {
+    display: flex; align-items: center; gap: var(--space-3);
+    min-block-size: var(--target-comfy);
+    padding: var(--space-2) var(--space-3);
+    background: var(--code-bar);
+    border-block-start: 1px solid var(--code-rule);
+  }
+  .ns-code__run {
+    display: inline-flex; align-items: center; gap: var(--gap-inline);
+    min-block-size: var(--target-min);
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-brand-500); border-radius: var(--radius-btn);
+    background: var(--color-brand-500); color: var(--color-on-brand);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; cursor: pointer;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-code__run:hover { opacity: var(--opacity-press); }
+  .ns-code__run[data-state="running"] { pointer-events: none; opacity: var(--opacity-loading); }
+  .ns-code__meta {
+    margin-inline-start: auto;
+    font-size: var(--size-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--code-chrome-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-code__status { display: inline-flex; align-items: center; gap: var(--space-1-5); font-size: var(--size-label); color: var(--code-chrome-ink); }
+  .ns-code__status i { color: var(--color-success-ink); }
+
+  /* Run output — a console pane, not a toast. It is a live region so a
+     screen reader hears the result of the button it just pressed. */
+  .ns-code__out {
+    display: block;
+    padding: var(--space-3) var(--space-4);
+    border-block-start: 1px solid var(--code-rule);
+    background: color-mix(in srgb, var(--code-bar) 60%, transparent);
+    font-size: var(--size-fine); line-height: var(--code-leading);
+    color: var(--code-chrome-ink);
+    white-space: pre-wrap;
+  }
+  .ns-code__out[hidden] { display: none; }
+  .ns-code__out b { color: var(--color-code-added); font-weight: var(--weight-label); }
+
+  /* --- Ask AI / Share menus ----------------------------------------------
+     Native popovers: light-dismiss, Esc and the top layer come free. The AI
+     menu names the model it will send to, because "Ask AI" without a
+     destination is a request to trust something unnamed. */
+  .ns-code__menu {
+    min-inline-size: 15rem;
+    /* A popover with no positioning lands dead-centre in the viewport, which
+       for a menu attached to a button is simply wrong. popovertarget makes
+       the invoker an IMPLICIT anchor, so position-area hangs the menu off its
+       own button with no anchor-name to declare and no JS. Where anchor
+       positioning is unsupported the declaration is ignored and the centred
+       default remains — usable, just not elegant. */
+    position-area: block-end span-inline-start;
+    position-try-fallbacks: block-start span-inline-start, block-end span-inline-end, block-start span-inline-end;
+    margin-block: var(--space-1);
+    max-block-size: 80vh; overflow-y: auto;
+  }
+  .ns-code__menu .ns-menu__item i { font-size: var(--size-body-lg); color: var(--color-brand-500); }
+  .ns-code__menu-note {
+    padding: var(--space-2) var(--space-3) 0;
+    font-family: var(--font-sans); font-size: var(--size-fine);
+    line-height: var(--leading-body); color: var(--color-muted);
+    border-block-start: 1px solid var(--color-border);
+    margin-block-start: var(--space-1-5);
+  }
+
+  /* --- Inline code --------------------------------------------------------
+     The one-liner sibling. Same mono, same sunken chip, no chrome. */
+  .ns-code-inline {
+    font-family: var(--font-mono); font-size: 0.875em;
+    padding: 0 var(--space-1);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken); color: var(--color-ink);
+  }
+
+  /* --- Density ------------------------------------------------------------ */
+  .ns-code--compact { --code-leading: 1.5; --code-size: var(--size-fine); }
+
+  @media (max-width: 40rem) {
+    /* On a phone the language chip and the byte count are the first things
+       to go: the file name and the actions are what the reader came for. */
+    .ns-code__lang, .ns-code__meta { display: none; }
+    .ns-code__btn-label { display: none; }
+  }
+}

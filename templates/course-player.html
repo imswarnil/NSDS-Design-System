@@ -13,25 +13,61 @@
 <!-- Two columns ≥ lg, stage-first single column below (player.css).
      Slots: the media element in the stage, kicker/title/meta, prev/next
      hrefs, and the rail's lesson rows (repeat .ns-lesson per lesson;
-     data-state="done|locked", aria-current="true" on the current one). -->
-<div class="ns-player">
+     data-state="done|locked", aria-current="true" on the current one).
+
+     --fixed locks the player to one viewport: the PAGE stops scrolling and
+     the two columns scroll independently inside it, so scrubbing never
+     pushes the stage off the top and a 40-lesson rail scrolls beside a
+     pinned frame. Set data-player="fixed" on <html> alongside it, or the
+     document scrolls behind the locked layout. Below lg it reverts to the
+     scrolling variant automatically — a viewport-locked two-pane layout on
+     a phone is a one-pane layout with the content amputated. -->
+<div class="ns-player ns-player--fixed">
   <div class="ns-player__main">
     <div class="ns-player__stage">
-      <!-- your <video> / <iframe> here -->
+      <!-- your <video> / <iframe> here. The poster below is the slot's
+           stand-in: aspect-ratio reserves the box before media loads, so the
+           page never jumps when metadata arrives. -->
+      <img src="/assets/img/publication-cover.svg" alt="">
     </div>
     <header class="ns-player__head">
-      <p class="ns-player__kicker">section 2 · lesson 07</p>
+      <p class="ns-player__kicker">
+        <span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span>
+        section 2 · lesson 07
+      </p>
       <h1 class="ns-player__title">SOQL joins: relationships in queries</h1>
       <p class="ns-player__meta"><span>21:15</span><span>updated Jan 2026</span></p>
+      <!-- Per-lesson progress. Swap for --article (a hairline over the
+           reading column, data-target pointing at the article) or --quiz
+           (pips plus the score) when the lesson is not a video. -->
+      <div class="ns-lprogress ns-lprogress--video" style="--fx-progress:38%">
+        <span class="ns-lprogress__label">Video</span>
+        <span class="ns-lprogress__track">
+          <span class="ns-lprogress__fill"></span>
+          <span class="ns-lprogress__chapter" style="--fx-at:22%"></span>
+          <span class="ns-lprogress__chapter" style="--fx-at:55%"></span>
+        </span>
+        <span class="ns-lprogress__time">08:03 / 21:15</span>
+      </div>
     </header>
-    <div class="ns-player__nav">
-      <a class="ns-btn ns-btn--outline" href="#prev"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous lesson</a>
+    <!-- Prev/next by NAME. An arrow pair with no titles makes the learner
+         click to find out where they are going. -->
+    <nav class="ns-player__nav ns-lesson-nav" aria-label="Lesson navigation">
+      <a class="ns-lesson-nav__btn" href="#prev">
+        <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
+        <span class="ns-lesson-nav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+        <span class="ns-lesson-nav__name">SELECT and WHERE</span>
+      </a>
       <div class="ns-progress-row">
         <progress class="ns-progress" value="6" max="12" aria-label="Course progress: 6 of 12 lessons"></progress>
         <span class="ns-progress-row__value">6/12</span>
       </div>
-      <a class="ns-btn ns-btn--primary" href="#next">Next lesson <i class="ph ph-caret-right" aria-hidden="true"></i></a>
-    </div>
+      <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#next">
+        <span class="ns-lesson-nav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+        <span class="ns-lesson-nav__name">Aggregate queries</span>
+        <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
+      </a>
+    </nav>
   </div>
   <nav class="ns-player__side" aria-label="Curriculum">
     <div class="ns-player__side-head"><strong>Apex fundamentals</strong><span>6/12 done</span></div>
@@ -47,12 +83,36 @@
         <span class="ns-lesson__time">21:15</span></a>
       <a class="ns-lesson" href="#l8">
         <span class="ns-lesson__index" aria-hidden="true">08</span>
-        <span class="ns-lesson__title">Aggregate queries</span>
+        <span class="ns-lesson__body">
+          <span class="ns-lesson__title">Aggregate queries</span>
+          <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--article"><i class="ph ph-article" aria-hidden="true"></i>Article</span></span>
+        </span>
         <span class="ns-lesson__time">18:40</span></a>
+      <a class="ns-lesson" href="#l9">
+        <span class="ns-lesson__index" aria-hidden="true">09</span>
+        <span class="ns-lesson__body">
+          <span class="ns-lesson__title">Check yourself</span>
+          <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--quiz"><i class="ph ph-question" aria-hidden="true"></i>Quiz</span><span>6 questions</span></span>
+        </span>
+        <span class="ns-lesson__time">05:00</span></a>
       <a class="ns-lesson" href="#upgrade" data-state="locked">
         <span class="ns-lesson__index" aria-hidden="true">09</span>
         <span class="ns-lesson__title">Bulk-safe triggers<span class="ns-visually-hidden"> (locked — members only)</span></span>
         <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
     </div>
   </nav>
+</div>
+
+<!-- Below lg the rail becomes this bar plus a drawer: where you are, how
+     far in (the hairline along its own top edge costs no extra height), and
+     one control that opens the full list. -->
+<div class="ns-panelbar ns-panelbar--fixed">
+  <span class="ns-panelbar__line" style="--fx-progress:50%"></span>
+  <span class="ns-panelbar__now">
+    <span class="ns-panelbar__kicker">Lesson 07 of 12</span>
+    <span class="ns-panelbar__title">SOQL joins: relationships in queries</span>
+  </span>
+  <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" popovertarget="lesson-drawer">
+    <i class="ph ph-list" aria-hidden="true"></i> Lessons
+  </button>
 </div>

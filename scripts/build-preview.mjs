@@ -137,7 +137,7 @@ const SECTIONS = [
     <p class="sub">The five principles</p>
     <div class="use-grid"><div><ul>
       <li><strong>The hairline is the structure, not the shadow.</strong> Cards, inputs and tags are built from a single 1px border; elevation is a border brightening to brand blue, never a floating lift.</li>
-      <li><strong>Monospace is a structural material.</strong> JetBrains Mono renders every index, duration, timestamp, status and kicker — that split is what makes a list read as data and a paragraph read as writing.</li>
+      <li><strong>Monospace is a structural material.</strong> N&M Mono renders every index, duration, timestamp, status and kicker — that split is what makes a list read as data and a paragraph read as writing.</li>
       <li><strong>One signal color.</strong> Brand blue is the only hue that means &ldquo;interactive&rdquo; — so a screen with one solid blue button has exactly one obvious next action.</li>
       <li><strong>Sharp, specific geometry.</strong> 6px cards, 4px buttons, pills only for true pills. Nothing is rounded because rounding is the default.</li>
       <li><strong>Motion is instant, not springy.</strong> 120–180ms plain ease-out; no bounce, no scale-pop, no hover-lift.</li>
@@ -194,12 +194,12 @@ ${PROSE}
     <details class="code"><summary>markup</summary><pre><code>${esc(PROSE)}</code></pre></details>
     <p class="sub">What each element does</p>
     <div class="use-grid"><div><ul>
-      <li><strong>Headings</strong> — Space Grotesk, air above, little below: a heading belongs to what follows</li>
+      <li><strong>Headings</strong> — N&M Display, air above, little below: a heading belongs to what follows</li>
       <li><strong>Links</strong> — brand blue, hairline underline solidifying on hover</li>
       <li><strong>ul</strong> — square markers (sharp geometry, not the default disc); <strong>ol</strong> — mono numerals</li>
       <li><strong>blockquote</strong> — the 2px brand edge, mono attribution; never an italic wash</li>
     </ul></div><div><ul>
-      <li><strong>code / pre / kbd</strong> — sunken chips and card-framed blocks in JetBrains Mono</li>
+      <li><strong>code / pre / kbd</strong> — sunken chips and card-framed blocks in N&M Mono</li>
       <li><strong>dl</strong> — mono terms, hairline-edged definitions</li>
       <li><strong>table / hr</strong> — hairlines only, mono headers</li>
       <li><strong>img / figure</strong> — card frame, mono caption below (see Image for the full component)</li>
@@ -221,6 +221,146 @@ ${PROSE}
     <p class="sub">Everything else</p>
     <p class="variant-note">Chart colors live in the <a href="./chart-intro.html">Charts section</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
     ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
+  { id: "type", title: "Typography", lede: "The <strong>N&M type system</strong> — three custom cuts, one voice: <strong>N&M Display</strong> speaks, <strong>N&M Text</strong> explains, <strong>N&M Mono</strong> keeps the records. Renamed OFL cuts (Manrope, Nunito Sans, Red Hat Mono), self-hosted from <code>fonts/</code> as latin-subset variable woff2s — ~77&thinsp;KB for the whole family, with a full static package in <code>fonts/static/</code> for anyone who wants to install it. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen ↗</a>", body: () => `
+    <p class="sub">The pairing</p>
+    <div class="demo demo--stack" style="gap:var(--space-2)">
+      <span class="ns-label">// N&M Display &middot; heading</span>
+      <span style="font-family:var(--font-heading);font-size:var(--size-h1);font-weight:var(--weight-heading);letter-spacing:var(--tracking-tight);line-height:var(--leading-tight)">Build on the platform, not around it</span>
+      <span style="font-family:var(--font-sans);font-size:var(--size-body);color:var(--color-muted);max-inline-size:var(--measure-prose)">N&M Text carries the reading layer — lesson copy, descriptions, and every sentence longer than a label. Neutral on purpose: the heading and the data do the talking.</span>
+      <span style="font-family:var(--font-mono);font-size:var(--size-mono)">01 &middot; APEX BASICS &middot; 12:40 &middot; <span style="color:var(--color-success-ink)">COMPLETE</span></span>
+    </div>
+
+    <p class="sub">The three cuts</p>
+    <div class="demo demo--stack" style="gap:var(--space-4)">
+      <div>
+        <span class="ns-label">N&M Display &middot; wght 200&ndash;800 &middot; cut of Manrope</span>
+        <div style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:800;letter-spacing:var(--tracking-tight)">800 — hero and h1&ndash;h3</div>
+        <div style="font-family:var(--font-heading);font-size:var(--size-h3);font-weight:700">700 — h4, card titles, buttons</div>
+        <div style="font-family:var(--font-heading);font-size:var(--size-h4);font-weight:600">600 — nav links, tab labels</div>
+      </div>
+      <div>
+        <span class="ns-label">N&M Text &middot; wght 200&ndash;1000 &middot; cut of Nunito Sans</span>
+        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:450">450 — body copy, the reading default</div>
+        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:400">400 — dense UI text, table cells, meta</div>
+        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:600">600 — inline emphasis, definition terms</div>
+        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:900">900 — reserved for pull-quotes and big stats</div>
+      </div>
+      <div>
+        <span class="ns-label">N&M Mono &middot; wght 300&ndash;700 &middot; cut of Red Hat Mono</span>
+        <div style="font-family:var(--font-mono);font-size:var(--size-mono);font-weight:400">400 — code blocks, inline code, timestamps</div>
+        <div class="ns-label" style="font-size:var(--size-label)">700 — kickers &middot; indexes &middot; status labels</div>
+      </div>
+    </div>
+
+    <p class="sub">Why body copy is 450, not 400</p>
+    <p class="variant-note">The single most common complaint about a Nunito-derived face, and it is a real one: at 16&nbsp;px on white, N&M Text's true Regular renders <em>grey</em> rather than black. The system's reading regular is therefore <strong>Book, 450</strong> — one interpolation step up the <code>wght</code> axis, free on a variable font, and a named weight rather than an ad-hoc value: it ships as a static cut too, so print and desktop match the web. Two changes travel with it — greyscale antialiasing is now dark-mode only (forcing it globally strips about a quarter-step of apparent weight off every glyph), and <code>--color-muted</code> was darkened from 4.93:1 to 6.87:1.</p>
+    <div class="demo demo--stack" style="gap:var(--space-4)">
+      <div>
+        <span class="ns-label">400 &middot; the old default &mdash; retired for reading copy</span>
+        <p style="font-weight:400;max-inline-size:var(--measure-prose);-webkit-font-smoothing:antialiased">Salesforce is a platform before it is a product, and the difference is the whole reason this curriculum exists. Learn the platform and every product on top of it becomes a variation you already understand.</p>
+      </div>
+      <div>
+        <span class="ns-label">450 &middot; --weight-body &mdash; what body copy is set at now</span>
+        <p style="font-weight:450;max-inline-size:var(--measure-prose)">Salesforce is a platform before it is a product, and the difference is the whole reason this curriculum exists. Learn the platform and every product on top of it becomes a variation you already understand.</p>
+      </div>
+    </div>
+
+    <p class="sub">The scale</p>
+    ${typeRows(pick(/^--size-/).filter((t) => t.name !== "--size-mega"))}
+    <p class="variant-note"><code>--size-mega</code> is left out of this table on purpose &mdash; at <code>clamp(3rem, 2rem + 5.4vw, 6.5rem)</code> its preview row would be taller than everything above it put together. It is shown in place under <em>Display &amp; poster typography</em> below, which is the only context it belongs in.</p>
+    <p class="variant-note">A ~1.25 fourth from body upward — wide enough that h2 and h3 are never confused, tight enough that a lesson page does not shout. Only the top two steps clamp: a hero has to survive a 360&nbsp;px phone, a paragraph does not. Everything is <code>rem</code>, because one <code>px</code> font-size is one piece of text that stops responding to browser zoom.</p>
+
+    <p class="sub">Weight, leading, tracking</p>
+    ${plainRows(pick(/^--(weight|leading|tracking)-/))}
+
+    <p class="sub">Measure — the most common typographic mistake in a product</p>
+    <div class="demo demo--stack" style="gap:var(--space-5)">
+      <div>
+        <span class="ns-label">--measure-prose &middot; 68ch &middot; correct</span>
+        <p class="ns-measure">The reading measure is a character count, not a width — the constraint IS characters per line, which makes <code>ch</code> the one honest unit for it. Past roughly eighty characters the eye starts losing the line return, and reading speed measurably drops.</p>
+      </div>
+      <div>
+        <span class="ns-label">no cap &middot; what a full-width paragraph does</span>
+        <p style="color:var(--color-muted)">The reading measure is a character count, not a width — the constraint IS characters per line, which makes <code>ch</code> the one honest unit for it. Past roughly eighty characters the eye starts losing the line return, and reading speed measurably drops. This paragraph is set with no cap at all, and the difference is not subtle at this width.</p>
+      </div>
+      <div>
+        <span class="ns-label">--measure-narrow &middot; 46ch &middot; ledes, quotes, callouts</span>
+        <p class="ns-measure--narrow" style="font-size:var(--size-body-lg)">Short-measure text can afford a larger size, because the line is short enough to return from.</p>
+      </div>
+    </div>
+
+    <p class="sub">Numerals — data is never proportional</p>
+    <div class="demo demo--stack" style="gap:var(--space-4)">
+      <div>
+        <span class="ns-label">tabular &middot; what a column of data uses</span>
+        <div style="font-family:var(--font-mono);font-variant-numeric:tabular-nums;font-size:var(--size-body-lg);line-height:1.5">11:04<br>18:41<br>09:15</div>
+      </div>
+      <div>
+        <span class="ns-label">proportional &middot; the same three values, not lining up</span>
+        <div style="font-family:var(--font-mono);font-variant-numeric:proportional-nums;font-size:var(--size-body-lg);line-height:1.5;color:var(--color-muted)">11:04<br>18:41<br>09:15</div>
+      </div>
+    </div>
+    <p class="variant-note">Alignment in a column of figures is a typographic property, not a table one — so <code>time</code>, <code>output</code>, <code>.ns-num</code> and anything carrying <code>[data-numeric]</code> get <code>tabular-nums</code> in the base layer, everywhere, automatically.</p>
+
+    ${spec(["guidelines/type-headings.card.html", "guidelines/type-body.card.html", "guidelines/type-kicker.card.html", "guidelines/type-mono-code.card.html"])}
+
+    <p class="sub">Text effects — the three rules</p>
+    <p class="variant-note">Everything below is decoration over text that already reads correctly without it. <strong>1. The effect is never the meaning</strong> — struck text is a real <code>&lt;s&gt;</code>, a highlight is a real <code>&lt;mark&gt;</code>, a citation is a real link to a footnote that exists. <strong>2. It draws once</strong> — these fire when scrolled into view and then stop; a thing that loops forever mid-paragraph is an ad. <strong>3. It collapses under reduced motion</strong> — each effect's <em>final</em> state is the correct rendering, so flattening leaves a drawn highlight rather than an invisible one. Source: <code>components/css/type-fx.css</code> + <code>assets/js/type-fx.js</code>.</p>
+    <div class="demo demo--stack" style="gap:var(--space-4);font-size:var(--size-body-lg)">
+      <p><mark class="ns-mark">Highlight</mark> marks a phrase, never a paragraph — and four tints exist so one page can mark two different things: <mark class="ns-mark ns-mark--success">shipped</mark>, <mark class="ns-mark ns-mark--warning">deprecated</mark>, <mark class="ns-mark ns-mark--error">removed</mark>, <mark class="ns-mark ns-mark--solid">or filled solid</mark>.</p>
+      <p><s class="ns-strike ns-strike--muted">One record at a time</s> <strong>collections, always</strong> — the correction pattern: struck text goes muted so the eye lands on the live value.</p>
+      <p>Bulkify <span class="ns-circle">every trigger<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 C216,42 150,54 92,52 C40,50 4,42 8,28 C11,16 60,6 130,8"/></svg></span> &mdash; one circled phrase per screen.</p>
+      <p><span class="ns-frame">Governor limits</span> &nbsp; <span class="ns-frame ns-frame--brackets">RunLocalTests</span> &nbsp; <span class="ns-frame ns-frame--quiet">optional</span></p>
+      <p class="ns-scan ns-scan--lines" style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:var(--weight-heading)">Developer Console</p>
+      <p class="ns-scramble" style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:var(--weight-heading)">Metadata deploy complete</p>
+    </div>
+    <details class="code"><summary>markup</summary><pre><code>${esc(`<mark class="ns-mark ns-mark--animate">a highlighter marks a phrase</mark>
+<s class="ns-strike ns-strike--animate ns-strike--muted">one record at a time</s>
+<span class="ns-circle ns-circle--animate">every trigger<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 …"/></svg></span>
+<span class="ns-frame ns-frame--animate">Governor limits</span>
+<h2 class="ns-scan ns-scan--lines">Developer Console</h2>
+<h2 class="ns-scramble">Metadata deploy complete</h2>`)}</code></pre></details>
+
+    <p class="sub">Responsive shift — why the scramble exists</p>
+    <p class="variant-note">The scrambler's real job is not the entrance; it is the <strong>break</strong>. When a breakpoint re-wraps a heading, the text normally teleports to its new position. <code>assets/js/type-fx.js</code> listens to the breakpoint media queries — not to <code>resize</code>, which would fire on every frame — and re-settles the characters, so a reflow reads as deliberate rather than as a jump. For the layout half of the same problem, <code>.ns-shift-group</code> hands the browser <code>interpolate-size</code> and transitions on <code>font-size</code>, <code>line-height</code>, <code>letter-spacing</code> and <code>max-inline-size</code>, and <code>.ns-shift</code> takes a <code>view-transition-name</code>. Both degrade to nothing where unsupported, which is the right failure mode for a nicety. <em>Resize this page across 40rem or 64rem to watch the heading above re-settle.</em></p>
+
+    ${spec(["guidelines/type-effects.card.html"])}
+
+    <p class="sub">Display and poster typography</p>
+    <p class="variant-note">Type at <code>--size-mega</code> is a graphic element, not a heading: it sets solid (<code>--leading-mega</code>, 0.94), tightens to <code>--tracking-mega</code> because tracking scales with the size it is set at, and is laid out against the viewport rather than a container.</p>
+    <div class="demo demo--stack" style="gap:var(--space-4)">
+      <p class="ns-display ns-display--mega ns-display--stack" style="font-size:clamp(2.5rem,1.5rem+4vw,4.5rem)">
+        <span>Build on</span><span class="ns-display--outline ns-display--outline-brand">the platform</span>
+      </p>
+      <p class="ns-display ns-display--gradient" style="font-size:var(--size-display)">One signal colour, two steps of it</p>
+      <blockquote class="ns-pullquote">The hairline is the structure. Everything else is negotiable.</blockquote>
+    </div>
+    ${spec(["guidelines/type-display.card.html"])}
+
+    <p class="sub">Circular text, links, citations, anchors</p>
+    ${spec(["guidelines/type-curve.card.html"])}
+
+    <p class="sub">Content design — how the product speaks</p>
+    <p class="variant-note">Voice is a typographic decision, which is why it lives here rather than on a page of its own: plain English, encouraging, practical; explain <em>why</em>, not just <em>what</em>; second person for instruction, third for the product. <strong>Sentence case everywhere</strong> except uppercase mono kickers and lesson-type badges — and uppercase is a two-or-three-word device, because a tracked uppercase sentence is measurably slower to read. No emoji in product copy. Numbers only when they are concrete.</p>
+    <div class="use-grid">
+      <div><p class="sub k-do">Do</p><ul>
+        <li><strong>Buttons name the action</strong> — “Start learning”, “Send sign-in link”, “Browse courses”.</li>
+        <li><strong>Errors say what happened and what to do</strong> — “We could not find an account for that address. Create one instead.”</li>
+        <li><strong>Empty states have three parts</strong> — what is missing, why it is empty, and one way out.</li>
+        <li><strong>Labels are nouns, actions are verbs.</strong> A control that reads as a noun is not a control.</li>
+      </ul></div>
+      <div><p class="sub k-dont">Don't</p><ul>
+        <li>“Submit”, “Click here”, “OK” — a mechanism, not an action.</li>
+        <li>“Error: authentication failed (code 401)” — a status code is never the whole message.</li>
+        <li>Blaming the reader: “you entered an invalid…”.</li>
+        <li>Title Case On Every Heading. It reads as a brochure, and it breaks the sentence-case rule the whole system runs on.</li>
+      </ul></div>
+    </div>
+    ${spec(["guidelines/content-design.card.html"])}
+
+    <p class="sub">Accessibility — the typographic floor</p>
+    <p class="variant-note">Weight, measure and leading are accessibility properties before they are aesthetic ones. Reading copy is <code>--weight-body</code> (450) and never lighter; body leading is 1.65, above the 1.5 that WCAG 1.4.12 needs to survive a reader's own text-spacing overrides; every size is <code>rem</code> so browser zoom works; secondary ink clears 6.87:1 rather than sitting at the 4.5:1 line. The general component contract — focus, targets, motion, status colour — is on the <a href="./accessibility.html">Accessibility page</a>.</p>
+    ${spec(["guidelines/type-accessibility.card.html"])}` },
   { id: "surfaces", title: "Status & surfaces", lede: 'Semantic roles flip under <code>[data-theme="dark"]</code>. These are what product code should reach for — never a raw brand step for a surface.', body: () => `
     ${swatches(pick(/^--color-(surface|surface-raised|surface-sunken|border|ink|muted|label|grid|scrim|on-brand|on-dark)$/))}
     <p class="sub">Live</p>
@@ -258,18 +398,6 @@ ${PROSE}
     ${plainRows(pick(/^--(container|breakpoint|gutter|navbar|sidebar|toc|player|target)/))}
     <p class="sub">Elevation order — six layers, no more</p>
     ${plainRows(pick(/^--z-/))}` },
-  { id: "type", title: "Type", lede: "Three faces, three volumes: <strong>Space Grotesk</strong> for headings, <strong>Inter</strong> for prose, <strong>JetBrains Mono</strong> for every index, label, timestamp and status. Grotesk's squared terminals echo the mono's, so display type and data read as one voice — Inter stays neutral in between for long reading.", body: () => `
-    <p class="sub">The pairing</p>
-    <div class="demo demo--stack" style="gap:var(--space-2)">
-      <span style="font-family:var(--font-mono);font-size:var(--size-label);font-weight:var(--weight-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label)">// Space Grotesk · heading</span>
-      <span style="font-family:var(--font-heading);font-size:var(--size-h1);font-weight:var(--weight-semibold);letter-spacing:var(--tracking-display);line-height:var(--leading-tight)">Build on the platform, not around it</span>
-      <span style="font-family:var(--font-sans);font-size:var(--size-body);color:var(--color-muted);max-inline-size:42rem">Inter carries the reading layer — lesson copy, descriptions, and every sentence longer than a label. Neutral on purpose: the heading and the data do the talking.</span>
-      <span style="font-family:var(--font-mono);font-size:var(--size-mono)">01 · APEX BASICS · 12:40 · <span style="color:var(--color-success-ink)">COMPLETE</span></span>
-    </div>
-    ${typeRows(pick(/^--size-/))}
-    <p class="sub">Weight, leading, tracking</p>
-    ${plainRows(pick(/^--(weight|leading|tracking)-/))}
-    ${spec(["guidelines/type-headings.card.html", "guidelines/type-body.card.html", "guidelines/type-kicker.card.html", "guidelines/type-mono-code.card.html"])}` },
   { id: "geometry", title: "Geometry & motion", lede: "Four radii exist and no more — Tailwind's <code>rounded-lg</code>/<code>-xl</code> are deliberately left undefined so reaching for one is a build error. One easing curve, no springs.", body: () => `
     ${plainRows(pick(/^--(radius|shadow|duration|ease)-/))}
     <p class="sub">Interaction — focus ring, press/disabled/loading dim, hairline</p>
@@ -373,7 +501,6 @@ ${PROSE}
     <div class="sw-grid">${names.map((n, i) => tile(n, i, true)).join("")}</div>`;
   } },
   { id: "accessibility", title: "Accessibility", lede: "The contract every component ships with: focus is always visible, motion collapses under reduced-motion, status never relies on color alone, and every icon-only control has a name.", body: () => spec(["guidelines/accessibility.card.html"]) },
-  { id: "content-design", title: "Content design", lede: "How the product speaks: plain-English, encouraging, practical. Sentence case everywhere except mono kickers; no emoji in UI; numbers only when concrete.", body: () => spec(["guidelines/content-design.card.html"]) },
   { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
     <p class="sub">${esc(file)}.css — ${list.length}</p>
     <div class="cls">${list.map((c) => `<code>.${esc(c)}</code>`).join("")}</div>`).join("") },
@@ -382,7 +509,7 @@ ${PROSE}
 /* Foundations in teaching order: what it looks like (color, surfaces),
    what it reads as (type), how it is spaced and laid out, its shape and
    motion, its glyphs, its data — and the class index as the appendix. */
-const SECTION_ORDER = ["intro", "elements", "color", "surfaces", "type", "spacing", "layout", "geometry", "icons", "patterns", "accessibility", "content-design", "classes"];
+const SECTION_ORDER = ["intro", "elements", "color", "type", "surfaces", "spacing", "layout", "geometry", "icons", "patterns", "accessibility", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
 /* ---- Brand & Content creation docs --------------------------------------
@@ -1292,6 +1419,10 @@ ${sidebar(page.file)}
 </main>
 <script>${JS}</script>
 <script src="../assets/js/nav.js" defer></script>
+<script src="../assets/js/code.js" defer></script>
+<script src="../assets/js/type-fx.js" defer></script>
+<script src="../assets/js/lms.js" defer></script>
+<script src="../assets/js/blog.js" defer></script>
 </body>
 </html>
 `;
@@ -1397,6 +1528,9 @@ const DEMOS = [
   { out: "demo-navbar-blog.html", tpl: "navbar-blog.html", title: "Blog navbar — full width demo", back: "c-topnav.html", note: "signed-in bar: account menu, reading progress on scroll", extras: ["search-modal.html"] },
   { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed" },
   { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
+  { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
+  { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
+  { out: "demo-type-specimen.html", tpl: "type-specimen.html", title: "Type specimen — full page", back: "type.html", note: "the whole family in place: scale, weights, measure, effects" },
   { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
   { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
   { out: "demo-course-listing.html", tpl: "course-listing.html", title: "Course listing — full page demo", back: "c-course-listing.html", note: "live filters — the tags actually filter the grid" },
@@ -1593,6 +1727,10 @@ for (const d of DEMOS) {
   <a class="ns-btn ns-btn--outline ns-btn--sm" style="margin-inline-start:auto" href="./${d.back}">&larr; back to docs</a></div>
 ${body}
 <script src="../assets/js/nav.js" defer></script>
+<script src="../assets/js/code.js" defer></script>
+<script src="../assets/js/type-fx.js" defer></script>
+<script src="../assets/js/lms.js" defer></script>
+<script src="../assets/js/blog.js" defer></script>
 <script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
 </body>
 </html>

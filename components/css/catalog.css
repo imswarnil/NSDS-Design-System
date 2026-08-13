@@ -1,0 +1,318 @@
+/* NS Design System — catalog: course hero, buy box, filters, social proof.
+   =========================================================================
+   The marketing half of a course: the page a stranger lands on and the
+   controls they use to find it. lms.css owns what a LEARNER sees (cards,
+   curriculum, lesson chrome); this file owns what a BUYER sees.
+
+   Contents:
+     .ns-chero        the course hero — five versions, one anatomy
+     .ns-buybox       the sticky enrol card
+     .ns-share        share row
+     .ns-outcomes     "what you'll learn" / requirements / includes
+     .ns-instructor   the author module, single or multi
+     .ns-filters      the listing rail: checkboxes, price range, applied chips
+     .ns-testimonials learner quotes, with the rating they actually gave */
+@layer components {
+
+  /* ====================================================== Course hero ====
+     Five versions because a course page has five honest situations, not
+     because five looked like a good number:
+
+       --split    (default) content beside a media card. The workhorse: the
+                  preview video has somewhere to live above the fold.
+       --cover    a photographic still behind the content, scrimmed. For a
+                  course whose subject is visual.
+       --video    the same, with a muted looping clip instead of a still.
+       --minimal  hairline and type only. For a course with no good art —
+                  which is most of them, and a blank grey box is worse than
+                  no box.
+       --console  the brand navy + the hairline grid. The house style, and
+                  the one that needs no assets at all.
+
+     All five carry the same parts in the same order, so the page does not
+     re-teach itself when the art direction changes. */
+  .ns-chero { position: relative; overflow: hidden; padding-block: var(--space-12) var(--space-10); }
+  .ns-chero__inner { position: relative; z-index: var(--z-raised); max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
+  .ns-chero__grid { display: grid; grid-template-columns: minmax(0, 1fr) 24rem; gap: var(--space-10); align-items: center; }
+  .ns-chero__body { min-inline-size: 0; }
+  .ns-chero__kicker {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-chero__title {
+    font-size: var(--size-display); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight);
+    margin-block-start: var(--space-3); text-wrap: balance; max-inline-size: 20ch;
+  }
+  .ns-chero__lede { margin-block-start: var(--space-4); font-size: var(--size-body-lg); color: var(--color-muted); max-inline-size: var(--measure-prose); text-wrap: pretty; }
+  /* The meta strip: rating, learners, duration, level, language, updated.
+     Mono and tabular so a row of facts reads as data, and wrapping rather
+     than truncating — every item here is a reason to enrol. */
+  .ns-chero__meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5);
+    margin-block-start: var(--space-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-chero__meta > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+  .ns-chero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-6); }
+  .ns-chero__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-end: var(--space-4); }
+
+  /* The media card. A preview player, a still, or nothing — and when it is a
+     player the play control is a real button over the poster, not a
+     decorative triangle. */
+  .ns-chero__media {
+    position: relative; border-radius: var(--radius-card); overflow: hidden;
+    border: 1px solid var(--color-border); background: var(--color-brand-900);
+    aspect-ratio: 16 / 9;
+  }
+  .ns-chero__media > img, .ns-chero__media > video, .ns-chero__media > iframe {
+    inline-size: 100%; block-size: 100%; object-fit: cover; display: block; border: 0;
+  }
+  .ns-chero__play {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    border: 0; background: color-mix(in srgb, var(--color-brand-900) 30%, transparent);
+    color: var(--color-on-dark); font-size: var(--size-h1); cursor: pointer;
+    transition: background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-chero__play:hover { background: color-mix(in srgb, var(--color-brand-900) 45%, transparent); }
+  .ns-chero__caption {
+    position: absolute; inset-block-end: 0; inset-inline: 0;
+    padding: var(--space-3) var(--space-4);
+    background: linear-gradient(to top, color-mix(in srgb, var(--color-brand-900) 88%, transparent), transparent);
+    color: var(--color-on-dark);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+  }
+
+  /* --- The background layer (cover / video) ------------------------------
+     The scrim is not optional and not a taste call: text over an arbitrary
+     photograph has no contrast guarantee, and a hero whose legibility
+     depends on which image the editor picked is broken by design. */
+  .ns-chero__bg { position: absolute; inset: 0; z-index: var(--z-base); }
+  .ns-chero__bg > img, .ns-chero__bg > video { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  .ns-chero__bg::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to right, color-mix(in srgb, var(--color-brand-900) 92%, transparent), color-mix(in srgb, var(--color-brand-900) 62%, transparent));
+  }
+
+  .ns-chero--cover, .ns-chero--video, .ns-chero--console { color: var(--color-on-dark); }
+  .ns-chero--cover .ns-chero__title, .ns-chero--video .ns-chero__title, .ns-chero--console .ns-chero__title { color: var(--color-on-dark); }
+  .ns-chero--cover .ns-chero__lede, .ns-chero--video .ns-chero__lede, .ns-chero--console .ns-chero__lede { color: color-mix(in srgb, var(--color-on-dark) 78%, transparent); }
+  .ns-chero--cover .ns-chero__kicker, .ns-chero--video .ns-chero__kicker,
+  .ns-chero--console .ns-chero__kicker, .ns-chero--cover .ns-chero__meta,
+  .ns-chero--video .ns-chero__meta, .ns-chero--console .ns-chero__meta { color: color-mix(in srgb, var(--color-on-dark) 70%, transparent); }
+  .ns-chero--cover .ns-chero__grid, .ns-chero--video .ns-chero__grid { grid-template-columns: minmax(0, 1fr); }
+  .ns-chero--cover .ns-chero__body, .ns-chero--video .ns-chero__body { max-inline-size: 46rem; }
+  .ns-chero--cover, .ns-chero--video { padding-block: var(--space-20) var(--space-16); }
+
+  /* A looping background clip is decoration with a bandwidth cost, so it is
+     paused for anyone who asked for less motion — and the poster frame is
+     what they get, which is exactly the --cover version. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-chero--video .ns-chero__bg > video { display: none; }
+  }
+
+  .ns-chero--console { background: var(--color-brand-900); }
+  .ns-chero--minimal { border-block-end: 1px solid var(--color-border); padding-block: var(--space-10) var(--space-8); }
+  .ns-chero--minimal .ns-chero__grid { grid-template-columns: minmax(0, 1fr); }
+  .ns-chero--minimal .ns-chero__title { max-inline-size: 24ch; }
+
+  @media (max-width: 63.999rem) {
+    .ns-chero__grid { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .ns-chero { padding-block: var(--space-8) var(--space-6); }
+    .ns-chero--cover, .ns-chero--video { padding-block: var(--space-12) var(--space-10); }
+    /* The media leads on a phone: the preview is the strongest argument, and
+       above the fold it should be the first thing, not the fourth. */
+    .ns-chero__media { order: -1; }
+  }
+
+  /* ========================================================== Buy box ====
+     The enrol card. It is sticky on desktop and a fixed bottom bar on a
+     phone (.ns-buybox--bar), because the one action the page exists for
+     must never be scrolled past. */
+  .ns-buybox { border: 1px solid var(--color-border); border-radius: var(--radius-card); background: var(--color-surface); overflow: hidden; }
+  .ns-buybox__media { display: block; inline-size: 100%; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface-sunken); }
+  .ns-buybox__body { display: flex; flex-direction: column; gap: var(--space-4); padding: var(--pad-card); }
+  .ns-buybox__actions { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-buybox__note { font-size: var(--size-fine); color: var(--color-muted); text-align: center; }
+  .ns-buybox__list { display: flex; flex-direction: column; gap: var(--space-2); font-size: var(--size-small); }
+  .ns-buybox__list li { display: flex; align-items: center; gap: var(--space-2); color: var(--color-muted); }
+  .ns-buybox__list i { color: var(--color-brand-500); font-size: var(--size-body); flex: none; }
+  .ns-buybox__foot {
+    padding: var(--space-3) var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    text-align: center;
+  }
+
+  .ns-buybox--bar {
+    position: fixed; inset-block-end: 0; inset-inline: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-4);
+    padding: var(--space-3) var(--gutter);
+    border-radius: 0; border-block-start: 1px solid var(--color-border);
+    box-shadow: var(--shadow-raised);
+    /* The bar sits over content on a phone, so it needs the safe area or it
+       lands under the home indicator. */
+    padding-block-end: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  }
+  .ns-buybox--bar .ns-price { margin-inline-end: auto; }
+  @media (min-width: 64rem) { .ns-buybox--bar { display: none; } }
+
+  /* =========================================================== Share ====
+     Icon buttons with real names. The link copy is first because it is the
+     one every reader can use — the network buttons are for the minority who
+     are signed into that network in this browser. */
+  .ns-share { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+  .ns-share__label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    margin-inline-end: var(--space-1);
+  }
+
+  /* ======================================================== Outcomes ====
+     "What you'll learn", "Requirements", "This course includes" — three
+     lists with the same shape. Two columns where there is room, because a
+     single column of eight one-line items is a very tall list of very short
+     lines. */
+  .ns-outcomes { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--space-3) var(--space-8); }
+  .ns-outcomes li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2); align-items: start; font-size: var(--size-small); }
+  .ns-outcomes i { color: var(--color-success-ink); font-size: var(--size-body); margin-block-start: 0.1em; } /* lint-ok: optical nudge to sit the glyph on the first line's cap height — it scales with the text, so it is an em, not a space step */
+  .ns-outcomes--plain i { color: var(--color-label); }
+  .ns-outcomes--single { grid-template-columns: minmax(0, 1fr); }
+
+  /* ====================================================== Instructor ====
+     One author or several. With several, each gets the same block — a course
+     with two instructors has two instructors, and shrinking the second one
+     is an editorial claim the layout should not be making. */
+  .ns-instructor { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-4); align-items: start; }
+  .ns-instructor__avatar { inline-size: 4rem; block-size: 4rem; border-radius: var(--radius-pill); object-fit: cover; background: var(--color-surface-sunken); }
+  .ns-instructor__name { font-family: var(--font-heading); font-size: var(--size-body-lg); font-weight: var(--weight-semibold); }
+  .ns-instructor__role {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-instructor__stats {
+    display: flex; flex-wrap: wrap; gap: var(--space-4);
+    margin-block-start: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-instructor__stats > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+  .ns-instructor__bio { margin-block-start: var(--space-3); font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-prose); }
+  .ns-instructors { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: var(--space-8); }
+
+  /* ========================================================= Filters ====
+     The listing rail. Groups are <details> so a long facet list collapses,
+     the counts are part of each label, and the applied set is echoed as
+     removable chips above the grid — a filter you cannot see is a filter you
+     forget you set. */
+  .ns-filters { display: flex; flex-direction: column; gap: var(--space-1); }
+  .ns-filters__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding-block-end: var(--space-3); border-block-end: 1px solid var(--color-border);
+  }
+  .ns-filters__title {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-filters__clear { margin-inline-start: auto; }
+  .ns-filters__group { border-block-end: 1px solid var(--color-border); }
+  .ns-filters__legend {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding-block: var(--space-3); cursor: pointer; list-style: none;
+    font-size: var(--size-small); font-weight: var(--weight-semibold);
+  }
+  .ns-filters__legend::-webkit-details-marker { display: none; }
+  .ns-filters__legend:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: 2px; }
+  .ns-filters__legend i { margin-inline-start: auto; color: var(--color-muted); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-filters__group[open] .ns-filters__legend i { rotate: 180deg; }
+  .ns-filters__list { display: flex; flex-direction: column; gap: var(--space-1); padding-block-end: var(--space-3); }
+  /* The count is muted and pushed to the end, so the eye scans the labels
+     down the leading edge and reads the numbers only when it wants them. */
+  .ns-filters__count {
+    margin-inline-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* The facet row is the system's own checkbox (.ns-choice + .ns-checkbox);
+     this only makes it fill the rail so the count can sit at the far end. */
+  .ns-filters .ns-choice { inline-size: 100%; font-size: var(--size-small); }
+  .ns-filters .ns-choice > span:not(.ns-filters__count) { flex: 1; min-inline-size: 0; }
+  /* Applied chips — each one removes itself; the group clears them all. */
+  .ns-filters__applied { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin-block-end: var(--space-4); }
+
+  /* Price range. Two native <input type="range"> stacked on one track: the
+     thumbs stay real form controls (keyboard, screen reader, mobile) and the
+     track is drawn once behind them. The numeric pair below is not a
+     duplicate — it is how someone types an exact figure. */
+  .ns-range { display: flex; flex-direction: column; gap: var(--space-3); padding-block-end: var(--space-4); }
+  .ns-range__track { position: relative; block-size: var(--space-5); }
+  .ns-range__track::before {
+    content: ""; position: absolute; inset-block-start: 50%; inset-inline: 0;
+    block-size: 0.25rem; translate: 0 -50%;
+    border-radius: var(--radius-pill); background: var(--color-surface-sunken);
+  }
+  .ns-range__fill {
+    position: absolute; inset-block-start: 50%; block-size: 0.25rem; translate: 0 -50%;
+    border-radius: var(--radius-pill); background: var(--color-brand-500);
+    inset-inline-start: var(--fx-from, 0%); inset-inline-end: calc(100% - var(--fx-to, 100%));
+  }
+  .ns-range input[type="range"] {
+    position: absolute; inset-inline: 0; inset-block-start: 0;
+    inline-size: 100%; block-size: var(--space-5);
+    margin: 0; background: none; appearance: none; pointer-events: none;
+  }
+  /* Only the thumbs take pointer events, or the upper input's full-width box
+     swallows every click meant for the lower one. */
+  .ns-range input[type="range"]::-webkit-slider-thumb {
+    appearance: none; pointer-events: auto;
+    inline-size: var(--space-4); block-size: var(--space-4);
+    border-radius: var(--radius-pill); border: 2px solid var(--color-surface);
+    background: var(--color-brand-500); cursor: grab;
+    box-shadow: var(--shadow-raised);
+  }
+  .ns-range input[type="range"]::-moz-range-thumb {
+    pointer-events: auto;
+    inline-size: var(--space-4); block-size: var(--space-4);
+    border-radius: var(--radius-pill); border: 2px solid var(--color-surface);
+    background: var(--color-brand-500); cursor: grab;
+  }
+  .ns-range input[type="range"]:focus-visible::-webkit-slider-thumb { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-range__values { display: flex; align-items: center; gap: var(--space-2); }
+  .ns-range__values .ns-input { inline-size: 5.5rem; }
+  .ns-range__sep { color: var(--color-label); }
+
+  /* ==================================================== Testimonials ====
+     Quotes with the rating the person actually gave, and a real attribution.
+     A testimonial with no name and no source is a sentence the marketing
+     team wrote, and readers know it. */
+  .ns-testimonials { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--gap-grid); }
+  .ns-testimonial {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-testimonial__quote { font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-ink); flex: 1; }
+  .ns-testimonial__who { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3); align-items: center; }
+  .ns-testimonial__avatar { inline-size: var(--space-9); block-size: var(--space-9); border-radius: var(--radius-pill); object-fit: cover; background: var(--color-surface-sunken); }
+  .ns-testimonial__name { font-size: var(--size-small); font-weight: var(--weight-semibold); }
+  .ns-testimonial__role {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  /* The featured one is wider and larger — it is a pull-quote, and it uses
+     the pull-quote's own device rather than inventing a second one. */
+  .ns-testimonial--featured { grid-column: 1 / -1; }
+  .ns-testimonial--featured .ns-testimonial__quote {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-medium); line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+  }
+  .ns-band--dark .ns-testimonial { background: transparent; border-color: var(--color-on-dark-border); }
+  .ns-band--dark .ns-testimonial__quote, .ns-band--dark .ns-testimonial__name { color: var(--color-on-dark); }
+}
