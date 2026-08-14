@@ -8,4 +8,5 @@ export interface TrainingCardProps {
   /** 0–100, renders a thin progress bar when set */
   progress?: number;
   href?: string;
+  className?: string;
 }

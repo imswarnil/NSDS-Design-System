@@ -10,4 +10,5 @@ export interface HeroProps {
   proof?: React.ReactNode;
   /** Button(s) */
   actions?: React.ReactNode;
+  className?: string;
 }

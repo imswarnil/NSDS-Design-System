@@ -7,4 +7,5 @@ export interface LogoProps {
   /** Use on dark surfaces */
   light?: boolean;
   size?: number;
+  className?: string;
 }

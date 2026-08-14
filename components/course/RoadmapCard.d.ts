@@ -8,4 +8,5 @@ export interface RoadmapCardProps {
   lessons?: number;
   side?: "left" | "right";
   href?: string;
+  className?: string;
 }

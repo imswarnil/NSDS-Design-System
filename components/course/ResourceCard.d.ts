@@ -4,4 +4,5 @@ export interface ResourceCardProps {
   type?: string;
   icon?: string;
   href?: string;
+  className?: string;
 }

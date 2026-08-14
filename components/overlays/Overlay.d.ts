@@ -23,6 +23,7 @@ export interface ConfirmModalProps {
   /** Renders the confirm button as a solid red. Cancel is still focused first,
    *  so Enter cancels rather than destroys. */
   destructive?: boolean;
+  className?: string;
 }
 export declare function ConfirmModal(props: ConfirmModalProps): React.JSX.Element;
 
@@ -53,6 +54,7 @@ export interface MenuProps {
   items?: MenuItem[];
   align?: "start" | "end";
   buttonClassName?: string;
+  className?: string;
 }
 export declare function Menu(props: MenuProps): React.JSX.Element;
 
@@ -61,5 +63,6 @@ export interface TooltipProps {
    *  hover-only content is unreachable by touch. */
   text: React.ReactNode;
   children: React.ReactElement;
+  className?: string;
 }
 export declare function Tooltip(props: TooltipProps): React.JSX.Element;
