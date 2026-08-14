@@ -1,17 +1,16 @@
 export interface CourseCardProps {
-  /** 1-based position in the catalog — rendered as a mono "01" chip over the media */
-  index?: number;
   title: string;
   excerpt?: string;
   image?: string;
   level?: "beginner" | "intermediate" | "advanced";
-  price?: "free" | "paid";
-  priceLabel?: string;
+  /** Display string — "Free", "$17.00". The card does not format money. */
+  price?: string;
   lessons?: number;
   duration?: string;
-  authorName?: string;
-  featured?: boolean;
-  sponsored?: boolean;
+  /** Corner flag over the media — "OWNED", "NEW". */
+  badge?: string;
+  /** 0-100. Renders a <progress> under the excerpt when present. */
+  progress?: number;
   href?: string;
-  onClick?: (e: React.MouseEvent) => void;
+  className?: string;
 }
