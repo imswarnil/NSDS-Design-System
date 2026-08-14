@@ -1,0 +1,198 @@
+/* NS Design System — content blocks.
+   =========================================================================
+   The things that interrupt a body of prose. A post is not one long column of
+   paragraphs: it stops to summarise, to compare two options, to pull out a
+   number, to list the steps. Each of those is a different claim, and each gets
+   a block that says which claim it is making.
+
+   These are all designed to sit INSIDE .ns-prose and survive it — prose styles
+   bare elements, so every block here carries its own classes rather than
+   relying on being a <div> that prose happens not to touch.
+
+   The rule they share, and the reason they look restrained: a content block is
+   an interruption. The reader was reading; you stopped them. It has to be
+   worth it, and it has to be obviously finite so they can see where the prose
+   resumes. That is why none of them is a full-bleed tinted panel — Principle 1
+   again, the hairline does the structuring, and a wash of colour across the
+   reading column is the loudest thing a page can do.
+
+   Callout (blog.css) and Figure (media.css) already exist and are not
+   duplicated here: a callout is an aside about the paragraph beside it, a
+   figure is an image with a caption. These are the seven other shapes. */
+@layer ns-components {
+
+  /* --- Takeaway -----------------------------------------------------------
+     "In short" — the argument compressed, usually near the top for a reader
+     who will not finish, or at the end for one who did.
+
+     A leading rule and a mono label, not a tinted box. It reads as a change of
+     register rather than a different kind of content, which is right: this is
+     the same argument said faster. */
+  .ns-takeaway {
+    border-inline-start: 2px solid var(--color-brand-500);
+    padding-inline-start: var(--space-5);
+    margin-block: var(--stack-md);
+  }
+  .ns-takeaway__label {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-takeaway__text { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
+  .ns-takeaway ul { margin-block-start: var(--space-2); padding-inline-start: var(--space-5); }
+
+  /* --- Stat block ---------------------------------------------------------
+     One number, pulled out at display scale, with what it measures and where
+     it came from.
+
+     The SOURCE is not optional and that is enforced by the design: the figure
+     has no bottom margin of its own, the source line supplies it, so a stat
+     without attribution visibly collides with the next paragraph. A number in
+     a post with no source is a claim the reader cannot check. */
+  .ns-statblock {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding-block: var(--space-4);
+    border-block: 1px solid var(--color-border);
+  }
+  .ns-statblock__figure {
+    font-family: var(--font-heading); font-size: var(--size-h1);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    color: var(--color-brand-600); font-variant-numeric: tabular-nums; flex: none;
+  }
+  [data-theme="dark"] .ns-statblock__figure { color: var(--color-brand-300); }
+  .ns-statblock__body { flex: 1; min-inline-size: 12rem; }
+  .ns-statblock__label { font-size: var(--size-body); color: var(--color-ink); text-wrap: pretty; }
+  .ns-statblock__source {
+    display: block; margin-block-start: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-statblock--stack { flex-direction: column; gap: var(--space-1); }
+  .ns-statblock--stack .ns-statblock__figure { font-size: var(--size-display); }
+
+  /* --- Compare ------------------------------------------------------------
+     Two options side by side. Flow vs Apex, profiles vs permission sets — the
+     shape a technical post reaches for constantly and has to hand-build every
+     time.
+
+     Deliberately NOT a do/don't: it is two legitimate choices, and colouring
+     one green and one red would make an editorial judgement the content may
+     not be making. --verdict is the opt-in for when you ARE judging. */
+  .ns-compare {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: var(--space-4); margin-block: var(--stack-md);
+  }
+  .ns-compare__side {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    padding: var(--pad-card);
+  }
+  .ns-compare__title {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    margin-block-end: var(--space-2);
+  }
+  .ns-compare__side ul { margin: 0; padding-inline-start: var(--space-5); font-size: var(--size-small); }
+  .ns-compare__side li { margin-block-end: var(--space-1); }
+  .ns-compare__side--verdict { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-compare__side--verdict .ns-compare__title { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-compare__side--verdict .ns-compare__title { color: var(--color-brand-300); }
+
+  /* --- Checklist ----------------------------------------------------------
+     Things to verify. Real checkboxes, disabled — the reader is reading, not
+     filling a form, and an enabled checkbox in an article promises persistence
+     the page cannot deliver. Where it IS interactive (a lesson task list),
+     drop the disabled attribute and the component works unchanged. */
+  .ns-checklist { list-style: none; margin-block: var(--stack-md); padding: 0; }
+  .ns-checklist li {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small);
+  }
+  .ns-checklist li:last-child { border-block-end: 1px solid var(--color-border); }
+  /* An optical nudge onto the first line's cap height, not spacing: it is a
+     fraction of the TEXT's own size, so a --space-* token would break it the
+     moment the list is set at a different size. */
+  .ns-checklist__mark { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-border); }
+  .ns-checklist li[data-state="done"] .ns-checklist__mark { color: var(--color-success); }
+  .ns-checklist li[data-state="done"] .ns-checklist__text { color: var(--color-muted); }
+
+  /* --- Procedure ----------------------------------------------------------
+     Numbered steps, for a how-to. An <ol> with a mono index in the margin, so
+     the numbers line up in a column and a step containing a code block does
+     not push its own number out of alignment — which is the failure of every
+     list-style-based version of this. */
+  .ns-procedure { list-style: none; counter-reset: ns-proc; margin-block: var(--stack-md); padding: 0; }
+  .ns-procedure > li {
+    counter-increment: ns-proc; position: relative;
+    padding-inline-start: var(--space-8); padding-block-end: var(--space-5);
+  }
+  .ns-procedure > li::before {
+    content: counter(ns-proc, decimal-leading-zero);
+    position: absolute; inset-inline-start: 0; inset-block-start: 0.1em;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-brand-600); font-variant-numeric: tabular-nums;
+  }
+  [data-theme="dark"] .ns-procedure > li::before { color: var(--color-brand-300); }
+  /* The rail connects the steps, so a step with a tall code block still reads
+     as part of the sequence rather than as a new section. */
+  .ns-procedure > li::after {
+    content: ""; position: absolute;
+    inset-inline-start: 0.5rem; inset-block: 1.6em var(--space-1);
+    inline-size: 1px; background: var(--color-border);
+  }
+  .ns-procedure > li:last-child { padding-block-end: 0; }
+  .ns-procedure > li:last-child::after { display: none; }
+  .ns-procedure__title { font-weight: var(--weight-body-strong); color: var(--color-ink); }
+
+  /* --- Terms --------------------------------------------------------------
+     An inline glossary. Salesforce writing is dense with terms a newcomer has
+     not met, and sending them to a separate glossary page loses them.
+     Two columns of dt/dd on a wide surface, stacking below it. */
+  .ns-terms {
+    margin-block: var(--stack-md); padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+  }
+  .ns-terms__label {
+    display: block; margin-block-end: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-terms dl { display: grid; grid-template-columns: minmax(0, 10rem) minmax(0, 1fr); gap: var(--space-2) var(--space-4); margin: 0; }
+  .ns-terms dt { font-family: var(--font-mono); font-size: var(--size-small); color: var(--color-ink); }
+  .ns-terms dd { margin: 0; font-size: var(--size-small); color: var(--color-muted); }
+  @media (max-width: 47.999rem) {
+    .ns-terms dl { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+    .ns-terms dd { margin-block-end: var(--space-2); }
+  }
+
+  /* --- Related ------------------------------------------------------------
+     Further reading, mid-article. Placed where the tangent actually comes up
+     rather than in a pile at the end, which is where links go to be ignored.
+     A hairline box with mono rows: it reads as a signpost, not as content. */
+  .ns-related {
+    margin-block: var(--stack-md); padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+  }
+  .ns-related__label {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-related ul { list-style: none; margin: 0; padding: 0; }
+  .ns-related li + li { margin-block-start: var(--space-1); }
+  .ns-related a {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    font-size: var(--size-small); color: var(--color-brand-600); text-decoration: none;
+  }
+  [data-theme="dark"] .ns-related a { color: var(--color-brand-300); }
+  .ns-related a:hover { text-decoration: underline; }
+  .ns-related__kind { flex: none; font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+}

@@ -1,18 +1,27 @@
 @layer base {
+  /* color-scheme lives here rather than beside the colour tokens because it is
+     a real declaration, not a custom property — unlayered it would outrank
+     Tailwind's scheme-* utilities. tokens/colors.css is now custom properties
+     only, which is also what keeps scripts/build-tokens.mjs' :root parser
+     honest. */
+  :root { color-scheme: light; }
+  [data-theme="dark"] { color-scheme: dark; }
   html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   /* The shorthand cannot carry font-weight AND line-height in the form we
      want, so weight is its own declaration: 450 (Book) is the reading weight
      — see tokens/typography.css and fonts/README.md for why 400 is not. */
   body { background-color: var(--color-surface); color: var(--color-ink); font: var(--size-body)/var(--leading-body) var(--font-sans); font-weight: var(--weight-body); transition: background-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out); margin: 0; }
-  /* Subpixel smoothing stays ON in light mode. Forcing greyscale antialiasing
-     globally is the other half of why this face read thin: on macOS it strips
-     roughly a quarter-step of apparent weight off every glyph. On the navy
-     dark surface the trade flips — subpixel fringing on light-on-dark text is
-     a real artifact, and the thinning is welcome there. */
-  [data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  /* Greyscale antialiasing in BOTH modes, which is a reversal.
+     The old rule kept subpixel smoothing on in light mode deliberately: it
+     adds roughly a quarter-step of apparent weight, and the previous
+     Nunito-derived cut needed it because its Regular read thin. Switzer does
+     not — it is a properly fitted grotesque, and at the 14px reading size that
+     borrowed weight is what makes body copy look semi-bold on macOS.
+     The compensation outlived the face it was compensating for. */
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: var(--weight-heading); margin: 0; text-wrap: balance; line-height: var(--leading-heading); }
-  /* Tighten only the sizes where N&M Display's metrics run loose. h4+ stays
+  /* Tighten only the sizes where Switzer's metrics run loose. h4+ stays
      at natural tracking — it sits close to body size. */
   h1, h2, h3 { letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
   h4, h5, h6 { font-weight: var(--weight-semibold); }

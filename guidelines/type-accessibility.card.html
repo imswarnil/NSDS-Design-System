@@ -1,56 +1,44 @@
 <!-- @dsCard group="Type" viewport="760x470" name="Typographic Accessibility" subtitle="Reading weight, measure, contrast, zoom, and what an effect may never be the only signal for" -->
-<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
-<style>
-body{margin:0;padding:22px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:13px;line-height:1.65}
-.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 8px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-ul{margin:0 0 18px;padding-left:16px}
-li{margin-bottom:5px}
-code{font-family:var(--font-mono);font-size:11px;color:var(--color-brand-600)}
-.pair{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--color-border);font-family:var(--font-mono);font-size:11px}
-.sw{width:34px;height:16px;border-radius:2px;flex:none}
-.ok{margin-left:auto;color:var(--color-success-ink);font-weight:700}
-.no{margin-left:auto;color:var(--color-error-ink);font-weight:700}
-.demo{border:1px solid var(--color-border);border-radius:var(--radius-card);padding:10px 12px;margin-bottom:10px}
-</style></head><body>
-<div class="cols">
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+</head><body class="m-0 p-[22px] bg-surface text-ink font-sans text-small leading-body">
+<div class="grid grid-cols-2 gap-7">
 <div>
-  <p class="k">Reading ink — measured on white</p>
-  <div class="pair"><span class="sw" style="background:var(--color-ink)"></span><span>--color-ink</span><span class="ok">15.9:1</span></div>
-  <div class="pair"><span class="sw" style="background:var(--color-muted)"></span><span>--color-muted</span><span class="ok">6.87:1</span></div>
-  <div class="pair"><span class="sw" style="background:var(--color-label)"></span><span>--color-label</span><span class="ok">8.6:1</span></div>
-  <div class="pair"><span class="sw" style="background:#706e6b"></span><span>the old muted</span><span class="no">4.93:1 — retired</span></div>
-  <p style="font-size:11px;color:var(--color-muted);margin:8px 0 18px">Secondary ink is where a page goes washed out. 4.93:1 clears AA and nothing else; on the sunken surface it drops to 4.6:1. The current value has headroom at <code>--size-small</code>, which is where secondary text actually lives.</p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Reading ink — measured on white</p>
+  <div class="flex items-center gap-2 py-[5px] border-b border-border font-mono text-data"><span class="w-[34px] h-4 rounded-sm flex-none" style="background:var(--color-ink)"></span><span>--color-ink</span><span class="ms-auto text-success-ink font-semibold">15.9:1</span></div>
+  <div class="flex items-center gap-2 py-[5px] border-b border-border font-mono text-data"><span class="w-[34px] h-4 rounded-sm flex-none" style="background:var(--color-muted)"></span><span>--color-muted</span><span class="ms-auto text-success-ink font-semibold">6.87:1</span></div>
+  <div class="flex items-center gap-2 py-[5px] border-b border-border font-mono text-data"><span class="w-[34px] h-4 rounded-sm flex-none" style="background:var(--color-label)"></span><span>--color-label</span><span class="ms-auto text-success-ink font-semibold">8.6:1</span></div>
+  <div class="flex items-center gap-2 py-[5px] border-b border-border font-mono text-data"><span class="w-[34px] h-4 rounded-sm flex-none" style="background:#706e6b"></span><span>the old muted</span><span class="ms-auto text-error-ink font-semibold">4.93:1 — retired</span></div>
+  <p style="font-size:11px;color:var(--color-muted);margin:8px 0 18px">Secondary ink is where a page goes washed out. 4.93:1 clears AA and nothing else; on the sunken surface it drops to 4.6:1. The current value has headroom at <code class="font-mono text-data text-brand-600">--size-small</code>, which is where secondary text actually lives.</p>
 
-  <p class="k">Weight is an accessibility property</p>
-  <ul>
-    <li>Body is <code>--weight-body</code> (450), not 400: N&amp;M Text's Regular renders grey rather than black at 16px.</li>
-    <li>Greyscale antialiasing is dark-mode only — forcing it globally strips a quarter-step of apparent weight from every glyph.</li>
-    <li>Nothing below 400 is ever set at reading size. The 200/300 cuts exist for display only.</li>
-    <li>Inline <code>&lt;strong&gt;</code> is 600, not 700: against Book, Bold is a shout.</li>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Weight is an accessibility property</p>
+  <ul class="m-0 mb-[18px] ps-4">
+    <li class="mb-[5px]">Body is <code class="font-mono text-data text-brand-600">--weight-body</code> (450), not 400: N&amp;M Text's Regular renders grey rather than black at 16px.</li>
+    <li class="mb-[5px]">Greyscale antialiasing is dark-mode only — forcing it globally strips a quarter-step of apparent weight from every glyph.</li>
+    <li class="mb-[5px]">Nothing below 400 is ever set at reading size. The 200/300 cuts exist for display only.</li>
+    <li class="mb-[5px]">Inline <code class="font-mono text-data text-brand-600">&lt;strong&gt;</code> is 600, not 700: against Book, Bold is a shout.</li>
   </ul>
 </div>
 <div>
-  <p class="k">Measure, leading, zoom</p>
-  <ul>
-    <li>Reading copy caps at <code>--measure-prose</code> (68ch). Past ~80 characters the eye loses the line return.</li>
-    <li>Body leading is 1.65 — WCAG 1.4.12 wants at least 1.5 to survive user text-spacing overrides.</li>
-    <li>Every size is <code>rem</code>. One <code>px</code> font-size anywhere and browser zoom stops working for that text.</li>
-    <li>Only two sizes clamp (display and mega). A paragraph that scales with the viewport is a paragraph that ignores the reader's setting.</li>
-    <li>Uppercase + tracking is for labels of two or three words. A tracked uppercase sentence is measurably slower to read.</li>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Measure, leading, zoom</p>
+  <ul class="m-0 mb-[18px] ps-4">
+    <li class="mb-[5px]">Reading copy caps at <code class="font-mono text-data text-brand-600">--measure-prose</code> (68ch). Past ~80 characters the eye loses the line return.</li>
+    <li class="mb-[5px]">Body leading is 1.65 — WCAG 1.4.12 wants at least 1.5 to survive user text-spacing overrides.</li>
+    <li class="mb-[5px]">Every size is <code class="font-mono text-data text-brand-600">rem</code>. One <code class="font-mono text-data text-brand-600">px</code> font-size anywhere and browser zoom stops working for that text.</li>
+    <li class="mb-[5px]">Only two sizes clamp (display and mega). A paragraph that scales with the viewport is a paragraph that ignores the reader's setting.</li>
+    <li class="mb-[5px]">Uppercase + tracking is for labels of two or three words. A tracked uppercase sentence is measurably slower to read.</li>
   </ul>
 
-  <p class="k">Effects may never be the only signal</p>
-  <div class="demo">
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Effects may never be the only signal</p>
+  <div class="border border-border rounded-card px-3 py-2.5 mb-2.5">
     <s class="ns-strike ns-strike--muted">Winter '24 API</s> <strong>retired</strong> — the word carries it, the rule decorates it.
   </div>
-  <div class="demo">
-    <mark class="ns-mark">Highlighted</mark> text is a real <code>&lt;mark&gt;</code>; struck text is <code>&lt;s&gt;</code>; a citation is a link to a footnote that exists.
+  <div class="border border-border rounded-card px-3 py-2.5 mb-2.5">
+    <mark class="ns-mark">Highlighted</mark> text is a real <code class="font-mono text-data text-brand-600">&lt;mark&gt;</code>; struck text is <code class="font-mono text-data text-brand-600">&lt;s&gt;</code>; a citation is a link to a footnote that exists.
   </div>
-  <ul>
-    <li>Every effect's <em>final</em> state is the correct rendering, so <code>prefers-reduced-motion</code> flattening leaves a drawn highlight rather than an invisible one.</li>
-    <li>Nothing loops in reading copy. The one infinite effect (the kinetic strip) is <code>aria-hidden</code> and carries no information.</li>
-    <li>Hover-only content repeats what is already at its destination.</li>
+  <ul class="m-0 mb-[18px] ps-4">
+    <li class="mb-[5px]">Every effect's <em>final</em> state is the correct rendering, so <code class="font-mono text-data text-brand-600">prefers-reduced-motion</code> flattening leaves a drawn highlight rather than an invisible one.</li>
+    <li class="mb-[5px]">Nothing loops in reading copy. The one infinite effect (the kinetic strip) is <code class="font-mono text-data text-brand-600">aria-hidden</code> and carries no information.</li>
+    <li class="mb-[5px]">Hover-only content repeats what is already at its destination.</li>
   </ul>
 </div>
 </div>

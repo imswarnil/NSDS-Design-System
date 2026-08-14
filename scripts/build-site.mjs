@@ -8,10 +8,13 @@
    the specimen cards actually reference:
 
      preview/            the generated styleguide
-     dist/               the flat CSS bundle the preview links
-     styles.css + tokens/ + components/css/   what the cards link (../styles.css)
+     dist/               the CSS bundles — pages and cards link the Tailwind
+                         one (dist/namaste-ui.tailwind.css) so utilities work
+     styles.css + tokens/ + components/css/   the un-bundled source, shipped so
+                         the site doubles as a readable reference
      assets/             icons, logo, theme-init, the runtime scripts
-     fonts/              the N&M family + the static OFL package
+     fonts/              Switzer + Sentient (latin-subset variable woff2)
+                         and the Fontshare EULA that must travel with them
      * / *.card.html     every specimen, at its real path (iframe srcs)
 
    Plus an index.html redirect at the root, so the site opens on the preview.
@@ -25,22 +28,29 @@ import { fileURLToPath } from "node:url";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "_site");
 
-for (const rel of ["preview/index.html", "dist/namaste-ui.css"]) {
+for (const rel of ["preview/index.html", "dist/namaste-ui.css", "dist/namaste-ui.tailwind.css"]) {
   if (!existsSync(join(ROOT, rel))) {
     console.error(`missing ${rel} — run \`npm run build && npm run build:preview\` first (gulp site does all of it)`);
     process.exit(2);
   }
 }
 
-rmSync(OUT, { recursive: true, force: true });
+/* maxRetries: a recursive delete of a directory the dev server is actively
+   serving intermittently fails on macOS (ENOTEMPTY/EBUSY) when a request is
+   in flight — the build then dies with a bare exit code and no explanation,
+   which reads like a code error and is not one. Node retries the unlink for
+   us; three attempts 100ms apart has been enough every time. */
+rmSync(OUT, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
 mkdirSync(OUT, { recursive: true });
 
 /* Whole directories the preview references. */
 const DIRS = ["preview", "dist", "assets", "icons", "fonts", "patterns", "tokens", "components/css", "templates"];
 for (const d of DIRS) cpSync(join(ROOT, d), join(OUT, d), { recursive: true });
 
-/* styles.css imports tokens/ + components/css/ (copied above), so the cards'
-   ../styles.css link resolves inside the site exactly as in the repo. */
+/* Nothing links this any more — the pages and cards all load
+   dist/namaste-ui.tailwind.css. It ships because tokens/ and components/css/
+   are copied above and styles.css is the file that explains how they fit
+   together, including the @layer order the whole override contract rests on. */
 cpSync(join(ROOT, "styles.css"), join(OUT, "styles.css"));
 
 /* Every specimen card, preserving its repo-relative path — the preview's

@@ -13,7 +13,7 @@
      <svg class="ns-icon" aria-hidden="true">
        <use href="icons/namaste-icons.svg#ns-i-roadmap"/>
      </svg> */
-@layer components {
+@layer ns-components {
   .ns-icon {
     inline-size: 1em; block-size: 1em;
     display: inline-block; vertical-align: -0.125em; /* lint-ok: optical baseline drop, same as icon-font glyphs; an em fraction, not a spacing value */

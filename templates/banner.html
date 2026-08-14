@@ -1,0 +1,26 @@
+<!-- Banner — an APP-level notice: trial ending, maintenance, "viewing a draft".
+
+     Not an Alert (inline, belongs to the thing beside it) and not a Toast
+     (transient, belongs to an action). A banner is true regardless of which
+     page you are on. One at a time.
+
+     Framework-agnostic markup: the same .ns-* classes the styleguide renders.
+     Ghost: paste into a partial. Next.js: prefer the React component. -->
+
+<div class="ns-banner ns-banner--info">
+  <i class="ph ph-info ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">You are viewing an unpublished draft.</span>
+  <a class="ns-btn ns-btn--outline ns-btn--sm ns-banner__action" href="#">View published</a>
+  <button class="ns-banner__dismiss" type="button" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>
+<div class="ns-banner ns-banner--warning">
+  <i class="ph ph-warning ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">Scheduled maintenance on 14 September, 02:00–04:00 UTC.</span>
+  <button class="ns-banner__dismiss" type="button" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>
+
+<div class="ns-banner ns-banner--dark">
+  <i class="ph ph-megaphone ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">New: the Apex testing track is live.</span>
+  <a class="ns-btn ns-btn--primary ns-btn--sm ns-banner__action" href="#">Start</a>
+</div>

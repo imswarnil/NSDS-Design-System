@@ -1,0 +1,15 @@
+<!-- Badge — status as a hairline box + a coloured dot, never a pastel fill.
+     Framework-agnostic markup: the same .ns-* classes the React <Badge>
+     renders. Ghost: paste into a partial. Next.js: prefer the component.
+
+     The dot carries the colour and the text stays ink, so five badges in a row
+     are still one signal colour apart from five competing washes. Use .ns-tag
+     instead when the thing is clickable — a badge is a state, a tag is a noun. -->
+
+<span class="ns-badge"><span class="ns-badge__dot" aria-hidden="true"></span>Draft</span>
+<span class="ns-badge ns-badge--success"><span class="ns-badge__dot" aria-hidden="true"></span>Published</span>
+<span class="ns-badge ns-badge--warning"><span class="ns-badge__dot" aria-hidden="true"></span>Review</span>
+<span class="ns-badge ns-badge--error"><span class="ns-badge__dot" aria-hidden="true"></span>Failed</span>
+
+<!-- An icon replaces the dot; it never joins it. -->
+<span class="ns-badge ns-badge--success"><i class="ph ph-seal-check ns-badge__icon" aria-hidden="true"></i>Certified</span>

@@ -69,7 +69,10 @@
       </a>
     </nav>
   </div>
-  <nav class="ns-player__side" aria-label="Curriculum">
+  <!-- id="player-rail" is load-bearing: the curriculum toggle in
+       templates/navbar-course.html points aria-controls at it. Rename one and
+       you must rename both, or the button announces a relationship to nothing. -->
+  <nav class="ns-player__side" id="player-rail" aria-label="Curriculum">
     <div class="ns-player__side-head"><strong>Apex fundamentals</strong><span>6/12 done</span></div>
     <div class="ns-player__list">
       <p class="ns-player__section">2. Query the database</p>

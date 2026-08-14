@@ -1,0 +1,69 @@
+/* NS Design System — Tailwind entry point.
+   =========================================================================
+   Source for dist/namaste-ui.tailwind.css: Tailwind v4 + this design system,
+   correctly layered. This is what every page in THIS repo loads (styleguide,
+   guideline cards, templates preview), so a Tailwind class works anywhere on
+   the site and can always override a DS default.
+
+   Downstream products do NOT use this file. Ghost and the Next.js LMS bring
+   their own Tailwind and their own content globs, so they keep importing the
+   three pieces separately — see docs/INTEGRATION.md.
+
+   Import order is the whole point:
+     1. the layer statement, so `utilities` is last no matter what
+     2. Tailwind — its @theme defaults and preflight
+     3. tokens/tailwind.css — our @theme, AFTER Tailwind's so ours wins
+     4. styles.css — tokens, base, and @layer ns-components */
+@layer theme, base, ns-components, components, utilities;
+
+/* source(none) disables Tailwind's automatic filesystem scan. The scan is
+   git-aware, and preview/ + _site/ are gitignored — so auto-detection finds a
+   different set of classes on a fresh clone than it does after `gulp build`,
+   and `build-css.mjs --check` fails in CI for no real reason. Every source is
+   therefore listed explicitly below. */
+@import "tailwindcss" source(none);
+@import "./tokens/tailwind.css";
+@import "./styles.css";
+
+/* preview/ is deliberately ABSENT. Every byte of styleguide markup is emitted
+   from these two scripts as template literals, so scanning the scripts covers
+   it — and unlike preview/, they exist before the CSS build runs. Scanning the
+   generated output instead would make this bundle depend on build order. */
+@source "./scripts/build-preview.mjs";
+@source "./scripts/component-docs.mjs";
+
+/* Hand-authored markup. */
+@source "./templates/**/*.html";
+@source "./guidelines/**/*.html";
+@source "./brand-content-creation/**/*.html";
+@source "./components/**/*.jsx";
+
+/* ---- safelist ------------------------------------------------------------
+   Everything tokens/tailwind.css bridges, emitted whether or not the repo
+   happens to use it today.
+
+   The claim this system makes is "every token is also a utility" — p-card is
+   --space-5, bg-brand-500 is the brand blue, text-label arrives with its
+   tracking and weight attached. A claim like that cannot be true only for the
+   subset of tokens some card already demonstrates: someone reading the
+   styleguide types bg-brand-700 into their own project and it has to exist.
+   So the bridge is safelisted; ordinary Tailwind utilities are not, and stay
+   subject to the normal content scan above.
+
+   Scoped deliberately — this is the token namespace, not all of Tailwind. */
+@source inline("{,dark:,hover:,focus-visible:}{bg,text,border,ring,fill,stroke}-brand-{50,100,200,300,400,500,600,700,800,900}");
+@source inline("{,dark:,hover:}{bg,text,border,fill}-{surface,surface-raised,surface-sunken,border,ink,muted,label-ink,grid}");
+@source inline("{,dark:}{bg,text,border,fill}-{success,warning,error}");
+@source inline("{,dark:}text-{success,warning,error,info}-ink");
+@source inline("{,dark:}{bg,text,fill,stroke}-chart-{1,2,3,4,5,6,7}");
+@source inline("{p,px,py,pt,pr,pb,pl,m,mx,my,gap,gap-x,gap-y}-{card,card-lg,row,inline,grid,field,section,band}");
+@source inline("space-y-{card,row,section,band}");
+@source inline("rounded-{sm,btn,card,pill}");
+@source inline("text-{mega,display,h1,h2,h3,h4,body-lg,body,small,fine,mono,label,data}");
+@source inline("font-{sans,heading,mono}");
+@source inline("font-{body,body-strong,label,regular,medium,semibold,heading}");
+@source inline("leading-{tight,heading,body,mega}");
+@source inline("tracking-{tight,wide,mega,label}");
+@source inline("z-{base,raised,sticky,dropdown,overlay,toast}");
+@source inline("shadow-{card,raised,brand,focus}");
+@source inline("max-w-page container-page");

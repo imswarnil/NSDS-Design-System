@@ -7,4 +7,7 @@ export interface TableOfContentsProps {
   items: TocItem[];
   activeId?: string;
   onNavigate?: (id: string) => void;
+  /** Heading above the rail. Pass "" to omit. */
+  title?: string;
+  className?: string;
 }

@@ -16,7 +16,7 @@
    The stage sits on brand-900 in BOTH themes: video looks wrong on white
    letterboxing, and a consistent stage means switching themes mid-lesson
    never flashes the frame. */
-@layer components {
+@layer ns-components {
 
   .ns-player {
     display: grid;
@@ -328,4 +328,151 @@
     .ns-player__head, .ns-player__body { padding-inline: var(--gutter); }
     .ns-player__nav { padding-inline: var(--gutter); }
   }
+
+  /* --- Video player -------------------------------------------------------
+     One themed control surface over three very different sources: a
+     self-hosted file, a Mux stream, and a YouTube embed.
+
+     The honest constraints, stated because they shape the component:
+
+       - SELF-HOSTED is a real <video>. Everything below drives it directly.
+       - MUX is the same <video> pointed at an HLS manifest. Safari plays HLS
+         natively; everywhere else needs hls.js, which this system does not
+         bundle — you supply it, and the player uses it if `window.Hls` exists.
+       - YOUTUBE cannot be restyled. Its player is a cross-origin iframe, so
+         these controls do not decorate it, they DRIVE it through the IFrame
+         API. That is why the chrome is drawn outside the frame rather than
+         over it: an overlay would sit on top of YouTube's own controls and
+         fight them.
+
+     So the contract is "one API, one look", not "identical internals". The
+     places that genuinely differ are documented rather than faked.
+
+     The scrubber is a real <input type="range">. Keyboard seeking, screen
+     reader announcement and touch behaviour all come free, and every custom
+     div-based scrubber reimplements them worse. */
+  .ns-vplayer {
+    position: relative; display: flex; flex-direction: column;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-brand-900); overflow: hidden;
+  }
+  .ns-vplayer__stage { position: relative; aspect-ratio: 16 / 9; background: var(--color-brand-900); }
+  .ns-vplayer__stage > video,
+  .ns-vplayer__stage > iframe { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; border: 0; display: block; }
+  /* The big centre play target, for the state before playback starts. It is a
+     real button so it is reachable by keyboard and announced. */
+  .ns-vplayer__big {
+    position: absolute; inset-block-start: 50%; inset-inline-start: 50%;
+    translate: -50% -50%;
+    inline-size: 3.5rem; block-size: 3.5rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: var(--radius-pill); cursor: pointer;
+    background: var(--color-on-dark); color: var(--color-brand-700);
+    font-size: var(--size-h3);
+    transition: scale var(--duration-fast) var(--ease-out);
+  }
+  .ns-vplayer__big:hover { scale: 1.04; }
+  .ns-vplayer[data-state="playing"] .ns-vplayer__big { display: none; }
+
+  .ns-vplayer__bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    border-block-start: 1px solid var(--color-on-dark-border);
+  }
+  .ns-vplayer__btn {
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 2rem; block-size: 2rem;
+    border: 0; border-radius: var(--radius-sm); cursor: pointer;
+    background: none; color: var(--color-on-dark); font-size: var(--size-body);
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .ns-vplayer__btn:hover { background: var(--color-on-dark-wash); }
+  .ns-vplayer__btn:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-300);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  /* A real range input, restyled. The track is drawn with a gradient driven by
+     --p so there is no second element to keep in sync with the value. */
+  .ns-vplayer__seek {
+    flex: 1; min-inline-size: 0; appearance: none; block-size: 1.25rem;
+    background: none; cursor: pointer;
+  }
+  .ns-vplayer__seek::-webkit-slider-runnable-track {
+    block-size: 3px; border-radius: var(--radius-pill);
+    background: linear-gradient(to right, var(--color-brand-400) var(--p, 0%), var(--color-on-dark-border) var(--p, 0%));
+  }
+  .ns-vplayer__seek::-moz-range-track {
+    block-size: 3px; border-radius: var(--radius-pill);
+    background: linear-gradient(to right, var(--color-brand-400) var(--p, 0%), var(--color-on-dark-border) var(--p, 0%));
+  }
+  .ns-vplayer__seek::-webkit-slider-thumb {
+    /* Centres the thumb on a 3px track: half the thumb minus half the track.
+       It is derived from the two sizes above, not from the spacing scale — a
+       --space-* token here would decentre it the moment either changes. */
+    appearance: none; inline-size: 0.75rem; block-size: 0.75rem;
+    margin-block-start: -0.3rem; /* lint-ok: (track 3px - thumb 12px) / 2, an optical centring, not spacing */
+    border-radius: var(--radius-pill); background: var(--color-on-dark); border: 0;
+  }
+  .ns-vplayer__seek::-moz-range-thumb {
+    inline-size: 0.75rem; block-size: 0.75rem;
+    border-radius: var(--radius-pill); background: var(--color-on-dark); border: 0;
+  }
+  .ns-vplayer__seek:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-300); outline-offset: var(--focus-ring-offset); }
+  .ns-vplayer__time {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-on-dark-border-hover);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Settings: speed and quality, as a native <details> so Esc and click-away
+     come from the platform. */
+  .ns-vplayer__menu { position: relative; flex: none; }
+  .ns-vplayer__menu > summary { list-style: none; cursor: pointer; }
+  .ns-vplayer__menu > summary::-webkit-details-marker { display: none; }
+  .ns-vplayer__panel {
+    position: absolute; inset-block-end: calc(100% + var(--space-2)); inset-inline-end: 0;
+    z-index: var(--z-dropdown); min-inline-size: 9rem;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  .ns-vplayer__opt {
+    display: flex; align-items: center; gap: var(--space-2); inline-size: 100%;
+    padding: var(--space-1-5) var(--space-2);
+    border: 0; border-radius: var(--radius-sm); background: none; cursor: pointer;
+    font-size: var(--size-small); color: var(--color-ink); text-align: start;
+  }
+  .ns-vplayer__opt:hover { background: var(--color-surface-sunken); }
+  .ns-vplayer__opt[aria-checked="true"] { color: var(--color-brand-600); font-weight: var(--weight-medium); }
+  [data-theme="dark"] .ns-vplayer__opt[aria-checked="true"] { color: var(--color-brand-300); }
+
+  /* --- Chapters -----------------------------------------------------------
+     Timestamps as a real list of buttons, below the player rather than
+     hovering over it. A chapter list is content: it is how a reader decides
+     whether to watch at all, it should be readable without playing, and it
+     should be in the page for search engines and for anyone who never presses
+     play. Hiding it inside the video is the common mistake. */
+  .ns-vchapters { list-style: none; margin: 0; padding: 0; border-block-start: 1px solid var(--color-border); }
+  .ns-vchapters__item + .ns-vchapters__item { border-block-start: 1px solid var(--color-border); }
+  .ns-vchapters__btn {
+    display: flex; align-items: baseline; gap: var(--space-3); inline-size: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 0; background: none; cursor: pointer; text-align: start;
+    font-size: var(--size-small); color: var(--color-ink);
+    box-shadow: inset 2px 0 0 transparent;
+    transition: background var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-vchapters__btn:hover { background: var(--color-surface-sunken); }
+  .ns-vchapters__item[aria-current="true"] .ns-vchapters__btn {
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+    background: var(--color-surface-sunken);
+  }
+  .ns-vchapters__time {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-vchapters__title { min-inline-size: 0; }
+
 }

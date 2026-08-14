@@ -1,0 +1,25 @@
+<!-- Segmented control — one choice from two to four, where the options are a
+     VIEW rather than data.
+
+     Real radios in a fieldset: arrow-key navigation, form submission and
+     grouping all come from the platform, and it works with no JS. Four is the
+     ceiling — past that the labels get too short to read.
+
+     Framework-agnostic markup: the same .ns-* classes the styleguide renders.
+     Ghost: paste into a partial. Next.js: prefer the React component. -->
+
+<fieldset class="ns-segmented">
+  <label class="ns-segmented__option"><input type="radio" name="view" checked><span><i class="ph ph-squares-four" aria-hidden="true"></i>Grid</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="view"><span><i class="ph ph-rows" aria-hidden="true"></i>List</span></label>
+</fieldset>
+<fieldset class="ns-segmented">
+  <label class="ns-segmented__option"><input type="radio" name="scope" checked><span>All</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="scope"><span>In progress</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="scope"><span>Complete</span></label>
+</fieldset>
+
+<fieldset class="ns-segmented">
+  <label class="ns-segmented__option"><input type="radio" name="plan" checked><span>Monthly</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="plan"><span>Yearly</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="plan" disabled><span>Lifetime</span></label>
+</fieldset>

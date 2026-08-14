@@ -1,7 +1,7 @@
 {
   "name": "@namaste-salesforce/design-system",
-  "version": "2.3.0",
-  "description": "NS Design System \u2014 the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
+  "version": "3.0.0",
+  "description": "NS Design System — the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -17,6 +17,7 @@
     "scripts",
     "docs",
     "styles.css",
+    "tailwind.entry.css",
     "gulpfile.mjs",
     "readme.md",
     "LIVE.md",
@@ -30,6 +31,8 @@
     "./styles.css": "./styles.css",
     "./dist/namaste-ui.css": "./dist/namaste-ui.css",
     "./dist/namaste-ui.min.css": "./dist/namaste-ui.min.css",
+    "./dist/namaste-ui.tailwind.css": "./dist/namaste-ui.tailwind.css",
+    "./dist/namaste-ui.tailwind.min.css": "./dist/namaste-ui.tailwind.min.css",
     "./tokens/tailwind.css": "./tokens/tailwind.css",
     "./tokens/tokens.json": "./tokens/tokens.json",
     "./components/*": "./components/*",
@@ -47,7 +50,6 @@
     "serve": "node scripts/serve.mjs",
     "build:tokens": "node scripts/build-tokens.mjs",
     "build:css": "node scripts/build-css.mjs",
-    "build:fonts": "python3 scripts/build-fonts.py",
     "build:preview": "node scripts/build-preview.mjs",
     "build:site": "node scripts/build-site.mjs",
     "check:tokens": "node scripts/build-tokens.mjs --check",
@@ -55,7 +57,10 @@
     "check:components": "node scripts/check-components.mjs",
     "check:palette": "node scripts/check-palette.mjs",
     "check:css": "node scripts/build-css.mjs --check",
-    "prepublishOnly": "gulp build && gulp check"
+    "prepublishOnly": "gulp build && gulp check",
+    "check:cascade": "node scripts/check-cascade.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "check:markup": "node scripts/check-markup.mjs"
   },
   "author": {
     "name": "Swarnil Singhai",
@@ -92,10 +97,12 @@
     }
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
     "cssnano": "7.1.2",
+    "esbuild": "^0.25.0",
+    "gulp": "5.0.1",
     "postcss": "^8.5.10",
     "postcss-import": "^16.1.0",
-    "esbuild": "^0.25.0",
-    "gulp": "5.0.1"
+    "tailwindcss": "^4.3.3"
   }
 }

@@ -1,0 +1,26 @@
+<!-- Combobox — type-ahead over a known list.
+
+     A real <input> plus a role=listbox, not a custom widget: autofill, IME,
+     mobile keyboards and paste all keep working. aria-expanded lives on the
+     input and aria-activedescendant points at the highlighted option, so the
+     highlight is never a class the assistive layer cannot see.
+     Needs JS to filter; without it the input still submits its value.
+
+     Framework-agnostic markup: the same .ns-* classes the styleguide renders.
+     Ghost: paste into a partial. Next.js: prefer the React component. -->
+
+<div class="ns-combobox">
+  <input class="ns-input" type="text" role="combobox" aria-expanded="true" aria-controls="cb-list" aria-autocomplete="list" value="apex" autocomplete="off">
+  <ul class="ns-combobox__list" id="cb-list" role="listbox">
+    <li class="ns-combobox__option" role="option" aria-selected="true"><span><span class="ns-combobox__match">Apex</span> fundamentals</span><span class="ns-combobox__meta">12 lessons</span></li>
+    <li class="ns-combobox__option" role="option" aria-selected="false"><span><span class="ns-combobox__match">Apex</span> triggers in depth</span><span class="ns-combobox__meta">8 lessons</span></li>
+    <li class="ns-combobox__option" role="option" aria-selected="false"><span>Testing <span class="ns-combobox__match">Apex</span></span><span class="ns-combobox__meta">6 lessons</span></li>
+  </ul>
+</div>
+
+<div class="ns-combobox">
+  <input class="ns-input" type="text" role="combobox" aria-expanded="true" aria-controls="cb-empty" value="vlocity" autocomplete="off">
+  <ul class="ns-combobox__list" id="cb-empty" role="listbox">
+    <li class="ns-combobox__empty" role="option" aria-selected="false">No course matches <strong>vlocity</strong>.</li>
+  </ul>
+</div>

@@ -2,7 +2,27 @@
    Import this in the Ghost theme and in the Next.js LMS. Order matters:
    tokens define the vocabulary, base applies it to bare elements, then the
    component layer uses both. Tailwind users additionally import
-   tokens/tailwind.css to get the matching utility namespace. */
+   tokens/tailwind.css to get the matching utility namespace.
+
+   The @layer statement below is the whole override contract, so it comes
+   first (a bare @layer statement is one of the two things allowed to precede
+   @import). It declares the order explicitly rather than letting it fall out
+   of source order:
+
+     theme          Tailwind's @theme variables.
+     base           Preflight + tokens/base.css — bare element defaults.
+     ns-components  This design system. Its own layer, NOT the generic
+                    `components` one, so a consuming app's components beat
+                    ours instead of the winner depending on import order.
+     components     The consuming app's own component classes.
+     utilities      Tailwind utilities — always last, so p-4 / hidden /
+                    bg-brand-500 beat any DS default with no !important.
+
+   Nothing outside a layer. An unlayered rule beats every layered rule
+   regardless of specificity, so a single stray one silently breaks the
+   contract above — scripts/lint-principles.mjs enforces this. */
+@layer theme, base, ns-components, components, utilities;
+
 @import "./tokens/colors.css";
 @import "./tokens/dataviz.css";
 @import "./tokens/spacing.css";
@@ -11,7 +31,13 @@
 @import "./tokens/typography.css";
 @import "./tokens/effects.css";
 @import "./tokens/base.css";
-@import "./icons/phosphor.css";
-@import "./icons/icons-gap.css";
-@import "./patterns/patterns.css";
+
+/* Layered at the import site, not inside the files: phosphor.css is generated
+   by scripts/subset-icons.py, so a regeneration would drop an edit made in it.
+   Both icon files must land in the SAME layer — icons-gap.css overrides
+   phosphor.css purely by source order at equal specificity. */
+@import "./icons/phosphor.css" layer(ns-components);
+@import "./icons/icons-gap.css" layer(ns-components);
+@import "./patterns/patterns.css" layer(ns-components);
+
 @import "./components/css/index.css";

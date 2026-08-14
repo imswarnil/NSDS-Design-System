@@ -1,51 +1,45 @@
 <!-- @dsCard group="Type" viewport="760x520" name="Text Effects" subtitle="Highlight, strike, circle, frame, scan and scramble — each drawn once, over text that already reads without it" -->
-<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
-<style>
-body{margin:0;padding:22px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:15px;line-height:1.7}
-.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 10px}
-.row{margin:0 0 22px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-.note{font-size:12px;color:var(--color-muted);margin:6px 0 0}
-h3{font-family:var(--font-heading);font-size:var(--size-h3);margin:0 0 8px}
-</style></head><body>
-<div class="grid">
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+</head>
+<body class="m-0 p-[22px] bg-surface text-ink font-sans text-body leading-body">
+<div class="grid grid-cols-2 gap-[26px]">
 <div>
-  <div class="row">
-    <p class="k">Highlight — <code>.ns-mark</code></p>
+  <div class="mb-[22px]">
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Highlight — <code>.ns-mark</code></p>
     <p>The one rule that matters here: <mark class="ns-mark ns-mark--animate">a highlighter marks a phrase</mark>, never a paragraph. Four tints exist so a page can mark two different things: <mark class="ns-mark ns-mark--success">shipped</mark>, <mark class="ns-mark ns-mark--warning">deprecated</mark>, <mark class="ns-mark ns-mark--error">removed</mark>.</p>
-    <p class="note">Real <code>&lt;mark&gt;</code> elements. Turn the stylesheet off and the emphasis survives.</p>
+    <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">Real <code>&lt;mark&gt;</code> elements. Turn the stylesheet off and the emphasis survives.</p>
   </div>
 
-  <div class="row">
-    <p class="k">Strike — <code>.ns-strike</code></p>
+  <div class="mb-[22px]">
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Strike — <code>.ns-strike</code></p>
     <p>The correction pattern: <s class="ns-strike ns-strike--animate ns-strike--muted">Trailhead is the only way in</s> <strong>there are three ways in</strong>.</p>
-    <p class="note">Wrapped in <code>&lt;s&gt;</code>/<code>&lt;del&gt;</code>. <code>text-decoration</code> cannot animate, so the rule is drawn — which is also the only way to get the pen-stroke overshoot.</p>
+    <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">Wrapped in <code>&lt;s&gt;</code>/<code>&lt;del&gt;</code>. <code>text-decoration</code> cannot animate, so the rule is drawn — which is also the only way to get the pen-stroke overshoot.</p>
   </div>
 
-  <div class="row">
-    <p class="k">Circle — <code>.ns-circle</code></p>
+  <div class="mb-[22px]">
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Circle — <code>.ns-circle</code></p>
     <p>Bulkify <span class="ns-circle ns-circle--animate">every trigger<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 C216,42 150,54 92,52 C40,50 4,42 8,28 C11,16 60,6 130,8"/></svg></span> — the circle is for one phrase per screen.</p>
-    <p class="note">An inline SVG path, not a border-radius pseudo-element: a real path can be wonky, and a perfect CSS ellipse always looks like a validation error.</p>
+    <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">An inline SVG path, not a border-radius pseudo-element: a real path can be wonky, and a perfect CSS ellipse always looks like a validation error.</p>
   </div>
 </div>
 
 <div>
-  <div class="row">
-    <p class="k">Frame — <code>.ns-frame</code></p>
+  <div class="mb-[22px]">
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Frame — <code>.ns-frame</code></p>
     <p><span class="ns-frame ns-frame--animate">Governor limits</span> &nbsp; <span class="ns-frame ns-frame--brackets">RunLocalTests</span> &nbsp; <span class="ns-frame ns-frame--quiet">optional</span></p>
-    <p class="note">Two pseudo-elements drawing two sides each, so the frame traces round the word instead of fading in finished. <code>--brackets</code> is the console read.</p>
+    <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">Two pseudo-elements drawing two sides each, so the frame traces round the word instead of fading in finished. <code>--brackets</code> is the console read.</p>
   </div>
 
-  <div class="row">
-    <p class="k">Scan line — <code>.ns-scan</code></p>
-    <h3 class="ns-scan ns-scan--lines">Developer Console</h3>
-    <p class="note">A CRT pass over display type. The band is masked so it brightens the glyphs rather than sitting on them — and it runs twice, then stops. Display sizes only: visible raster over body copy is a legibility problem.</p>
+  <div class="mb-[22px]">
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Scan line — <code>.ns-scan</code></p>
+    <h3 class="ns-scan ns-scan--lines font-heading text-h3 m-0 mb-2">Developer Console</h3>
+    <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">A CRT pass over display type. The band is masked so it brightens the glyphs rather than sitting on them — and it runs twice, then stops. Display sizes only: visible raster over body copy is a legibility problem.</p>
   </div>
 
-  <div class="row">
-    <p class="k">Scramble — <code>.ns-scramble</code></p>
-    <h3 class="ns-scramble">Metadata deploy complete</h3>
-    <p class="note">Characters settle left to right. It re-fires when a breakpoint re-wraps the line, so a responsive reflow reads as deliberate instead of as a jump. Without JS it is just text.</p>
+  <div class="mb-[22px]">
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Scramble — <code>.ns-scramble</code></p>
+    <h3 class="ns-scramble font-heading text-h3 m-0 mb-2">Metadata deploy complete</h3>
+    <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">Characters settle left to right. It re-fires when a breakpoint re-wraps the line, so a responsive reflow reads as deliberate instead of as a jump. Without JS it is just text.</p>
   </div>
 </div>
 </div>

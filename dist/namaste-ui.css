@@ -4,11 +4,32 @@
  * .ns-* classes so a component is one thing with two renderers.
  * MIT © Swarnil Singhai
  */
+
+@layer theme, base, ns-components, components, utilities;
 /* NS Design System — single stylesheet entry point.
    Import this in the Ghost theme and in the Next.js LMS. Order matters:
    tokens define the vocabulary, base applies it to bare elements, then the
    component layer uses both. Tailwind users additionally import
-   tokens/tailwind.css to get the matching utility namespace. */
+   tokens/tailwind.css to get the matching utility namespace.
+
+   The @layer statement below is the whole override contract, so it comes
+   first (a bare @layer statement is one of the two things allowed to precede
+   @import). It declares the order explicitly rather than letting it fall out
+   of source order:
+
+     theme          Tailwind's @theme variables.
+     base           Preflight + tokens/base.css — bare element defaults.
+     ns-components  This design system. Its own layer, NOT the generic
+                    `components` one, so a consuming app's components beat
+                    ours instead of the winner depending on import order.
+     components     The consuming app's own component classes.
+     utilities      Tailwind utilities — always last, so p-4 / hidden /
+                    bg-brand-500 beat any DS default with no !important.
+
+   Nothing outside a layer. An unlayered rule beats every layered rule
+   regardless of specificity, so a single stray one silently breaks the
+   contract above — scripts/lint-principles.mjs enforces this. */
+
 /* NS Design System — color tokens. Source of truth: imswarnil/Namaste-Salesforce
    assets/css/screen.css (@theme block) + assets/css/theme/tokens.css.
    Extended for the "Developer Console" principle set (see readme.md § Design
@@ -106,7 +127,6 @@
   --ns-muted: #5c5a57;
   --ns-label: #45566b; /* mono/uppercase structural-label ink */
   --ns-grid: rgba(3, 45, 96, 0.055); /* hairline grid tint, light */
-  color-scheme: light;
 
   /* Ink that sits ON a filled surface rather than on the page.
      These are deliberately NOT theme-reactive: brand blue is the same blue in
@@ -181,7 +201,6 @@
   /* Darker, not lighter: on a navy page the scrim still has to read as the
      page receding behind the modal. */
   --ns-scrim: rgb(2 8 15 / 0.6);
-  color-scheme: dark;
 
   /* Status ink lightens on the navy console surface — the light-mode inks
      are far too dark to read on #051222. */
@@ -436,54 +455,82 @@
   :target,
   h1[id], h2[id], h3[id], h4[id] { scroll-margin-top: calc(var(--navbar-h) + var(--space-4)); }
 }
-/* The N&M type system — three custom-named cuts, self-hosted variable woff2s.
-   Built on SIL OFL 1.1 faces (Manrope, Nunito Sans, Red Hat Mono), renamed in
-   the font name tables per the OFL's derivative-work terms; the credit lives
-   in each file's nameID 3. Latin subset only — re-subset upstream if a page
-   ever needs extended coverage. Files + weight documentation: fonts/README.md */
+/* The type system — two self-hosted variable woff2s and one system stack.
+   =========================================================================
+     Switzer    sans   — the whole interface AND the reading layer. One face
+                         at two volumes rather than a display/text pair.
+     Sentient   serif  — the editorial voice: pull-quotes, drop caps,
+                         section quotations. The register that quotes.
+     (mono)     system — ui-monospace and the platform's own console face.
+
+   Both are Indian Type Foundry faces from Fontshare, under the Fontshare Free
+   Font EULA: free for personal AND commercial use, any medium, self-hosting
+   explicitly permitted. The EULA travels with them in fonts/FONTSHARE-EULA.txt
+   and must stay there. Subset to latin (+ the punctuation and arrows the UI
+   actually draws) — 69 KB for the pair. Re-subset upstream if a page ever
+   needs extended coverage; see fonts/README.md.
+
+   MONO IS DELIBERATELY NOT SHIPPED. Every index, timestamp, duration, kicker
+   and status in this system runs through the mono face — it is the material
+   Principle 2 is made of — but it is always set in short, tracked, uppercase
+   runs where the platform's own console face is not merely adequate, it is
+   more familiar to the reader than anything we could ship. Spending ~22 KB to
+   make "12:40" look marginally more on-brand is not a trade this system makes.
+   The consequence to know: mono renders as SF Mono on macOS, Consolas on
+   Windows, and whatever the distro sets on Linux, so mono column widths are
+   not identical across platforms. Never rely on a mono run being an exact
+   width; the tabular-nums in tokens/base.css is what keeps digits aligned. */
 @font-face {
-  font-family: "N&M Display";
-  src: url("../fonts/nmdisplay-var-latin.woff2") format("woff2-variations"), url("../fonts/nmdisplay-var-latin.woff2") format("woff2");
-  font-weight: 200 800;
+  font-family: "Switzer";
+  src: url("../fonts/switzer-var-latin.woff2") format("woff2-variations"), url("../fonts/switzer-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "N&M Text";
-  src: url("../fonts/nmtext-var-latin.woff2") format("woff2-variations"), url("../fonts/nmtext-var-latin.woff2") format("woff2");
-  font-weight: 200 1000;
+  font-family: "Sentient";
+  src: url("../fonts/sentient-var-latin.woff2") format("woff2-variations"), url("../fonts/sentient-var-latin.woff2") format("woff2");
+  font-weight: 200 700;
   font-style: normal;
   font-display: swap;
 }
+/* Metric-matched system fallback so text does not jump when Switzer arrives.
+   Switzer is a fairly narrow, tall-x-height grotesque; these overrides pull
+   Helvetica/Arial onto the same line rhythm so the swap is not a reflow. */
 @font-face {
-  font-family: "N&M Mono";
-  src: url("../fonts/nmmono-var-latin.woff2") format("woff2-variations"), url("../fonts/nmmono-var-latin.woff2") format("woff2");
-  font-weight: 300 700;
-  font-style: normal;
-  font-display: swap;
-}
-/* Metric-matched system fallback so text doesn't jump when N&M Text arrives.
-   Nunito Sans runs a little wider and taller than Helvetica/Arial; these
-   overrides pull the fallback to the same line rhythm. */
-@font-face {
-  font-family: "N&M Text Fallback";
+  font-family: "Switzer Fallback";
   src: local("Helvetica Neue"), local("Arial"), local("Segoe UI"), local("Roboto");
-  size-adjust: 104%;
+  size-adjust: 99%;
   ascent-override: 97%;
-  descent-override: 34%;
+  descent-override: 24%;
   line-gap-override: 0%;
 }
 :root {
   /* Private source layer — see the note in tokens/colors.css for why the
      names Tailwind's @theme owns are aliased rather than declared directly. */
-  --ns-font-sans: "N&M Text", "N&M Text Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* The N&M pairing: N&M Display headings (Manrope cut — tight, geometric,
-     but warm) over N&M Text body (Nunito Sans cut — the friendliest reading
-     face that still holds a grid) over N&M Mono data (Red Hat Mono cut).
-     All three share open, rounded counters, so the system reads as one
-     family at three volumes rather than three fonts negotiating. */
-  --ns-font-heading: "N&M Display", "N&M Text", "N&M Text Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --ns-font-mono: "N&M Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ns-font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Switzer twice, not a display/text pair. The old system ran two cuts —
+     one to speak, one to explain — and the seam between them had to be
+     managed at every size. One well-drawn grotesque across the whole range,
+     separated by WEIGHT and SIZE rather than by face, is both quieter and one
+     fewer download. Heading and body therefore resolve to the same stack;
+     --font-heading survives as a name so components do not all have to change
+     and so a future display face is one token away. */
+  --ns-font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Not shipped — see the note in tokens/fonts.css for why. */
+  --ns-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* The fourth voice: the editorial register. Display speaks, Text explains,
+     Mono keeps the records — and Serif is the one that quotes. Pull-quotes,
+     drop caps and section quotations are the places a page stops arguing and
+     starts citing, and setting them in the same grotesque as the argument is
+     why they never quite read as a different voice.
+
+     Sentient (Indian Type Foundry, Fontshare) is shipped for it — 40 KB, and
+     it is the one place a second face genuinely earns its download, because
+     the whole point of the register is that it is NOT the interface face.
+     Georgia leads the fallbacks so the device still reads as a quotation
+     before Sentient arrives. */
+  --ns-font-serif: "Sentient", Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   /* The subsetted Phosphor icon font. Named as a token so a component that
      draws a glyph in a ::before does not hard-code the family — and so
      swapping the icon set is one edit rather than a grep. */
@@ -493,38 +540,50 @@
   --font-sans: var(--ns-font-sans);
   --font-heading: var(--ns-font-heading);
   --font-mono: var(--ns-font-mono);
+  --font-serif: var(--ns-font-serif);
   --font-icon: var(--ns-font-icon);
   --font-icon-fill: var(--ns-font-icon-fill);
 
-  /* Prose scale — N&M Display for headings, N&M Text for reading copy.
-     A ~1.25 fourth from body upward, which is wide enough that h2 and h3
-     are never mistaken for each other and tight enough that a lesson page
-     does not shout. The two fluid steps at the top are the only clamps: a
-     hero has to survive a 360px phone, a paragraph does not. */
-  --size-mega: clamp(3rem, 2rem + 5.4vw, 6.5rem);      /* poster / campaign only */
-  --size-display: clamp(2.25rem, 1.9rem + 1.5vw, 3.25rem);
-  --size-h1: 2.25rem;
-  --size-h2: 1.75rem;
-  --size-h3: 1.375rem;
-  --size-h4: 1.125rem;
-  --size-body-lg: 1.125rem;
-  --size-body: 1rem;
-  --size-small: 0.875rem;
-  --size-fine: 0.8125rem;                              /* legal, footnotes, captions under data */
+  /* The scale — compact, after openclaw/carapace.
+     =======================================================================
+     Reading copy is 14px, not 16px, and that is the single decision this
+     scale turns on. This is a product with an app inside it: a lesson player,
+     an admin, dashboards, tables, a curriculum rail. At 16px those surfaces
+     had to fight the base size with --size-small everywhere, which is the
+     tell that the base was wrong for most of the screens being built.
+
+     The steps are Carapace's — 12 / 13 / 14 / 15 / 17 / 20 / 24 / 32 — a
+     tighter progression than a 1.25 fourth, which is what lets h3 and h4 sit
+     one step apart without either shouting. Above 32 the ratio opens back up,
+     because a hero is a different job from a heading.
+
+     The two fluid steps at the top are the only clamps: a hero has to survive
+     a 360px phone, a paragraph does not. */
+  --size-mega: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);   /* poster / campaign only */
+  --size-display: clamp(2rem, 1.55rem + 2.2vw, 3.25rem);
+  --size-h1: 2.5rem;        /* 40 */
+  --size-h2: 2rem;          /* 32 — carapace 3xl */
+  --size-h3: 1.5rem;        /* 24 — carapace 2xl */
+  --size-h4: 1.25rem;       /* 20 — carapace xl  */
+  --size-body-lg: 1.0625rem;/* 17 — carapace lg — ledes and standfirsts */
+  --size-body: 0.875rem;    /* 14 — carapace base — THE READING SIZE */
+  --size-small: 0.8125rem;  /* 13 — carapace sm */
+  --size-fine: 0.75rem;     /* 12 — carapace xs — legal, footnotes, captions */
 
   /* Mono/label scale — the structural material. Every index, timestamp,
      duration, kicker and status runs through this, uppercase + tracked,
      never the prose font. This is what separates a row of data from a
      sentence, on sight, without color. */
-  --size-label: 0.6875rem;
-  --size-mono: 0.9rem;
+  --size-label: 0.6875rem;   /* 11 — the mono label floor, below the prose scale */
+  --size-mono: 0.8125rem;    /* 13 — mono data sits with --size-small */
   --ns-tracking-label: 0.09em;
   --tracking-label: var(--ns-tracking-label);
-  /* Display/heading tracking. N&M Display (Manrope) sets loose at display
-     sizes like most geometric grotesques — large headings tighten slightly.
-     Body text is NEVER tightened; negative tracking at reading sizes hurts
-     legibility. */
-  --ns-tracking-tight: -0.022em;
+  /* Display/heading tracking. Switzer sets fairly tight already, so this is a
+     smaller correction than the previous cut needed — but large sizes still
+     want closing up, because tracking is drawn for text sizes and does not
+     scale down on its own. Body text is NEVER tightened; negative tracking at
+     reading sizes hurts legibility, and at 14px there is even less room. */
+  --ns-tracking-tight: -0.01em;
   --tracking-tight: var(--ns-tracking-tight);
   --weight-label: 700;
 
@@ -539,7 +598,7 @@
 
   --ns-leading-tight: 1.15;
   --ns-leading-heading: 1.3;
-  --ns-leading-body: 1.65;
+  --ns-leading-body: 1.6;
   /* Mega display sets solid — descenders and ascenders are allowed to touch,
      which is the point of setting type that large. */
   --ns-leading-mega: 0.94;
@@ -549,20 +608,22 @@
   --leading-body: var(--ns-leading-body);
   --leading-mega: var(--ns-leading-mega);
 
-  --weight-heading: 800;
-  --weight-semibold: 700;
-  --weight-medium: 600;
-  /* THE READING WEIGHT. N&M Text's true Regular (400) is optically light:
-     at 16px on white it renders grey rather than black, which is the single
-     most common complaint about a Nunito-derived face. 450 — "Book" — is one
-     interpolation step up a variable axis, free in bytes, and it is what body
-     copy is set at everywhere in this system. 400 survives for dense UI
-     furniture (table cells, meta rows) where light IS the intent.
-     See fonts/README.md § "Why body copy is 450, not 400". */
-  --weight-body: 450;
+  /* Switzer has a real 500, which the previous family did not — so the ramp
+     is 400 / 500 / 600 / 700 rather than 400 / 600 / 700 / 800. Every step is
+     a weight the designer drew, not an interpolation we chose. */
+  --weight-heading: 700;
+  --weight-semibold: 600;
+  --weight-medium: 500;
+  /* THE READING WEIGHT. Switzer's Regular is properly fitted at 400 — it does
+     not render grey the way the previous Nunito-derived cut did, which is the
+     entire reason that face needed 450 ("Book"). Carrying 450 over would have
+     been cargo: an interpolation step invented to fix a problem this family
+     does not have, and half a step heavier than the designer drew.
+     See fonts/README.md § "Why body copy is 400". */
+  --weight-body: 400;
   --weight-regular: 400;
-  /* Inline <strong> inside 450 body needs 600, not 700: against Book, Bold
-     is a shout, and against 400 it was already too big a jump. */
+  /* Inline <strong> against Switzer 400 wants 600, not 700: Switzer's Bold is
+     considerably heavier than the old cut's and reads as a shout inline. */
   --weight-body-strong: 600;
 
   /* Reading measure, as a character count rather than a width — this is the
@@ -636,24 +697,39 @@
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+/* In @layer base, not unlayered. The !important is what makes this work and it
+   keeps working from here: an important declaration beats a normal one from any
+   layer, so this still overrides a Tailwind `transition-duration` utility. Being
+   layered just stops it from being the single strongest thing in the stylesheet. */
+@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
 }
 @layer base {
+  /* color-scheme lives here rather than beside the colour tokens because it is
+     a real declaration, not a custom property — unlayered it would outrank
+     Tailwind's scheme-* utilities. tokens/colors.css is now custom properties
+     only, which is also what keeps scripts/build-tokens.mjs' :root parser
+     honest. */
+  :root { color-scheme: light; }
+  [data-theme="dark"] { color-scheme: dark; }
   html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   /* The shorthand cannot carry font-weight AND line-height in the form we
      want, so weight is its own declaration: 450 (Book) is the reading weight
      — see tokens/typography.css and fonts/README.md for why 400 is not. */
   body { background-color: var(--color-surface); color: var(--color-ink); font: var(--size-body)/var(--leading-body) var(--font-sans); font-weight: var(--weight-body); transition: background-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out); margin: 0; }
-  /* Subpixel smoothing stays ON in light mode. Forcing greyscale antialiasing
-     globally is the other half of why this face read thin: on macOS it strips
-     roughly a quarter-step of apparent weight off every glyph. On the navy
-     dark surface the trade flips — subpixel fringing on light-on-dark text is
-     a real artifact, and the thinning is welcome there. */
-  [data-theme="dark"] body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  /* Greyscale antialiasing in BOTH modes, which is a reversal.
+     The old rule kept subpixel smoothing on in light mode deliberately: it
+     adds roughly a quarter-step of apparent weight, and the previous
+     Nunito-derived cut needed it because its Regular read thin. Switzer does
+     not — it is a properly fitted grotesque, and at the 14px reading size that
+     borrowed weight is what makes body copy look semi-bold on macOS.
+     The compensation outlived the face it was compensating for. */
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: var(--weight-heading); margin: 0; text-wrap: balance; line-height: var(--leading-heading); }
-  /* Tighten only the sizes where N&M Display's metrics run loose. h4+ stays
+  /* Tighten only the sizes where Switzer's metrics run loose. h4+ stays
      at natural tracking — it sits close to body size. */
   h1, h2, h3 { letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
   h4, h5, h6 { font-weight: var(--weight-semibold); }
@@ -680,11 +756,27 @@
   [data-theme="dark"] a { color: var(--color-brand-300); }
   code, kbd, .ns-label { font-family: var(--font-mono); }
 }
+
+/* Layered at the import site, not inside the files: phosphor.css is generated
+   by scripts/subset-icons.py, so a regeneration would drop an edit made in it.
+   Both icon files must land in the SAME layer — icons-gap.css overrides
+   phosphor.css purely by source order at equal specificity. */
+
+@layer ns-components{
+
 /* ============================================================================
    icons.css — GENERATED by scripts/subset-icons.py. Do not edit by hand.
    ----------------------------------------------------------------------------
    Phosphor v2.1.2, subsetted to only the glyphs this theme uses and
    served from our own origin. Re-run the script after adding a new ph-* class.
+
+   TWO HAND-EDITS survive here and must be re-applied after regeneration
+   (scripts/lint-principles.mjs fails the build if they are lost):
+   the `font-family: ... !important` on .ph and .ph-fill is DELETED. An
+   !important in a lower layer beats a normal declaration in a higher one, so
+   it defeated every font-* utility. It is also unnecessary: .ph and .ph-fill
+   are never used on the same element (.ph-fill carries its own
+   .ph-fill.ph-*:before glyph rules), so they never compete.
    ========================================================================== */
 
 @font-face {
@@ -696,7 +788,7 @@
 }
 
 .ph {
-  font-family: "Phosphor" !important;
+  font-family: "Phosphor";
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -849,7 +941,7 @@
 }
 
 .ph-fill {
-  font-family: "Phosphor-Fill" !important;
+  font-family: "Phosphor-Fill";
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -992,6 +1084,10 @@
 .ph-fill.ph-x:before { content: "\e4f6"; }
 .ph-fill.ph-x-circle:before { content: "\e4f8"; }
 .ph-fill.ph-x-logo:before { content: "\e4bc"; }
+}
+
+@layer ns-components{
+
 /* NS Design System — Phosphor subset gap-fill.
    =========================================================================
    The self-hosted Phosphor woff2 was subsetted upstream to the glyphs the
@@ -1104,6 +1200,10 @@
   --phgap-trash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 6.5h15M9.5 6.5v-2h5v2M6.5 6.5l1 13.5a1 1 0 0 0 1 .9h7a1 1 0 0 0 1-.9l1-13.5'/%3E%3Cpath d='M10 10.5v6M14 10.5v6'/%3E%3C/svg%3E");
   --phgap-upload-simple: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14.5v-10M8.2 8.2 12 4.4l3.8 3.8'/%3E%3Cpath d='M4.5 15.5v3A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-3'/%3E%3C/svg%3E");
 }
+}
+
+@layer ns-components{
+
 /* NS Design System — background patterns.
    =========================================================================
    Nine abstract, hairline-only pattern canvases for hero bands, collection
@@ -1216,6 +1316,8 @@
   inline-size: 2px;
   background-image: repeating-linear-gradient(to bottom, var(--ns-pattern-ink-2) 0 2px, transparent 2px 9px);
 }
+}
+
 /* NS Design System — component layer entry point.
    =========================================================================
    These classes are the shared contract between the Ghost theme (Handlebars)
@@ -1224,8 +1326,16 @@
    with two renderers, not two components that look alike until someone
    changes one of them.
 
-   Everything is inside @layer components, below Tailwind's utilities layer,
-   so a utility always wins over a component default without !important.
+   Everything is inside @layer ns-components — declared in styles.css as
+   `theme, base, ns-components, components, utilities`. That places it below
+   Tailwind's utilities layer, so a utility always wins over a component
+   default without !important, and below a consuming app's own `components`
+   layer, so the app can override us without an import-order race.
+
+   Consequence worth knowing: specificity inside this file set no longer
+   competes with anything outside it. A (0,5,0) `:has()` chain in navbar.css
+   still loses to a plain `.p-4` utility. Specificity here only decides
+   DS-vs-DS conflicts.
 
    Rules for adding to this layer:
    - `ns-` prefix, BEM-ish: .ns-block, .ns-block__element, .ns-block--modifier.
@@ -1245,7 +1355,7 @@
    Principle 3 in practice: `primary` is the ONLY solid fill. If a screen has
    two solid buttons, one of them is wrong — not "a bit loud", wrong, because
    the whole colour system rests on solid-blue meaning "the one action". */
-@layer components {
+@layer ns-components {
 
   .ns-btn {
     display: inline-flex; align-items: center; justify-content: center;
@@ -1430,7 +1540,7 @@
    - Labels are real <label> elements. Placeholder text is never a label:
      it disappears exactly when the user needs it most.
    - Controls hold --target-comfy (40px) so they are thumb-sized on mobile. */
-@layer components {
+@layer ns-components {
 
   /* --- Field wrapper ------------------------------------------------------
      label → control → (help | error). One vertical rhythm for every field so
@@ -1582,19 +1692,25 @@
 
   .ns-checkbox::before {
     content: ""; inline-size: 0.625rem; block-size: 0.625rem;
-    transform: scale(0); transform-origin: center;
-    transition: transform var(--duration-fast) var(--ease-out);
     box-shadow: inset 1em 1em var(--color-on-brand);
+    /* Collapsed onto the tick's own start corner — same six points as the
+       checked path, so the two interpolate and the stroke sweeps out of the
+       corner instead of popping in scaled from nothing. */
+    clip-path: polygon(14% 44%, 0 65%, 14% 44%, 14% 44%, 14% 44%, 14% 44%);
+    transition: clip-path var(--duration-base) var(--ease-out);
+  }
+  .ns-checkbox:checked::before {
     clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 84% 0, 39% 66%);
   }
-  .ns-checkbox:checked::before { transform: scale(1); }
+  /* Indeterminate is a state, not a step on the way to checked, so it wipes in
+     from the leading edge rather than drawing like a tick. */
   .ns-checkbox:indeterminate::before {
-    transform: scale(1); clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%);
+    clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%);
   }
   .ns-radio::before {
     content: ""; inline-size: 0.5rem; block-size: 0.5rem;
     border-radius: var(--radius-pill); background: var(--color-on-brand);
-    transform: scale(0); transition: transform var(--duration-fast) var(--ease-out);
+    transform: scale(0); transition: transform var(--duration-base) var(--ease-out);
   }
   .ns-radio:checked::before { transform: scale(1); }
 
@@ -1632,11 +1748,16 @@
     inset-inline-start: 0.1875rem; translate: 0 -50%;
     inline-size: 0.875rem; block-size: 0.875rem;
     border-radius: var(--radius-pill); background: var(--color-muted);
-    transition: translate var(--duration-fast) var(--ease-out),
-                background-color var(--duration-fast) var(--ease-out);
+    /* The slide is the affordance — it is what tells the reader the setting
+       took effect, so it gets the full 180ms rather than the 120ms used for
+       hover states. Still one transform, still no bounce. */
+    transition: translate var(--duration-base) var(--ease-out),
+                inline-size var(--duration-fast) var(--ease-out),
+                background-color var(--duration-base) var(--ease-out);
   }
   .ns-switch:checked { background: var(--color-brand-500); border-color: var(--color-brand-500); }
   .ns-switch:checked::before { translate: 1rem -50%; background: var(--color-on-brand); }
+  .ns-switch:active::before { inline-size: 1.0625rem; }
   .ns-switch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-switch:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -1664,6 +1785,197 @@
     .ns-checkbox::before, .ns-radio::before, .ns-switch::before { box-shadow: none; background: ButtonFace; }
     .ns-input, .ns-select, .ns-textarea { border-color: ButtonBorder; }
   }
+
+  /* --- Combobox -----------------------------------------------------------
+     Type-ahead over a known list: a course, a tag, an org. A <select> cannot
+     be searched and a bare text input cannot be trusted, so this is the third
+     thing — an input that filters a listbox and commits a real value.
+
+     It is a TEXT INPUT plus a listbox, not a custom widget: the field is a
+     real <input> so autofill, IME, mobile keyboards and paste all behave, and
+     the list is role="listbox" with role="option" children so the pairing is
+     announced. aria-expanded lives on the input, aria-activedescendant points
+     at the highlighted option — the highlight is therefore never a class the
+     assistive layer cannot see.
+
+     Requires JS to filter. Without it the input still submits its value, which
+     is the correct degradation: a search box that types is better than a
+     combobox that does nothing. */
+  .ns-combobox { position: relative; display: block; inline-size: 100%; }
+  .ns-combobox__list {
+    position: absolute; inset-block-start: calc(100% + var(--space-1)); inset-inline: 0;
+    z-index: var(--z-dropdown);
+    margin: 0; padding: var(--space-1); list-style: none;
+    max-block-size: 16rem; overflow-y: auto;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  .ns-combobox__list[hidden] { display: none; }
+  .ns-combobox__option {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--size-small); color: var(--color-ink); cursor: pointer;
+  }
+  /* aria-selected is the highlight, and it is driven by the same attribute
+     aria-activedescendant points at — one source, so the visible row and the
+     announced row cannot disagree. Hover is deliberately the same treatment:
+     pointer and keyboard should not show two different "current" rows. */
+  .ns-combobox__option:hover,
+  .ns-combobox__option[aria-selected="true"] { background: var(--color-surface-sunken); }
+  .ns-combobox__option[aria-selected="true"] { box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-combobox__match { font-weight: var(--weight-body-strong); color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-combobox__match { color: var(--color-brand-300); }
+  .ns-combobox__meta { margin-inline-start: auto; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+  .ns-combobox__empty { padding: var(--space-3); font-size: var(--size-small); color: var(--color-muted); }
+
+  /* --- Segmented control --------------------------------------------------
+     One choice from two to four, where the options are a VIEW rather than
+     data: grid or list, week or month, all or mine. The whole set is visible
+     at once, which is the difference from a select, and it is one connected
+     object, which is the difference from a row of buttons.
+
+     Real radios inside a fieldset. That is what makes it work with no JS,
+     arrow-key between options for free, and submit inside a form. .ns-choice
+     in catalog.css is the multi-select filter chip — related, not the same.
+
+     Four options is the ceiling: past that the labels get too short to read
+     and it wants to be a select. */
+  .ns-segmented {
+    display: inline-flex; padding: 2px; gap: 2px;
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface-sunken);
+  }
+  .ns-segmented__option { position: relative; display: flex; }
+  .ns-segmented__option input {
+    position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer;
+  }
+  .ns-segmented__option span {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    color: var(--color-muted); white-space: nowrap;
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-segmented__option input:checked + span {
+    background: var(--color-surface); color: var(--color-brand-600);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  [data-theme="dark"] .ns-segmented__option input:checked + span { color: var(--color-brand-300); }
+  .ns-segmented__option input:focus-visible + span {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset);
+  }
+  .ns-segmented__option input:disabled + span { opacity: var(--opacity-disabled); cursor: not-allowed; }
+
+  /* --- Date field ---------------------------------------------------------
+     Native <input type="date">, styled to match .ns-input. Deliberately not a
+     custom calendar: the platform picker is localised, keyboard-operable,
+     understands the user's date format and is the one their phone already
+     shows. A hand-built one is a month of work to be worse in every locale.
+
+     The only real work here is the picker indicator, which UA-styles to a
+     grey glyph that ignores dark mode. */
+  .ns-datefield { position: relative; display: block; }
+  .ns-datefield input { font-family: var(--font-mono); font-size: var(--size-mono); }
+  .ns-datefield input::-webkit-calendar-picker-indicator {
+    cursor: pointer; opacity: 0.55;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-datefield input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+  /* The UA glyph is a black raster; in dark mode it disappears against the
+     navy, so it is inverted rather than recoloured (there is no property that
+     recolours it). */
+  [data-theme="dark"] .ns-datefield input::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+
+  /* --- Calendar -----------------------------------------------------------
+     The themed date picker, replacing the native one on every device.
+
+     That is a real trade and worth stating: the platform picker is localised,
+     keyboard-operable and already familiar, and it costs nothing. Replacing it
+     means owning all of that ourselves. What we get back is a picker that
+     matches the system on desktop, where the native control is a grey box that
+     ignores the theme entirely.
+
+     What that obligation actually is, in this component:
+       - Month and weekday names come from Intl, never a hard-coded array, so
+         the grid is correct in every locale and the week can start on Monday
+         or Sunday according to the reader's own.
+       - A roving tabindex, not aria-activedescendant: only one day is ever
+         tabbable, and arrow keys move real focus. Screen readers announce the
+         focused cell without any live-region trickery.
+       - A real <table> with column headers, so the day/column relationship is
+         announced rather than implied by position.
+       - Esc closes and returns focus to the field. Always.
+
+     Sizing is in ch/rem rather than fixed px so a 2-digit day and the weekday
+     header stay aligned when the reader zooms text. */
+  .ns-calendar {
+    position: absolute; inset-block-start: calc(100% + var(--space-1)); inset-inline-start: 0;
+    z-index: var(--z-dropdown);
+    inline-size: max-content; padding: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  .ns-calendar[hidden] { display: none; }
+  .ns-calendar__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-block-end: var(--space-2);
+  }
+  /* The month is a live region: arrow-keying across a month boundary changes
+     it, and without this the only feedback is visual. */
+  .ns-calendar__month {
+    flex: 1; text-align: center;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-calendar__nav {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 1.75rem; block-size: 1.75rem; flex: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: none; cursor: pointer; color: var(--color-muted);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-calendar__nav:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-calendar__grid { border-collapse: collapse; }
+  .ns-calendar__dow {
+    inline-size: 2.25rem; padding-block-end: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-calendar__day {
+    inline-size: 2.25rem; block-size: 2.25rem; padding: 0;
+    border: 0; border-radius: var(--radius-sm);
+    background: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-small);
+    font-variant-numeric: tabular-nums; color: var(--color-ink);
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-calendar__day:hover { background: var(--color-surface-sunken); }
+  .ns-calendar__day:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  /* Today is a ring, selected is a fill. Two different claims — "where you
+     are in the world" and "what you chose" — so they must be able to coexist
+     on the same cell without either winning. */
+  .ns-calendar__day[data-today] { box-shadow: inset 0 0 0 1px var(--color-brand-500); }
+  .ns-calendar__day[aria-selected="true"] { background: var(--color-brand-500); color: var(--color-on-brand); }
+  .ns-calendar__day[data-outside] { color: var(--color-label); }
+  .ns-calendar__day:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
+  .ns-calendar__day:disabled:hover { background: none; }
+  .ns-calendar__foot {
+    display: flex; gap: var(--space-2); margin-block-start: var(--space-2);
+    padding-block-start: var(--space-2); border-block-start: 1px solid var(--color-border);
+  }
+
 }
 /* NS Design System — overlays: modal, drawer, popover, menu, tooltip.
    =========================================================================
@@ -1684,7 +1996,7 @@
 
    All of them close on Esc and return focus to the trigger. If you build a
    new overlay that does not, it is not finished. */
-@layer components {
+@layer ns-components {
 
   /* --- Scrim --------------------------------------------------------------
      Deliberately a plain low-opacity navy rather than a blur: backdrop-filter
@@ -1841,7 +2153,7 @@
    Every pattern here also carries its state in an ARIA attribute
    (aria-selected, aria-expanded, aria-current) rather than a class, so the
    visual state and the announced state are the same fact. */
-@layer components {
+@layer ns-components {
 
   /* --- Tabs ---------------------------------------------------------------
      Markup: role="tablist" > role="tab"[aria-selected][aria-controls], with
@@ -1961,6 +2273,22 @@
     padding-inline-end: var(--space-4);
   }
   .ns-sidebar__group + .ns-sidebar__group { margin-block-start: var(--space-6); }
+  /* A group may be a <details>, which makes the section collapsible with no
+     JS and no ARIA of its own. assets/js/rail.js then opens the one holding
+     aria-current="page" and closes the rest — but the markup ships every
+     section `open`, so a JS failure leaves the nav long rather than hidden. */
+  details.ns-sidebar__group > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    cursor: pointer; list-style: none;
+    border-radius: var(--radius-sm);
+  }
+  details.ns-sidebar__group > summary::-webkit-details-marker { display: none; }
+  details.ns-sidebar__group > summary:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  .ns-sidebar__twist { flex: none; margin-inline-start: auto; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  details.ns-sidebar__group[open] > summary .ns-sidebar__twist { rotate: 90deg; }
   .ns-sidebar__label {
     display: block; margin-block-end: var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -1990,6 +2318,151 @@
      The bar and its family — brand, links, dropdown and mega panels, account
      menu, theme toggle, hamburger, mobile sheet — live in navbar.css. It is
      enough component for its own file. */
+
+  /* --- Tree ---------------------------------------------------------------
+     Nested, expandable structure: a metadata explorer, a repo of examples, a
+     nested category list. Every branch is a native <details>, so open/closed
+     state, keyboard operation and in-page find all come from the platform and
+     the component ships no JS at all.
+
+     Indentation is a padding on the nested list rather than a margin per node,
+     so a node's hover and focus ring still span the full width of the rail —
+     an indented hover target that starts 2rem in is a hit area people miss.
+
+     Depth is capped in practice at three: past that the indent eats the label
+     and it wants to be a search box. */
+  .ns-tree { list-style: none; margin: 0; padding: 0; font-size: var(--size-small); }
+  .ns-tree ul { list-style: none; margin: 0; padding-inline-start: var(--space-4); }
+  .ns-tree__node,
+  .ns-tree__branch > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--color-muted); text-decoration: none; cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-tree__branch > summary { list-style: none; }
+  .ns-tree__branch > summary::-webkit-details-marker { display: none; }
+  .ns-tree__node:hover, .ns-tree__branch > summary:hover { background: var(--color-surface-sunken); color: var(--color-ink); }
+  .ns-tree__node:focus-visible, .ns-tree__branch > summary:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  /* aria-current, not a class — the highlighted node and the announced node
+     come from one attribute. */
+  .ns-tree__node[aria-current] {
+    color: var(--color-brand-600); font-weight: var(--weight-medium);
+    background: var(--color-surface-sunken);
+  }
+  [data-theme="dark"] .ns-tree__node[aria-current] { color: var(--color-brand-300); }
+  .ns-tree__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-tree__branch[open] > summary .ns-tree__twist { rotate: 90deg; }
+  .ns-tree__icon { flex: none; color: var(--color-label); }
+  .ns-tree__label { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-tree__meta { margin-inline-start: auto; flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+
+
+  /* --- Tabs: variations ---------------------------------------------------
+     The default is the underline row. These change WHERE the tabs sit or how
+     dense they are, never what they mean. */
+
+  /* Vertical: the tablist becomes a rail. Set aria-orientation="vertical" as
+     well — assets/js/tabs.js reads it to swap the arrow keys, and a vertical
+     tablist that answers to Left/Right is a keyboard trap in slow motion. */
+  .ns-tabs--vertical {
+    flex-direction: column; gap: 0;
+    border-block-end: 0; border-inline-end: 1px solid var(--color-border);
+    overflow-x: visible; min-inline-size: 10rem;
+  }
+  .ns-tabs--vertical .ns-tab {
+    text-align: start; box-shadow: none;
+    border-inline-end: 2px solid transparent; margin-inline-end: -1px;
+  }
+  .ns-tabs--vertical .ns-tab[aria-selected="true"] { border-inline-end-color: var(--color-brand-500); }
+  /* The layout wrapper, so a vertical tablist and its panel sit side by side
+     without every consumer re-inventing the flex row. */
+  .ns-tabs-layout { display: flex; align-items: flex-start; gap: var(--space-6); }
+  .ns-tabs-layout > [role="tabpanel"] { flex: 1; min-inline-size: 0; }
+
+  /* Pill: a segmented row on a sunken ground. For switching a VIEW rather than
+     a section of content — closer to Segmented control, and the choice between
+     them is whether the thing being switched is a panel or a rendering. */
+  .ns-tabs--pill {
+    border-block-end: 0; gap: 2px; padding: 2px;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    display: inline-flex;
+  }
+  .ns-tabs--pill .ns-tab {
+    box-shadow: none; border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3); min-block-size: 0;
+  }
+  .ns-tabs--pill .ns-tab[aria-selected="true"] {
+    background: var(--color-surface); color: var(--color-brand-600);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  [data-theme="dark"] .ns-tabs--pill .ns-tab[aria-selected="true"] { color: var(--color-brand-300); }
+
+  /* Icon + label. The label stays: an icon-only tab row is a memory test. */
+  .ns-tab__icon { margin-inline-end: var(--space-2); }
+  /* A count rides the tab, which is the one piece of information a tab can
+     carry without becoming a menu. */
+  .ns-tab__count {
+    margin-inline-start: var(--space-2); padding-inline: var(--space-1-5);
+    border-radius: var(--radius-pill); background: var(--color-surface-sunken);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-tabs--compact .ns-tab { padding: var(--space-2) var(--space-3); min-block-size: 0; }
+
+  /* --- Accordion: variations ---------------------------------------------- */
+  /* Flush: no outer box, rules only. For a FAQ inside prose, where a boxed
+     accordion reads as a widget dropped into the article. */
+  .ns-accordion--flush { border: 0; border-radius: 0; }
+  .ns-accordion--flush .ns-accordion__item { border-block-start: 1px solid var(--color-border); }
+  .ns-accordion--flush .ns-accordion__item:last-child { border-block-end: 1px solid var(--color-border); }
+  .ns-accordion--flush .ns-accordion__summary { padding-inline: 0; }
+  .ns-accordion--flush .ns-accordion__content { padding-inline: 0; }
+  /* Separated: each item its own card, for items that are peers rather than
+     one list — pricing tiers, module summaries. */
+  .ns-accordion--separated { border: 0; overflow: visible; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-accordion--separated .ns-accordion__item {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden;
+  }
+  /* The marker. --plus swaps the caret for a plus that becomes a minus, which
+     reads as "expand" rather than "reveal below" — better when the panel is
+     long enough that the reader will scroll away from the trigger. */
+  .ns-accordion__marker { flex: none; margin-inline-start: auto; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-accordion__item[open] > .ns-accordion__summary .ns-accordion__marker { rotate: 180deg; }
+  .ns-accordion--plus .ns-accordion__marker { transition: rotate var(--duration-base) var(--ease-out); }
+  .ns-accordion--plus .ns-accordion__item[open] > .ns-accordion__summary .ns-accordion__marker { rotate: 135deg; }
+
+  /* --- Pagination: variations --------------------------------------------- */
+  /* Prev/next are real labelled controls, not bare arrows: "‹ ›" alone is
+     unreadable to a screen reader and ambiguous in RTL. */
+  .ns-pagination__step {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    color: var(--color-ink); text-decoration: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-pagination__step:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  /* A disabled step stays in the DOM so the row does not reflow at the ends —
+     aria-disabled rather than removing it, and not a link. */
+  .ns-pagination__step[aria-disabled="true"] { opacity: var(--opacity-disabled); pointer-events: none; }
+  .ns-pagination__spacer { flex: 1; }
+  /* Compact: "Page 3 of 24" with steps either side. For mobile, and for any
+     set where numbered links would wrap to two rows. */
+  .ns-pagination--compact { justify-content: space-between; }
+  .ns-pagination__status {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
 }
 /* NS Design System — the top bar and everything that hangs off it.
    =========================================================================
@@ -2018,7 +2491,7 @@
       never a filled pill; Principle 3 keeps solid blue for the one action on
       the screen, and the page you are already on is not an action. The same
       device turns up as the left accent inside menus and the mobile sheet. */
-@layer components {
+@layer ns-components {
 
   /* --- Announcement bar ---------------------------------------------------
      Sits ABOVE the navbar and scrolls away with the page — it is news, not
@@ -2902,7 +3375,7 @@
 
    Every status treatment here pairs color with a SHAPE (icon or dot) and
    TEXT, so it survives colorblindness, grayscale printing and forced-colors. */
-@layer components {
+@layer ns-components {
 
   /* --- Inline status ------------------------------------------------------
      The atom: a dot plus mono text. Used in lists, table cells, course rows.
@@ -3105,14 +3578,59 @@
 @keyframes ns-shimmer { to { background-position: -200% 0; } }
 @keyframes ns-preloader-pulse { 0%, 100% { opacity: 1; transform: none; } 50% { opacity: 0.55; transform: scale(0.92); } }
 @keyframes ns-preloader-flip { 0% { transform: rotateY(0); } 55%, 100% { transform: rotateY(360deg); } }
-@keyframes ns-preloader-bar { from { transform: translateX(-110%); } to { transform: translateX(260%); } }
+@keyframes ns-preloader-bar { from { transform: translateX(-110%); } to { transform: translateX(260%); } 
+  /* --- Banner -------------------------------------------------------------
+     An APP-level notice: trial ending, scheduled maintenance, "you are viewing
+     a draft". Full-bleed, above the content, persistent until dismissed.
+
+     Not an Alert and not a Toast, and the distinction is about scope and
+     lifetime rather than looks. An alert is inline and belongs to the thing it
+     sits next to — a form, a lesson. A toast is transient and belongs to an
+     action just taken. A banner belongs to the whole session: it is true
+     regardless of which page you are on, and it stays true until something
+     external changes.
+
+     One at a time. Two stacked banners is a product telling the reader it has
+     lost track of what matters. */
+  .ns-banner {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--gutter);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-size: var(--size-small); color: var(--color-ink);
+  }
+  .ns-banner__icon { flex: none; color: var(--color-label); }
+  .ns-banner__text { min-inline-size: 0; }
+  /* The action is a link, not a button: a banner's action always goes
+     somewhere (billing, the schedule, the published version). */
+  .ns-banner__action { flex: none; margin-inline-start: auto; }
+  .ns-banner__dismiss {
+    flex: none; display: inline-flex; border: 0; background: none;
+    padding: var(--space-1); margin: 0; cursor: pointer; color: var(--color-label);
+    border-radius: var(--radius-sm);
+  }
+  .ns-banner__dismiss:hover { color: var(--color-ink); background: var(--color-surface); }
+  /* Status variants recolour the leading EDGE, not the whole strip — a
+     full-width warning wash is the loudest thing a page can do, and this is
+     ambient information, not an emergency. */
+  .ns-banner--info    { box-shadow: inset 3px 0 0 var(--color-brand-500); }
+  .ns-banner--success { box-shadow: inset 3px 0 0 var(--color-success); }
+  .ns-banner--warning { box-shadow: inset 3px 0 0 var(--color-warning); }
+  .ns-banner--error   { box-shadow: inset 3px 0 0 var(--color-error); }
+  .ns-banner--dark {
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    border-block-end-color: transparent;
+  }
+  .ns-banner--dark .ns-banner__icon, .ns-banner--dark .ns-banner__dismiss { color: var(--color-on-dark); }
+
+}
 /* NS Design System — progress, and the table primitive.
    =========================================================================
    Progress is the LMS's single most important piece of feedback: "how far
    through this course am I" is the question the product exists to answer.
    It appears on course cards, the player, the roadmap and the account page,
    so it gets a real primitive rather than an ad-hoc div per screen. */
-@layer components {
+@layer ns-components {
 
   /* --- Progress bar -------------------------------------------------------
      Built on native <progress> so the value is exposed to assistive tech and
@@ -3163,6 +3681,62 @@
   }
   .ns-steps__tick[data-state="done"] { background: var(--color-brand-500); }
   .ns-steps__tick[data-state="current"] { background: var(--color-brand-500); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-500) 25%, transparent); }
+
+  /* --- Stepper ------------------------------------------------------------
+     Horizontal step progress: mono-numbered nodes on a connecting hairline.
+
+     Three things in this system show sequence and they are NOT interchangeable
+     — .ns-steps is an anonymous tick bar (how far, no labels), .ns-curriculum
+     is the lesson list (many rows, scrollable), and this is a short labelled
+     flow the reader is currently inside: checkout, onboarding, a quiz.
+     Past four or five steps it stops being readable; use the curriculum.
+
+     State lives on data-state (done / current), never a class, so the visual
+     and the announced state come from one attribute. A done step shows a check
+     instead of its number — the number is no longer the useful information. */
+  .ns-stepper {
+    /* One source for the node size: the connector centres itself on the node,
+       so a hard-coded half-height would silently decentre the moment the node
+       changed. --_node is the only number here. */
+    --_node: 1.75rem;
+    /* Full width by default: the connectors are flex:1, so without a width to
+       distribute they collapse to min-inline-size and the flow reads as three
+       loose dots rather than a path. */
+    inline-size: 100%;
+    display: flex; align-items: flex-start; list-style: none; margin: 0; padding: 0;
+  }
+  .ns-stepper__step {
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--space-2); min-inline-size: 4rem;
+  }
+  .ns-stepper__node {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: var(--_node); block-size: var(--_node); flex: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-stepper__step[data-state="done"] .ns-stepper__node,
+  .ns-stepper__step[data-state="current"] .ns-stepper__node {
+    background: var(--color-brand-500); color: var(--color-on-brand); box-shadow: none;
+  }
+  .ns-stepper__label { font-size: var(--size-label); color: var(--color-muted); text-align: center; }
+  .ns-stepper__step[data-state="current"] .ns-stepper__label {
+    color: var(--color-ink); font-weight: var(--weight-label);
+  }
+  /* The connector is a list item too, so the flex row stays one level deep and
+     the nodes keep their even spacing. margin-block-start centres it on the
+     node rather than the label below it. */
+  .ns-stepper__line {
+    flex: 1; block-size: 2px; min-inline-size: var(--space-2);
+    margin-block-start: calc((var(--_node) / 2) - 1px);
+    background: var(--color-border);
+  }
+  .ns-stepper__line[data-state="done"] { background: var(--color-brand-500); }
 
   /* --- Meter --------------------------------------------------------------
      For a score against a threshold (quiz result, code coverage) — native
@@ -3227,6 +3801,186 @@
     padding: var(--space-3) var(--space-4);
     color: var(--color-muted); font-size: var(--size-small);
   }
+
+  /* --- Timeline -----------------------------------------------------------
+     A vertical feed of things that happened: course activity, a changelog, a
+     learner's history, an order trail. Reverse-chronological by convention.
+
+     Not the Stepper and not the Curriculum. The Stepper is a short flow the
+     reader is INSIDE and can finish; the Curriculum is a list they can act on.
+     A timeline is the past — nothing here is clickable by default, and every
+     entry is stamped with a mono time, which is Principle 2 again: the time is
+     data, the title is writing.
+
+     The rail is a ::before on the item rather than a border on the list, so
+     the last entry can stop it cleanly instead of trailing a stub past the
+     final dot. */
+  .ns-timeline { list-style: none; margin: 0; padding: 0; }
+  .ns-timeline__item {
+    position: relative;
+    padding-inline-start: var(--space-6);
+    padding-block-end: var(--space-5);
+  }
+  .ns-timeline__item::before {
+    content: ""; position: absolute;
+    inset-inline-start: 3px; inset-block: var(--space-4) 0;
+    inline-size: 1px; background: var(--color-border);
+  }
+  .ns-timeline__item:last-child { padding-block-end: 0; }
+  .ns-timeline__item:last-child::before { display: none; }
+  .ns-timeline__dot {
+    position: absolute; inset-inline-start: 0; inset-block-start: var(--space-1-5);
+    inline-size: 7px; block-size: 7px; border-radius: var(--radius-pill);
+    background: var(--color-border);
+  }
+  /* Only the entry that is still happening takes the signal colour. A feed
+     where every dot is brand blue is a feed with no emphasis at all. */
+  .ns-timeline__item[data-state="current"] .ns-timeline__dot { background: var(--color-brand-500); }
+  .ns-timeline__item[data-state="done"] .ns-timeline__dot { background: var(--color-success); }
+  .ns-timeline__time {
+    display: block;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-timeline__title { font-size: var(--size-small); font-weight: var(--weight-medium); color: var(--color-ink); }
+  .ns-timeline__text { font-size: var(--size-small); color: var(--color-muted); margin-block-start: var(--space-1); }
+
+
+  /* --- Leaderboard --------------------------------------------------------
+     Ranked standing: a cohort, a challenge, a streak table.
+
+     The design is mostly about restraint, because a leaderboard is the one
+     component in a learning product that can actively demotivate. Choices
+     that follow from that:
+
+       - No podium, no medals, no gold/silver/bronze. Rank is a mono number,
+         which is what it is. The top three get a slightly stronger ink and
+         nothing else.
+       - The CURRENT reader's row is marked and, in the truncated variant,
+         pinned — a leaderboard that shows the top ten and cuts off a reader
+         at 340 tells them only that they are nobody.
+       - Movement is an arrow AND a number, never colour alone.
+       - An ordered list, because the ordering is the entire content.
+
+     Scores are tabular-nums and end-aligned so the column is scannable, which
+     is the one thing a leaderboard has to get right. */
+  .ns-leaderboard { list-style: none; margin: 0; padding: 0; }
+  .ns-leaderboard__row {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: inherit; text-decoration: none;
+  }
+  .ns-leaderboard__row:last-child { border-block-end: 1px solid var(--color-border); }
+  a.ns-leaderboard__row:hover { background: var(--color-surface-sunken); }
+  .ns-leaderboard__rank {
+    flex: none; min-inline-size: 2.25rem;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* Top three: a stronger ink, and that is all. */
+  .ns-leaderboard__row[data-rank="1"] .ns-leaderboard__rank,
+  .ns-leaderboard__row[data-rank="2"] .ns-leaderboard__rank,
+  .ns-leaderboard__row[data-rank="3"] .ns-leaderboard__rank { color: var(--color-ink); }
+  .ns-leaderboard__name { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-ink); }
+  .ns-leaderboard__meta { flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+  .ns-leaderboard__score {
+    flex: none; margin-inline-start: auto; text-align: end;
+    font-family: var(--font-mono); font-size: var(--size-small);
+    font-weight: var(--weight-label); color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  /* Movement: arrow AND number. Colour is the third signal, never the first. */
+  .ns-leaderboard__move { flex: none; min-inline-size: 3rem; text-align: end; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
+  .ns-leaderboard__move[data-dir="up"] { color: var(--color-success-ink); }
+  .ns-leaderboard__move[data-dir="down"] { color: var(--color-error-ink); }
+  /* The reader's own row. Marked with the same 2px brand edge as every other
+     current-item in the system, so it needs no explanation. */
+  .ns-leaderboard__row[aria-current="true"] {
+    background: var(--color-surface-raised);
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+  }
+  /* Pinned: the reader's row held at the bottom when they are outside the
+     visible top N. The gap says "there is a jump here" without pretending the
+     ranks are contiguous. */
+  .ns-leaderboard__gap {
+    padding: var(--space-1) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label); text-align: center;
+  }
+
+
+  /* --- Progress: motion and states ----------------------------------------
+     A determinate bar animates its width because the number changed — that is
+     feedback, so it stays inside the interaction budget. The indeterminate one
+     is a different claim ("something is happening, duration unknown") and is
+     the only place here that loops. */
+  .ns-progress--indeterminate::-webkit-progress-value { animation: ns-progress-slide 1.2s var(--ease-out) infinite; } /* lint-ok: an indeterminate loop is a duration-unknown signal, not a UI response */
+  .ns-progress--indeterminate::-moz-progress-bar { animation: ns-progress-slide 1.2s var(--ease-out) infinite; } /* lint-ok: see above */
+
+  /* --- Stepper: vertical --------------------------------------------------
+     The same flow turned on its side, for a narrow rail or a checkout summary
+     where the labels are too long to sit side by side. */
+  .ns-stepper--vertical { flex-direction: column; align-items: stretch; inline-size: auto; }
+  .ns-stepper--vertical .ns-stepper__step {
+    flex-direction: row; align-items: flex-start; gap: var(--space-3);
+    min-inline-size: 0; text-align: start;
+  }
+  .ns-stepper--vertical .ns-stepper__label { text-align: start; padding-block: var(--space-1); }
+  .ns-stepper--vertical .ns-stepper__line {
+    inline-size: 2px; block-size: auto; min-block-size: var(--space-4);
+    margin-block-start: 0; margin-inline-start: calc((var(--_node) / 2) - 1px);
+    flex: none;
+  }
+
+  /* --- Timeline: variations ----------------------------------------------- */
+  /* An icon in place of the dot, when the KIND of event matters as much as the
+     fact of it — deployed, reverted, commented. The icon sits on the surface
+     so the rail appears to pass behind it. */
+  .ns-timeline__icon {
+    position: absolute; inset-inline-start: 0; inset-block-start: var(--space-1);
+    inline-size: 1.25rem; block-size: 1.25rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface); color: var(--color-label);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-size: var(--size-label);
+  }
+  .ns-timeline--icons .ns-timeline__item { padding-inline-start: var(--space-8); }
+  .ns-timeline--icons .ns-timeline__item::before { inset-inline-start: calc(0.625rem - 1px); inset-block-start: var(--space-6); }
+  .ns-timeline__item[data-state="current"] .ns-timeline__icon { background: var(--color-brand-500); color: var(--color-on-brand); box-shadow: none; }
+  .ns-timeline__item[data-state="done"] .ns-timeline__icon { background: var(--color-success); color: var(--color-on-brand); box-shadow: none; }
+  /* A thumbnail per entry, for a release log or a design changelog. */
+  .ns-timeline__media {
+    display: block; inline-size: 100%; margin-block-start: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface-sunken);
+  }
+  /* Horizontal: a run of milestones on one rail. Scrolls rather than wraps —
+     a wrapped timeline stops being a timeline. Deliberately capped in scope:
+     it takes a time and a title, and nothing longer. */
+  .ns-timeline--horizontal {
+    display: flex; overflow-x: auto; gap: var(--space-6);
+    padding-block-start: var(--space-4); scrollbar-width: thin;
+  }
+  .ns-timeline--horizontal .ns-timeline__item {
+    flex: none; inline-size: 11rem; padding-inline-start: 0; padding-block-end: 0;
+  }
+  .ns-timeline--horizontal .ns-timeline__item::before {
+    inset-inline: 0.5rem auto; inset-block-start: 3px; inset-block-end: auto;
+    inline-size: calc(100% + var(--space-6)); block-size: 1px;
+  }
+  .ns-timeline--horizontal .ns-timeline__dot { inset-block-start: 0; }
+  .ns-timeline--horizontal .ns-timeline__time { margin-block-start: var(--space-3); }
+
+}
+
+@keyframes ns-progress-slide {
+  from { margin-inline-start: -40%; inline-size: 40%; }
+  to { margin-inline-start: 100%; inline-size: 40%; }
 }
 /* NS Design System — charts.
    =========================================================================
@@ -3245,7 +3999,7 @@
    surface; a 2px surface gap between touching fills; recessive hairline
    grid. Load animations are single-run, plain ease-out, and collapse under
    the global reduced-motion guard. */
-@layer components {
+@layer ns-components {
   .ns-chart {
     display: block;
     border: 1px solid var(--color-border);
@@ -3474,7 +4228,7 @@
    Principle 1 — the hairline is the structure: a card is a 1px border, a tag
    is a 1px border, a list row is a 1px rule; hover brightens a border to
    brand blue, nothing lifts. */
-@layer components {
+@layer ns-components {
 
   /* --- Card ---------------------------------------------------------------
      The generic surface. Hairline border, 6px radius, no shadow at rest;
@@ -3553,6 +4307,57 @@
   .ns-tag__x { display: inline-flex; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; color: var(--color-label); }
   .ns-tag__x:hover { color: var(--color-error-ink); }
 
+  /* --- Badge --------------------------------------------------------------
+     Status, told the way a build log tells it: a hairline box, mono text, and
+     a coloured DOT. Principle 3 — the colour is the dot, never a pastel fill
+     behind the words, so a row of badges stays one signal colour apart from
+     five competing washes. The text ink does not change with the variant
+     either; only the dot does.
+
+     Deliberately not .ns-tag: a tag is a noun the reader can click (a topic, a
+     filter), a badge is a state they cannot. Same shape, different contract. */
+  .ns-badge {
+    --_dot: var(--color-brand-500);
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5, 2px) var(--space-2);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-badge--accent  { --_dot: var(--color-accent-500); }
+  .ns-badge--success { --_dot: var(--color-success); }
+  .ns-badge--warning { --_dot: var(--color-warning); }
+  .ns-badge--error   { --_dot: var(--color-error); }
+  .ns-badge__dot {
+    inline-size: 6px; block-size: 6px; flex: none;
+    border-radius: var(--radius-pill); background: var(--_dot);
+  }
+  /* An icon replaces the dot rather than joining it — two status marks on one
+     badge is two claims about the same state. */
+  .ns-badge__icon { color: var(--_dot); font-size: 0.9rem; }
+
+  /* --- Chip ---------------------------------------------------------------
+     The icon tile that fronts a feature row or an empty state. Tinted from a
+     single hue via color-mix so the fill and its hairline are provably the
+     same colour at two strengths — no second token, no soft glow, and it
+     re-tints correctly when --_c is overridden. */
+  .ns-chip {
+    --_c: var(--color-brand-500);
+    --_size: 2.5rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--_size); block-size: var(--_size); flex: none;
+    border-radius: var(--radius-sm);
+    font-size: calc(var(--_size) * 0.42);
+    color: var(--_c);
+    background: color-mix(in srgb, var(--_c) 8%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_c) 30%, transparent);
+  }
+  .ns-chip--accent { --_c: var(--color-accent-500); }
+  .ns-chip--sm { --_size: 2rem; }
+  .ns-chip--lg { --_size: 3rem; }
+
   /* --- Avatar -------------------------------------------------------------
      People. Image or initials on a sunken disc; --ring draws course progress
      as a conic arc (the AvatarRing React component renders this markup).
@@ -3607,6 +4412,223 @@
   .ns-list--boxed .ns-list__row { padding-inline: var(--space-4); }
   .ns-list--boxed .ns-list__row:first-child { border-block-start: 0; }
   .ns-list--boxed .ns-list__row:last-child { border-block-end: 0; }
+
+  /* --- Logo ---------------------------------------------------------------
+     The wordmark lockup: the favicon asset plus the name. Never a pictorial
+     mark invented beyond that asset — see guidelines/brand-logo-lockups.
+
+     --size-* rather than a size prop: three fixed steps, because a lockup that
+     can be any pixel height is a lockup nobody can match across two products.
+     The text scales from the mark via --ns-logo-size, so the ratio the brand
+     guidelines specify holds at every step without being restated. */
+  .ns-logo {
+    --ns-logo-size: 1.5rem;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    font-size: calc(var(--ns-logo-size) * 0.66);
+    color: var(--color-ink); white-space: nowrap; text-decoration: none;
+  }
+  .ns-logo__mark { inline-size: var(--ns-logo-size); block-size: var(--ns-logo-size); flex: none; }
+  .ns-logo--sm { --ns-logo-size: 1.25rem; }
+  .ns-logo--lg { --ns-logo-size: 2rem; }
+  /* On a brand-900 band or a photographic hero the ink token would vanish, so
+     the lockup switches to the fixed on-dark ink rather than a theme-reactive
+     one — it must stay white in BOTH themes. */
+  .ns-logo--light { color: var(--color-on-dark); }
+  /* Icon-only. The name is still announced; only the glyph is drawn. */
+  .ns-logo--compact .ns-logo__text {
+    position: absolute; inline-size: 1px; block-size: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* --- Divider ------------------------------------------------------------
+     A rule between things. Principle 1 says the hairline IS the structure, so
+     this is the one component that is nothing but the hairline.
+
+     --labelled puts a mono cap in the gap — for "OR" between two sign-in
+     routes, or a date break in a feed. The label is real text between two
+     rules, not a background trick, so it survives being selected and copied. */
+  .ns-divider {
+    border: 0; border-block-start: 1px solid var(--color-border);
+    margin-block: var(--stack-md);
+  }
+  .ns-divider--tight { margin-block: var(--stack-sm); }
+  .ns-divider--labelled {
+    display: flex; align-items: center; gap: var(--space-3);
+    border-block-start: 0;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-divider--labelled::before,
+  .ns-divider--labelled::after {
+    content: ""; flex: 1; block-size: 1px; background: var(--color-border);
+  }
+
+  /* --- Kbd ----------------------------------------------------------------
+     A key, and sequences of keys. The editor and the admin both have
+     shortcuts and had no way to print one.
+
+     The key affordance is a 2px bottom border, not a shadow — the same
+     "borders, not depth" rule as everything else, and it reads as a keycap
+     because keycaps are lit from above. Real <kbd> elements, so the meaning
+     survives with CSS off. */
+  .ns-kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-inline-size: 1.5rem; padding: 0 var(--space-1-5);
+    border: 1px solid var(--color-border);
+    border-block-end-width: 2px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-raised);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); line-height: 1.6;
+    color: var(--color-ink); white-space: nowrap;
+  }
+  /* A chord (Cmd+K) versus a sequence (G then D) — the separator says which,
+     so it is content rather than a ::before nobody can change. */
+  .ns-kbd-seq { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .ns-kbd-seq__sep {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label);
+  }
+
+  /* --- Copy ---------------------------------------------------------------
+     Copy one short string: an org ID, an API key, a token name, a share link.
+     The code block has its own copy button because it copies a whole file;
+     this is the inline one for a value sitting in a table or a spec row.
+
+     data-copied is set by JS and drives the confirmation. It is an attribute
+     rather than a class so the same hook can carry aria-live text — a copy
+     button that only changes colour tells a screen-reader user nothing. */
+  .ns-copy {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5, 2px) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-copy:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-copy:hover { color: var(--color-brand-300); }
+  .ns-copy[data-copied] { border-color: var(--color-success); color: var(--color-success-ink); }
+  .ns-copy__value { color: var(--color-ink); }
+
+  /* --- Definition list ----------------------------------------------------
+     Term and value pairs: course specs, Salesforce metadata attributes, an
+     order summary. A real <dl>, because that is exactly what a <dl> is for
+     and screen readers announce the pairing.
+
+     Two columns on a wide surface, stacked below it — a 12rem term column is
+     unreadable on a phone. Terms are mono, which is Principle 2 doing its job:
+     the term is a key, the value is content, and the eye separates them
+     without a rule between. */
+  .ns-deflist {
+    display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+    gap: 0; margin: 0;
+  }
+  .ns-deflist dt {
+    padding-block: var(--space-2); padding-inline-end: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deflist dd {
+    margin: 0; padding-block: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: var(--color-ink); min-inline-size: 0;
+  }
+  .ns-deflist > dt:first-of-type, .ns-deflist > dt:first-of-type + dd { border-block-start: 0; }
+  .ns-deflist--stack { grid-template-columns: minmax(0, 1fr); }
+  .ns-deflist--stack dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
+  .ns-deflist--stack dd { border-block-start: 0; padding-block-start: var(--space-1); }
+  @media (max-width: 47.999rem) {
+    .ns-deflist { grid-template-columns: minmax(0, 1fr); }
+    .ns-deflist dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
+    .ns-deflist dd { border-block-start: 0; padding-block-start: var(--space-1); }
+  }
+
+
+  /* --- Marquee ------------------------------------------------------------
+     A continuously scrolling strip. Logos, credentials, certifications,
+     "now teaching" — content that is ambient rather than read.
+
+     TWO IDENTICAL TRACKS, translated 50%. That is the only implementation
+     that loops without a visible seam, and it is why the markup duplicates
+     its children: the second track is not decoration, it is the wrap.
+
+     Rules this component enforces rather than suggests:
+       - aria-hidden on the duplicate track, so nothing is announced twice.
+       - Never put information here that the reader needs. It is infinite: a
+         reader who looks away misses it and cannot get it back.
+       - Pauses on hover AND on focus-within, so a keyboard user can reach a
+         link inside it without chasing a moving target.
+       - Speed is a distance-per-second, not a UI timing — Principle 5 governs
+         response to input, and nothing here is responding to anything.
+
+     --window is the masked variant: the strip fades at both edges instead of
+     being cut by overflow, so it reads as a view onto something longer rather
+     than a box that clips. */
+  .ns-marquee {
+    display: flex; overflow: hidden;
+    --ns-marquee-speed: 40s;
+    --ns-marquee-gap: var(--space-10);
+  }
+  .ns-marquee__track {
+    display: flex; flex: none; align-items: center;
+    gap: var(--ns-marquee-gap); padding-inline-end: var(--ns-marquee-gap);
+    animation: marquee var(--ns-marquee-speed) linear infinite; /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+    min-inline-size: 100%;
+  }
+  .ns-marquee:hover .ns-marquee__track,
+  .ns-marquee:focus-within .ns-marquee__track { animation-play-state: paused; }
+  /* The fade is a mask, so it works over any background — a gradient overlay
+     would need to know the surface colour and would be wrong on a dark band. */
+  .ns-marquee--window { mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); } /* lint-ok: a mask's black is an alpha stop, not a colour */
+  .ns-marquee--reverse .ns-marquee__track { animation-direction: reverse; }
+  .ns-marquee--slow { --ns-marquee-speed: 70s; }
+  .ns-marquee--fast { --ns-marquee-speed: 22s; }
+  .ns-marquee--tight { --ns-marquee-gap: var(--space-6); }
+  /* Items: the mono credential voice by default, because that is what a strip
+     of partner names or certifications actually is. */
+  .ns-marquee__item {
+    flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-small);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-marquee__item:hover { color: var(--color-ink); }
+  /* Display scale, for a poster band. This is what .ns-kinetic in type-fx.css
+     does; that one stays because it is a TYPOGRAPHIC effect with its own
+     outline treatment — this is the general-purpose strip. */
+  .ns-marquee--display .ns-marquee__item {
+    font-family: var(--font-heading); font-size: var(--size-h2);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    text-transform: none; color: var(--color-ink);
+  }
+  .ns-marquee--display .ns-marquee__item--outline { color: transparent; -webkit-text-stroke: 1px var(--color-brand-500); }
+  .ns-marquee__logo { block-size: 1.5rem; inline-size: auto; opacity: 0.65; transition: opacity var(--duration-fast) var(--ease-out); }
+  a.ns-marquee__item:hover .ns-marquee__logo { opacity: 1; }
+
+
+  /* --- Table: variations --------------------------------------------------
+     No zebra striping anywhere, in any variant. Striping is a second
+     structuring device competing with the hairline (Principle 1), and with
+     mono numerals the rows already read as rows. */
+  .ns-table--compact th, .ns-table--compact td { padding-block: var(--space-1-5); }
+  .ns-table--bordered th, .ns-table--bordered td { border-inline-end: 1px solid var(--color-border); }
+  .ns-table--bordered th:last-child, .ns-table--bordered td:last-child { border-inline-end: 0; }
+  /* Key/value: a two-column spec table where the first column is the label.
+     Related to Definition list; use this one when it belongs in a table
+     because the rest of the page is tabular. */
+  .ns-table--keyvalue td:first-child, .ns-table--keyvalue th:first-child {
+    inline-size: 12rem; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+
 }
 /* NS Design System — LMS: course card, curriculum, lesson chrome, pages.
    =========================================================================
@@ -3627,7 +4649,7 @@
      Lesson nav       .ns-lesson-nav — prev/next by NAME, not by arrow
      Mobile panel     .ns-panelbar — where you are + a way to the list
      Page grids       .ns-course-detail · .ns-course-grid */
-@layer components {
+@layer ns-components {
 
   /* ======================================================= Course card ====
      A Card with course anatomy. Five shapes share one set of parts, because
@@ -4029,6 +5051,453 @@
     min-inline-size: 0;
   }
   .ns-course-strip > * { scroll-snap-align: start; }
+
+  /* --- Certificate --------------------------------------------------------
+     Proof of completion, in the Salesforce register: the navy console ground,
+     the hairline frame, mono for every piece of data, and a real credential ID
+     that can be verified.
+
+     Design decisions worth stating, because a certificate is the one artifact
+     here that leaves the product:
+
+       - It is a real document, not a picture of one. The name, course, date
+         and ID are text, so they are selectable, translatable, searchable and
+         readable by a screen reader. A rendered PNG is none of those.
+       - The credential ID is mono and prominent. It is the only part that
+         proves anything — a certificate without a verifiable ID is decoration,
+         and treating it as small print says the opposite.
+       - aspect-ratio rather than a fixed height, so it scales to any width and
+         still prints on one page.
+       - No gold, no ribbon, no serif flourish. The whole system's argument is
+         that credibility comes from precision, not ornament, and a certificate
+         is exactly where that argument is easiest to lose. */
+  .ns-certificate {
+    position: relative; overflow: hidden;
+    /* inline-size + flex:none are what make the ratio survive being dropped
+       into a flex container: in a column flex parent the item's main axis is
+       height, flex-basis resolves from CONTENT, and aspect-ratio loses. The
+       certificate then collapses to the height of its own header, which is
+       exactly what it did the first time it was rendered. */
+    inline-size: 100%; flex: none;
+    aspect-ratio: 297 / 210;                    /* A4 landscape */
+    display: flex; flex-direction: column;
+    padding: clamp(var(--space-5), 4cqi, var(--space-10));
+    container-type: inline-size;
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    border-radius: var(--radius-card);
+  }
+  /* The hairline grid motif, same device as the dark hero band — it is what
+     makes this read as part of the system rather than a stock template. */
+  .ns-certificate::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--color-on-dark-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-on-dark-border) 1px, transparent 1px);
+    background-size: var(--space-8) var(--space-8);
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, var(--color-ink) 0%, transparent 70%); /* lint-ok: mask alpha ramp, not a colour */
+  }
+  /* The inner rule is the frame. One hairline, inset — not a border on the
+     card, which would fight the radius. */
+  .ns-certificate::after {
+    content: ""; position: absolute; inset: var(--space-3); pointer-events: none;
+    border: 1px solid var(--color-on-dark-border); border-radius: var(--radius-sm);
+  }
+  .ns-certificate__inner { position: relative; display: flex; flex-direction: column; block-size: 100%; gap: var(--space-4); }
+  .ns-certificate__head { display: flex; align-items: center; gap: var(--space-3); }
+  .ns-certificate__mark { inline-size: 1.75rem; block-size: 1.75rem; flex: none; }
+  .ns-certificate__issuer {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-on-dark-border-hover);
+  }
+  /* Two columns: the award on the left, the proof on the right. A real
+     credential is half statement and half verification, and putting the seal
+     and the verify line in their own column is what stops them reading as
+     decoration around the name. */
+  .ns-certificate__body { flex: 1; display: flex; align-items: center; gap: clamp(var(--space-4), 4cqi, var(--space-10)); }
+  .ns-certificate__award { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-certificate__proof {
+    flex: none; inline-size: clamp(5rem, 22cqi, 9rem);
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-2);
+    text-align: center;
+  }
+  /* The seal. A ring and a mark, not a gilt rosette — the system's argument is
+     that credibility comes from precision, and a certificate is exactly where
+     that argument is easiest to lose. The ring is the brand hairline at 2px,
+     which is the same accent weight used everywhere else. */
+  .ns-certificate__seal {
+    inline-size: clamp(3rem, 13cqi, 5rem); aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--color-brand-400);
+    color: var(--color-brand-300);
+    font-size: clamp(1.25rem, 6cqi, 2.25rem);
+  }
+  .ns-certificate__verify {
+    font-family: var(--font-mono); font-size: clamp(0.45rem, 1.5cqi, var(--size-label));
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover); line-height: var(--leading-heading);
+    overflow-wrap: anywhere;
+  }
+  /* The credential tags — track, level, edition. Hairline chips on the dark
+     ground, mono, so they read as metadata rather than marketing badges. */
+  .ns-certificate__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-1); }
+  .ns-certificate__tag {
+    padding: 1px var(--space-2); border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-on-dark-border);
+    font-family: var(--font-mono); font-size: clamp(0.45rem, 1.5cqi, var(--size-label));
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover);
+  }
+  /* Signatory: a rule, a name, a role. The rule is above the name because that
+     is where a signature sits on paper, and the whole point of this block is
+     that it reads as a countersignature rather than another data field. */
+  .ns-certificate__sign { display: flex; flex-direction: column; gap: 2px; min-inline-size: 9rem; }
+  .ns-certificate__sign::before {
+    content: ""; display: block; inline-size: 100%; block-size: 1px;
+    background: var(--color-on-dark-border); margin-block-end: var(--space-1);
+  }
+  .ns-certificate__sign b { color: var(--color-on-dark); font-weight: var(--weight-label); }
+  .ns-certificate__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover);
+  }
+  /* Container query units, so the name scales with the certificate rather than
+     the viewport — it is rendered at card size in an account page and at full
+     width when printed, and a vw-based size would be wrong in one of them. */
+  .ns-certificate__name {
+    font-family: var(--font-heading); font-size: clamp(1.5rem, 7cqi, 3rem);
+    font-weight: var(--weight-heading); line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+  }
+  .ns-certificate__course { font-size: clamp(var(--size-small), 2.4cqi, var(--size-body-lg)); color: var(--color-on-dark); opacity: 0.8; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ text-wrap: pretty; }
+  .ns-certificate__foot {
+    display: flex; flex-wrap: wrap; gap: var(--space-5);
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid var(--color-on-dark-border);
+    font-family: var(--font-mono); font-size: clamp(0.5rem, 1.7cqi, var(--size-label));
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover); font-variant-numeric: tabular-nums;
+  }
+  .ns-certificate__field b { display: block; color: var(--color-on-dark); font-weight: var(--weight-label); }
+  .ns-certificate__id { margin-inline-start: auto; text-align: end; }
+  /* Print: the navy ground would empty a cartridge, and a certificate is meant
+     to be printed. Inverted to ink-on-paper with the frame kept. */
+  @media print {
+    .ns-certificate { background: var(--color-surface); color: var(--color-ink); aspect-ratio: auto; block-size: 100vh; }
+    .ns-certificate::before { display: none; }
+    .ns-certificate::after { border-color: var(--color-border); }
+    .ns-certificate__issuer, .ns-certificate__kicker, .ns-certificate__foot,
+    .ns-certificate__verify, .ns-certificate__tag { color: var(--color-label); }
+    .ns-certificate__course, .ns-certificate__field b, .ns-certificate__sign b { color: var(--color-ink); opacity: 1; }
+    .ns-certificate__foot { border-block-start-color: var(--color-border); }
+    .ns-certificate__seal { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+    .ns-certificate__tag { box-shadow: inset 0 0 0 1px var(--color-border); }
+    .ns-certificate__sign::before { background: var(--color-border); }
+  }
+
+}
+/* NS Design System — training: tracks, connected modules, units.
+   =========================================================================
+   The third content family, beside LMS and Blog. It is NOT a reskin of the
+   course player, and the difference is structural rather than decorative:
+
+     a COURSE   is a sequence of lessons you watch. One spine, video-first,
+                the rail exists to tell you where you are in a playlist.
+     a TRACK    is a curriculum you work through. Modules are units of
+                competence — "Data modelling", "Security" — each with its own
+                lessons, and the modules CONNECT: one earns the next.
+
+   That connection is the whole visual idea. Modules hang off a vertical spine
+   with a node per module, so the eye reads dependency and progress in one
+   pass; a flat list of cards would say these are alternatives, which is a lie
+   about the content. The course curriculum (.ns-curriculum in lms.css) is a
+   list because a playlist IS a list. Different claim, different component.
+
+   Naming: a track holds MODULES, a module holds UNITS. "Lesson" is the
+   course-side word and is deliberately not reused — a unit can be a reading,
+   an exercise or a quiz, and calling it a lesson implies a video that is
+   often not there. */
+@layer ns-components {
+
+  /* --- Track header -------------------------------------------------------
+     What the whole curriculum is and how far in you are. The progress here is
+     over MODULES completed, not units: a learner thinks in "3 of 8 modules",
+     and a percentage over 60 units is a number nobody can act on. */
+  .ns-track {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-6);
+    padding-block-end: var(--space-6);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-track__body { flex: 1; min-inline-size: 0; }
+  .ns-track__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-track__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+  .ns-track__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-2); max-inline-size: var(--container-prose); text-wrap: pretty; }
+  .ns-track__meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-4); margin-block-start: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-track__stat { flex: none; min-inline-size: 7rem; }
+  .ns-track__stat b { display: block; font-family: var(--font-heading); font-size: var(--size-h3); font-weight: var(--weight-heading); letter-spacing: normal; text-transform: none; color: var(--color-ink); }
+
+  /* --- Connected modules --------------------------------------------------
+     The spine. It is a ::before on the list rather than a border on each item
+     so it runs continuously behind the nodes, and it stops at the last node
+     instead of trailing past it. */
+  .ns-modules { list-style: none; margin: 0; padding: 0; position: relative; }
+  .ns-module {
+    position: relative;
+    padding-inline-start: var(--space-10);
+    padding-block-end: var(--space-5);
+  }
+  .ns-module::before {
+    content: ""; position: absolute;
+    inset-inline-start: 0.6875rem; inset-block: var(--space-8) 0;
+    inline-size: 2px; background: var(--color-border);
+  }
+  .ns-module:last-child { padding-block-end: 0; }
+  .ns-module:last-child::before { display: none; }
+  /* The node carries the module index in mono — Principle 2: the number is
+     data, the title is writing. */
+  .ns-module__node {
+    position: absolute; inset-inline-start: 0; inset-block-start: var(--space-3);
+    inline-size: 1.5rem; block-size: 1.5rem; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
+  }
+  /* Only three states, and they are mutually exclusive: done, the one you are
+     in, and not yet. A module with no state is simply available. */
+  .ns-module[data-state="done"] .ns-module__node { background: var(--color-success); color: var(--color-on-brand); box-shadow: none; }
+  .ns-module[data-state="current"] .ns-module__node { background: var(--color-brand-500); color: var(--color-on-brand); box-shadow: none; }
+  .ns-module[data-state="done"]::before { background: var(--color-success); }
+  /* Locked is a claim about sequence, so it dims the whole row rather than
+     just the node — the reader needs to see at a glance that the content is
+     not reachable yet, not discover it on click. */
+  .ns-module[data-state="locked"] { opacity: var(--opacity-disabled); }
+
+  .ns-module__card {
+    display: block; padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface); color: inherit; text-decoration: none;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  a.ns-module__card:hover { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-module[data-state="current"] > .ns-module__card { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-module__head { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+  .ns-module__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-module__meta {
+    margin-inline-start: auto; flex: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-module__text { font-size: var(--size-small); color: var(--color-muted); margin-block-start: var(--space-2); text-wrap: pretty; }
+  .ns-module__foot { display: flex; align-items: center; gap: var(--space-3); margin-block-start: var(--space-3); }
+
+  /* --- Units --------------------------------------------------------------
+     The rows inside a module. Type is a mono tag rather than an icon-only
+     glyph: "READING" and "QUIZ" are words a screen reader can announce and a
+     newcomer can understand, where a book icon is a guess. */
+  .ns-units { list-style: none; margin: var(--space-3) 0 0; padding: 0; }
+  .ns-unit {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: inherit; text-decoration: none;
+  }
+  a.ns-unit:hover .ns-unit__title { color: var(--color-brand-600); }
+  [data-theme="dark"] a.ns-unit:hover .ns-unit__title { color: var(--color-brand-300); }
+  .ns-unit__check { flex: none; inline-size: 1rem; color: var(--color-border); }
+  .ns-unit[data-state="done"] .ns-unit__check { color: var(--color-success); }
+  .ns-unit__title { min-inline-size: 0; color: var(--color-ink); }
+  .ns-unit__type {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-unit__time { flex: none; margin-inline-start: auto; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
+
+  /* --- Training layout ----------------------------------------------------
+     Rail + content. The rail is sticky and scrolls independently, because a
+     track has far more nav than a course and scrolling the page to reach the
+     nav is the thing that makes long curricula unusable. */
+  .ns-training { display: flex; align-items: flex-start; gap: var(--space-8); }
+  .ns-training__main { flex: 1; min-inline-size: 0; max-inline-size: var(--container-narrow); }
+
+  /* --- Training nav -------------------------------------------------------
+     Track > module > unit, as nested <details> so open/closed, keyboard
+     operation and in-page find come from the platform.
+
+     assets/js/rail.js opens the module containing the current unit,
+     collapses the others and scrolls it into view on load. That behaviour is
+     progressive: with JS off every module ships `open`, which is worse to
+     scroll but never hides anything. */
+  .ns-trainingnav {
+    position: sticky; inset-block-start: var(--navbar-h);
+    inline-size: var(--sidebar-w); flex: none;
+    max-block-size: calc(100dvh - var(--navbar-h));
+    overflow-y: auto; padding-block: var(--space-6);
+    padding-inline-end: var(--space-3);
+    border-inline-end: 1px solid var(--color-border);
+  }
+  .ns-trainingnav__track {
+    display: block; padding-block-end: var(--space-3);
+    margin-block-end: var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    text-decoration: none;
+  }
+  .ns-trainingnav__module { border: 0; }
+  .ns-trainingnav__module > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    list-style: none; cursor: pointer;
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    color: var(--color-ink);
+  }
+  .ns-trainingnav__module > summary::-webkit-details-marker { display: none; }
+  .ns-trainingnav__module > summary:hover { background: var(--color-surface-sunken); }
+  .ns-trainingnav__module > summary:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  .ns-trainingnav__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
+  .ns-trainingnav__count { margin-inline-start: auto; flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
+  .ns-trainingnav__list { list-style: none; margin: 0 0 var(--space-2); padding-inline-start: var(--space-4); }
+  .ns-trainingnav__link {
+    display: block; padding: var(--space-1) var(--space-2);
+    border-inline-start: 2px solid var(--color-border);
+    font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-trainingnav__link:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  /* aria-current, not a class — the highlighted unit and the announced unit
+     come from one attribute, and training.js reads the same one to decide
+     which module to open. */
+  .ns-trainingnav__link[aria-current="page"] {
+    color: var(--color-brand-600); font-weight: var(--weight-medium);
+    border-inline-start-color: var(--color-brand-500);
+  }
+  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] { color: var(--color-brand-300); }
+  .ns-trainingnav__link[data-state="done"] { color: var(--color-label); }
+
+  /* --- Module head (in content) -------------------------------------------
+     The header of a module's own page: which module of how many, its title,
+     and the units as a checklist. */
+  .ns-modulehead { padding-block-end: var(--space-5); border-block-end: 1px solid var(--color-border); }
+  .ns-modulehead__crumb {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-modulehead__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; margin-block-start: var(--space-1); }
+  .ns-modulehead__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
+
+  @media (max-width: 63.999rem) {
+    .ns-training { display: block; }
+    .ns-trainingnav {
+      position: static; inline-size: 100%; max-block-size: none;
+      border-inline-end: 0; border-block-end: 1px solid var(--color-border);
+      padding-inline-end: 0; margin-block-end: var(--space-5);
+    }
+    .ns-training__main { max-inline-size: none; }
+  }
+
+  /* --- Track card ---------------------------------------------------------
+     A track in an overview GRID — distinct from .ns-module, which is a track's
+     module on its own spine. This one is a peer among peers, so it is a card
+     with no connector: nothing here claims one earns the next. */
+  .ns-trackcard {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-trackcard:hover { border-color: var(--color-brand-500); }
+  .ns-trackcard__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .ns-trackcard__icon {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem; flex: none;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-trackcard__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-trackcard__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-trackcard__text { font-size: var(--size-small); color: var(--color-muted); text-wrap: pretty; }
+  .ns-trackcard__meta {
+    display: flex; gap: var(--space-4); margin-block-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Roadmap stop -------------------------------------------------------
+     A stop on a roadmap page: an index, an icon, and the description. Related
+     to .ns-module but not the same — a module belongs to one track's spine,
+     a roadmap stop is a milestone on a long horizontal journey and alternates
+     sides on wide screens. */
+  .ns-roadmap { max-inline-size: 26rem; }
+  .ns-roadmap--end { margin-inline-start: auto; }
+  .ns-roadmap__card {
+    position: relative; display: flex; gap: var(--space-4);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  a.ns-roadmap__card:hover { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-roadmap__rail { flex: none; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+  .ns-roadmap__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-roadmap__icon {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-roadmap__body { min-inline-size: 0; flex: 1; display: flex; flex-direction: column; gap: var(--space-1); }
+  .ns-roadmap__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-roadmap__text { font-size: var(--size-small); color: var(--color-muted); text-wrap: pretty; }
+  .ns-roadmap__meta {
+    display: flex; gap: var(--space-3); margin-block-start: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
 }
 /* NS Design System — catalog: course hero, buy box, filters, social proof.
    =========================================================================
@@ -4044,7 +5513,7 @@
      .ns-instructor   the author module, single or multi
      .ns-filters      the listing rail: checkboxes, price range, applied chips
      .ns-testimonials learner quotes, with the rating they actually gave */
-@layer components {
+@layer ns-components {
 
   /* ====================================================== Course hero ====
      Five versions because a course page has five honest situations, not
@@ -4347,6 +5816,54 @@
   }
   .ns-band--dark .ns-testimonial { background: transparent; border-color: var(--color-on-dark-border); }
   .ns-band--dark .ns-testimonial__quote, .ns-band--dark .ns-testimonial__name { color: var(--color-on-dark); }
+
+  /* --- Resource card ------------------------------------------------------
+     A downloadable or external thing: a cheat sheet, a template, a tool. The
+     TYPE is a word (PDF, XLSX, TOOL), not an icon alone — a reader deciding
+     whether to click needs to know what lands on their machine. */
+  .ns-resource {
+    display: flex; align-items: center; gap: var(--space-4);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-resource:hover { border-color: var(--color-brand-500); }
+  .ns-resource__icon {
+    flex: none; display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-resource__body { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; }
+  .ns-resource__title { font-weight: var(--weight-body-strong); color: var(--color-ink); }
+  .ns-resource__type {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-resource__cue { flex: none; color: var(--color-muted); transition: color var(--duration-fast) var(--ease-out); }
+  a.ns-resource:hover .ns-resource__cue { color: var(--color-brand-600); }
+
+  /* --- Ad slot ------------------------------------------------------------
+     A dashed placeholder, deliberately plain. It is the one surface in the
+     system that is allowed to look unfinished, because that is what it is
+     until something fills it — dressing it up makes an empty slot read as a
+     broken component. */
+  .ns-adslot {
+    display: flex; align-items: center; justify-content: center;
+    min-block-size: 7.5rem; padding: var(--pad-card);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+  }
+  .ns-adslot__label {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
 }
 /* NS Design System — blog: post card, post page, TOC, author, listing.
    =========================================================================
@@ -4372,7 +5889,7 @@
      .ns-authorbox  the bio that closes a post
      .ns-postnav    prev / next post, by title
      .ns-blog-*     the listing grids */
-@layer components {
+@layer ns-components {
 
   /* ========================================================= Post card ====
      Composes .ns-card. Five shapes, because a post in the index, in a
@@ -4562,45 +6079,6 @@
     .ns-post__body { max-inline-size: var(--container-prose); margin-inline: auto; }
   }
 
-  /* ============================================================= TOC ====
-     Where you are in a long piece. The hairline is the rail and the active
-     item takes the 2px brand edge — the same current-item device the navbar
-     and the lesson row use, so it needs no explanation.
-
-     It is a real nav of real anchor links: it works with JS off, and the
-     scroll-spy only adds [aria-current] to whichever one is on screen. */
-  .ns-toc { display: flex; flex-direction: column; border-inline-start: 1px solid var(--color-border); }
-  .ns-toc__title {
-    padding: 0 var(--space-3) var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
-  }
-  .ns-toc__link {
-    display: block; padding: var(--space-1-5) var(--space-3);
-    margin-inline-start: -1px; border-inline-start: 2px solid transparent;
-    font-size: var(--size-small); line-height: var(--leading-heading);
-    color: var(--color-muted); text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
-  }
-  .ns-toc__link:hover { color: var(--color-ink); }
-  .ns-toc__link[aria-current="true"] { border-inline-start-color: var(--color-brand-500); color: var(--color-brand-600); font-weight: var(--weight-medium); }
-  [data-theme="dark"] .ns-toc__link[aria-current="true"] { color: var(--color-brand-300); }
-  /* h3s indent. Two levels is the limit: a table of contents that needs
-     three is a table of contents for a page that needs splitting. */
-  .ns-toc__link--sub { padding-inline-start: var(--space-6); font-size: var(--size-fine); }
-  /* Below lg the TOC folds into a disclosure above the text — a sticky rail
-     with nowhere to stick. */
-  .ns-toc--collapsible > summary {
-    display: flex; align-items: center; gap: var(--space-2);
-    padding: var(--space-3); cursor: pointer; list-style: none;
-    border: 1px solid var(--color-border); border-radius: var(--radius-card);
-    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
-  }
-  .ns-toc--collapsible > summary::-webkit-details-marker { display: none; }
-  .ns-toc--collapsible > summary i { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
-  .ns-toc--collapsible[open] > summary i { rotate: 180deg; }
-
   /* ======================================================== Callout ====
      The aside inside prose: a note, a tip, a warning. A 3px leading edge and
      a tint — never a full box with a heavy border, which stops the eye at
@@ -4750,13 +6228,161 @@
     .ns-blog-archive__date { grid-column: 1 / -1; }
   }
 }
+/* NS Design System — table of contents.
+   =========================================================================
+   Where you are in a long piece. Its own module rather than a blog feature:
+   a post, a lesson, a doc page and a training unit all need the same outline,
+   and three copies of it is three places for the scroll-spy to drift.
+
+   It is a real <nav> of real anchor links. It works with JS off; the scroll-spy
+   in assets/js/toc.js only adds [aria-current] to whichever heading is on
+   screen, and [data-toc-from] can build the list from the article's own
+   headings for a CMS that emits a body but no outline.
+
+   TWO LEVELS ONLY. A table of contents that needs three is a table of contents
+   for a page that needs splitting.
+
+   The variations are about WHERE it sits, not how it looks:
+     (default)     the sticky rail, beside the text on a wide screen
+     --card        boxed, for a rail that needs to read as a distinct object
+     --inline      a horizontal strip above the article — the mobile answer
+                   when a disclosure is one tap too many
+     --collapsible a <details> above the text, for narrow screens
+     --numbered    mono indices, for procedures where the order is the content
+     --float       a fixed launcher bottom-end that opens the outline as a
+                   sheet, for long docs read on a phone */
+@layer ns-components {
+  .ns-toc { display: flex; flex-direction: column; border-inline-start: 1px solid var(--color-border); }
+  .ns-toc__title {
+    padding: 0 var(--space-3) var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-toc__link {
+    display: block; padding: var(--space-1-5) var(--space-3);
+    margin-inline-start: -1px; border-inline-start: 2px solid transparent;
+    font-size: var(--size-small); line-height: var(--leading-heading);
+    color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-toc__link:hover { color: var(--color-ink); }
+  .ns-toc__link[aria-current="true"] { border-inline-start-color: var(--color-brand-500); color: var(--color-brand-600); font-weight: var(--weight-medium); }
+  [data-theme="dark"] .ns-toc__link[aria-current="true"] { color: var(--color-brand-300); }
+  /* h3s indent. Two levels is the limit: a table of contents that needs
+     three is a table of contents for a page that needs splitting. */
+  .ns-toc__link--sub { padding-inline-start: var(--space-6); font-size: var(--size-fine); }
+  /* Below lg the TOC folds into a disclosure above the text — a sticky rail
+     with nowhere to stick. */
+  .ns-toc--collapsible > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3); cursor: pointer; list-style: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-toc--collapsible > summary::-webkit-details-marker { display: none; }
+  .ns-toc--collapsible > summary i { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-toc--collapsible[open] > summary i { rotate: 180deg; }
+
+  /* --- Reading progress ---------------------------------------------------
+     A hairline that fills as the piece is read, at the top of the rail. It is
+     decoration in the honest sense — the TOC already says where you are — so
+     it is aria-hidden and never the only indicator. */
+  .ns-toc__progress {
+    block-size: 2px; inline-size: 100%; margin-block-end: var(--space-3);
+    background: var(--color-border); border-radius: var(--radius-pill); overflow: hidden;
+  }
+  .ns-toc__progress::after {
+    content: ""; display: block; block-size: 100%;
+    inline-size: var(--ns-toc-progress, 0%);
+    background: var(--color-brand-500);
+    transition: inline-size var(--duration-fast) var(--ease-out);
+  }
+
+  /* --- Card ---------------------------------------------------------------
+     The rail as a distinct object. For a sidebar that already holds other
+     blocks and needs the outline not to blend into them. */
+  .ns-toc--card {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    padding: var(--space-4); background: var(--color-surface);
+  }
+  .ns-toc--card .ns-toc__link { margin-inline-start: 0; }
+
+  /* --- Numbered -----------------------------------------------------------
+     Mono indices, for a procedure where the order IS the content — a setup
+     guide, a migration. A counter rather than markup, so the numbers cannot
+     get out of step with the list. */
+  .ns-toc--numbered { counter-reset: ns-toc; }
+  .ns-toc--numbered .ns-toc__link { counter-increment: ns-toc; }
+  .ns-toc--numbered .ns-toc__link::before {
+    content: counter(ns-toc, decimal-leading-zero) "  ";
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-toc--numbered .ns-toc__link--sub { counter-increment: none; }
+  .ns-toc--numbered .ns-toc__link--sub::before { content: none; }
+
+  /* --- Inline -------------------------------------------------------------
+     A horizontal strip above the article. The mobile answer when a disclosure
+     is one tap too many and the outline is short enough to scan sideways.
+     Scrolls rather than wraps: a wrapped strip changes the article's start
+     position depending on how many headings it has. */
+  .ns-toc--inline {
+    flex-direction: row; gap: var(--space-2);
+    border-inline-start: 0; border-block-end: 1px solid var(--color-border);
+    padding-block-end: var(--space-2); margin-block-end: var(--space-5);
+    overflow-x: auto; scrollbar-width: thin;
+  }
+  .ns-toc--inline .ns-toc__link {
+    flex: none; border-inline-start: 0; margin-inline-start: 0;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm); white-space: nowrap;
+  }
+  .ns-toc--inline .ns-toc__link[aria-current="true"] { background: var(--color-surface-sunken); }
+  .ns-toc--inline .ns-toc__link--sub { display: none; }
+
+  /* --- Float --------------------------------------------------------------
+     A launcher pinned bottom-end that opens the outline as a sheet. For long
+     documentation read on a phone, where the reader wants the outline at the
+     point they get lost — not only at the top where they have already scrolled
+     past it.
+
+     Native <details>, so it closes on Esc and is keyboard-operable with no JS.
+     Pinned bottom-END rather than bottom-centre: it must not sit under a
+     thumb that is scrolling. */
+  .ns-toc--float {
+    position: fixed; inset-block-end: var(--space-5); inset-inline-end: var(--space-5);
+    z-index: var(--z-dropdown); border-inline-start: 0;
+  }
+  .ns-toc--float > summary {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4); cursor: pointer; list-style: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    background: var(--color-surface); box-shadow: var(--shadow-raised);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-toc--float > summary::-webkit-details-marker { display: none; }
+  .ns-toc--float__panel {
+    position: absolute; inset-block-end: calc(100% + var(--space-2)); inset-inline-end: 0;
+    inline-size: 16rem; max-block-size: 60dvh; overflow-y: auto;
+    display: flex; flex-direction: column;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  /* The float is a phone affordance; above lg the sticky rail is better in
+     every way and this would be a second outline competing with it. */
+  @media (min-width: 64rem) { .ns-toc--float { display: none; } }
+}
 /* NS Design System — media: image, video, gallery, carousel.
    =========================================================================
    Frames for pictures and motion. The frame is always the same hairline +
    6px radius as every other surface; the media is the only loud thing in
    it. No lightbox chrome, no filmstrip arrows drawn over the image —
    controls sit outside the frame in the system's own buttons. */
-@layer components {
+@layer ns-components {
 
   /* --- Image / figure -----------------------------------------------------
      An image in content wears the card frame; the caption is mono, below,
@@ -4823,10 +6449,10 @@
    markdown render correctly with no extra classes. Outside .ns-prose,
    elements stay unstyled primitives for app layouts to control.
 
-   The voice: N&M Display headings, N&M Text body at a comfortable measure,
-   N&M Mono for everything that is data — and the hairline doing the
+   The voice: Switzer at 700 for headings and at 400 for body at a comfortable
+   measure, the system mono for everything that is data — and the hairline doing the
    structure (blockquote edge, hr, table rules), never a background wash. */
-@layer components {
+@layer ns-components {
   .ns-prose {
     font-size: var(--size-body); line-height: var(--leading-body);
     color: var(--color-ink); max-inline-size: var(--container-prose, 42rem);
@@ -4914,6 +6540,204 @@
   .ns-prose small { font-size: var(--size-small); color: var(--color-muted); }
   .ns-prose mark { background: color-mix(in srgb, var(--color-brand-500) 18%, transparent); color: inherit; padding: 0 var(--space-0-5, 2px); }
 }
+/* NS Design System — content blocks.
+   =========================================================================
+   The things that interrupt a body of prose. A post is not one long column of
+   paragraphs: it stops to summarise, to compare two options, to pull out a
+   number, to list the steps. Each of those is a different claim, and each gets
+   a block that says which claim it is making.
+
+   These are all designed to sit INSIDE .ns-prose and survive it — prose styles
+   bare elements, so every block here carries its own classes rather than
+   relying on being a <div> that prose happens not to touch.
+
+   The rule they share, and the reason they look restrained: a content block is
+   an interruption. The reader was reading; you stopped them. It has to be
+   worth it, and it has to be obviously finite so they can see where the prose
+   resumes. That is why none of them is a full-bleed tinted panel — Principle 1
+   again, the hairline does the structuring, and a wash of colour across the
+   reading column is the loudest thing a page can do.
+
+   Callout (blog.css) and Figure (media.css) already exist and are not
+   duplicated here: a callout is an aside about the paragraph beside it, a
+   figure is an image with a caption. These are the seven other shapes. */
+@layer ns-components {
+
+  /* --- Takeaway -----------------------------------------------------------
+     "In short" — the argument compressed, usually near the top for a reader
+     who will not finish, or at the end for one who did.
+
+     A leading rule and a mono label, not a tinted box. It reads as a change of
+     register rather than a different kind of content, which is right: this is
+     the same argument said faster. */
+  .ns-takeaway {
+    border-inline-start: 2px solid var(--color-brand-500);
+    padding-inline-start: var(--space-5);
+    margin-block: var(--stack-md);
+  }
+  .ns-takeaway__label {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-takeaway__text { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
+  .ns-takeaway ul { margin-block-start: var(--space-2); padding-inline-start: var(--space-5); }
+
+  /* --- Stat block ---------------------------------------------------------
+     One number, pulled out at display scale, with what it measures and where
+     it came from.
+
+     The SOURCE is not optional and that is enforced by the design: the figure
+     has no bottom margin of its own, the source line supplies it, so a stat
+     without attribution visibly collides with the next paragraph. A number in
+     a post with no source is a claim the reader cannot check. */
+  .ns-statblock {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding-block: var(--space-4);
+    border-block: 1px solid var(--color-border);
+  }
+  .ns-statblock__figure {
+    font-family: var(--font-heading); font-size: var(--size-h1);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    color: var(--color-brand-600); font-variant-numeric: tabular-nums; flex: none;
+  }
+  [data-theme="dark"] .ns-statblock__figure { color: var(--color-brand-300); }
+  .ns-statblock__body { flex: 1; min-inline-size: 12rem; }
+  .ns-statblock__label { font-size: var(--size-body); color: var(--color-ink); text-wrap: pretty; }
+  .ns-statblock__source {
+    display: block; margin-block-start: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-statblock--stack { flex-direction: column; gap: var(--space-1); }
+  .ns-statblock--stack .ns-statblock__figure { font-size: var(--size-display); }
+
+  /* --- Compare ------------------------------------------------------------
+     Two options side by side. Flow vs Apex, profiles vs permission sets — the
+     shape a technical post reaches for constantly and has to hand-build every
+     time.
+
+     Deliberately NOT a do/don't: it is two legitimate choices, and colouring
+     one green and one red would make an editorial judgement the content may
+     not be making. --verdict is the opt-in for when you ARE judging. */
+  .ns-compare {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: var(--space-4); margin-block: var(--stack-md);
+  }
+  .ns-compare__side {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    padding: var(--pad-card);
+  }
+  .ns-compare__title {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    margin-block-end: var(--space-2);
+  }
+  .ns-compare__side ul { margin: 0; padding-inline-start: var(--space-5); font-size: var(--size-small); }
+  .ns-compare__side li { margin-block-end: var(--space-1); }
+  .ns-compare__side--verdict { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-compare__side--verdict .ns-compare__title { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-compare__side--verdict .ns-compare__title { color: var(--color-brand-300); }
+
+  /* --- Checklist ----------------------------------------------------------
+     Things to verify. Real checkboxes, disabled — the reader is reading, not
+     filling a form, and an enabled checkbox in an article promises persistence
+     the page cannot deliver. Where it IS interactive (a lesson task list),
+     drop the disabled attribute and the component works unchanged. */
+  .ns-checklist { list-style: none; margin-block: var(--stack-md); padding: 0; }
+  .ns-checklist li {
+    display: flex; align-items: flex-start; gap: var(--space-3);
+    padding-block: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small);
+  }
+  .ns-checklist li:last-child { border-block-end: 1px solid var(--color-border); }
+  /* An optical nudge onto the first line's cap height, not spacing: it is a
+     fraction of the TEXT's own size, so a --space-* token would break it the
+     moment the list is set at a different size. */
+  .ns-checklist__mark { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-border); }
+  .ns-checklist li[data-state="done"] .ns-checklist__mark { color: var(--color-success); }
+  .ns-checklist li[data-state="done"] .ns-checklist__text { color: var(--color-muted); }
+
+  /* --- Procedure ----------------------------------------------------------
+     Numbered steps, for a how-to. An <ol> with a mono index in the margin, so
+     the numbers line up in a column and a step containing a code block does
+     not push its own number out of alignment — which is the failure of every
+     list-style-based version of this. */
+  .ns-procedure { list-style: none; counter-reset: ns-proc; margin-block: var(--stack-md); padding: 0; }
+  .ns-procedure > li {
+    counter-increment: ns-proc; position: relative;
+    padding-inline-start: var(--space-8); padding-block-end: var(--space-5);
+  }
+  .ns-procedure > li::before {
+    content: counter(ns-proc, decimal-leading-zero);
+    position: absolute; inset-inline-start: 0; inset-block-start: 0.1em;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-brand-600); font-variant-numeric: tabular-nums;
+  }
+  [data-theme="dark"] .ns-procedure > li::before { color: var(--color-brand-300); }
+  /* The rail connects the steps, so a step with a tall code block still reads
+     as part of the sequence rather than as a new section. */
+  .ns-procedure > li::after {
+    content: ""; position: absolute;
+    inset-inline-start: 0.5rem; inset-block: 1.6em var(--space-1);
+    inline-size: 1px; background: var(--color-border);
+  }
+  .ns-procedure > li:last-child { padding-block-end: 0; }
+  .ns-procedure > li:last-child::after { display: none; }
+  .ns-procedure__title { font-weight: var(--weight-body-strong); color: var(--color-ink); }
+
+  /* --- Terms --------------------------------------------------------------
+     An inline glossary. Salesforce writing is dense with terms a newcomer has
+     not met, and sending them to a separate glossary page loses them.
+     Two columns of dt/dd on a wide surface, stacking below it. */
+  .ns-terms {
+    margin-block: var(--stack-md); padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+  }
+  .ns-terms__label {
+    display: block; margin-block-end: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-terms dl { display: grid; grid-template-columns: minmax(0, 10rem) minmax(0, 1fr); gap: var(--space-2) var(--space-4); margin: 0; }
+  .ns-terms dt { font-family: var(--font-mono); font-size: var(--size-small); color: var(--color-ink); }
+  .ns-terms dd { margin: 0; font-size: var(--size-small); color: var(--color-muted); }
+  @media (max-width: 47.999rem) {
+    .ns-terms dl { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+    .ns-terms dd { margin-block-end: var(--space-2); }
+  }
+
+  /* --- Related ------------------------------------------------------------
+     Further reading, mid-article. Placed where the tangent actually comes up
+     rather than in a pile at the end, which is where links go to be ignored.
+     A hairline box with mono rows: it reads as a signpost, not as content. */
+  .ns-related {
+    margin-block: var(--stack-md); padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+  }
+  .ns-related__label {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-related ul { list-style: none; margin: 0; padding: 0; }
+  .ns-related li + li { margin-block-start: var(--space-1); }
+  .ns-related a {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    font-size: var(--size-small); color: var(--color-brand-600); text-decoration: none;
+  }
+  [data-theme="dark"] .ns-related a { color: var(--color-brand-300); }
+  .ns-related a:hover { text-decoration: underline; }
+  .ns-related__kind { flex: none; font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+}
 /* NS Design System — syntax highlighter / code block.
    =========================================================================
    The one surface in this system where code is a first-class citizen rather
@@ -4947,7 +6771,7 @@
 
    Wiring: assets/js/code.js (copy, wrap, run, tabs). The Ask-AI and Share
    menus are native popovers — no JS at all. */
-@layer components {
+@layer ns-components {
 
   /* --- Frame --------------------------------------------------------------
      A code block is a card that happens to contain code, so it wears the
@@ -5305,7 +7129,7 @@
    Wiring: assets/js/type-fx.js — an IntersectionObserver that sets
    [data-fx-in], the text scrambler, and the circular-text builder. Every
    effect that can work without JS does (hover states, static frames). */
-@layer components {
+@layer ns-components {
 
   /* ======================================================== Highlight ==== */
   /* A marker sweep. The brand tint is painted as a background that grows from
@@ -5618,17 +7442,29 @@
   .ns-dropcap::first-letter {
     initial-letter: 3 3;
     -webkit-initial-letter: 3 3;
-    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    /* Serif, not the display face. A drop cap is a typographic inheritance
+       from print, and a geometric grotesque set three lines deep reads as a
+       logo dropped into the paragraph rather than as the paragraph's own
+       first letter. Georgia's high contrast and real serifs are what make
+       the device legible at that scale. */
+    font-family: var(--font-serif); font-weight: var(--weight-heading);
     color: var(--color-brand-600);
     margin-inline-end: var(--space-2);
   }
 
-  /* Pull quote — the display face at reading scale, hung on the hairline
-     edge like every other quotation in the system. */
+  /* Pull quote — the EDITORIAL voice, hung on the hairline edge like every
+     other quotation in the system.
+
+     Serif rather than the display face, and this is the whole point of having
+     a fourth voice: a pull-quote is the page stopping its own argument to
+     quote someone else. Set in the same grotesque as the argument it never
+     quite reads as a different speaker — it reads as a bigger heading. The
+     tracking goes with it: --tracking-tight exists to correct Switzer's
+     loose display metrics, and applying it to a serif that is already
+     correctly fitted just closes the counters. */
   .ns-pullquote {
-    font-family: var(--font-heading); font-size: var(--size-h3);
-    font-weight: var(--weight-medium); line-height: var(--leading-heading);
-    letter-spacing: var(--tracking-tight);
+    font-family: var(--font-serif); font-size: var(--size-h3);
+    font-weight: var(--weight-regular); line-height: var(--leading-heading);
     max-inline-size: var(--measure-narrow);
     border-inline-start: 2px solid var(--color-brand-500);
     padding-inline-start: var(--space-5);
@@ -5665,6 +7501,143 @@
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
   }
 }
+/* NS Design System — page motion.
+   =========================================================================
+   Nine entrance animations, and a hard limit on what they are for.
+
+   Principle 5 says motion is instant: 120–180ms, plain ease-out, no spring,
+   no bounce, no scale-pop. That governs INTERACTION — a hover, a press, a
+   panel opening. Entrance is the one place a longer curve is allowed, because
+   it is not feedback: nobody is waiting on it, and its job is to tell the eye
+   the order to read a page in. Even so these top out at --duration-slow and
+   move at most half a rem. Anything that travels further reads as a slide
+   deck.
+
+   THE RULE THAT MATTERS: one entrance per block, never per element. A page
+   where twelve things fly in individually is a page nobody can read while it
+   assembles itself. Use --stagger on a container and let its children inherit
+   an index, or put a single .ns-anim on the block.
+
+   All of it is off under prefers-reduced-motion — the global guard in
+   tokens/effects.css collapses every animation to 0.001ms, so these need no
+   media query of their own. That is deliberate: a per-component opt-out is a
+   per-component chance to forget.
+
+   Scroll-triggered variants use `animation-timeline: view()`. Where that is
+   unsupported the animation simply runs on load instead, which is the correct
+   degradation — the content is visible either way, and nothing depends on JS. */
+@layer ns-components {
+
+  /* --- The base -----------------------------------------------------------
+     .ns-anim on its own is a fade. Everything else is a modifier that adds a
+     transform to it, so the opacity ramp is identical across all nine and the
+     page settles as one gesture rather than nine competing ones. */
+  .ns-anim {
+    animation: ns-anim-fade var(--duration-base) var(--ease-out) both;
+    animation-delay: var(--_d, 0ms);
+  }
+
+  /* 1. fade — the default. For anything already in place that just needs to
+        arrive: a hero, a full-bleed band, a modal body. */
+  @keyframes ns-anim-fade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* 2. rise — fade plus half a rem upward. The workhorse: cards, sections,
+        list blocks. Upward because content entering from below reads as
+        "next", which is the direction a page is consumed in. */
+  .ns-anim--rise { animation-name: ns-anim-rise; }
+  @keyframes ns-anim-rise {
+    from { opacity: 0; translate: 0 0.5rem; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  /* 3. fall — the same, downward. Reserved for things that belong to what is
+        ABOVE them: a dropdown under its trigger, a banner under the navbar,
+        a disclosure panel under its summary. Using it on body content is the
+        most common misuse — it makes the page feel like it is collapsing. */
+  .ns-anim--fall { animation-name: ns-anim-fall; }
+  @keyframes ns-anim-fall {
+    from { opacity: 0; translate: 0 -0.5rem; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  /* 4/5. enter-start / enter-end — from the leading or trailing inline edge.
+        LOGICAL, not left/right: in an RTL document these flip automatically,
+        which a translateX(-8px) would not. For a rail sliding in, a drawer, a
+        toast entering from the side it lives on. */
+  .ns-anim--enter-start { animation-name: ns-anim-enter-start; }
+  @keyframes ns-anim-enter-start {
+    from { opacity: 0; translate: -0.5rem 0; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  .ns-anim--enter-end { animation-name: ns-anim-enter-end; }
+  @keyframes ns-anim-enter-end {
+    from { opacity: 0; translate: 0.5rem 0; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  /* 6. expand — a clip reveal from the block edge. The content does not move,
+        it is uncovered, which is what makes it right for something that has a
+        fixed position on the page: a table filling in, an image, a code block.
+        clip-path rather than height so it never reflows the page mid-animation. */
+  .ns-anim--expand { animation-name: ns-anim-expand; animation-duration: var(--duration-slow); }
+  @keyframes ns-anim-expand {
+    from { opacity: 0; clip-path: inset(0 0 100% 0); }
+    to { opacity: 1; clip-path: inset(0 0 0 0); }
+  }
+
+  /* 7. draw — a rule drawing itself from the leading edge. This is the one
+        animation the system already had a vocabulary for (--duration-draw):
+        a mark that draws is a gesture, and it has to be slow enough to read
+        as one. For underlines, dividers, the accent edge on a band. */
+  .ns-anim--draw { animation-name: ns-anim-draw; animation-duration: var(--duration-draw); animation-timing-function: var(--ease-draw); }
+  @keyframes ns-anim-draw {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  /* 8. settle — fade with a 2% scale-down onto its final size. Deliberately
+        DOWNWARD: scaling up is the pop Principle 5 forbids, and it makes an
+        element momentarily larger than the space reserved for it. Scaling down
+        onto the mark reads as focusing. For a modal, a popover, an avatar. */
+  .ns-anim--settle { animation-name: ns-anim-settle; }
+  @keyframes ns-anim-settle {
+    from { opacity: 0; scale: 1.02; }
+    to { opacity: 1; scale: 1; }
+  }
+
+  /* 9. stagger — a CONTAINER, not an animation. Children animate in sequence
+        at 40ms apart, capped at the fifth: past ~200ms of accumulated delay
+        the last item feels broken rather than choreographed, and a 40-row
+        table would take two seconds to finish arriving.
+
+        The cap is the whole design. Every stagger implementation that hurts is
+        one that multiplied the index without a ceiling. */
+  .ns-anim-stagger > * { animation: ns-anim-rise var(--duration-base) var(--ease-out) both; }
+  .ns-anim-stagger > :nth-child(1) { animation-delay: 0ms; }
+  .ns-anim-stagger > :nth-child(2) { animation-delay: 40ms; }
+  .ns-anim-stagger > :nth-child(3) { animation-delay: 80ms; }
+  .ns-anim-stagger > :nth-child(4) { animation-delay: 120ms; }
+  .ns-anim-stagger > :nth-child(5) { animation-delay: 160ms; }
+  .ns-anim-stagger > :nth-child(n+6) { animation-delay: 200ms; }
+
+  /* --- Scroll-triggered ---------------------------------------------------
+     --onview runs the animation as the block scrolls into view rather than on
+     load. Native scroll-driven animations: no observer, no JS, no layout
+     thrash. `entry 0% cover 40%` means it completes well before the block is
+     centred, so a reader scrolling at speed never watches content assemble.
+
+     Where view() is unsupported the declaration is dropped and the animation
+     runs on load — visible either way. */
+  @supports (animation-timeline: view()) {
+    .ns-anim--onview, .ns-anim-stagger--onview > * {
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    /* A scroll-driven animation is scrubbed by position, so a delay would
+       shift it out of its own range and strand it part-drawn. */
+    .ns-anim-stagger--onview > * { animation-delay: 0s; }
+  }
+}
 /* NS Design System — authentication surfaces: sign in, sign up, forgot password.
    =========================================================================
    One layout serves both products, but the FLOWS differ and the components
@@ -5687,7 +7660,7 @@
      this screen unmistakably this brand rather than a generic auth template.
    - One primary button per screen, as everywhere. "Sign in" is primary;
      "Create one" is a link, never a competing second button. */
-@layer components {
+@layer ns-components {
 
   .ns-auth {
     min-block-size: 100dvh;
@@ -5812,7 +7785,7 @@
 
    Priority is a BORDER weight signal, not a color one: urgent gets the same
    3px leading edge an error alert gets. Color alone cannot carry "urgent". */
-@layer components {
+@layer ns-components {
 
   /* --- Ticket list --------------------------------------------------------
      Terminal rows: hairline-separated, hover brightens the leading edge.
@@ -5987,7 +7960,7 @@
    The stage sits on brand-900 in BOTH themes: video looks wrong on white
    letterboxing, and a consistent stage means switching themes mid-lesson
    never flashes the frame. */
-@layer components {
+@layer ns-components {
 
   .ns-player {
     display: grid;
@@ -6299,6 +8272,153 @@
     .ns-player__head, .ns-player__body { padding-inline: var(--gutter); }
     .ns-player__nav { padding-inline: var(--gutter); }
   }
+
+  /* --- Video player -------------------------------------------------------
+     One themed control surface over three very different sources: a
+     self-hosted file, a Mux stream, and a YouTube embed.
+
+     The honest constraints, stated because they shape the component:
+
+       - SELF-HOSTED is a real <video>. Everything below drives it directly.
+       - MUX is the same <video> pointed at an HLS manifest. Safari plays HLS
+         natively; everywhere else needs hls.js, which this system does not
+         bundle — you supply it, and the player uses it if `window.Hls` exists.
+       - YOUTUBE cannot be restyled. Its player is a cross-origin iframe, so
+         these controls do not decorate it, they DRIVE it through the IFrame
+         API. That is why the chrome is drawn outside the frame rather than
+         over it: an overlay would sit on top of YouTube's own controls and
+         fight them.
+
+     So the contract is "one API, one look", not "identical internals". The
+     places that genuinely differ are documented rather than faked.
+
+     The scrubber is a real <input type="range">. Keyboard seeking, screen
+     reader announcement and touch behaviour all come free, and every custom
+     div-based scrubber reimplements them worse. */
+  .ns-vplayer {
+    position: relative; display: flex; flex-direction: column;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-brand-900); overflow: hidden;
+  }
+  .ns-vplayer__stage { position: relative; aspect-ratio: 16 / 9; background: var(--color-brand-900); }
+  .ns-vplayer__stage > video,
+  .ns-vplayer__stage > iframe { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; border: 0; display: block; }
+  /* The big centre play target, for the state before playback starts. It is a
+     real button so it is reachable by keyboard and announced. */
+  .ns-vplayer__big {
+    position: absolute; inset-block-start: 50%; inset-inline-start: 50%;
+    translate: -50% -50%;
+    inline-size: 3.5rem; block-size: 3.5rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 0; border-radius: var(--radius-pill); cursor: pointer;
+    background: var(--color-on-dark); color: var(--color-brand-700);
+    font-size: var(--size-h3);
+    transition: scale var(--duration-fast) var(--ease-out);
+  }
+  .ns-vplayer__big:hover { scale: 1.04; }
+  .ns-vplayer[data-state="playing"] .ns-vplayer__big { display: none; }
+
+  .ns-vplayer__bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    border-block-start: 1px solid var(--color-on-dark-border);
+  }
+  .ns-vplayer__btn {
+    flex: none; display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 2rem; block-size: 2rem;
+    border: 0; border-radius: var(--radius-sm); cursor: pointer;
+    background: none; color: var(--color-on-dark); font-size: var(--size-body);
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .ns-vplayer__btn:hover { background: var(--color-on-dark-wash); }
+  .ns-vplayer__btn:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-300);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  /* A real range input, restyled. The track is drawn with a gradient driven by
+     --p so there is no second element to keep in sync with the value. */
+  .ns-vplayer__seek {
+    flex: 1; min-inline-size: 0; appearance: none; block-size: 1.25rem;
+    background: none; cursor: pointer;
+  }
+  .ns-vplayer__seek::-webkit-slider-runnable-track {
+    block-size: 3px; border-radius: var(--radius-pill);
+    background: linear-gradient(to right, var(--color-brand-400) var(--p, 0%), var(--color-on-dark-border) var(--p, 0%));
+  }
+  .ns-vplayer__seek::-moz-range-track {
+    block-size: 3px; border-radius: var(--radius-pill);
+    background: linear-gradient(to right, var(--color-brand-400) var(--p, 0%), var(--color-on-dark-border) var(--p, 0%));
+  }
+  .ns-vplayer__seek::-webkit-slider-thumb {
+    /* Centres the thumb on a 3px track: half the thumb minus half the track.
+       It is derived from the two sizes above, not from the spacing scale — a
+       --space-* token here would decentre it the moment either changes. */
+    appearance: none; inline-size: 0.75rem; block-size: 0.75rem;
+    margin-block-start: -0.3rem; /* lint-ok: (track 3px - thumb 12px) / 2, an optical centring, not spacing */
+    border-radius: var(--radius-pill); background: var(--color-on-dark); border: 0;
+  }
+  .ns-vplayer__seek::-moz-range-thumb {
+    inline-size: 0.75rem; block-size: 0.75rem;
+    border-radius: var(--radius-pill); background: var(--color-on-dark); border: 0;
+  }
+  .ns-vplayer__seek:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-300); outline-offset: var(--focus-ring-offset); }
+  .ns-vplayer__time {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-on-dark-border-hover);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Settings: speed and quality, as a native <details> so Esc and click-away
+     come from the platform. */
+  .ns-vplayer__menu { position: relative; flex: none; }
+  .ns-vplayer__menu > summary { list-style: none; cursor: pointer; }
+  .ns-vplayer__menu > summary::-webkit-details-marker { display: none; }
+  .ns-vplayer__panel {
+    position: absolute; inset-block-end: calc(100% + var(--space-2)); inset-inline-end: 0;
+    z-index: var(--z-dropdown); min-inline-size: 9rem;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  .ns-vplayer__opt {
+    display: flex; align-items: center; gap: var(--space-2); inline-size: 100%;
+    padding: var(--space-1-5) var(--space-2);
+    border: 0; border-radius: var(--radius-sm); background: none; cursor: pointer;
+    font-size: var(--size-small); color: var(--color-ink); text-align: start;
+  }
+  .ns-vplayer__opt:hover { background: var(--color-surface-sunken); }
+  .ns-vplayer__opt[aria-checked="true"] { color: var(--color-brand-600); font-weight: var(--weight-medium); }
+  [data-theme="dark"] .ns-vplayer__opt[aria-checked="true"] { color: var(--color-brand-300); }
+
+  /* --- Chapters -----------------------------------------------------------
+     Timestamps as a real list of buttons, below the player rather than
+     hovering over it. A chapter list is content: it is how a reader decides
+     whether to watch at all, it should be readable without playing, and it
+     should be in the page for search engines and for anyone who never presses
+     play. Hiding it inside the video is the common mistake. */
+  .ns-vchapters { list-style: none; margin: 0; padding: 0; border-block-start: 1px solid var(--color-border); }
+  .ns-vchapters__item + .ns-vchapters__item { border-block-start: 1px solid var(--color-border); }
+  .ns-vchapters__btn {
+    display: flex; align-items: baseline; gap: var(--space-3); inline-size: 100%;
+    padding: var(--space-2) var(--space-3);
+    border: 0; background: none; cursor: pointer; text-align: start;
+    font-size: var(--size-small); color: var(--color-ink);
+    box-shadow: inset 2px 0 0 transparent;
+    transition: background var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-vchapters__btn:hover { background: var(--color-surface-sunken); }
+  .ns-vchapters__item[aria-current="true"] .ns-vchapters__btn {
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+    background: var(--color-surface-sunken);
+  }
+  .ns-vchapters__time {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-vchapters__title { min-inline-size: 0; }
+
 }
 /* NS Design System — the bespoke icon primitive.
    =========================================================================
@@ -6315,7 +8435,7 @@
      <svg class="ns-icon" aria-hidden="true">
        <use href="icons/namaste-icons.svg#ns-i-roadmap"/>
      </svg> */
-@layer components {
+@layer ns-components {
   .ns-icon {
     inline-size: 1em; block-size: 1em;
     display: inline-block; vertical-align: -0.125em; /* lint-ok: optical baseline drop, same as icon-font glyphs; an em fraction, not a spacing value */
@@ -6340,7 +8460,7 @@
      - vertical rhythm is --space-16/--space-20 (spacing-section scale);
      - dark bands use the navy console surface + the hairline grid motif,
        never a gradient. */
-@layer components {
+@layer ns-components {
 
   /* --- Band + head --------------------------------------------------------- */
   .ns-band { padding-block: var(--space-16); }
@@ -6364,6 +8484,11 @@
   }
   .ns-kicker::before { content: "// "; }
   .ns-band--dark .ns-kicker { color: var(--color-on-dark-border-hover); }
+  .ns-kicker--center { text-align: center; }
+  /* For a kicker on a dark ground that is NOT inside .ns-band--dark — a
+     photographic hero, a poster card. The comment slashes stay dimmer than
+     the label, which is the whole read: they are punctuation, not content. */
+  .ns-kicker--light { color: var(--color-on-dark); }
   .ns-band__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
   .ns-band__lede { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
@@ -6504,7 +8629,9 @@
      One voice, set large; the attribution is a mono record line. Never a
      three-up wall of star ratings. */
   .ns-quote { max-inline-size: var(--container-narrow); margin-inline: auto; text-align: center; }
-  .ns-quote blockquote { font-size: var(--size-h3); line-height: var(--leading-heading); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+  /* Same editorial voice as .ns-pullquote — a section quotation and an inline
+     pull-quote are one register at two scales, so they must not use two faces. */
+  .ns-quote blockquote { font-family: var(--font-serif); font-size: var(--size-h3); line-height: var(--leading-heading); text-wrap: balance; }
   .ns-quote blockquote::before { content: "\201C"; color: var(--color-label); }
   .ns-quote blockquote::after { content: "\201D"; color: var(--color-label); }
   .ns-quote figcaption {
@@ -6567,6 +8694,28 @@
                      letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
                      margin-block-end: var(--space-3); }
   .ns-footer__col ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+  /* The one-sentence "what is this site" under the mark. Capped at the reading
+     measure — a footer blurb that runs the full column width reads as body
+     copy someone forgot to finish. */
+  .ns-footer__blurb {
+    font-size: var(--size-small); color: var(--color-muted);
+    line-height: var(--leading-body); margin-block: var(--space-3);
+    max-inline-size: var(--container-prose);
+  }
+  /* Social row: horizontal, so it does not inherit the vertical link stack
+     that .ns-footer__col ul sets. Written as ul.ns-footer__social — the same
+     specificity as that rule, declared after it, which is all it takes. An
+     !important here would beat Tailwind utilities too, which is a much bigger
+     promise than "this one list is a row". */
+  ul.ns-footer__social { flex-direction: row; gap: var(--space-2); }
+  .ns-footer__social a {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 1.875rem; block-size: 1.875rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-muted);
+  }
+  .ns-footer__social a:hover { box-shadow: inset 0 0 0 1px var(--color-brand-500); }
   .ns-footer__col a { font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
                       transition: color var(--duration-fast) var(--ease-out); }
   .ns-footer__col a:hover { color: var(--color-brand-600); }
@@ -6611,7 +8760,7 @@
      .ns-dropzone         media upload target + uploaded-file row
      .ns-taginput         chips-inside-a-field tag entry
      .ns-slug             prefix + input group for URL slugs */
-@layer components {
+@layer ns-components {
 
   /* --- App shell ----------------------------------------------------------
      Fixed topbar, fixed-width side nav, scrolling main. The shell is a grid
@@ -7041,7 +9190,7 @@
    =========================================================================
    Small file, disproportionate value: these are the pieces that every page in
    both products needs and that are always reinvented slightly wrong. */
-@layer components {
+@layer ns-components {
 
   /* --- Visually hidden ----------------------------------------------------
      Hidden visually, still announced. NOT `display: none` and NOT
@@ -7100,6 +9249,10 @@
   .ns-page--prose { max-inline-size: var(--container-prose); }
   .ns-page--narrow { max-inline-size: var(--container-narrow); }
   .ns-page--wide { max-inline-size: var(--container-wide); }
+  /* The gutter is inline only, because a page's vertical rhythm belongs to the
+     sections inside it. --demo adds the block padding for a standalone page
+     that has no band wrapping it. */
+  .ns-page--demo { padding-block: var(--space-8); }
 
   /* Vertical rhythm between sections, as a class rather than a margin on
      every heading — margins on headings collapse unpredictably next to

@@ -19,10 +19,45 @@ Everything else is detail. These three are what keep the products aligned:
 | **Spacing base** | `--spacing: 0.25rem` in Tailwind, `--space-*` in CSS | `p-4` and `var(--space-4)` must both be 16px |
 | **Theme attribute** | `data-theme="dark"` on `<html>` | Tokens listen to it; Tailwind's `dark:` variant is remapped to it |
 | **Theme storage key** | `ns-theme` in `localStorage` | A reader moving between marketing site and app keeps their theme |
+| **Layer order** | `@layer theme, base, ns-components, components, utilities;` | It is what makes a utility beat a `.ns-*` default without `!important` |
 
 `npm run check` in this package re-proves the first one on every CI run. The
 other two are set in one shared file, `assets/js/theme-init.js`, which both
 products inline verbatim.
+
+### The layer order, and why it is the whole override contract
+
+`styles.css` opens with a bare `@layer` statement (legal before `@import`) that
+declares the order once:
+
+```css
+@layer theme, base, ns-components, components, utilities;
+```
+
+Read it as a precedence list, lowest first:
+
+| layer | holds |
+|---|---|
+| `theme` | Tailwind's `@theme` variables |
+| `base` | preflight and `tokens/base.css` — bare element defaults |
+| `ns-components` | **this design system** |
+| `components` | **your** component classes — they beat ours |
+| `utilities` | Tailwind utilities — they beat everything |
+
+Two consequences worth knowing:
+
+- **A utility always wins.** `<button class="ns-btn ns-btn--primary p-8 bg-error">`
+  is red with 2rem padding, no `!important` anywhere. Specificity inside
+  `components/css/` no longer competes with anything outside it — a `:has()`
+  chain scoring (0,5,0) still loses to a plain `.p-4`.
+- **Nothing may sit outside a layer.** An unlayered rule beats every layered
+  rule regardless of specificity, so a single stray one silently revokes the
+  above. `npm run check` fails on it, and on any `!important` that is not in the
+  argued-for allowlist in `scripts/check-cascade.mjs`.
+
+If you write your own component CSS, put it in `@layer components` and it will
+override the design system while still losing to utilities — which is almost
+always what you want.
 
 ---
 
@@ -58,6 +93,12 @@ In `assets/css/screen.css`, replacing the theme's own `@theme` block:
 
 The existing gulp + `@tailwindcss/postcss` pipeline handles this unchanged.
 `postcss-import` resolves the package paths; no gulp config change is needed.
+
+> **Do not import `dist/namaste-ui.tailwind.css` here.** That bundle is
+> Tailwind *plus* the design system, built for this repo's own styleguide. In a
+> product that already runs Tailwind it would add a second preflight and a
+> second copy of every utility. The three imports above are the supported path.
+
 
 > **If the gulp pipeline cannot resolve `@import` across `node_modules`**, use
 > the prebuilt flat bundle instead — same bytes, no import graph:

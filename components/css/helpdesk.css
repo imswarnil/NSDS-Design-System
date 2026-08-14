@@ -14,7 +14,7 @@
 
    Priority is a BORDER weight signal, not a color one: urgent gets the same
    3px leading edge an error alert gets. Color alone cannot carry "urgent". */
-@layer components {
+@layer ns-components {
 
   /* --- Ticket list --------------------------------------------------------
      Terminal rows: hairline-separated, hover brightens the leading edge.

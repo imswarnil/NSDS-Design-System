@@ -20,7 +20,7 @@
      this screen unmistakably this brand rather than a generic auth template.
    - One primary button per screen, as everywhere. "Sign in" is primary;
      "Create one" is a link, never a competing second button. */
-@layer components {
+@layer ns-components {
 
   .ns-auth {
     min-block-size: 100dvh;

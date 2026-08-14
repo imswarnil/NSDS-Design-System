@@ -1,37 +1,50 @@
-/* The N&M type system — three custom-named cuts, self-hosted variable woff2s.
-   Built on SIL OFL 1.1 faces (Manrope, Nunito Sans, Red Hat Mono), renamed in
-   the font name tables per the OFL's derivative-work terms; the credit lives
-   in each file's nameID 3. Latin subset only — re-subset upstream if a page
-   ever needs extended coverage. Files + weight documentation: fonts/README.md */
+/* The type system — two self-hosted variable woff2s and one system stack.
+   =========================================================================
+     Switzer    sans   — the whole interface AND the reading layer. One face
+                         at two volumes rather than a display/text pair.
+     Sentient   serif  — the editorial voice: pull-quotes, drop caps,
+                         section quotations. The register that quotes.
+     (mono)     system — ui-monospace and the platform's own console face.
+
+   Both are Indian Type Foundry faces from Fontshare, under the Fontshare Free
+   Font EULA: free for personal AND commercial use, any medium, self-hosting
+   explicitly permitted. The EULA travels with them in fonts/FONTSHARE-EULA.txt
+   and must stay there. Subset to latin (+ the punctuation and arrows the UI
+   actually draws) — 69 KB for the pair. Re-subset upstream if a page ever
+   needs extended coverage; see fonts/README.md.
+
+   MONO IS DELIBERATELY NOT SHIPPED. Every index, timestamp, duration, kicker
+   and status in this system runs through the mono face — it is the material
+   Principle 2 is made of — but it is always set in short, tracked, uppercase
+   runs where the platform's own console face is not merely adequate, it is
+   more familiar to the reader than anything we could ship. Spending ~22 KB to
+   make "12:40" look marginally more on-brand is not a trade this system makes.
+   The consequence to know: mono renders as SF Mono on macOS, Consolas on
+   Windows, and whatever the distro sets on Linux, so mono column widths are
+   not identical across platforms. Never rely on a mono run being an exact
+   width; the tabular-nums in tokens/base.css is what keeps digits aligned. */
 @font-face {
-  font-family: "N&M Display";
-  src: url("../fonts/nmdisplay-var-latin.woff2") format("woff2-variations"), url("../fonts/nmdisplay-var-latin.woff2") format("woff2");
-  font-weight: 200 800;
+  font-family: "Switzer";
+  src: url("../fonts/switzer-var-latin.woff2") format("woff2-variations"), url("../fonts/switzer-var-latin.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "N&M Text";
-  src: url("../fonts/nmtext-var-latin.woff2") format("woff2-variations"), url("../fonts/nmtext-var-latin.woff2") format("woff2");
-  font-weight: 200 1000;
+  font-family: "Sentient";
+  src: url("../fonts/sentient-var-latin.woff2") format("woff2-variations"), url("../fonts/sentient-var-latin.woff2") format("woff2");
+  font-weight: 200 700;
   font-style: normal;
   font-display: swap;
 }
+/* Metric-matched system fallback so text does not jump when Switzer arrives.
+   Switzer is a fairly narrow, tall-x-height grotesque; these overrides pull
+   Helvetica/Arial onto the same line rhythm so the swap is not a reflow. */
 @font-face {
-  font-family: "N&M Mono";
-  src: url("../fonts/nmmono-var-latin.woff2") format("woff2-variations"), url("../fonts/nmmono-var-latin.woff2") format("woff2");
-  font-weight: 300 700;
-  font-style: normal;
-  font-display: swap;
-}
-/* Metric-matched system fallback so text doesn't jump when N&M Text arrives.
-   Nunito Sans runs a little wider and taller than Helvetica/Arial; these
-   overrides pull the fallback to the same line rhythm. */
-@font-face {
-  font-family: "N&M Text Fallback";
+  font-family: "Switzer Fallback";
   src: local("Helvetica Neue"), local("Arial"), local("Segoe UI"), local("Roboto");
-  size-adjust: 104%;
+  size-adjust: 99%;
   ascent-override: 97%;
-  descent-override: 34%;
+  descent-override: 24%;
   line-gap-override: 0%;
 }

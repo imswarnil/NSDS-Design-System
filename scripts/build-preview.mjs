@@ -137,7 +137,7 @@ const SECTIONS = [
     <p class="sub">The five principles</p>
     <div class="use-grid"><div><ul>
       <li><strong>The hairline is the structure, not the shadow.</strong> Cards, inputs and tags are built from a single 1px border; elevation is a border brightening to brand blue, never a floating lift.</li>
-      <li><strong>Monospace is a structural material.</strong> N&M Mono renders every index, duration, timestamp, status and kicker — that split is what makes a list read as data and a paragraph read as writing.</li>
+      <li><strong>Monospace is a structural material.</strong> The mono face renders every index, duration, timestamp, status and kicker — that split is what makes a list read as data and a paragraph read as writing.</li>
       <li><strong>One signal color.</strong> Brand blue is the only hue that means &ldquo;interactive&rdquo; — so a screen with one solid blue button has exactly one obvious next action.</li>
       <li><strong>Sharp, specific geometry.</strong> 6px cards, 4px buttons, pills only for true pills. Nothing is rounded because rounding is the default.</li>
       <li><strong>Motion is instant, not springy.</strong> 120–180ms plain ease-out; no bounce, no scale-pop, no hover-lift.</li>
@@ -194,12 +194,12 @@ ${PROSE}
     <details class="code"><summary>markup</summary><pre><code>${esc(PROSE)}</code></pre></details>
     <p class="sub">What each element does</p>
     <div class="use-grid"><div><ul>
-      <li><strong>Headings</strong> — N&M Display, air above, little below: a heading belongs to what follows</li>
+      <li><strong>Headings</strong> — Switzer at 700, air above, little below: a heading belongs to what follows</li>
       <li><strong>Links</strong> — brand blue, hairline underline solidifying on hover</li>
       <li><strong>ul</strong> — square markers (sharp geometry, not the default disc); <strong>ol</strong> — mono numerals</li>
       <li><strong>blockquote</strong> — the 2px brand edge, mono attribution; never an italic wash</li>
     </ul></div><div><ul>
-      <li><strong>code / pre / kbd</strong> — sunken chips and card-framed blocks in N&M Mono</li>
+      <li><strong>code / pre / kbd</strong> — sunken chips and card-framed blocks in the mono face</li>
       <li><strong>dl</strong> — mono terms, hairline-edged definitions</li>
       <li><strong>table / hr</strong> — hairlines only, mono headers</li>
       <li><strong>img / figure</strong> — card frame, mono caption below (see Image for the full component)</li>
@@ -221,54 +221,66 @@ ${PROSE}
     <p class="sub">Everything else</p>
     <p class="variant-note">Chart colors live in the <a href="./chart-intro.html">Charts section</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
     ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
-  { id: "type", title: "Typography", lede: "The <strong>N&M type system</strong> — three custom cuts, one voice: <strong>N&M Display</strong> speaks, <strong>N&M Text</strong> explains, <strong>N&M Mono</strong> keeps the records. Renamed OFL cuts (Manrope, Nunito Sans, Red Hat Mono), self-hosted from <code>fonts/</code> as latin-subset variable woff2s — ~77&thinsp;KB for the whole family, with a full static package in <code>fonts/static/</code> for anyone who wants to install it. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen ↗</a>", body: () => `
+  { id: "type", title: "Typography", lede: "Two self-hosted faces and one system stack. <strong>Switzer</strong> is the whole interface AND the reading layer \u2014 one grotesque separated by weight and size rather than a display/text pair; <strong>Sentient</strong> is the editorial voice that quotes; and <strong>mono</strong> is deliberately the platform\u2019s own console face, because a timestamp does not earn a download. Both shipped faces are Indian Type Foundry cuts from <a href=\"https://www.fontshare.com\">Fontshare</a>, latin-subset variable woff2 \u2014 <strong>69&thinsp;KB for the pair</strong>, licence in <code>fonts/FONTSHARE-EULA.txt</code>. Reading copy is <strong>14&nbsp;px</strong>: this is a product with an app inside it, and the compact scale is after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
     <p class="sub">The pairing</p>
     <div class="demo demo--stack" style="gap:var(--space-2)">
-      <span class="ns-label">// N&M Display &middot; heading</span>
+      <span class="ns-label">// Switzer 700 &middot; heading</span>
       <span style="font-family:var(--font-heading);font-size:var(--size-h1);font-weight:var(--weight-heading);letter-spacing:var(--tracking-tight);line-height:var(--leading-tight)">Build on the platform, not around it</span>
-      <span style="font-family:var(--font-sans);font-size:var(--size-body);color:var(--color-muted);max-inline-size:var(--measure-prose)">N&M Text carries the reading layer — lesson copy, descriptions, and every sentence longer than a label. Neutral on purpose: the heading and the data do the talking.</span>
+      <span style="font-family:var(--font-sans);font-size:var(--size-body);color:var(--color-muted);max-inline-size:var(--measure-prose)">The same face carries the reading layer — lesson copy, descriptions, and every sentence longer than a label. Nothing changes but weight and size, which is why the page reads as one voice rather than two negotiating.</span>
       <span style="font-family:var(--font-mono);font-size:var(--size-mono)">01 &middot; APEX BASICS &middot; 12:40 &middot; <span style="color:var(--color-success-ink)">COMPLETE</span></span>
     </div>
 
-    <p class="sub">The three cuts</p>
+    <p class="sub">The fourth voice — and the one font this system does not ship</p>
     <div class="demo demo--stack" style="gap:var(--space-4)">
       <div>
-        <span class="ns-label">N&M Display &middot; wght 200&ndash;800 &middot; cut of Manrope</span>
-        <div style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:800;letter-spacing:var(--tracking-tight)">800 — hero and h1&ndash;h3</div>
-        <div style="font-family:var(--font-heading);font-size:var(--size-h3);font-weight:700">700 — h4, card titles, buttons</div>
-        <div style="font-family:var(--font-heading);font-size:var(--size-h4);font-weight:600">600 — nav links, tab labels</div>
+        <span class="ns-label">--font-serif &middot; font-serif &middot; no binary shipped</span>
+        <blockquote class="ns-pullquote" style="margin-block-start:var(--space-3)">The hairline is the structure. Everything else is negotiable.</blockquote>
+      </div>
+      <p style="font-size:var(--size-small);color:var(--color-muted);max-inline-size:var(--measure-prose)">
+        Display speaks, Text explains, Mono keeps the records — and Serif <em>quotes</em>. A pull-quote,
+        a drop cap and a section quotation are the places a page stops arguing and starts citing; set in
+        the same grotesque as the argument, they never quite read as a different speaker, they read as a
+        bigger heading. Compare the two above.
+      </p>
+      <p style="font-size:var(--size-small);color:var(--color-muted);max-inline-size:var(--measure-prose)">
+        <strong>No font file is shipped for it.</strong> The N&amp;M family is self-hosted because it is the
+        brand; a face used on three devices per page does not earn another download, and this system ships
+        no licence for one. <code>--font-serif</code> resolves to the reader&rsquo;s own Georgia — a genuinely
+        good screen serif present on essentially every device — and a product that <em>has</em> licensed a
+        display serif overrides exactly one token to get it. The pattern is borrowed from
+        <a href="https://github.com/openclaw/carapace">openclaw/carapace</a>, which ships font stacks and no
+        font files at all.
+      </p>
+    </div>
+
+    <p class="sub">The three voices</p>
+    <div class="demo demo--stack" style="gap:var(--space-4)">
+      <div>
+        <span class="ns-label">Switzer &middot; wght 100&ndash;900 &middot; shipped, 29&thinsp;KB</span>
+        <div style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:700;letter-spacing:var(--tracking-tight)">700 — hero and h1&ndash;h3</div>
+        <div style="font-family:var(--font-heading);font-size:var(--size-h3);font-weight:600">600 — h4, card titles, buttons, inline emphasis</div>
+        <div style="font-family:var(--font-heading);font-size:var(--size-h4);font-weight:500">500 — nav links, tab labels</div>
+        <div style="font-family:var(--font-sans);font-size:var(--size-body);font-weight:400">400 — body copy, the reading default</div>
       </div>
       <div>
-        <span class="ns-label">N&M Text &middot; wght 200&ndash;1000 &middot; cut of Nunito Sans</span>
-        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:450">450 — body copy, the reading default</div>
-        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:400">400 — dense UI text, table cells, meta</div>
-        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:600">600 — inline emphasis, definition terms</div>
-        <div style="font-family:var(--font-sans);font-size:var(--size-body-lg);font-weight:900">900 — reserved for pull-quotes and big stats</div>
+        <span class="ns-label">Sentient &middot; wght 200&ndash;700 &middot; shipped, 40&thinsp;KB &middot; the editorial voice</span>
+        <blockquote class="ns-pullquote" style="margin-block-start:var(--space-2)">The hairline is the structure. Everything else is negotiable.</blockquote>
       </div>
       <div>
-        <span class="ns-label">N&M Mono &middot; wght 300&ndash;700 &middot; cut of Red Hat Mono</span>
+        <span class="ns-label">mono &middot; system stack &middot; NOT shipped</span>
         <div style="font-family:var(--font-mono);font-size:var(--size-mono);font-weight:400">400 — code blocks, inline code, timestamps</div>
         <div class="ns-label" style="font-size:var(--size-label)">700 — kickers &middot; indexes &middot; status labels</div>
       </div>
     </div>
+    <p class="variant-note">Mono is the material Principle&nbsp;2 is made of — every index, duration, timestamp and status runs through it — and it is still the one face this system does not ship. Those runs are short, tracked and uppercase, and the reader&rsquo;s own console face is not merely adequate there, it is more familiar than anything we could send them. The consequence to know: mono is SF&nbsp;Mono on macOS, Consolas on Windows, and whatever the distro sets on Linux, so a mono run is <em>not</em> an identical width across platforms. The <code>tabular-nums</code> in <code>tokens/base.css</code> is what keeps digits aligned.</p>
 
-    <p class="sub">Why body copy is 450, not 400</p>
-    <p class="variant-note">The single most common complaint about a Nunito-derived face, and it is a real one: at 16&nbsp;px on white, N&M Text's true Regular renders <em>grey</em> rather than black. The system's reading regular is therefore <strong>Book, 450</strong> — one interpolation step up the <code>wght</code> axis, free on a variable font, and a named weight rather than an ad-hoc value: it ships as a static cut too, so print and desktop match the web. Two changes travel with it — greyscale antialiasing is now dark-mode only (forcing it globally strips about a quarter-step of apparent weight off every glyph), and <code>--color-muted</code> was darkened from 4.93:1 to 6.87:1.</p>
-    <div class="demo demo--stack" style="gap:var(--space-4)">
-      <div>
-        <span class="ns-label">400 &middot; the old default &mdash; retired for reading copy</span>
-        <p style="font-weight:400;max-inline-size:var(--measure-prose);-webkit-font-smoothing:antialiased">Salesforce is a platform before it is a product, and the difference is the whole reason this curriculum exists. Learn the platform and every product on top of it becomes a variation you already understand.</p>
-      </div>
-      <div>
-        <span class="ns-label">450 &middot; --weight-body &mdash; what body copy is set at now</span>
-        <p style="font-weight:450;max-inline-size:var(--measure-prose)">Salesforce is a platform before it is a product, and the difference is the whole reason this curriculum exists. Learn the platform and every product on top of it becomes a variation you already understand.</p>
-      </div>
-    </div>
+    <p class="sub">Why body copy is 400</p>
+    <p class="variant-note">The previous family was a Nunito-derived cut whose true Regular rendered <em>grey</em> rather than black, so this system set reading copy at <strong>450 (&ldquo;Book&rdquo;)</strong> — an interpolation step invented to fix that face&rsquo;s problem. Switzer does not have it: its Regular is properly fitted, and carrying 450 across would have been cargo — half a step heavier than the designer drew, for no reason anyone could still state. Body is <strong>400</strong>. Switzer also has a real <strong>500</strong>, which the old family lacked, so the ramp is 400&thinsp;/&thinsp;500&thinsp;/&thinsp;600&thinsp;/&thinsp;700 and every step is a weight that was actually drawn.</p>
 
     <p class="sub">The scale</p>
     ${typeRows(pick(/^--size-/).filter((t) => t.name !== "--size-mega"))}
-    <p class="variant-note"><code>--size-mega</code> is left out of this table on purpose &mdash; at <code>clamp(3rem, 2rem + 5.4vw, 6.5rem)</code> its preview row would be taller than everything above it put together. It is shown in place under <em>Display &amp; poster typography</em> below, which is the only context it belongs in.</p>
-    <p class="variant-note">A ~1.25 fourth from body upward — wide enough that h2 and h3 are never confused, tight enough that a lesson page does not shout. Only the top two steps clamp: a hero has to survive a 360&nbsp;px phone, a paragraph does not. Everything is <code>rem</code>, because one <code>px</code> font-size is one piece of text that stops responding to browser zoom.</p>
+    <p class="variant-note"><code>--size-mega</code> is left out of this table on purpose &mdash; at <code>clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem)</code> its preview row would be taller than everything above it put together. It is shown in place under <em>Display &amp; poster typography</em> below, which is the only context it belongs in.</p>
+    <p class="variant-note">Compact, after <a href="https://github.com/openclaw/carapace">carapace</a>: 12&thinsp;/&thinsp;13&thinsp;/&thinsp;14&thinsp;/&thinsp;17&thinsp;/&thinsp;20&thinsp;/&thinsp;24&thinsp;/&thinsp;32, then the ratio opens back up above 32 because a hero is a different job from a heading. Reading copy is 14&nbsp;px because this is a product with an app inside it — at 16 the player, admin and tables all had to fight the base size with <code>--size-small</code>, which is the tell that the base was wrong for most of the screens being built. Only the top two steps clamp: a hero has to survive a 360&nbsp;px phone, a paragraph does not. Everything is <code>rem</code>, because one <code>px</code> font-size is one piece of text that stops responding to browser zoom.</p>
 
     <p class="sub">Weight, leading, tracking</p>
     ${plainRows(pick(/^--(weight|leading|tracking)-/))}
@@ -1062,6 +1074,11 @@ const CSS = `
   .side__brand img { inline-size: 1.5rem; block-size: 1.5rem; }
   .side__brand a { color: inherit; text-decoration: none; }
   .side__ver { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); margin-block-end: var(--space-5); display: block; }
+  .side__group { border: 0; }
+  .side__group > summary { list-style: none; cursor: pointer; display: flex; align-items: center; }
+  .side__group > summary::-webkit-details-marker { display: none; }
+  .side__twist { margin-inline-start: auto; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .side__group[open] > summary .side__twist { rotate: 90deg; }
   .side__sep { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
                letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
                margin: var(--space-5) 0 var(--space-2); padding-inline-start: var(--space-3); }
@@ -1337,19 +1354,24 @@ const JS = `
 const sidebar = (current) => {
   const link = (p) => `<a href="./${p.file}"${p.file === current ? ' aria-current="page"' : ""}><span class="side__num">${p.num}</span>${esc(p.title)}</a>`;
   const foundations = PAGES.filter((p) => p.kind === "home" || p.kind === "section");
-  const componentNav = FAMILIES.map((fam) => {
-    const pages = PAGES.filter((p) => p.kind === "component" && p.family === fam);
-    return pages.length ? `<p class="side__sep">${esc(fam)}</p>\n  ` + pages.map(link).join("\n  ") : "";
-  }).filter(Boolean).join("\n  ");
-  const docNav = ["Charts", "Content creation"].map((side) => {
-    const pages = PAGES.filter((p) => p.kind === "doc" && p.side === side);
-    return `<p class="side__sep">${esc(side)}</p>\n  ` + pages.map(link).join("\n  ");
-  }).join("\n  ");
+  /* Every section ships OPEN. assets/js/rail.js then collapses down to the one
+     holding aria-current and scrolls it into view inside the rail. Built this
+     way round so a JS failure leaves the nav long rather than unnavigable. */
+  const section = (label, pages) => pages.length ? `<details class="side__group" open>
+    <summary class="side__sep">${esc(label)}<i class="ph ph-caret-right side__twist" aria-hidden="true"></i></summary>
+    ${pages.map(link).join("\n    ")}
+  </details>` : "";
+  const componentNav = FAMILIES
+    .map((fam) => section(fam, PAGES.filter((p) => p.kind === "component" && p.family === fam)))
+    .filter(Boolean).join("\n  ");
+  const docNav = ["Charts", "Content creation"]
+    .map((side) => section(side, PAGES.filter((p) => p.kind === "doc" && p.side === side)))
+    .join("\n  ");
   return `<div class="side">
   <div class="side__brand"><img src="../assets/logo/favicon.svg" alt=""><strong><a href="./index.html">NS Design System</a></strong></div>
   <span class="side__ver">v${esc(pkg.version)} · ${all.length} tokens</span>
   <input class="ns-input side__search" type="search" id="side-search" placeholder="Filter pages…" aria-label="Filter pages">
-  <nav aria-label="Pages">
+  <nav aria-label="Pages" data-ns-rail>
   ${foundations.map(link).join("\n  ")}
   ${componentNav}
   ${docNav}
@@ -1390,7 +1412,7 @@ const shell = (page, inner) => {
 <title>${esc(page.title)} — NS Design System</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
 <script>${THEME_INIT}</script>
-<link rel="stylesheet" href="../dist/namaste-ui.css">
+<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 <style>${CSS}</style>
 </head>
 <body>
@@ -1422,7 +1444,11 @@ ${sidebar(page.file)}
 <script src="../assets/js/code.js" defer></script>
 <script src="../assets/js/type-fx.js" defer></script>
 <script src="../assets/js/lms.js" defer></script>
-<script src="../assets/js/blog.js" defer></script>
+<script src="../assets/js/rail.js" defer></script>
+<script src="../assets/js/calendar.js" defer></script>
+<script src="../assets/js/tabs.js" defer></script>
+<script src="../assets/js/video.js" defer></script>
+<script src="../assets/js/toc.js" defer></script>
 </body>
 </html>
 `;
@@ -1431,7 +1457,12 @@ ${sidebar(page.file)}
 /* ---- render every page --------------------------------------------------
    The output directory is rebuilt from scratch so a renamed section cannot
    leave a stale orphan page behind. */
-rmSync(OUT, { recursive: true, force: true });
+/* maxRetries: a recursive delete of a directory the dev server is actively
+   serving intermittently fails on macOS (ENOTEMPTY/EBUSY) when a request is
+   in flight — the build then dies with a bare exit code and no explanation,
+   which reads like a code error and is not one. Node retries the unlink for
+   us; three attempts 100ms apart has been enough every time. */
+rmSync(OUT, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
 mkdirSync(OUT, { recursive: true });
 
 for (const page of PAGES) {
@@ -1496,7 +1527,7 @@ for (const page of PAGES) {
   ${c.variants.map((v) => `
   <p class="sub">${esc(v.name)}</p>
   ${v.note ? `<p class="variant-note">${v.note}</p>` : ""}
-  <div class="demo${v.dark ? " demo--dark" : ""}${v.flush ? " demo--flush" : ""}${v.phone ? " demo--phone" : ""}${/ns-(alert|toast|thread|tickets|auth__|accordion|field|fieldset|table-wrap|empty|band|builder|statband|features|faq|quote|rte|dropzone|publishbar|toolbar|pagehead|stat-grid|editor__rail|file)/.test(v.html) ? " demo--stack" : ""}">
+  <div class="demo${v.dark ? " demo--dark" : ""}${v.flush ? " demo--flush" : ""}${v.phone ? " demo--phone" : ""}${v.stack ? " demo--stack" : ""}${/ns-(alert|toast|thread|tickets|auth__|accordion|field|fieldset|table-wrap|empty|band|builder|statband|features|faq|quote|rte|dropzone|publishbar|toolbar|pagehead|stat-grid|editor__rail|file|combobox|deflist|timeline|tree|banner|divider)/.test(v.html) ? " demo--stack" : ""}">
 ${v.html}
   </div>
   ${v.script ? `<script>${v.script}</script>` : ""}
@@ -1526,7 +1557,12 @@ const DEMOS = [
   { out: "demo-admin-lesson-editor.html", tpl: "admin-lesson-editor.html", title: "Lesson editor — full screen demo", back: "c-admin-shell.html", note: "interactive — write, format, upload, publish", wrap: "ns-admin__main", interactive: true },
   { out: "demo-navbar.html", tpl: "navbar.html", title: "Site navbar — full width demo", back: "c-topnav.html", note: "open the menus; resize below 64rem for the hamburger and the sheet", extras: ["search-modal.html"] },
   { out: "demo-navbar-blog.html", tpl: "navbar-blog.html", title: "Blog navbar — full width demo", back: "c-topnav.html", note: "signed-in bar: account menu, reading progress on scroll", extras: ["search-modal.html"] },
-  { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed" },
+  /* The player comes along because the bar's curriculum toggle targets
+     aria-controls="player-rail", which lives in course-player.html. Rendered
+     alone the button announces a relationship to nothing — same reason the
+     navbars above pull in search-modal.html. */
+  { out: "demo-training.html", tpl: "training-module.html", wrap: "ns-page ns-page--demo", title: "Training module — full page", back: "c-trainingnav.html", note: "the rail collapses to the active module on load and scrolls it into view; open the others freely" },
+  { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed", extras: ["course-player.html"] },
   { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
   { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
   { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
@@ -1702,15 +1738,31 @@ const ADMIN_DEMO_JS = `
   });
 })();`;
 
+/* Read one templates/*.html fragment and make it renderable as part of a page
+   here. Templates are written for a Ghost site served at ITS root, so
+   /assets/logo/favicon.svg is correct where they ship and wrong here — this
+   styleguide lives under /NS-Design-System/, one directory deep. Rewriting at
+   render time keeps the shipped fragment honest for its real consumer while
+   the demo page still shows every image. Used for the main template AND its
+   extras: a fragment pulled in as an extra needs exactly the same treatment,
+   which is the bug that put a broken cover image on demo-navbar-course. */
+const fragment = (name) => readFileSync(join(ROOT, `templates/${name}`), "utf8")
+  .replace(/<!--[\s\S]*?-->\n?/, "")                       // adaptation header
+  .replace(/(\s(?:src|href|poster)=")\/assets\//g, "$1../assets/");
+
 for (const d of DEMOS) {
-  let body = readFileSync(join(ROOT, `templates/${d.tpl}`), "utf8")
-    .replace(/<!--[\s\S]*?-->\n?/, ""); // strip the adaptation header comment
-  if (d.wrap) body = `<main class="${d.wrap}">\n${body}\n</main>`;
+  let body = fragment(d.tpl);
+  /* <div>, not <main>, when the fragment already carries its own <main> —
+     two mains in one document is invalid and makes the landmark useless. */
+  if (d.wrap) {
+    const tag = /<main[\s>]/.test(body) ? "div" : "main";
+    body = `<${tag} class="${d.wrap}">\n${body}\n</${tag}>`;
+  }
   /* Some bars carry a search affordance that opens the shared search dialog.
      The dialog is its own template — appending it here is what the consuming
      product does too, rather than each bar shipping a copy of it. */
   for (const extra of d.extras || []) {
-    body += "\n" + readFileSync(join(ROOT, `templates/${extra}`), "utf8").replace(/<!--[\s\S]*?-->\n?/, "");
+    body += "\n" + fragment(extra);
   }
   if (d.interactive) body += `\n<script>${ADMIN_DEMO_JS}</script>`;
   writeFileSync(join(OUT, d.out), `<!DOCTYPE html>
@@ -1719,18 +1771,21 @@ for (const d of DEMOS) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(d.title)}</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
-<link rel="stylesheet" href="../dist/namaste-ui.css">
-<style>body{margin:0} .demo-bar{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-4);border-block-end:1px solid var(--color-border);font-family:var(--font-mono);font-size:var(--size-label);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label)}</style>
+<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 </head>
 <body>
-<div class="demo-bar">templates/${esc(d.tpl)} — ${esc(d.note)}
-  <a class="ns-btn ns-btn--outline ns-btn--sm" style="margin-inline-start:auto" href="./${d.back}">&larr; back to docs</a></div>
+<div class="flex items-center gap-row px-card py-inline border-b border-border font-mono text-label uppercase text-label-ink">templates/${esc(d.tpl)} — ${esc(d.note)}
+  <a class="ns-btn ns-btn--outline ns-btn--sm ms-auto" href="./${d.back}">&larr; back to docs</a></div>
 ${body}
 <script src="../assets/js/nav.js" defer></script>
 <script src="../assets/js/code.js" defer></script>
 <script src="../assets/js/type-fx.js" defer></script>
 <script src="../assets/js/lms.js" defer></script>
-<script src="../assets/js/blog.js" defer></script>
+<script src="../assets/js/rail.js" defer></script>
+<script src="../assets/js/calendar.js" defer></script>
+<script src="../assets/js/tabs.js" defer></script>
+<script src="../assets/js/video.js" defer></script>
+<script src="../assets/js/toc.js" defer></script>
 <script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
 </body>
 </html>

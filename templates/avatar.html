@@ -1,0 +1,22 @@
+<!-- Avatar — a person. Image or initials on a sunken disc.
+
+     The ring wrapper draws course progress as a conic arc via --p (0–100), and
+     it is a WRAPPER so the avatar's own round clip stays intact. Initials are
+     real text, not a generated image, so they stay legible at every size and
+     survive with images turned off. -->
+
+<span class="ns-avatar"><img src="/assets/img/author.jpg" alt="Swarnil Singhai"></span>
+<span class="ns-avatar ns-avatar--sm">SS</span>
+<span class="ns-avatar ns-avatar--lg">SS</span>
+
+<!-- With progress: 62% of the course complete. -->
+<span class="ns-avatar-ring" style="--p: 62">
+  <span class="ns-avatar"><img src="/assets/img/author.jpg" alt="Swarnil Singhai"></span>
+</span>
+
+<!-- Overlapping stack; the last tile counts the remainder. -->
+<span class="ns-avatar-stack">
+  <span class="ns-avatar ns-avatar--sm">SS</span>
+  <span class="ns-avatar ns-avatar--sm">AK</span>
+  <span class="ns-avatar ns-avatar--sm ns-avatar--more">+7</span>
+</span>

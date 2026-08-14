@@ -22,7 +22,7 @@
      .ns-dropzone         media upload target + uploaded-file row
      .ns-taginput         chips-inside-a-field tag entry
      .ns-slug             prefix + input group for URL slugs */
-@layer components {
+@layer ns-components {
 
   /* --- App shell ----------------------------------------------------------
      Fixed topbar, fixed-width side nav, scrolling main. The shell is a grid

@@ -1,0 +1,301 @@
+/* NS Design System — training: tracks, connected modules, units.
+   =========================================================================
+   The third content family, beside LMS and Blog. It is NOT a reskin of the
+   course player, and the difference is structural rather than decorative:
+
+     a COURSE   is a sequence of lessons you watch. One spine, video-first,
+                the rail exists to tell you where you are in a playlist.
+     a TRACK    is a curriculum you work through. Modules are units of
+                competence — "Data modelling", "Security" — each with its own
+                lessons, and the modules CONNECT: one earns the next.
+
+   That connection is the whole visual idea. Modules hang off a vertical spine
+   with a node per module, so the eye reads dependency and progress in one
+   pass; a flat list of cards would say these are alternatives, which is a lie
+   about the content. The course curriculum (.ns-curriculum in lms.css) is a
+   list because a playlist IS a list. Different claim, different component.
+
+   Naming: a track holds MODULES, a module holds UNITS. "Lesson" is the
+   course-side word and is deliberately not reused — a unit can be a reading,
+   an exercise or a quiz, and calling it a lesson implies a video that is
+   often not there. */
+@layer ns-components {
+
+  /* --- Track header -------------------------------------------------------
+     What the whole curriculum is and how far in you are. The progress here is
+     over MODULES completed, not units: a learner thinks in "3 of 8 modules",
+     and a percentage over 60 units is a number nobody can act on. */
+  .ns-track {
+    display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-6);
+    padding-block-end: var(--space-6);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-track__body { flex: 1; min-inline-size: 0; }
+  .ns-track__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-track__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+  .ns-track__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-2); max-inline-size: var(--container-prose); text-wrap: pretty; }
+  .ns-track__meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-4); margin-block-start: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-track__stat { flex: none; min-inline-size: 7rem; }
+  .ns-track__stat b { display: block; font-family: var(--font-heading); font-size: var(--size-h3); font-weight: var(--weight-heading); letter-spacing: normal; text-transform: none; color: var(--color-ink); }
+
+  /* --- Connected modules --------------------------------------------------
+     The spine. It is a ::before on the list rather than a border on each item
+     so it runs continuously behind the nodes, and it stops at the last node
+     instead of trailing past it. */
+  .ns-modules { list-style: none; margin: 0; padding: 0; position: relative; }
+  .ns-module {
+    position: relative;
+    padding-inline-start: var(--space-10);
+    padding-block-end: var(--space-5);
+  }
+  .ns-module::before {
+    content: ""; position: absolute;
+    inset-inline-start: 0.6875rem; inset-block: var(--space-8) 0;
+    inline-size: 2px; background: var(--color-border);
+  }
+  .ns-module:last-child { padding-block-end: 0; }
+  .ns-module:last-child::before { display: none; }
+  /* The node carries the module index in mono — Principle 2: the number is
+     data, the title is writing. */
+  .ns-module__node {
+    position: absolute; inset-inline-start: 0; inset-block-start: var(--space-3);
+    inline-size: 1.5rem; block-size: 1.5rem; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
+  }
+  /* Only three states, and they are mutually exclusive: done, the one you are
+     in, and not yet. A module with no state is simply available. */
+  .ns-module[data-state="done"] .ns-module__node { background: var(--color-success); color: var(--color-on-brand); box-shadow: none; }
+  .ns-module[data-state="current"] .ns-module__node { background: var(--color-brand-500); color: var(--color-on-brand); box-shadow: none; }
+  .ns-module[data-state="done"]::before { background: var(--color-success); }
+  /* Locked is a claim about sequence, so it dims the whole row rather than
+     just the node — the reader needs to see at a glance that the content is
+     not reachable yet, not discover it on click. */
+  .ns-module[data-state="locked"] { opacity: var(--opacity-disabled); }
+
+  .ns-module__card {
+    display: block; padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface); color: inherit; text-decoration: none;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  a.ns-module__card:hover { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-module[data-state="current"] > .ns-module__card { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-module__head { display: flex; align-items: baseline; gap: var(--space-3); flex-wrap: wrap; }
+  .ns-module__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-module__meta {
+    margin-inline-start: auto; flex: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-module__text { font-size: var(--size-small); color: var(--color-muted); margin-block-start: var(--space-2); text-wrap: pretty; }
+  .ns-module__foot { display: flex; align-items: center; gap: var(--space-3); margin-block-start: var(--space-3); }
+
+  /* --- Units --------------------------------------------------------------
+     The rows inside a module. Type is a mono tag rather than an icon-only
+     glyph: "READING" and "QUIZ" are words a screen reader can announce and a
+     newcomer can understand, where a book icon is a guess. */
+  .ns-units { list-style: none; margin: var(--space-3) 0 0; padding: 0; }
+  .ns-unit {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: inherit; text-decoration: none;
+  }
+  a.ns-unit:hover .ns-unit__title { color: var(--color-brand-600); }
+  [data-theme="dark"] a.ns-unit:hover .ns-unit__title { color: var(--color-brand-300); }
+  .ns-unit__check { flex: none; inline-size: 1rem; color: var(--color-border); }
+  .ns-unit[data-state="done"] .ns-unit__check { color: var(--color-success); }
+  .ns-unit__title { min-inline-size: 0; color: var(--color-ink); }
+  .ns-unit__type {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-unit__time { flex: none; margin-inline-start: auto; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
+
+  /* --- Training layout ----------------------------------------------------
+     Rail + content. The rail is sticky and scrolls independently, because a
+     track has far more nav than a course and scrolling the page to reach the
+     nav is the thing that makes long curricula unusable. */
+  .ns-training { display: flex; align-items: flex-start; gap: var(--space-8); }
+  .ns-training__main { flex: 1; min-inline-size: 0; max-inline-size: var(--container-narrow); }
+
+  /* --- Training nav -------------------------------------------------------
+     Track > module > unit, as nested <details> so open/closed, keyboard
+     operation and in-page find come from the platform.
+
+     assets/js/rail.js opens the module containing the current unit,
+     collapses the others and scrolls it into view on load. That behaviour is
+     progressive: with JS off every module ships `open`, which is worse to
+     scroll but never hides anything. */
+  .ns-trainingnav {
+    position: sticky; inset-block-start: var(--navbar-h);
+    inline-size: var(--sidebar-w); flex: none;
+    max-block-size: calc(100dvh - var(--navbar-h));
+    overflow-y: auto; padding-block: var(--space-6);
+    padding-inline-end: var(--space-3);
+    border-inline-end: 1px solid var(--color-border);
+  }
+  .ns-trainingnav__track {
+    display: block; padding-block-end: var(--space-3);
+    margin-block-end: var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    text-decoration: none;
+  }
+  .ns-trainingnav__module { border: 0; }
+  .ns-trainingnav__module > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    list-style: none; cursor: pointer;
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    color: var(--color-ink);
+  }
+  .ns-trainingnav__module > summary::-webkit-details-marker { display: none; }
+  .ns-trainingnav__module > summary:hover { background: var(--color-surface-sunken); }
+  .ns-trainingnav__module > summary:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  .ns-trainingnav__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
+  .ns-trainingnav__count { margin-inline-start: auto; flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
+  .ns-trainingnav__list { list-style: none; margin: 0 0 var(--space-2); padding-inline-start: var(--space-4); }
+  .ns-trainingnav__link {
+    display: block; padding: var(--space-1) var(--space-2);
+    border-inline-start: 2px solid var(--color-border);
+    font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-trainingnav__link:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  /* aria-current, not a class — the highlighted unit and the announced unit
+     come from one attribute, and training.js reads the same one to decide
+     which module to open. */
+  .ns-trainingnav__link[aria-current="page"] {
+    color: var(--color-brand-600); font-weight: var(--weight-medium);
+    border-inline-start-color: var(--color-brand-500);
+  }
+  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] { color: var(--color-brand-300); }
+  .ns-trainingnav__link[data-state="done"] { color: var(--color-label); }
+
+  /* --- Module head (in content) -------------------------------------------
+     The header of a module's own page: which module of how many, its title,
+     and the units as a checklist. */
+  .ns-modulehead { padding-block-end: var(--space-5); border-block-end: 1px solid var(--color-border); }
+  .ns-modulehead__crumb {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-modulehead__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; margin-block-start: var(--space-1); }
+  .ns-modulehead__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
+
+  @media (max-width: 63.999rem) {
+    .ns-training { display: block; }
+    .ns-trainingnav {
+      position: static; inline-size: 100%; max-block-size: none;
+      border-inline-end: 0; border-block-end: 1px solid var(--color-border);
+      padding-inline-end: 0; margin-block-end: var(--space-5);
+    }
+    .ns-training__main { max-inline-size: none; }
+  }
+
+  /* --- Track card ---------------------------------------------------------
+     A track in an overview GRID — distinct from .ns-module, which is a track's
+     module on its own spine. This one is a peer among peers, so it is a card
+     with no connector: nothing here claims one earns the next. */
+  .ns-trackcard {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-trackcard:hover { border-color: var(--color-brand-500); }
+  .ns-trackcard__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
+  .ns-trackcard__icon {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem; flex: none;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-trackcard__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-trackcard__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-trackcard__text { font-size: var(--size-small); color: var(--color-muted); text-wrap: pretty; }
+  .ns-trackcard__meta {
+    display: flex; gap: var(--space-4); margin-block-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Roadmap stop -------------------------------------------------------
+     A stop on a roadmap page: an index, an icon, and the description. Related
+     to .ns-module but not the same — a module belongs to one track's spine,
+     a roadmap stop is a milestone on a long horizontal journey and alternates
+     sides on wide screens. */
+  .ns-roadmap { max-inline-size: 26rem; }
+  .ns-roadmap--end { margin-inline-start: auto; }
+  .ns-roadmap__card {
+    position: relative; display: flex; gap: var(--space-4);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  a.ns-roadmap__card:hover { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-roadmap__rail { flex: none; display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
+  .ns-roadmap__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-roadmap__icon {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-roadmap__body { min-inline-size: 0; flex: 1; display: flex; flex-direction: column; gap: var(--space-1); }
+  .ns-roadmap__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-roadmap__text { font-size: var(--size-small); color: var(--color-muted); text-wrap: pretty; }
+  .ns-roadmap__meta {
+    display: flex; gap: var(--space-3); margin-block-start: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
+}

@@ -1,0 +1,25 @@
+<!-- Stepper — a short labelled flow the reader is currently inside.
+
+     An <ol>, because it IS an ordered list of steps. State is data-state
+     (done / current) and aria-current="step" marks position — one attribute
+     drives both the paint and the announcement. A done step shows a check
+     rather than its number: the number stopped being the useful information.
+
+     Past four or five steps use the curriculum list instead. -->
+
+<ol class="ns-stepper">
+  <li class="ns-stepper__step" data-state="done">
+    <span class="ns-stepper__node"><i class="ph ph-check-circle" aria-hidden="true"></i></span>
+    <span class="ns-stepper__label">Account</span>
+  </li>
+  <li class="ns-stepper__line" data-state="done" aria-hidden="true"></li>
+  <li class="ns-stepper__step" data-state="current" aria-current="step">
+    <span class="ns-stepper__node">02</span>
+    <span class="ns-stepper__label">Payment</span>
+  </li>
+  <li class="ns-stepper__line" aria-hidden="true"></li>
+  <li class="ns-stepper__step">
+    <span class="ns-stepper__node">03</span>
+    <span class="ns-stepper__label">Confirm</span>
+  </li>
+</ol>

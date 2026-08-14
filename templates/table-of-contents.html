@@ -1,0 +1,14 @@
+<!-- Table of contents — hairline rail, active item takes a brand leading bar.
+
+     Active state is aria-current="true", not a class: the CSS keys off the
+     same attribute the screen reader announces, so the highlighted item and
+     the announced item cannot drift apart. assets/js/toc.js sets it on
+     scroll. Two levels only — h3s get --sub. -->
+
+<nav class="ns-toc" aria-label="Table of contents">
+  <span class="ns-toc__title">On this page</span>
+  <a class="ns-toc__link" href="#what-is-apex" aria-current="true">What is Apex</a>
+  <a class="ns-toc__link ns-toc__link--sub" href="#governor-limits">Governor limits</a>
+  <a class="ns-toc__link ns-toc__link--sub" href="#bulkification">Bulkification</a>
+  <a class="ns-toc__link" href="#testing">Testing</a>
+</nav>

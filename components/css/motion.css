@@ -1,0 +1,137 @@
+/* NS Design System — page motion.
+   =========================================================================
+   Nine entrance animations, and a hard limit on what they are for.
+
+   Principle 5 says motion is instant: 120–180ms, plain ease-out, no spring,
+   no bounce, no scale-pop. That governs INTERACTION — a hover, a press, a
+   panel opening. Entrance is the one place a longer curve is allowed, because
+   it is not feedback: nobody is waiting on it, and its job is to tell the eye
+   the order to read a page in. Even so these top out at --duration-slow and
+   move at most half a rem. Anything that travels further reads as a slide
+   deck.
+
+   THE RULE THAT MATTERS: one entrance per block, never per element. A page
+   where twelve things fly in individually is a page nobody can read while it
+   assembles itself. Use --stagger on a container and let its children inherit
+   an index, or put a single .ns-anim on the block.
+
+   All of it is off under prefers-reduced-motion — the global guard in
+   tokens/effects.css collapses every animation to 0.001ms, so these need no
+   media query of their own. That is deliberate: a per-component opt-out is a
+   per-component chance to forget.
+
+   Scroll-triggered variants use `animation-timeline: view()`. Where that is
+   unsupported the animation simply runs on load instead, which is the correct
+   degradation — the content is visible either way, and nothing depends on JS. */
+@layer ns-components {
+
+  /* --- The base -----------------------------------------------------------
+     .ns-anim on its own is a fade. Everything else is a modifier that adds a
+     transform to it, so the opacity ramp is identical across all nine and the
+     page settles as one gesture rather than nine competing ones. */
+  .ns-anim {
+    animation: ns-anim-fade var(--duration-base) var(--ease-out) both;
+    animation-delay: var(--_d, 0ms);
+  }
+
+  /* 1. fade — the default. For anything already in place that just needs to
+        arrive: a hero, a full-bleed band, a modal body. */
+  @keyframes ns-anim-fade { from { opacity: 0; } to { opacity: 1; } }
+
+  /* 2. rise — fade plus half a rem upward. The workhorse: cards, sections,
+        list blocks. Upward because content entering from below reads as
+        "next", which is the direction a page is consumed in. */
+  .ns-anim--rise { animation-name: ns-anim-rise; }
+  @keyframes ns-anim-rise {
+    from { opacity: 0; translate: 0 0.5rem; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  /* 3. fall — the same, downward. Reserved for things that belong to what is
+        ABOVE them: a dropdown under its trigger, a banner under the navbar,
+        a disclosure panel under its summary. Using it on body content is the
+        most common misuse — it makes the page feel like it is collapsing. */
+  .ns-anim--fall { animation-name: ns-anim-fall; }
+  @keyframes ns-anim-fall {
+    from { opacity: 0; translate: 0 -0.5rem; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  /* 4/5. enter-start / enter-end — from the leading or trailing inline edge.
+        LOGICAL, not left/right: in an RTL document these flip automatically,
+        which a translateX(-8px) would not. For a rail sliding in, a drawer, a
+        toast entering from the side it lives on. */
+  .ns-anim--enter-start { animation-name: ns-anim-enter-start; }
+  @keyframes ns-anim-enter-start {
+    from { opacity: 0; translate: -0.5rem 0; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  .ns-anim--enter-end { animation-name: ns-anim-enter-end; }
+  @keyframes ns-anim-enter-end {
+    from { opacity: 0; translate: 0.5rem 0; }
+    to { opacity: 1; translate: 0 0; }
+  }
+
+  /* 6. expand — a clip reveal from the block edge. The content does not move,
+        it is uncovered, which is what makes it right for something that has a
+        fixed position on the page: a table filling in, an image, a code block.
+        clip-path rather than height so it never reflows the page mid-animation. */
+  .ns-anim--expand { animation-name: ns-anim-expand; animation-duration: var(--duration-slow); }
+  @keyframes ns-anim-expand {
+    from { opacity: 0; clip-path: inset(0 0 100% 0); }
+    to { opacity: 1; clip-path: inset(0 0 0 0); }
+  }
+
+  /* 7. draw — a rule drawing itself from the leading edge. This is the one
+        animation the system already had a vocabulary for (--duration-draw):
+        a mark that draws is a gesture, and it has to be slow enough to read
+        as one. For underlines, dividers, the accent edge on a band. */
+  .ns-anim--draw { animation-name: ns-anim-draw; animation-duration: var(--duration-draw); animation-timing-function: var(--ease-draw); }
+  @keyframes ns-anim-draw {
+    from { clip-path: inset(0 100% 0 0); }
+    to { clip-path: inset(0 0 0 0); }
+  }
+
+  /* 8. settle — fade with a 2% scale-down onto its final size. Deliberately
+        DOWNWARD: scaling up is the pop Principle 5 forbids, and it makes an
+        element momentarily larger than the space reserved for it. Scaling down
+        onto the mark reads as focusing. For a modal, a popover, an avatar. */
+  .ns-anim--settle { animation-name: ns-anim-settle; }
+  @keyframes ns-anim-settle {
+    from { opacity: 0; scale: 1.02; }
+    to { opacity: 1; scale: 1; }
+  }
+
+  /* 9. stagger — a CONTAINER, not an animation. Children animate in sequence
+        at 40ms apart, capped at the fifth: past ~200ms of accumulated delay
+        the last item feels broken rather than choreographed, and a 40-row
+        table would take two seconds to finish arriving.
+
+        The cap is the whole design. Every stagger implementation that hurts is
+        one that multiplied the index without a ceiling. */
+  .ns-anim-stagger > * { animation: ns-anim-rise var(--duration-base) var(--ease-out) both; }
+  .ns-anim-stagger > :nth-child(1) { animation-delay: 0ms; }
+  .ns-anim-stagger > :nth-child(2) { animation-delay: 40ms; }
+  .ns-anim-stagger > :nth-child(3) { animation-delay: 80ms; }
+  .ns-anim-stagger > :nth-child(4) { animation-delay: 120ms; }
+  .ns-anim-stagger > :nth-child(5) { animation-delay: 160ms; }
+  .ns-anim-stagger > :nth-child(n+6) { animation-delay: 200ms; }
+
+  /* --- Scroll-triggered ---------------------------------------------------
+     --onview runs the animation as the block scrolls into view rather than on
+     load. Native scroll-driven animations: no observer, no JS, no layout
+     thrash. `entry 0% cover 40%` means it completes well before the block is
+     centred, so a reader scrolling at speed never watches content assemble.
+
+     Where view() is unsupported the declaration is dropped and the animation
+     runs on load — visible either way. */
+  @supports (animation-timeline: view()) {
+    .ns-anim--onview, .ns-anim-stagger--onview > * {
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    /* A scroll-driven animation is scrubbed by position, so a delay would
+       shift it out of its own range and strand it part-drawn. */
+    .ns-anim-stagger--onview > * { animation-delay: 0s; }
+  }
+}

@@ -5,4 +5,5 @@ export interface BadgeProps {
   icon?: string;
   /** Show the small colored status dot (default true; ignored if icon is set) */
   dot?: boolean;
+  className?: string;
 }

@@ -1,0 +1,40 @@
+<!-- Connected modules — the spine of a track.
+
+     Modules hang off a vertical rail with a node each, so the eye reads
+     dependency and progress in one pass. A flat list of cards would say these
+     are alternatives, which is a lie about the content.
+
+     data-state is done / current / locked. A locked module is NOT a link —
+     an unreachable link is a trap.
+
+     Framework-agnostic markup: the same .ns-* classes the React side renders.
+     Ghost: paste into a partial. Next.js: prefer the component. -->
+
+<ol class="ns-modules">
+  <li class="ns-module" data-state="done">
+    <span class="ns-module__node" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <a class="ns-module__card" href="#">
+      <div class="ns-module__head"><span class="ns-module__title">Objects, fields and relationships</span><span class="ns-module__meta">6 units · 2h</span></div>
+      <p class="ns-module__text">The data model first: everything else on the platform is a consequence of it.</p>
+    </a>
+  </li>
+  <li class="ns-module" data-state="current">
+    <span class="ns-module__node" aria-hidden="true">02</span>
+    <a class="ns-module__card" href="#">
+      <div class="ns-module__head"><span class="ns-module__title">Security and access</span><span class="ns-module__meta">8 units · 3h</span></div>
+      <p class="ns-module__text">Profiles, permission sets, roles and sharing — in that order, because each one only makes sense given the last.</p>
+      <ul class="ns-units">
+        <li class="ns-unit" data-state="done"><i class="ph ph-check-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">Profiles vs permission sets</span><span class="ns-unit__type">Reading</span><span class="ns-unit__time">12 min</span></li>
+        <li class="ns-unit"><i class="ph ph-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">The role hierarchy</span><span class="ns-unit__type">Video</span><span class="ns-unit__time">18 min</span></li>
+        <li class="ns-unit"><i class="ph ph-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">Sharing rules in practice</span><span class="ns-unit__type">Exercise</span><span class="ns-unit__time">25 min</span></li>
+      </ul>
+    </a>
+  </li>
+  <li class="ns-module" data-state="locked">
+    <span class="ns-module__node" aria-hidden="true">03</span>
+    <div class="ns-module__card">
+      <div class="ns-module__head"><span class="ns-module__title">Automation: Flow</span><span class="ns-module__meta">9 units · 4h</span></div>
+      <p class="ns-module__text">Finish Security and access to unlock.</p>
+    </div>
+  </li>
+</ol>

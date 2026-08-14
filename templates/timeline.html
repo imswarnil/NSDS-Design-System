@@ -1,0 +1,27 @@
+<!-- Timeline — a vertical feed of things that happened.
+
+     An <ol>, because the order is the meaning. data-state drives the dot, and
+     only the entry still happening takes the signal colour.
+
+     Framework-agnostic markup: the same .ns-* classes the styleguide renders.
+     Ghost: paste into a partial. Next.js: prefer the React component. -->
+
+<ol class="ns-timeline">
+  <li class="ns-timeline__item" data-state="current">
+    <span class="ns-timeline__dot" aria-hidden="true"></span>
+    <span class="ns-timeline__time">Today 09:14</span>
+    <div class="ns-timeline__title">Started “Testing Apex”</div>
+    <p class="ns-timeline__text">Lesson 1 of 6.</p>
+  </li>
+  <li class="ns-timeline__item" data-state="done">
+    <span class="ns-timeline__dot" aria-hidden="true"></span>
+    <span class="ns-timeline__time">12 Jan 16:02</span>
+    <div class="ns-timeline__title">Completed “Apex triggers in depth”</div>
+    <p class="ns-timeline__text">Certificate issued.</p>
+  </li>
+  <li class="ns-timeline__item">
+    <span class="ns-timeline__dot" aria-hidden="true"></span>
+    <span class="ns-timeline__time">04 Jan 11:30</span>
+    <div class="ns-timeline__title">Enrolled</div>
+  </li>
+</ol>

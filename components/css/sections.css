@@ -11,7 +11,7 @@
      - vertical rhythm is --space-16/--space-20 (spacing-section scale);
      - dark bands use the navy console surface + the hairline grid motif,
        never a gradient. */
-@layer components {
+@layer ns-components {
 
   /* --- Band + head --------------------------------------------------------- */
   .ns-band { padding-block: var(--space-16); }
@@ -35,6 +35,11 @@
   }
   .ns-kicker::before { content: "// "; }
   .ns-band--dark .ns-kicker { color: var(--color-on-dark-border-hover); }
+  .ns-kicker--center { text-align: center; }
+  /* For a kicker on a dark ground that is NOT inside .ns-band--dark — a
+     photographic hero, a poster card. The comment slashes stay dimmer than
+     the label, which is the whole read: they are punctuation, not content. */
+  .ns-kicker--light { color: var(--color-on-dark); }
   .ns-band__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
   .ns-band__lede { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
@@ -175,7 +180,9 @@
      One voice, set large; the attribution is a mono record line. Never a
      three-up wall of star ratings. */
   .ns-quote { max-inline-size: var(--container-narrow); margin-inline: auto; text-align: center; }
-  .ns-quote blockquote { font-size: var(--size-h3); line-height: var(--leading-heading); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+  /* Same editorial voice as .ns-pullquote — a section quotation and an inline
+     pull-quote are one register at two scales, so they must not use two faces. */
+  .ns-quote blockquote { font-family: var(--font-serif); font-size: var(--size-h3); line-height: var(--leading-heading); text-wrap: balance; }
   .ns-quote blockquote::before { content: "\201C"; color: var(--color-label); }
   .ns-quote blockquote::after { content: "\201D"; color: var(--color-label); }
   .ns-quote figcaption {
@@ -238,6 +245,28 @@
                      letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
                      margin-block-end: var(--space-3); }
   .ns-footer__col ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--space-2); }
+  /* The one-sentence "what is this site" under the mark. Capped at the reading
+     measure — a footer blurb that runs the full column width reads as body
+     copy someone forgot to finish. */
+  .ns-footer__blurb {
+    font-size: var(--size-small); color: var(--color-muted);
+    line-height: var(--leading-body); margin-block: var(--space-3);
+    max-inline-size: var(--container-prose);
+  }
+  /* Social row: horizontal, so it does not inherit the vertical link stack
+     that .ns-footer__col ul sets. Written as ul.ns-footer__social — the same
+     specificity as that rule, declared after it, which is all it takes. An
+     !important here would beat Tailwind utilities too, which is a much bigger
+     promise than "this one list is a row". */
+  ul.ns-footer__social { flex-direction: row; gap: var(--space-2); }
+  .ns-footer__social a {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 1.875rem; block-size: 1.875rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-muted);
+  }
+  .ns-footer__social a:hover { box-shadow: inset 0 0 0 1px var(--color-brand-500); }
   .ns-footer__col a { font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
                       transition: color var(--duration-fast) var(--ease-out); }
   .ns-footer__col a:hover { color: var(--color-brand-600); }

@@ -4,7 +4,7 @@
    Principle 1 — the hairline is the structure: a card is a 1px border, a tag
    is a 1px border, a list row is a 1px rule; hover brightens a border to
    brand blue, nothing lifts. */
-@layer components {
+@layer ns-components {
 
   /* --- Card ---------------------------------------------------------------
      The generic surface. Hairline border, 6px radius, no shadow at rest;
@@ -83,6 +83,57 @@
   .ns-tag__x { display: inline-flex; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; color: var(--color-label); }
   .ns-tag__x:hover { color: var(--color-error-ink); }
 
+  /* --- Badge --------------------------------------------------------------
+     Status, told the way a build log tells it: a hairline box, mono text, and
+     a coloured DOT. Principle 3 — the colour is the dot, never a pastel fill
+     behind the words, so a row of badges stays one signal colour apart from
+     five competing washes. The text ink does not change with the variant
+     either; only the dot does.
+
+     Deliberately not .ns-tag: a tag is a noun the reader can click (a topic, a
+     filter), a badge is a state they cannot. Same shape, different contract. */
+  .ns-badge {
+    --_dot: var(--color-brand-500);
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5, 2px) var(--space-2);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-badge--accent  { --_dot: var(--color-accent-500); }
+  .ns-badge--success { --_dot: var(--color-success); }
+  .ns-badge--warning { --_dot: var(--color-warning); }
+  .ns-badge--error   { --_dot: var(--color-error); }
+  .ns-badge__dot {
+    inline-size: 6px; block-size: 6px; flex: none;
+    border-radius: var(--radius-pill); background: var(--_dot);
+  }
+  /* An icon replaces the dot rather than joining it — two status marks on one
+     badge is two claims about the same state. */
+  .ns-badge__icon { color: var(--_dot); font-size: 0.9rem; }
+
+  /* --- Chip ---------------------------------------------------------------
+     The icon tile that fronts a feature row or an empty state. Tinted from a
+     single hue via color-mix so the fill and its hairline are provably the
+     same colour at two strengths — no second token, no soft glow, and it
+     re-tints correctly when --_c is overridden. */
+  .ns-chip {
+    --_c: var(--color-brand-500);
+    --_size: 2.5rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--_size); block-size: var(--_size); flex: none;
+    border-radius: var(--radius-sm);
+    font-size: calc(var(--_size) * 0.42);
+    color: var(--_c);
+    background: color-mix(in srgb, var(--_c) 8%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_c) 30%, transparent);
+  }
+  .ns-chip--accent { --_c: var(--color-accent-500); }
+  .ns-chip--sm { --_size: 2rem; }
+  .ns-chip--lg { --_size: 3rem; }
+
   /* --- Avatar -------------------------------------------------------------
      People. Image or initials on a sunken disc; --ring draws course progress
      as a conic arc (the AvatarRing React component renders this markup).
@@ -137,4 +188,221 @@
   .ns-list--boxed .ns-list__row { padding-inline: var(--space-4); }
   .ns-list--boxed .ns-list__row:first-child { border-block-start: 0; }
   .ns-list--boxed .ns-list__row:last-child { border-block-end: 0; }
+
+  /* --- Logo ---------------------------------------------------------------
+     The wordmark lockup: the favicon asset plus the name. Never a pictorial
+     mark invented beyond that asset — see guidelines/brand-logo-lockups.
+
+     --size-* rather than a size prop: three fixed steps, because a lockup that
+     can be any pixel height is a lockup nobody can match across two products.
+     The text scales from the mark via --ns-logo-size, so the ratio the brand
+     guidelines specify holds at every step without being restated. */
+  .ns-logo {
+    --ns-logo-size: 1.5rem;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    font-size: calc(var(--ns-logo-size) * 0.66);
+    color: var(--color-ink); white-space: nowrap; text-decoration: none;
+  }
+  .ns-logo__mark { inline-size: var(--ns-logo-size); block-size: var(--ns-logo-size); flex: none; }
+  .ns-logo--sm { --ns-logo-size: 1.25rem; }
+  .ns-logo--lg { --ns-logo-size: 2rem; }
+  /* On a brand-900 band or a photographic hero the ink token would vanish, so
+     the lockup switches to the fixed on-dark ink rather than a theme-reactive
+     one — it must stay white in BOTH themes. */
+  .ns-logo--light { color: var(--color-on-dark); }
+  /* Icon-only. The name is still announced; only the glyph is drawn. */
+  .ns-logo--compact .ns-logo__text {
+    position: absolute; inline-size: 1px; block-size: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* --- Divider ------------------------------------------------------------
+     A rule between things. Principle 1 says the hairline IS the structure, so
+     this is the one component that is nothing but the hairline.
+
+     --labelled puts a mono cap in the gap — for "OR" between two sign-in
+     routes, or a date break in a feed. The label is real text between two
+     rules, not a background trick, so it survives being selected and copied. */
+  .ns-divider {
+    border: 0; border-block-start: 1px solid var(--color-border);
+    margin-block: var(--stack-md);
+  }
+  .ns-divider--tight { margin-block: var(--stack-sm); }
+  .ns-divider--labelled {
+    display: flex; align-items: center; gap: var(--space-3);
+    border-block-start: 0;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-divider--labelled::before,
+  .ns-divider--labelled::after {
+    content: ""; flex: 1; block-size: 1px; background: var(--color-border);
+  }
+
+  /* --- Kbd ----------------------------------------------------------------
+     A key, and sequences of keys. The editor and the admin both have
+     shortcuts and had no way to print one.
+
+     The key affordance is a 2px bottom border, not a shadow — the same
+     "borders, not depth" rule as everything else, and it reads as a keycap
+     because keycaps are lit from above. Real <kbd> elements, so the meaning
+     survives with CSS off. */
+  .ns-kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-inline-size: 1.5rem; padding: 0 var(--space-1-5);
+    border: 1px solid var(--color-border);
+    border-block-end-width: 2px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-raised);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); line-height: 1.6;
+    color: var(--color-ink); white-space: nowrap;
+  }
+  /* A chord (Cmd+K) versus a sequence (G then D) — the separator says which,
+     so it is content rather than a ::before nobody can change. */
+  .ns-kbd-seq { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .ns-kbd-seq__sep {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label);
+  }
+
+  /* --- Copy ---------------------------------------------------------------
+     Copy one short string: an org ID, an API key, a token name, a share link.
+     The code block has its own copy button because it copies a whole file;
+     this is the inline one for a value sitting in a table or a spec row.
+
+     data-copied is set by JS and drives the confirmation. It is an attribute
+     rather than a class so the same hook can carry aria-live text — a copy
+     button that only changes colour tells a screen-reader user nothing. */
+  .ns-copy {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5, 2px) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-copy:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-copy:hover { color: var(--color-brand-300); }
+  .ns-copy[data-copied] { border-color: var(--color-success); color: var(--color-success-ink); }
+  .ns-copy__value { color: var(--color-ink); }
+
+  /* --- Definition list ----------------------------------------------------
+     Term and value pairs: course specs, Salesforce metadata attributes, an
+     order summary. A real <dl>, because that is exactly what a <dl> is for
+     and screen readers announce the pairing.
+
+     Two columns on a wide surface, stacked below it — a 12rem term column is
+     unreadable on a phone. Terms are mono, which is Principle 2 doing its job:
+     the term is a key, the value is content, and the eye separates them
+     without a rule between. */
+  .ns-deflist {
+    display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+    gap: 0; margin: 0;
+  }
+  .ns-deflist dt {
+    padding-block: var(--space-2); padding-inline-end: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deflist dd {
+    margin: 0; padding-block: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: var(--color-ink); min-inline-size: 0;
+  }
+  .ns-deflist > dt:first-of-type, .ns-deflist > dt:first-of-type + dd { border-block-start: 0; }
+  .ns-deflist--stack { grid-template-columns: minmax(0, 1fr); }
+  .ns-deflist--stack dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
+  .ns-deflist--stack dd { border-block-start: 0; padding-block-start: var(--space-1); }
+  @media (max-width: 47.999rem) {
+    .ns-deflist { grid-template-columns: minmax(0, 1fr); }
+    .ns-deflist dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
+    .ns-deflist dd { border-block-start: 0; padding-block-start: var(--space-1); }
+  }
+
+
+  /* --- Marquee ------------------------------------------------------------
+     A continuously scrolling strip. Logos, credentials, certifications,
+     "now teaching" — content that is ambient rather than read.
+
+     TWO IDENTICAL TRACKS, translated 50%. That is the only implementation
+     that loops without a visible seam, and it is why the markup duplicates
+     its children: the second track is not decoration, it is the wrap.
+
+     Rules this component enforces rather than suggests:
+       - aria-hidden on the duplicate track, so nothing is announced twice.
+       - Never put information here that the reader needs. It is infinite: a
+         reader who looks away misses it and cannot get it back.
+       - Pauses on hover AND on focus-within, so a keyboard user can reach a
+         link inside it without chasing a moving target.
+       - Speed is a distance-per-second, not a UI timing — Principle 5 governs
+         response to input, and nothing here is responding to anything.
+
+     --window is the masked variant: the strip fades at both edges instead of
+     being cut by overflow, so it reads as a view onto something longer rather
+     than a box that clips. */
+  .ns-marquee {
+    display: flex; overflow: hidden;
+    --ns-marquee-speed: 40s;
+    --ns-marquee-gap: var(--space-10);
+  }
+  .ns-marquee__track {
+    display: flex; flex: none; align-items: center;
+    gap: var(--ns-marquee-gap); padding-inline-end: var(--ns-marquee-gap);
+    animation: marquee var(--ns-marquee-speed) linear infinite; /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+    min-inline-size: 100%;
+  }
+  .ns-marquee:hover .ns-marquee__track,
+  .ns-marquee:focus-within .ns-marquee__track { animation-play-state: paused; }
+  /* The fade is a mask, so it works over any background — a gradient overlay
+     would need to know the surface colour and would be wrong on a dark band. */
+  .ns-marquee--window { mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); } /* lint-ok: a mask's black is an alpha stop, not a colour */
+  .ns-marquee--reverse .ns-marquee__track { animation-direction: reverse; }
+  .ns-marquee--slow { --ns-marquee-speed: 70s; }
+  .ns-marquee--fast { --ns-marquee-speed: 22s; }
+  .ns-marquee--tight { --ns-marquee-gap: var(--space-6); }
+  /* Items: the mono credential voice by default, because that is what a strip
+     of partner names or certifications actually is. */
+  .ns-marquee__item {
+    flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-small);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-marquee__item:hover { color: var(--color-ink); }
+  /* Display scale, for a poster band. This is what .ns-kinetic in type-fx.css
+     does; that one stays because it is a TYPOGRAPHIC effect with its own
+     outline treatment — this is the general-purpose strip. */
+  .ns-marquee--display .ns-marquee__item {
+    font-family: var(--font-heading); font-size: var(--size-h2);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    text-transform: none; color: var(--color-ink);
+  }
+  .ns-marquee--display .ns-marquee__item--outline { color: transparent; -webkit-text-stroke: 1px var(--color-brand-500); }
+  .ns-marquee__logo { block-size: 1.5rem; inline-size: auto; opacity: 0.65; transition: opacity var(--duration-fast) var(--ease-out); }
+  a.ns-marquee__item:hover .ns-marquee__logo { opacity: 1; }
+
+
+  /* --- Table: variations --------------------------------------------------
+     No zebra striping anywhere, in any variant. Striping is a second
+     structuring device competing with the hairline (Principle 1), and with
+     mono numerals the rows already read as rows. */
+  .ns-table--compact th, .ns-table--compact td { padding-block: var(--space-1-5); }
+  .ns-table--bordered th, .ns-table--bordered td { border-inline-end: 1px solid var(--color-border); }
+  .ns-table--bordered th:last-child, .ns-table--bordered td:last-child { border-inline-end: 0; }
+  /* Key/value: a two-column spec table where the first column is the label.
+     Related to Definition list; use this one when it belongs in a table
+     because the rest of the page is tabular. */
+  .ns-table--keyvalue td:first-child, .ns-table--keyvalue th:first-child {
+    inline-size: 12rem; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+
 }

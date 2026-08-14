@@ -1,0 +1,16 @@
+<!-- Copy — copy one short string: an org ID, an API key, a share link.
+
+     data-copied is an attribute rather than a class so the same hook can carry
+     aria-live text. A copy button that only changes colour tells a
+     screen-reader user nothing.
+
+     Framework-agnostic markup: the same .ns-* classes the styleguide renders.
+     Ghost: paste into a partial. Next.js: prefer the React component. -->
+
+<button class="ns-copy" type="button"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>
+<button class="ns-copy" type="button" data-copied><i class="ph ph-check-circle" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>
+
+<dl class="ns-deflist">
+  <dt>Org ID</dt><dd><button class="ns-copy" type="button" aria-label="Copy org ID"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button></dd>
+  <dt>API version</dt><dd>v62.0</dd>
+</dl>

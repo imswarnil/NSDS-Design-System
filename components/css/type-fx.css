@@ -29,7 +29,7 @@
    Wiring: assets/js/type-fx.js — an IntersectionObserver that sets
    [data-fx-in], the text scrambler, and the circular-text builder. Every
    effect that can work without JS does (hover states, static frames). */
-@layer components {
+@layer ns-components {
 
   /* ======================================================== Highlight ==== */
   /* A marker sweep. The brand tint is painted as a background that grows from
@@ -342,17 +342,29 @@
   .ns-dropcap::first-letter {
     initial-letter: 3 3;
     -webkit-initial-letter: 3 3;
-    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    /* Serif, not the display face. A drop cap is a typographic inheritance
+       from print, and a geometric grotesque set three lines deep reads as a
+       logo dropped into the paragraph rather than as the paragraph's own
+       first letter. Georgia's high contrast and real serifs are what make
+       the device legible at that scale. */
+    font-family: var(--font-serif); font-weight: var(--weight-heading);
     color: var(--color-brand-600);
     margin-inline-end: var(--space-2);
   }
 
-  /* Pull quote — the display face at reading scale, hung on the hairline
-     edge like every other quotation in the system. */
+  /* Pull quote — the EDITORIAL voice, hung on the hairline edge like every
+     other quotation in the system.
+
+     Serif rather than the display face, and this is the whole point of having
+     a fourth voice: a pull-quote is the page stopping its own argument to
+     quote someone else. Set in the same grotesque as the argument it never
+     quite reads as a different speaker — it reads as a bigger heading. The
+     tracking goes with it: --tracking-tight exists to correct Switzer's
+     loose display metrics, and applying it to a serif that is already
+     correctly fitted just closes the counters. */
   .ns-pullquote {
-    font-family: var(--font-heading); font-size: var(--size-h3);
-    font-weight: var(--weight-medium); line-height: var(--leading-heading);
-    letter-spacing: var(--tracking-tight);
+    font-family: var(--font-serif); font-size: var(--size-h3);
+    font-weight: var(--weight-regular); line-height: var(--leading-heading);
     max-inline-size: var(--measure-narrow);
     border-inline-start: 2px solid var(--color-brand-500);
     padding-inline-start: var(--space-5);

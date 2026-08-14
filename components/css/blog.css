@@ -22,7 +22,7 @@
      .ns-authorbox  the bio that closes a post
      .ns-postnav    prev / next post, by title
      .ns-blog-*     the listing grids */
-@layer components {
+@layer ns-components {
 
   /* ========================================================= Post card ====
      Composes .ns-card. Five shapes, because a post in the index, in a
@@ -211,45 +211,6 @@
     .ns-post__rail { position: static; max-block-size: none; overflow: visible; }
     .ns-post__body { max-inline-size: var(--container-prose); margin-inline: auto; }
   }
-
-  /* ============================================================= TOC ====
-     Where you are in a long piece. The hairline is the rail and the active
-     item takes the 2px brand edge — the same current-item device the navbar
-     and the lesson row use, so it needs no explanation.
-
-     It is a real nav of real anchor links: it works with JS off, and the
-     scroll-spy only adds [aria-current] to whichever one is on screen. */
-  .ns-toc { display: flex; flex-direction: column; border-inline-start: 1px solid var(--color-border); }
-  .ns-toc__title {
-    padding: 0 var(--space-3) var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
-  }
-  .ns-toc__link {
-    display: block; padding: var(--space-1-5) var(--space-3);
-    margin-inline-start: -1px; border-inline-start: 2px solid transparent;
-    font-size: var(--size-small); line-height: var(--leading-heading);
-    color: var(--color-muted); text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
-  }
-  .ns-toc__link:hover { color: var(--color-ink); }
-  .ns-toc__link[aria-current="true"] { border-inline-start-color: var(--color-brand-500); color: var(--color-brand-600); font-weight: var(--weight-medium); }
-  [data-theme="dark"] .ns-toc__link[aria-current="true"] { color: var(--color-brand-300); }
-  /* h3s indent. Two levels is the limit: a table of contents that needs
-     three is a table of contents for a page that needs splitting. */
-  .ns-toc__link--sub { padding-inline-start: var(--space-6); font-size: var(--size-fine); }
-  /* Below lg the TOC folds into a disclosure above the text — a sticky rail
-     with nowhere to stick. */
-  .ns-toc--collapsible > summary {
-    display: flex; align-items: center; gap: var(--space-2);
-    padding: var(--space-3); cursor: pointer; list-style: none;
-    border: 1px solid var(--color-border); border-radius: var(--radius-card);
-    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
-  }
-  .ns-toc--collapsible > summary::-webkit-details-marker { display: none; }
-  .ns-toc--collapsible > summary i { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
-  .ns-toc--collapsible[open] > summary i { rotate: 180deg; }
 
   /* ======================================================== Callout ====
      The aside inside prose: a note, a tip, a warning. A 3px leading edge and

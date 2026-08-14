@@ -1,0 +1,53 @@
+<!-- Training module page — the whole family assembled.
+
+     Rail + content. The rail is sticky and scrolls independently, because a
+     track has far more navigation than a course, and scrolling the page to
+     reach the nav is what makes long curricula unusable.
+
+     Note the rail ships every <details open>: assets/js/training.js collapses
+     down to the active module on load. That order matters — the other way
+     round, a JS failure hides the whole curriculum. -->
+
+<div class="ns-training">
+  <nav class="ns-trainingnav" data-ns-trainingnav aria-label="Curriculum">
+    <a class="ns-trainingnav__track" href="/training/admin">Salesforce Administrator</a>
+    <details class="ns-trainingnav__module" open>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Objects and fields<span class="ns-trainingnav__count">6</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">Standard vs custom objects</a></li>
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">Field types</a></li>
+      </ul>
+    </details>
+    <details class="ns-trainingnav__module" open>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Security and access<span class="ns-trainingnav__count">8</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">Profiles vs permission sets</a></li>
+        <li><a class="ns-trainingnav__link" href="#" aria-current="page">The role hierarchy</a></li>
+        <li><a class="ns-trainingnav__link" href="#">Sharing rules in practice</a></li>
+      </ul>
+    </details>
+    <details class="ns-trainingnav__module" open>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Automation: Flow<span class="ns-trainingnav__count">9</span></summary>
+      <ul class="ns-trainingnav__list"><li><a class="ns-trainingnav__link" href="#">Record-triggered flows</a></li></ul>
+    </details>
+  </nav>
+
+  <main class="ns-training__main">
+    <header class="ns-modulehead">
+      <span class="ns-modulehead__crumb">Salesforce Administrator &middot; Module 2 of 8</span>
+      <h1 class="ns-modulehead__title">Security and access</h1>
+      <p class="ns-modulehead__lede">Profiles, permission sets, roles and sharing &mdash; in that order, because each one only makes sense given the last.</p>
+    </header>
+
+    <div class="ns-prose">
+      <h2>Who can see what</h2>
+      <p>Salesforce answers access in two halves: what a user can do to an object, and which records of it they can see. Profiles and permission sets answer the first; the role hierarchy and sharing rules answer the second. Almost every access bug is someone solving one half with the other half&rsquo;s tool.</p>
+    </div>
+
+    <ul class="ns-units">
+      <li><a class="ns-unit" data-state="done" href="#"><i class="ph ph-check-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">Profiles vs permission sets</span><span class="ns-unit__type">Reading</span><span class="ns-unit__time">12 min</span></a></li>
+      <li><a class="ns-unit" href="#"><i class="ph ph-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">The role hierarchy</span><span class="ns-unit__type">Video</span><span class="ns-unit__time">18 min</span></a></li>
+      <li><a class="ns-unit" href="#"><i class="ph ph-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">Sharing rules in practice</span><span class="ns-unit__type">Exercise</span><span class="ns-unit__time">25 min</span></a></li>
+    </ul>
+  </main>
+</div>

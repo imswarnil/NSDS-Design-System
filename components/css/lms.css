@@ -17,7 +17,7 @@
      Lesson nav       .ns-lesson-nav — prev/next by NAME, not by arrow
      Mobile panel     .ns-panelbar — where you are + a way to the list
      Page grids       .ns-course-detail · .ns-course-grid */
-@layer components {
+@layer ns-components {
 
   /* ======================================================= Course card ====
      A Card with course anatomy. Five shapes share one set of parts, because
@@ -419,4 +419,150 @@
     min-inline-size: 0;
   }
   .ns-course-strip > * { scroll-snap-align: start; }
+
+  /* --- Certificate --------------------------------------------------------
+     Proof of completion, in the Salesforce register: the navy console ground,
+     the hairline frame, mono for every piece of data, and a real credential ID
+     that can be verified.
+
+     Design decisions worth stating, because a certificate is the one artifact
+     here that leaves the product:
+
+       - It is a real document, not a picture of one. The name, course, date
+         and ID are text, so they are selectable, translatable, searchable and
+         readable by a screen reader. A rendered PNG is none of those.
+       - The credential ID is mono and prominent. It is the only part that
+         proves anything — a certificate without a verifiable ID is decoration,
+         and treating it as small print says the opposite.
+       - aspect-ratio rather than a fixed height, so it scales to any width and
+         still prints on one page.
+       - No gold, no ribbon, no serif flourish. The whole system's argument is
+         that credibility comes from precision, not ornament, and a certificate
+         is exactly where that argument is easiest to lose. */
+  .ns-certificate {
+    position: relative; overflow: hidden;
+    /* inline-size + flex:none are what make the ratio survive being dropped
+       into a flex container: in a column flex parent the item's main axis is
+       height, flex-basis resolves from CONTENT, and aspect-ratio loses. The
+       certificate then collapses to the height of its own header, which is
+       exactly what it did the first time it was rendered. */
+    inline-size: 100%; flex: none;
+    aspect-ratio: 297 / 210;                    /* A4 landscape */
+    display: flex; flex-direction: column;
+    padding: clamp(var(--space-5), 4cqi, var(--space-10));
+    container-type: inline-size;
+    background: var(--color-brand-900); color: var(--color-on-dark);
+    border-radius: var(--radius-card);
+  }
+  /* The hairline grid motif, same device as the dark hero band — it is what
+     makes this read as part of the system rather than a stock template. */
+  .ns-certificate::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--color-on-dark-border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-on-dark-border) 1px, transparent 1px);
+    background-size: var(--space-8) var(--space-8);
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, var(--color-ink) 0%, transparent 70%); /* lint-ok: mask alpha ramp, not a colour */
+  }
+  /* The inner rule is the frame. One hairline, inset — not a border on the
+     card, which would fight the radius. */
+  .ns-certificate::after {
+    content: ""; position: absolute; inset: var(--space-3); pointer-events: none;
+    border: 1px solid var(--color-on-dark-border); border-radius: var(--radius-sm);
+  }
+  .ns-certificate__inner { position: relative; display: flex; flex-direction: column; block-size: 100%; gap: var(--space-4); }
+  .ns-certificate__head { display: flex; align-items: center; gap: var(--space-3); }
+  .ns-certificate__mark { inline-size: 1.75rem; block-size: 1.75rem; flex: none; }
+  .ns-certificate__issuer {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-on-dark-border-hover);
+  }
+  /* Two columns: the award on the left, the proof on the right. A real
+     credential is half statement and half verification, and putting the seal
+     and the verify line in their own column is what stops them reading as
+     decoration around the name. */
+  .ns-certificate__body { flex: 1; display: flex; align-items: center; gap: clamp(var(--space-4), 4cqi, var(--space-10)); }
+  .ns-certificate__award { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-certificate__proof {
+    flex: none; inline-size: clamp(5rem, 22cqi, 9rem);
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-2);
+    text-align: center;
+  }
+  /* The seal. A ring and a mark, not a gilt rosette — the system's argument is
+     that credibility comes from precision, and a certificate is exactly where
+     that argument is easiest to lose. The ring is the brand hairline at 2px,
+     which is the same accent weight used everywhere else. */
+  .ns-certificate__seal {
+    inline-size: clamp(3rem, 13cqi, 5rem); aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    border: 2px solid var(--color-brand-400);
+    color: var(--color-brand-300);
+    font-size: clamp(1.25rem, 6cqi, 2.25rem);
+  }
+  .ns-certificate__verify {
+    font-family: var(--font-mono); font-size: clamp(0.45rem, 1.5cqi, var(--size-label));
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover); line-height: var(--leading-heading);
+    overflow-wrap: anywhere;
+  }
+  /* The credential tags — track, level, edition. Hairline chips on the dark
+     ground, mono, so they read as metadata rather than marketing badges. */
+  .ns-certificate__tags { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-1); }
+  .ns-certificate__tag {
+    padding: 1px var(--space-2); border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-on-dark-border);
+    font-family: var(--font-mono); font-size: clamp(0.45rem, 1.5cqi, var(--size-label));
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover);
+  }
+  /* Signatory: a rule, a name, a role. The rule is above the name because that
+     is where a signature sits on paper, and the whole point of this block is
+     that it reads as a countersignature rather than another data field. */
+  .ns-certificate__sign { display: flex; flex-direction: column; gap: 2px; min-inline-size: 9rem; }
+  .ns-certificate__sign::before {
+    content: ""; display: block; inline-size: 100%; block-size: 1px;
+    background: var(--color-on-dark-border); margin-block-end: var(--space-1);
+  }
+  .ns-certificate__sign b { color: var(--color-on-dark); font-weight: var(--weight-label); }
+  .ns-certificate__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover);
+  }
+  /* Container query units, so the name scales with the certificate rather than
+     the viewport — it is rendered at card size in an account page and at full
+     width when printed, and a vw-based size would be wrong in one of them. */
+  .ns-certificate__name {
+    font-family: var(--font-heading); font-size: clamp(1.5rem, 7cqi, 3rem);
+    font-weight: var(--weight-heading); line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+  }
+  .ns-certificate__course { font-size: clamp(var(--size-small), 2.4cqi, var(--size-body-lg)); color: var(--color-on-dark); opacity: 0.8; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ text-wrap: pretty; }
+  .ns-certificate__foot {
+    display: flex; flex-wrap: wrap; gap: var(--space-5);
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid var(--color-on-dark-border);
+    font-family: var(--font-mono); font-size: clamp(0.5rem, 1.7cqi, var(--size-label));
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-on-dark-border-hover); font-variant-numeric: tabular-nums;
+  }
+  .ns-certificate__field b { display: block; color: var(--color-on-dark); font-weight: var(--weight-label); }
+  .ns-certificate__id { margin-inline-start: auto; text-align: end; }
+  /* Print: the navy ground would empty a cartridge, and a certificate is meant
+     to be printed. Inverted to ink-on-paper with the frame kept. */
+  @media print {
+    .ns-certificate { background: var(--color-surface); color: var(--color-ink); aspect-ratio: auto; block-size: 100vh; }
+    .ns-certificate::before { display: none; }
+    .ns-certificate::after { border-color: var(--color-border); }
+    .ns-certificate__issuer, .ns-certificate__kicker, .ns-certificate__foot,
+    .ns-certificate__verify, .ns-certificate__tag { color: var(--color-label); }
+    .ns-certificate__course, .ns-certificate__field b, .ns-certificate__sign b { color: var(--color-ink); opacity: 1; }
+    .ns-certificate__foot { border-block-start-color: var(--color-border); }
+    .ns-certificate__seal { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+    .ns-certificate__tag { box-shadow: inset 0 0 0 1px var(--color-border); }
+    .ns-certificate__sign::before { background: var(--color-border); }
+  }
+
 }

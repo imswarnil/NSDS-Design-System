@@ -9,7 +9,7 @@
    Every pattern here also carries its state in an ARIA attribute
    (aria-selected, aria-expanded, aria-current) rather than a class, so the
    visual state and the announced state are the same fact. */
-@layer components {
+@layer ns-components {
 
   /* --- Tabs ---------------------------------------------------------------
      Markup: role="tablist" > role="tab"[aria-selected][aria-controls], with
@@ -129,6 +129,22 @@
     padding-inline-end: var(--space-4);
   }
   .ns-sidebar__group + .ns-sidebar__group { margin-block-start: var(--space-6); }
+  /* A group may be a <details>, which makes the section collapsible with no
+     JS and no ARIA of its own. assets/js/rail.js then opens the one holding
+     aria-current="page" and closes the rest — but the markup ships every
+     section `open`, so a JS failure leaves the nav long rather than hidden. */
+  details.ns-sidebar__group > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    cursor: pointer; list-style: none;
+    border-radius: var(--radius-sm);
+  }
+  details.ns-sidebar__group > summary::-webkit-details-marker { display: none; }
+  details.ns-sidebar__group > summary:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  .ns-sidebar__twist { flex: none; margin-inline-start: auto; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  details.ns-sidebar__group[open] > summary .ns-sidebar__twist { rotate: 90deg; }
   .ns-sidebar__label {
     display: block; margin-block-end: var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -158,4 +174,149 @@
      The bar and its family — brand, links, dropdown and mega panels, account
      menu, theme toggle, hamburger, mobile sheet — live in navbar.css. It is
      enough component for its own file. */
+
+  /* --- Tree ---------------------------------------------------------------
+     Nested, expandable structure: a metadata explorer, a repo of examples, a
+     nested category list. Every branch is a native <details>, so open/closed
+     state, keyboard operation and in-page find all come from the platform and
+     the component ships no JS at all.
+
+     Indentation is a padding on the nested list rather than a margin per node,
+     so a node's hover and focus ring still span the full width of the rail —
+     an indented hover target that starts 2rem in is a hit area people miss.
+
+     Depth is capped in practice at three: past that the indent eats the label
+     and it wants to be a search box. */
+  .ns-tree { list-style: none; margin: 0; padding: 0; font-size: var(--size-small); }
+  .ns-tree ul { list-style: none; margin: 0; padding-inline-start: var(--space-4); }
+  .ns-tree__node,
+  .ns-tree__branch > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    color: var(--color-muted); text-decoration: none; cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-tree__branch > summary { list-style: none; }
+  .ns-tree__branch > summary::-webkit-details-marker { display: none; }
+  .ns-tree__node:hover, .ns-tree__branch > summary:hover { background: var(--color-surface-sunken); color: var(--color-ink); }
+  .ns-tree__node:focus-visible, .ns-tree__branch > summary:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  /* aria-current, not a class — the highlighted node and the announced node
+     come from one attribute. */
+  .ns-tree__node[aria-current] {
+    color: var(--color-brand-600); font-weight: var(--weight-medium);
+    background: var(--color-surface-sunken);
+  }
+  [data-theme="dark"] .ns-tree__node[aria-current] { color: var(--color-brand-300); }
+  .ns-tree__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-tree__branch[open] > summary .ns-tree__twist { rotate: 90deg; }
+  .ns-tree__icon { flex: none; color: var(--color-label); }
+  .ns-tree__label { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-tree__meta { margin-inline-start: auto; flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+
+
+  /* --- Tabs: variations ---------------------------------------------------
+     The default is the underline row. These change WHERE the tabs sit or how
+     dense they are, never what they mean. */
+
+  /* Vertical: the tablist becomes a rail. Set aria-orientation="vertical" as
+     well — assets/js/tabs.js reads it to swap the arrow keys, and a vertical
+     tablist that answers to Left/Right is a keyboard trap in slow motion. */
+  .ns-tabs--vertical {
+    flex-direction: column; gap: 0;
+    border-block-end: 0; border-inline-end: 1px solid var(--color-border);
+    overflow-x: visible; min-inline-size: 10rem;
+  }
+  .ns-tabs--vertical .ns-tab {
+    text-align: start; box-shadow: none;
+    border-inline-end: 2px solid transparent; margin-inline-end: -1px;
+  }
+  .ns-tabs--vertical .ns-tab[aria-selected="true"] { border-inline-end-color: var(--color-brand-500); }
+  /* The layout wrapper, so a vertical tablist and its panel sit side by side
+     without every consumer re-inventing the flex row. */
+  .ns-tabs-layout { display: flex; align-items: flex-start; gap: var(--space-6); }
+  .ns-tabs-layout > [role="tabpanel"] { flex: 1; min-inline-size: 0; }
+
+  /* Pill: a segmented row on a sunken ground. For switching a VIEW rather than
+     a section of content — closer to Segmented control, and the choice between
+     them is whether the thing being switched is a panel or a rendering. */
+  .ns-tabs--pill {
+    border-block-end: 0; gap: 2px; padding: 2px;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    display: inline-flex;
+  }
+  .ns-tabs--pill .ns-tab {
+    box-shadow: none; border-radius: var(--radius-sm);
+    padding: var(--space-2) var(--space-3); min-block-size: 0;
+  }
+  .ns-tabs--pill .ns-tab[aria-selected="true"] {
+    background: var(--color-surface); color: var(--color-brand-600);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  [data-theme="dark"] .ns-tabs--pill .ns-tab[aria-selected="true"] { color: var(--color-brand-300); }
+
+  /* Icon + label. The label stays: an icon-only tab row is a memory test. */
+  .ns-tab__icon { margin-inline-end: var(--space-2); }
+  /* A count rides the tab, which is the one piece of information a tab can
+     carry without becoming a menu. */
+  .ns-tab__count {
+    margin-inline-start: var(--space-2); padding-inline: var(--space-1-5);
+    border-radius: var(--radius-pill); background: var(--color-surface-sunken);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-tabs--compact .ns-tab { padding: var(--space-2) var(--space-3); min-block-size: 0; }
+
+  /* --- Accordion: variations ---------------------------------------------- */
+  /* Flush: no outer box, rules only. For a FAQ inside prose, where a boxed
+     accordion reads as a widget dropped into the article. */
+  .ns-accordion--flush { border: 0; border-radius: 0; }
+  .ns-accordion--flush .ns-accordion__item { border-block-start: 1px solid var(--color-border); }
+  .ns-accordion--flush .ns-accordion__item:last-child { border-block-end: 1px solid var(--color-border); }
+  .ns-accordion--flush .ns-accordion__summary { padding-inline: 0; }
+  .ns-accordion--flush .ns-accordion__content { padding-inline: 0; }
+  /* Separated: each item its own card, for items that are peers rather than
+     one list — pricing tiers, module summaries. */
+  .ns-accordion--separated { border: 0; overflow: visible; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-accordion--separated .ns-accordion__item {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden;
+  }
+  /* The marker. --plus swaps the caret for a plus that becomes a minus, which
+     reads as "expand" rather than "reveal below" — better when the panel is
+     long enough that the reader will scroll away from the trigger. */
+  .ns-accordion__marker { flex: none; margin-inline-start: auto; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-accordion__item[open] > .ns-accordion__summary .ns-accordion__marker { rotate: 180deg; }
+  .ns-accordion--plus .ns-accordion__marker { transition: rotate var(--duration-base) var(--ease-out); }
+  .ns-accordion--plus .ns-accordion__item[open] > .ns-accordion__summary .ns-accordion__marker { rotate: 135deg; }
+
+  /* --- Pagination: variations --------------------------------------------- */
+  /* Prev/next are real labelled controls, not bare arrows: "‹ ›" alone is
+     unreadable to a screen reader and ambiguous in RTL. */
+  .ns-pagination__step {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    color: var(--color-ink); text-decoration: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-pagination__step:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  /* A disabled step stays in the DOM so the row does not reflow at the ends —
+     aria-disabled rather than removing it, and not a link. */
+  .ns-pagination__step[aria-disabled="true"] { opacity: var(--opacity-disabled); pointer-events: none; }
+  .ns-pagination__spacer { flex: 1; }
+  /* Compact: "Page 3 of 24" with steps either side. For mobile, and for any
+     set where numbered links would wrap to two rows. */
+  .ns-pagination--compact { justify-content: space-between; }
+  .ns-pagination__status {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
 }

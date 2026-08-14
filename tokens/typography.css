@@ -1,14 +1,29 @@
 :root {
   /* Private source layer — see the note in tokens/colors.css for why the
      names Tailwind's @theme owns are aliased rather than declared directly. */
-  --ns-font-sans: "N&M Text", "N&M Text Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* The N&M pairing: N&M Display headings (Manrope cut — tight, geometric,
-     but warm) over N&M Text body (Nunito Sans cut — the friendliest reading
-     face that still holds a grid) over N&M Mono data (Red Hat Mono cut).
-     All three share open, rounded counters, so the system reads as one
-     family at three volumes rather than three fonts negotiating. */
-  --ns-font-heading: "N&M Display", "N&M Text", "N&M Text Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --ns-font-mono: "N&M Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --ns-font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Switzer twice, not a display/text pair. The old system ran two cuts —
+     one to speak, one to explain — and the seam between them had to be
+     managed at every size. One well-drawn grotesque across the whole range,
+     separated by WEIGHT and SIZE rather than by face, is both quieter and one
+     fewer download. Heading and body therefore resolve to the same stack;
+     --font-heading survives as a name so components do not all have to change
+     and so a future display face is one token away. */
+  --ns-font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Not shipped — see the note in tokens/fonts.css for why. */
+  --ns-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* The fourth voice: the editorial register. Display speaks, Text explains,
+     Mono keeps the records — and Serif is the one that quotes. Pull-quotes,
+     drop caps and section quotations are the places a page stops arguing and
+     starts citing, and setting them in the same grotesque as the argument is
+     why they never quite read as a different voice.
+
+     Sentient (Indian Type Foundry, Fontshare) is shipped for it — 40 KB, and
+     it is the one place a second face genuinely earns its download, because
+     the whole point of the register is that it is NOT the interface face.
+     Georgia leads the fallbacks so the device still reads as a quotation
+     before Sentient arrives. */
+  --ns-font-serif: "Sentient", Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   /* The subsetted Phosphor icon font. Named as a token so a component that
      draws a glyph in a ::before does not hard-code the family — and so
      swapping the icon set is one edit rather than a grep. */
@@ -18,38 +33,50 @@
   --font-sans: var(--ns-font-sans);
   --font-heading: var(--ns-font-heading);
   --font-mono: var(--ns-font-mono);
+  --font-serif: var(--ns-font-serif);
   --font-icon: var(--ns-font-icon);
   --font-icon-fill: var(--ns-font-icon-fill);
 
-  /* Prose scale — N&M Display for headings, N&M Text for reading copy.
-     A ~1.25 fourth from body upward, which is wide enough that h2 and h3
-     are never mistaken for each other and tight enough that a lesson page
-     does not shout. The two fluid steps at the top are the only clamps: a
-     hero has to survive a 360px phone, a paragraph does not. */
-  --size-mega: clamp(3rem, 2rem + 5.4vw, 6.5rem);      /* poster / campaign only */
-  --size-display: clamp(2.25rem, 1.9rem + 1.5vw, 3.25rem);
-  --size-h1: 2.25rem;
-  --size-h2: 1.75rem;
-  --size-h3: 1.375rem;
-  --size-h4: 1.125rem;
-  --size-body-lg: 1.125rem;
-  --size-body: 1rem;
-  --size-small: 0.875rem;
-  --size-fine: 0.8125rem;                              /* legal, footnotes, captions under data */
+  /* The scale — compact, after openclaw/carapace.
+     =======================================================================
+     Reading copy is 14px, not 16px, and that is the single decision this
+     scale turns on. This is a product with an app inside it: a lesson player,
+     an admin, dashboards, tables, a curriculum rail. At 16px those surfaces
+     had to fight the base size with --size-small everywhere, which is the
+     tell that the base was wrong for most of the screens being built.
+
+     The steps are Carapace's — 12 / 13 / 14 / 15 / 17 / 20 / 24 / 32 — a
+     tighter progression than a 1.25 fourth, which is what lets h3 and h4 sit
+     one step apart without either shouting. Above 32 the ratio opens back up,
+     because a hero is a different job from a heading.
+
+     The two fluid steps at the top are the only clamps: a hero has to survive
+     a 360px phone, a paragraph does not. */
+  --size-mega: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);   /* poster / campaign only */
+  --size-display: clamp(2rem, 1.55rem + 2.2vw, 3.25rem);
+  --size-h1: 2.5rem;        /* 40 */
+  --size-h2: 2rem;          /* 32 — carapace 3xl */
+  --size-h3: 1.5rem;        /* 24 — carapace 2xl */
+  --size-h4: 1.25rem;       /* 20 — carapace xl  */
+  --size-body-lg: 1.0625rem;/* 17 — carapace lg — ledes and standfirsts */
+  --size-body: 0.875rem;    /* 14 — carapace base — THE READING SIZE */
+  --size-small: 0.8125rem;  /* 13 — carapace sm */
+  --size-fine: 0.75rem;     /* 12 — carapace xs — legal, footnotes, captions */
 
   /* Mono/label scale — the structural material. Every index, timestamp,
      duration, kicker and status runs through this, uppercase + tracked,
      never the prose font. This is what separates a row of data from a
      sentence, on sight, without color. */
-  --size-label: 0.6875rem;
-  --size-mono: 0.9rem;
+  --size-label: 0.6875rem;   /* 11 — the mono label floor, below the prose scale */
+  --size-mono: 0.8125rem;    /* 13 — mono data sits with --size-small */
   --ns-tracking-label: 0.09em;
   --tracking-label: var(--ns-tracking-label);
-  /* Display/heading tracking. N&M Display (Manrope) sets loose at display
-     sizes like most geometric grotesques — large headings tighten slightly.
-     Body text is NEVER tightened; negative tracking at reading sizes hurts
-     legibility. */
-  --ns-tracking-tight: -0.022em;
+  /* Display/heading tracking. Switzer sets fairly tight already, so this is a
+     smaller correction than the previous cut needed — but large sizes still
+     want closing up, because tracking is drawn for text sizes and does not
+     scale down on its own. Body text is NEVER tightened; negative tracking at
+     reading sizes hurts legibility, and at 14px there is even less room. */
+  --ns-tracking-tight: -0.01em;
   --tracking-tight: var(--ns-tracking-tight);
   --weight-label: 700;
 
@@ -64,7 +91,7 @@
 
   --ns-leading-tight: 1.15;
   --ns-leading-heading: 1.3;
-  --ns-leading-body: 1.65;
+  --ns-leading-body: 1.6;
   /* Mega display sets solid — descenders and ascenders are allowed to touch,
      which is the point of setting type that large. */
   --ns-leading-mega: 0.94;
@@ -74,20 +101,22 @@
   --leading-body: var(--ns-leading-body);
   --leading-mega: var(--ns-leading-mega);
 
-  --weight-heading: 800;
-  --weight-semibold: 700;
-  --weight-medium: 600;
-  /* THE READING WEIGHT. N&M Text's true Regular (400) is optically light:
-     at 16px on white it renders grey rather than black, which is the single
-     most common complaint about a Nunito-derived face. 450 — "Book" — is one
-     interpolation step up a variable axis, free in bytes, and it is what body
-     copy is set at everywhere in this system. 400 survives for dense UI
-     furniture (table cells, meta rows) where light IS the intent.
-     See fonts/README.md § "Why body copy is 450, not 400". */
-  --weight-body: 450;
+  /* Switzer has a real 500, which the previous family did not — so the ramp
+     is 400 / 500 / 600 / 700 rather than 400 / 600 / 700 / 800. Every step is
+     a weight the designer drew, not an interpolation we chose. */
+  --weight-heading: 700;
+  --weight-semibold: 600;
+  --weight-medium: 500;
+  /* THE READING WEIGHT. Switzer's Regular is properly fitted at 400 — it does
+     not render grey the way the previous Nunito-derived cut did, which is the
+     entire reason that face needed 450 ("Book"). Carrying 450 over would have
+     been cargo: an interpolation step invented to fix a problem this family
+     does not have, and half a step heavier than the designer drew.
+     See fonts/README.md § "Why body copy is 400". */
+  --weight-body: 400;
   --weight-regular: 400;
-  /* Inline <strong> inside 450 body needs 600, not 700: against Book, Bold
-     is a shout, and against 400 it was already too big a jump. */
+  /* Inline <strong> against Switzer 400 wants 600, not 700: Switzer's Bold is
+     considerably heavier than the old cut's and reads as a shout inline. */
   --weight-body-strong: 600;
 
   /* Reading measure, as a character count rather than a width — this is the

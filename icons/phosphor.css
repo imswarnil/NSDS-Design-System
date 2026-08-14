@@ -3,6 +3,14 @@
    ----------------------------------------------------------------------------
    Phosphor v2.1.2, subsetted to only the glyphs this theme uses and
    served from our own origin. Re-run the script after adding a new ph-* class.
+
+   TWO HAND-EDITS survive here and must be re-applied after regeneration
+   (scripts/lint-principles.mjs fails the build if they are lost):
+   the `font-family: ... !important` on .ph and .ph-fill is DELETED. An
+   !important in a lower layer beats a normal declaration in a higher one, so
+   it defeated every font-* utility. It is also unnecessary: .ph and .ph-fill
+   are never used on the same element (.ph-fill carries its own
+   .ph-fill.ph-*:before glyph rules), so they never compete.
    ========================================================================== */
 
 @font-face {
@@ -14,7 +22,7 @@
 }
 
 .ph {
-  font-family: "Phosphor" !important;
+  font-family: "Phosphor";
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -167,7 +175,7 @@
 }
 
 .ph-fill {
-  font-family: "Phosphor-Fill" !important;
+  font-family: "Phosphor-Fill";
   speak: never;
   font-style: normal;
   font-weight: normal;

@@ -3,4 +3,5 @@ export interface KickerProps {
   align?: "left" | "center";
   /** Use on dark/photo heroes */
   light?: boolean;
+  className?: string;
 }

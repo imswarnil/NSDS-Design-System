@@ -2,7 +2,7 @@
    =========================================================================
    Small file, disproportionate value: these are the pieces that every page in
    both products needs and that are always reinvented slightly wrong. */
-@layer components {
+@layer ns-components {
 
   /* --- Visually hidden ----------------------------------------------------
      Hidden visually, still announced. NOT `display: none` and NOT
@@ -61,6 +61,10 @@
   .ns-page--prose { max-inline-size: var(--container-prose); }
   .ns-page--narrow { max-inline-size: var(--container-narrow); }
   .ns-page--wide { max-inline-size: var(--container-wide); }
+  /* The gutter is inline only, because a page's vertical rhythm belongs to the
+     sections inside it. --demo adds the block padding for a standalone page
+     that has no band wrapping it. */
+  .ns-page--demo { padding-block: var(--space-8); }
 
   /* Vertical rhythm between sections, as a class rather than a margin on
      every heading — margins on headings collapse unpredictably next to

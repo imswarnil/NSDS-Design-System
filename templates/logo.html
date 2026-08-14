@@ -1,0 +1,24 @@
+<!-- Logo — the wordmark lockup. Framework-agnostic markup: the same .ns-* classes
+     the React <Logo> component renders. Ghost: paste into a partial and swap the
+     src for {{@site.icon}}. Next.js: prefer the React component.
+
+     Compact hides the text visually but keeps it announced, so an icon-only
+     header is still a named link for a screen reader. -->
+
+<!-- Default -->
+<a class="ns-logo" href="/">
+  <img class="ns-logo__mark" src="/assets/logo/favicon.svg" alt="">
+  <span class="ns-logo__text">Namaste Salesforce</span>
+</a>
+
+<!-- Compact — icon only, name still announced -->
+<a class="ns-logo ns-logo--compact" href="/">
+  <img class="ns-logo__mark" src="/assets/logo/favicon.svg" alt="">
+  <span class="ns-logo__text">Namaste Salesforce</span>
+</a>
+
+<!-- On a dark band or hero -->
+<a class="ns-logo ns-logo--light" href="/">
+  <img class="ns-logo__mark" src="/assets/logo/favicon.svg" alt="">
+  <span class="ns-logo__text">Namaste Salesforce</span>
+</a>

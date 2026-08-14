@@ -1,96 +1,88 @@
-# The N&M type family
+# Fonts
 
-The system's three custom cuts, self-hosted as latin-subset variable woff2s
-(~77 KB for the whole family). Declared in `tokens/fonts.css`, exposed as
-`--font-heading` / `--font-sans` / `--font-mono` in `tokens/typography.css`.
+Two shipped faces and one system stack. 69 KB total.
 
-Each file is a renamed derivative of a SIL OFL 1.1 face — the same approach
-as Airbnb Cereal. The source credit is embedded in each font's own name
-table (nameID 3), and the OFL travels with the derivative (`fonts/OFL.txt`).
-
-| File | Family | Source cut | Axis | Role |
+| role | face | file | axis | size |
 |---|---|---|---|---|
-| `nmdisplay-var-latin.woff2` | **N&M Display** | Manrope | `wght` 200–800 | Headings & display |
-| `nmtext-var-latin.woff2` | **N&M Text** | Nunito Sans | `wght` 200–1000 | Prose & UI copy |
-| `nmmono-var-latin.woff2` | **N&M Mono** | Red Hat Mono | `wght` 300–700 | Indexes, labels, timestamps, kickers, code |
+| sans — interface **and** reading | **Switzer** | `switzer-var-latin.woff2` | `wght 100–900` | 29 KB |
+| serif — the editorial voice | **Sentient** | `sentient-var-latin.woff2` | `wght 200–700` | 40 KB |
+| mono — data, labels, code | *system stack* | — not shipped — | — | 0 KB |
 
-## Named weights
+Both are [Indian Type Foundry](https://www.indiantypefoundry.com) faces from
+[Fontshare](https://www.fontshare.com), latin-subset variable woff2.
 
-Only these weights are part of the system — anything else is off-scale.
+## Licence
 
-| Cut | Weight | Name | Token | Used for |
-|---|---|---|---|---|
-| Display | 800 | ExtraBold | `--weight-heading` | Hero, h1–h3 |
-| Display | 700 | Bold | `--weight-semibold` | h4, card titles, buttons |
-| Display | 600 | SemiBold | `--weight-medium` | Nav links, tab labels |
-| Text | 450 | **Book** | `--weight-body` | **Body copy — the reading default** |
-| Text | 400 | Regular | `--weight-regular` | Dense UI text, table cells, meta |
-| Text | 600 | SemiBold | `--weight-body-strong` | Inline `<strong>`, definition terms |
-| Text | 700 | Bold | — | Lead-ins, stat labels |
-| Text | 900 | Black | — | Reserved — pull-quotes and big stats only |
-| Mono | 400 | Regular | — | Code blocks, inline code, timestamps |
-| Mono | 700 | Bold | `--weight-label` | Uppercase tracked labels |
+**Fontshare Free Font EULA** — `FONTSHARE-EULA.txt`, which must travel with
+these files. In short: free for personal *and* commercial use, unlimited time,
+any medium (print, web, mobile, apps, broadcast), any number of devices, and
+self-hosting is explicitly provided for. The fonts remain ITF's intellectual
+property; you may not sell or redistribute the font software itself.
 
-### Why body copy is 450, not 400
+That last point is the one that matters here: this repository redistributes
+the font files as part of a design system, so the EULA ships alongside them
+and the attribution stays in this file.
 
-Nunito Sans — and therefore N&M Text — has a genuinely light Regular. At
-16 px on white, with `-webkit-font-smoothing: antialiased`, 400 renders
-thinner than the same nominal weight in Inter or Helvetica and reads as grey
-rather than black. The system's reading regular is therefore **Book, 450** —
-one interpolation step up the `wght` axis, which is free on a variable font
-and costs nothing in bytes. It is a named weight here, not an ad-hoc value:
-it ships as a static cut too, so print and desktop match the web.
+## Why one sans, not a display/text pair
 
-Two changes travel with it: `-webkit-font-smoothing: antialiased` now applies
-only in dark mode (where it is a genuine improvement on a navy surface, and
-where thinning is wanted rather than a bug), and `--color-muted` was darkened
-to clear 7:1 rather than sit at 4.9:1.
+The previous family ran two cuts — one to speak, one to explain — and the seam
+between them had to be managed at every size: two sets of metrics, two
+optical weights that meant different things, and a heading that never quite
+sat on the same rhythm as the paragraph under it.
 
-## Optical rules
+Switzer covers the whole range on its own. Heading and body are separated by
+**weight and size**, not by face, which is quieter, one fewer download, and
+removes an entire class of "why does this heading look wrong at 20px" bug.
 
-- h1–h3 tighten to `--tracking-tight` (-0.022em); body is never tightened.
-- Mono labels are uppercase + `--tracking-label` (+0.09em).
-- Digits in data always set `font-variant-numeric: tabular-nums`.
-- `N&M Text Fallback` (in `tokens/fonts.css`) is a metric-matched local
-  fallback so text does not reflow when the webfont arrives.
-- Reading measure is capped at `--container-prose` (42rem, ~72 characters).
+`--font-heading` still exists as a token name — components reference it, and a
+future display face is one token away — it simply resolves to the same stack.
 
-## The open-source package
+## Why body copy is 400
 
-`fonts/` is a complete, redistributable OFL package — the variable files, the
-license, and a full static family generated from them:
+The previous family was a Nunito-derived cut whose true Regular rendered
+*grey* rather than black at reading sizes, so this system set body copy at
+**450 ("Book")** — one interpolation step up the `wght` axis, invented
+specifically to fix that face's problem.
 
-```
-fonts/
-├── nmdisplay-var-latin.woff2   variable — what the web loads
-├── nmtext-var-latin.woff2
-├── nmmono-var-latin.woff2
-├── OFL.txt                     SIL Open Font License 1.1 + upstream credits
-└── static/
-    ├── nm-static.css           @font-face sheet for the static family
-    ├── woff2/                  21 cuts — web use without variable support
-    └── ttf/                    21 cuts — desktop install (Figma, Word, print)
-```
+Switzer does not have that problem. Its Regular is properly fitted, and
+carrying 450 across would have been cargo: half a step heavier than the
+designer drew, justified by a reason nobody could still state.
 
-Regenerate the static family after changing a variable file:
+Switzer also has a real **500**, which the old family lacked. So the ramp is
+`400 / 500 / 600 / 700` and every step is a weight that was actually drawn —
+no interpolations of our own choosing.
 
-```bash
-pip install "fonttools[woff]" brotli
-python3 scripts/build-fonts.py
-```
+## Why mono is not shipped
 
-The script instances each named weight off the `wght` axis, then fixes the
-name table and `OS/2` bits so installers show a real family menu rather than
-21 fonts all called "Regular" (non-RIBBI styles become their own Windows
-family, which is the only way the full range is reachable from a font menu).
+Monospace is structural in this system (Principle 2): every index, duration,
+timestamp, status and kicker runs through it, and that split is what makes a
+list read as data and a paragraph read as writing.
 
-### Using the family outside this system
+It is still not worth a download. Those runs are short, tracked and uppercase,
+and in that shape the reader's own console face is not merely adequate — it is
+more familiar to them than anything we could send. Spending ~22 KB to make
+`12:40` look marginally more on-brand is not a trade this system makes.
 
-```html
-<link rel="stylesheet" href="fonts/static/nm-static.css">
-<style>body { font-family: "N&M Text", system-ui, sans-serif; font-weight: 450; }</style>
+**The consequence to know:** mono renders as SF Mono on macOS, Consolas on
+Windows, and whatever the distribution sets on Linux. A mono run is therefore
+*not* an identical width across platforms — never lay out against one. The
+`font-variant-numeric: tabular-nums` in `tokens/base.css` is what keeps digits
+in a column aligned, and that works on every one of those faces.
+
+## Subsetting
+
+Both files are subset to latin plus the punctuation, arrows and symbols the UI
+actually draws. To re-cut with wider coverage:
+
+```sh
+pyftsubset Switzer-Variable.woff2 \
+  --output-file=switzer-var-latin.woff2 --flavor=woff2 \
+  --layout-features='*' --no-hinting --desubroutinize \
+  --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
 ```
 
-Redistribution terms are the OFL's: use it, modify it, bundle it, sell it
-with software — just never sell the fonts by themselves, and keep derivatives
-under the same license with `OFL.txt` alongside.
+Source files come from the "Download family" zip on each Fontshare page; the
+variable cut is at `<Family>_Complete/Fonts/WEB/fonts/<Family>-Variable.woff2`.
+
+`@font-face` declarations live in `tokens/fonts.css`; the stacks and the scale
+live in `tokens/typography.css`.

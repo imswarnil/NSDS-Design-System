@@ -4,7 +4,7 @@
    through this course am I" is the question the product exists to answer.
    It appears on course cards, the player, the roadmap and the account page,
    so it gets a real primitive rather than an ad-hoc div per screen. */
-@layer components {
+@layer ns-components {
 
   /* --- Progress bar -------------------------------------------------------
      Built on native <progress> so the value is exposed to assistive tech and
@@ -55,6 +55,62 @@
   }
   .ns-steps__tick[data-state="done"] { background: var(--color-brand-500); }
   .ns-steps__tick[data-state="current"] { background: var(--color-brand-500); box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-brand-500) 25%, transparent); }
+
+  /* --- Stepper ------------------------------------------------------------
+     Horizontal step progress: mono-numbered nodes on a connecting hairline.
+
+     Three things in this system show sequence and they are NOT interchangeable
+     — .ns-steps is an anonymous tick bar (how far, no labels), .ns-curriculum
+     is the lesson list (many rows, scrollable), and this is a short labelled
+     flow the reader is currently inside: checkout, onboarding, a quiz.
+     Past four or five steps it stops being readable; use the curriculum.
+
+     State lives on data-state (done / current), never a class, so the visual
+     and the announced state come from one attribute. A done step shows a check
+     instead of its number — the number is no longer the useful information. */
+  .ns-stepper {
+    /* One source for the node size: the connector centres itself on the node,
+       so a hard-coded half-height would silently decentre the moment the node
+       changed. --_node is the only number here. */
+    --_node: 1.75rem;
+    /* Full width by default: the connectors are flex:1, so without a width to
+       distribute they collapse to min-inline-size and the flow reads as three
+       loose dots rather than a path. */
+    inline-size: 100%;
+    display: flex; align-items: flex-start; list-style: none; margin: 0; padding: 0;
+  }
+  .ns-stepper__step {
+    display: flex; flex-direction: column; align-items: center;
+    gap: var(--space-2); min-inline-size: 4rem;
+  }
+  .ns-stepper__node {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: var(--_node); block-size: var(--_node); flex: none;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); font-variant-numeric: tabular-nums;
+    color: var(--color-muted);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-stepper__step[data-state="done"] .ns-stepper__node,
+  .ns-stepper__step[data-state="current"] .ns-stepper__node {
+    background: var(--color-brand-500); color: var(--color-on-brand); box-shadow: none;
+  }
+  .ns-stepper__label { font-size: var(--size-label); color: var(--color-muted); text-align: center; }
+  .ns-stepper__step[data-state="current"] .ns-stepper__label {
+    color: var(--color-ink); font-weight: var(--weight-label);
+  }
+  /* The connector is a list item too, so the flex row stays one level deep and
+     the nodes keep their even spacing. margin-block-start centres it on the
+     node rather than the label below it. */
+  .ns-stepper__line {
+    flex: 1; block-size: 2px; min-inline-size: var(--space-2);
+    margin-block-start: calc((var(--_node) / 2) - 1px);
+    background: var(--color-border);
+  }
+  .ns-stepper__line[data-state="done"] { background: var(--color-brand-500); }
 
   /* --- Meter --------------------------------------------------------------
      For a score against a threshold (quiz result, code coverage) — native
@@ -119,4 +175,184 @@
     padding: var(--space-3) var(--space-4);
     color: var(--color-muted); font-size: var(--size-small);
   }
+
+  /* --- Timeline -----------------------------------------------------------
+     A vertical feed of things that happened: course activity, a changelog, a
+     learner's history, an order trail. Reverse-chronological by convention.
+
+     Not the Stepper and not the Curriculum. The Stepper is a short flow the
+     reader is INSIDE and can finish; the Curriculum is a list they can act on.
+     A timeline is the past — nothing here is clickable by default, and every
+     entry is stamped with a mono time, which is Principle 2 again: the time is
+     data, the title is writing.
+
+     The rail is a ::before on the item rather than a border on the list, so
+     the last entry can stop it cleanly instead of trailing a stub past the
+     final dot. */
+  .ns-timeline { list-style: none; margin: 0; padding: 0; }
+  .ns-timeline__item {
+    position: relative;
+    padding-inline-start: var(--space-6);
+    padding-block-end: var(--space-5);
+  }
+  .ns-timeline__item::before {
+    content: ""; position: absolute;
+    inset-inline-start: 3px; inset-block: var(--space-4) 0;
+    inline-size: 1px; background: var(--color-border);
+  }
+  .ns-timeline__item:last-child { padding-block-end: 0; }
+  .ns-timeline__item:last-child::before { display: none; }
+  .ns-timeline__dot {
+    position: absolute; inset-inline-start: 0; inset-block-start: var(--space-1-5);
+    inline-size: 7px; block-size: 7px; border-radius: var(--radius-pill);
+    background: var(--color-border);
+  }
+  /* Only the entry that is still happening takes the signal colour. A feed
+     where every dot is brand blue is a feed with no emphasis at all. */
+  .ns-timeline__item[data-state="current"] .ns-timeline__dot { background: var(--color-brand-500); }
+  .ns-timeline__item[data-state="done"] .ns-timeline__dot { background: var(--color-success); }
+  .ns-timeline__time {
+    display: block;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-timeline__title { font-size: var(--size-small); font-weight: var(--weight-medium); color: var(--color-ink); }
+  .ns-timeline__text { font-size: var(--size-small); color: var(--color-muted); margin-block-start: var(--space-1); }
+
+
+  /* --- Leaderboard --------------------------------------------------------
+     Ranked standing: a cohort, a challenge, a streak table.
+
+     The design is mostly about restraint, because a leaderboard is the one
+     component in a learning product that can actively demotivate. Choices
+     that follow from that:
+
+       - No podium, no medals, no gold/silver/bronze. Rank is a mono number,
+         which is what it is. The top three get a slightly stronger ink and
+         nothing else.
+       - The CURRENT reader's row is marked and, in the truncated variant,
+         pinned — a leaderboard that shows the top ten and cuts off a reader
+         at 340 tells them only that they are nobody.
+       - Movement is an arrow AND a number, never colour alone.
+       - An ordered list, because the ordering is the entire content.
+
+     Scores are tabular-nums and end-aligned so the column is scannable, which
+     is the one thing a leaderboard has to get right. */
+  .ns-leaderboard { list-style: none; margin: 0; padding: 0; }
+  .ns-leaderboard__row {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: inherit; text-decoration: none;
+  }
+  .ns-leaderboard__row:last-child { border-block-end: 1px solid var(--color-border); }
+  a.ns-leaderboard__row:hover { background: var(--color-surface-sunken); }
+  .ns-leaderboard__rank {
+    flex: none; min-inline-size: 2.25rem;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* Top three: a stronger ink, and that is all. */
+  .ns-leaderboard__row[data-rank="1"] .ns-leaderboard__rank,
+  .ns-leaderboard__row[data-rank="2"] .ns-leaderboard__rank,
+  .ns-leaderboard__row[data-rank="3"] .ns-leaderboard__rank { color: var(--color-ink); }
+  .ns-leaderboard__name { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-ink); }
+  .ns-leaderboard__meta { flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+  .ns-leaderboard__score {
+    flex: none; margin-inline-start: auto; text-align: end;
+    font-family: var(--font-mono); font-size: var(--size-small);
+    font-weight: var(--weight-label); color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  /* Movement: arrow AND number. Colour is the third signal, never the first. */
+  .ns-leaderboard__move { flex: none; min-inline-size: 3rem; text-align: end; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
+  .ns-leaderboard__move[data-dir="up"] { color: var(--color-success-ink); }
+  .ns-leaderboard__move[data-dir="down"] { color: var(--color-error-ink); }
+  /* The reader's own row. Marked with the same 2px brand edge as every other
+     current-item in the system, so it needs no explanation. */
+  .ns-leaderboard__row[aria-current="true"] {
+    background: var(--color-surface-raised);
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+  }
+  /* Pinned: the reader's row held at the bottom when they are outside the
+     visible top N. The gap says "there is a jump here" without pretending the
+     ranks are contiguous. */
+  .ns-leaderboard__gap {
+    padding: var(--space-1) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label); text-align: center;
+  }
+
+
+  /* --- Progress: motion and states ----------------------------------------
+     A determinate bar animates its width because the number changed — that is
+     feedback, so it stays inside the interaction budget. The indeterminate one
+     is a different claim ("something is happening, duration unknown") and is
+     the only place here that loops. */
+  .ns-progress--indeterminate::-webkit-progress-value { animation: ns-progress-slide 1.2s var(--ease-out) infinite; } /* lint-ok: an indeterminate loop is a duration-unknown signal, not a UI response */
+  .ns-progress--indeterminate::-moz-progress-bar { animation: ns-progress-slide 1.2s var(--ease-out) infinite; } /* lint-ok: see above */
+
+  /* --- Stepper: vertical --------------------------------------------------
+     The same flow turned on its side, for a narrow rail or a checkout summary
+     where the labels are too long to sit side by side. */
+  .ns-stepper--vertical { flex-direction: column; align-items: stretch; inline-size: auto; }
+  .ns-stepper--vertical .ns-stepper__step {
+    flex-direction: row; align-items: flex-start; gap: var(--space-3);
+    min-inline-size: 0; text-align: start;
+  }
+  .ns-stepper--vertical .ns-stepper__label { text-align: start; padding-block: var(--space-1); }
+  .ns-stepper--vertical .ns-stepper__line {
+    inline-size: 2px; block-size: auto; min-block-size: var(--space-4);
+    margin-block-start: 0; margin-inline-start: calc((var(--_node) / 2) - 1px);
+    flex: none;
+  }
+
+  /* --- Timeline: variations ----------------------------------------------- */
+  /* An icon in place of the dot, when the KIND of event matters as much as the
+     fact of it — deployed, reverted, commented. The icon sits on the surface
+     so the rail appears to pass behind it. */
+  .ns-timeline__icon {
+    position: absolute; inset-inline-start: 0; inset-block-start: var(--space-1);
+    inline-size: 1.25rem; block-size: 1.25rem;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface); color: var(--color-label);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-size: var(--size-label);
+  }
+  .ns-timeline--icons .ns-timeline__item { padding-inline-start: var(--space-8); }
+  .ns-timeline--icons .ns-timeline__item::before { inset-inline-start: calc(0.625rem - 1px); inset-block-start: var(--space-6); }
+  .ns-timeline__item[data-state="current"] .ns-timeline__icon { background: var(--color-brand-500); color: var(--color-on-brand); box-shadow: none; }
+  .ns-timeline__item[data-state="done"] .ns-timeline__icon { background: var(--color-success); color: var(--color-on-brand); box-shadow: none; }
+  /* A thumbnail per entry, for a release log or a design changelog. */
+  .ns-timeline__media {
+    display: block; inline-size: 100%; margin-block-start: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-surface-sunken);
+  }
+  /* Horizontal: a run of milestones on one rail. Scrolls rather than wraps —
+     a wrapped timeline stops being a timeline. Deliberately capped in scope:
+     it takes a time and a title, and nothing longer. */
+  .ns-timeline--horizontal {
+    display: flex; overflow-x: auto; gap: var(--space-6);
+    padding-block-start: var(--space-4); scrollbar-width: thin;
+  }
+  .ns-timeline--horizontal .ns-timeline__item {
+    flex: none; inline-size: 11rem; padding-inline-start: 0; padding-block-end: 0;
+  }
+  .ns-timeline--horizontal .ns-timeline__item::before {
+    inset-inline: 0.5rem auto; inset-block-start: 3px; inset-block-end: auto;
+    inline-size: calc(100% + var(--space-6)); block-size: 1px;
+  }
+  .ns-timeline--horizontal .ns-timeline__dot { inset-block-start: 0; }
+  .ns-timeline--horizontal .ns-timeline__time { margin-block-start: var(--space-3); }
+
+}
+
+@keyframes ns-progress-slide {
+  from { margin-inline-start: -40%; inline-size: 40%; }
+  to { margin-inline-start: 100%; inline-size: 40%; }
 }

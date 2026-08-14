@@ -25,7 +25,7 @@
       never a filled pill; Principle 3 keeps solid blue for the one action on
       the screen, and the page you are already on is not an action. The same
       device turns up as the left accent inside menus and the mobile sheet. */
-@layer components {
+@layer ns-components {
 
   /* --- Announcement bar ---------------------------------------------------
      Sits ABOVE the navbar and scrolls away with the page — it is news, not

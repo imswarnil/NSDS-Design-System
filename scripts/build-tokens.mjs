@@ -187,7 +187,16 @@ for (const [tw, src] of [
   ["--color-surface", "--ns-surface"], ["--color-surface-raised", "--ns-surface-raised"],
   ["--color-surface-sunken", "--ns-surface-sunken"], ["--color-border", "--ns-border"],
   ["--color-ink", "--ns-ink"], ["--color-muted", "--ns-muted"],
-  ["--color-label", "--ns-label"], ["--color-grid", "--ns-grid"],
+  /* label-ink, not label. Tailwind resolves `text-*` against BOTH --text-*
+     and --color-*, and the colour wins — so while this was called
+     --color-label, `text-label` silently produced the label COLOUR instead of
+     the label TYPE, and the kicker arrived without its tracking or weight.
+     That is precisely the half-applied kicker the --text-label token exists to
+     prevent. The -ink suffix is this file's own convention for "the text
+     colour of X" (see --color-success-ink et al), so this reads the same way.
+     The CSS custom property --color-label in tokens/colors.css is unchanged;
+     only the Tailwind alias moves. */
+  ["--color-label-ink", "--ns-label"], ["--color-grid", "--ns-grid"],
   ["--color-success-ink", "--ns-success-ink"], ["--color-warning-ink", "--ns-warning-ink"],
   ["--color-error-ink", "--ns-error-ink"], ["--color-info-ink", "--ns-info-ink"],
   ["--color-chart-1", "--chart-cat-1"], ["--color-chart-2", "--chart-cat-2"],
@@ -261,6 +270,8 @@ const twLines = [
   `  --font-sans: ${lit("--ns-font-sans")};`,
   `  --font-heading: ${lit("--ns-font-heading")};`,
   `  --font-mono: ${lit("--ns-font-mono")};`,
+  /* The editorial voice. Fallback-only by design — see tokens/typography.css. */
+  `  --font-serif: ${lit("--ns-font-serif")};`,
   "",
   "  /* text-label carries its tracking and weight so a kicker cannot be",
   "     half-applied — Principle 2 depends on it always arriving whole. */",
@@ -281,11 +292,38 @@ const twLines = [
   `  --text-small: ${lit("--size-small")};`,
   `  --text-small--line-height: ${lit("--ns-leading-body")};`,
   `  --text-mono: ${lit("--size-mono")};`,
+  /* fine is the caption/legal size, and it is NOT text-label: label carries
+     the kicker's 700 weight and 0.09em tracking, so using it for a footnote
+     shouts. Its absence from this bridge is why the styleguide had 86
+     hand-written `text-[11px]`. */
+  `  --text-fine: ${lit("--size-fine")};`,
+  `  --text-fine--line-height: ${lit("--ns-leading-body")};`,
+  /* Poster scale. Fluid, capped against the viewport, and it sets solid — so
+     its leading and tracking travel with it or it is not the mega size. */
+  `  --text-mega: ${lit("--size-mega")};`,
+  `  --text-mega--line-height: ${lit("--ns-leading-mega")};`,
+  `  --text-mega--letter-spacing: ${lit("--ns-tracking-mega")};`,
   `  --text-label: ${lit("--size-label")};`,
   "  --text-label--line-height: 1;",
   `  --text-label--letter-spacing: ${lit("--ns-tracking-label")};`,
   `  --text-label--font-weight: ${lit("--weight-label")};`,
+  /* Same 11px as text-label, deliberately WITHOUT the weight and tracking.
+     Two roles share one size and they are not interchangeable: a kicker is a
+     shouted eyebrow and must arrive whole (Principle 2), while mono DATA — a
+     token name, a value, a count, a timestamp — is quiet by definition and
+     reads wrong bold and tracked. The component layer has always used
+     var(--size-label) plainly for exactly this (.ns-tag, .ns-badge,
+     .ns-footer__head); only the bridge forced the two together, which is why
+     the styleguide had 117 hand-written `text-[11px]`. */
+  `  --text-data: ${lit("--size-label")};`,
+  "  --text-data--line-height: 1.4;",
   "",
+  /* 450 (Book) is the READING weight — see fonts/README.md for why 400 is
+     not. It was unreachable as a utility, which meant any component built in
+     Tailwind silently rendered body copy a half-step light. */
+  `  --font-weight-body: ${lit("--weight-body")};`,
+  `  --font-weight-body-strong: ${lit("--weight-body-strong")};`,
+  `  --font-weight-label: ${lit("--weight-label")};`,
   `  --font-weight-regular: ${lit("--weight-regular")};`,
   `  --font-weight-medium: ${lit("--weight-medium")};`,
   `  --font-weight-semibold: ${lit("--weight-semibold")};`,
@@ -293,6 +331,13 @@ const twLines = [
   `  --leading-tight: ${lit("--ns-leading-tight")};`,
   `  --leading-heading: ${lit("--ns-leading-heading")};`,
   `  --leading-body: ${lit("--ns-leading-body")};`,
+  `  --leading-mega: ${lit("--ns-leading-mega")};`,
+  /* The whole tracking scale. Only --label was bridged, so every other
+     tracked run in the styleguide was an arbitrary value — tracking-[.06em],
+     [.05em], [.08em] — i.e. three undocumented near-duplicates of one token. */
+  `  --tracking-tight: ${lit("--ns-tracking-tight")};`,
+  `  --tracking-wide: ${lit("--ns-tracking-wide")};`,
+  `  --tracking-mega: ${lit("--ns-tracking-mega")};`,
   `  --tracking-label: ${lit("--ns-tracking-label")};`,
   "",
   "  /* Only these four radii exist. Tailwind's rounded-lg / -xl / -2xl are",
@@ -305,6 +350,11 @@ const twLines = [
   "",
   `  --shadow-card: ${lit("--ns-shadow-card")};`,
   `  --shadow-raised: ${lit("--ns-shadow-raised")};`,
+  /* Both are RINGS, not drop shadows — Principle 1, the hairline is the
+     structure. shadow-brand is the selected-card edge, shadow-focus the
+     focus halo. Named shadow-* because that is the property they set. */
+  `  --shadow-brand: ${lit("--shadow-brand")};`,
+  `  --shadow-focus: ${lit("--shadow-focus")};`,
   "",
   `  --breakpoint-sm: ${lit("--breakpoint-sm")};`,
   `  --breakpoint-md: ${lit("--breakpoint-md")};`,
@@ -348,6 +398,81 @@ const twLines = [
   '@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));',
   "",
 ];
+
+/* ---- namespace collision guard ------------------------------------------
+   Tailwind resolves `text-<name>` against BOTH --text-* (font-size, with its
+   --line-height / --letter-spacing / --font-weight companions) and --color-*
+   (colour). If the same suffix exists in both, one silently shadows the other
+   and the utility does something other than what the token name promises —
+   `text-label` gave the label colour and dropped the kicker's tracking and
+   weight for as long as --color-label existed.
+
+   Nothing about that fails visibly: the class applies, the page renders, and
+   the type is just wrong. So the bridge refuses to emit an ambiguous pair.
+   The fix is always to rename the COLOUR with the -ink suffix this file
+   already uses for "the text colour of X". */
+{
+  const suffixes = (prefix) => new Set(
+    twLines.flatMap((l) => {
+      const m = l.match(new RegExp(`^\\s*--${prefix}-([a-z0-9-]+):`));
+      // --text-label--line-height etc. are companions, not separate tokens.
+      return m && !m[1].includes("--") ? [m[1]] : [];
+    }),
+  );
+  const colors = suffixes("color");
+  const clash = [...suffixes("text")].filter((s) => colors.has(s));
+  if (clash.length) {
+    for (const c of clash) {
+      console.error(`bridge: --text-${c} and --color-${c} both exist — \`text-${c}\` is ambiguous and the colour wins,`);
+      console.error(`        so the type token (size, tracking, weight) is silently dropped.`);
+      console.error(`        Rename the colour to --color-${c}-ink in the themed map / literal block above.`);
+    }
+    process.exit(2);
+  }
+}
+
+/* ---- bridge completeness guard -------------------------------------------
+   Every token in the CSS must be reachable as a Tailwind utility.
+
+   This is not pedantry. A token with no utility does not stop anyone using
+   the value — it makes them write an arbitrary value instead, and an
+   arbitrary value is a token nobody can find, audit or change. The styleguide
+   accumulated 86 `text-[11px]` (that is --size-fine), 23 hand-tuned
+   `tracking-[…]` (three near-duplicates of --tracking-wide) and a body weight
+   that could not be reached at all, purely because those tokens were defined
+   in CSS and never bridged.
+
+   `--weight-body: 450` is the sharpest case: 450 (Book) is the reading
+   weight, and without `font-body` every component authored in Tailwind
+   rendered body copy a half-step light with nothing to show for it in review.
+
+   If this fails, add the emit line above — do not add the token to the
+   exemption list unless it genuinely has no utility form. */
+{
+  const NAMESPACE = { size: "text", tracking: "tracking", leading: "leading", weight: "font-weight", shadow: "shadow", font: "font" };
+  /* --font-icon / --font-icon-fill name the icon @font-face that ::before
+     glyphs are drawn in. A `font-icon` text utility would only ever be a
+     mistake, so they are the one font pair that stays out of the bridge. */
+  const NO_UTILITY = new Set(["--font-icon", "--font-icon-fill"]);
+  /* Legitimately un-bridgeable: --shadow-card/-raised are already emitted;
+     these are the private --ns-* sources, which are never public names. */
+  const EXEMPT = /^--ns-|^--chart-|^--color-/;
+  const twText = twLines.join("\n");
+  const missing = [];
+  for (const t of light) {
+    if (EXEMPT.test(t.name) || NO_UTILITY.has(t.name)) continue;
+    const [, head, tail] = t.name.match(/^--([a-z]+)-(.+)$/) || [];
+    const ns = NAMESPACE[head];
+    if (!ns || !tail) continue;
+    if (!new RegExp(`^\\s*--${ns}-${tail}\\s*:`, "m").test(twText)) missing.push([t.name, `--${ns}-${tail}`]);
+  }
+  if (missing.length) {
+    console.error("bridge: these tokens exist in tokens/*.css but have no Tailwind utility,");
+    console.error("        so anyone needing the value has to write an arbitrary one instead:\n");
+    for (const [css, want] of missing) console.error(`          ${css.padEnd(24)} → emit ${want}`);
+    process.exit(2);
+  }
+}
 
 const outputs = [
   ["tokens/tokens.json", JSON.stringify(doc, null, 2) + "\n"],

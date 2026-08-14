@@ -1,27 +1,18 @@
 <!-- @dsCard group="Foundations" viewport="700x420" name="Spacing & Layout" subtitle="4px base scale, matched 1:1 to Tailwind — the reason Ghost and the Next.js app land on the same pixel" -->
-<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
-<style>
-body{margin:0;padding:20px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:13px}
-.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 8px}
-.row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
-.bar{background:var(--color-brand-500);height:12px;border-radius:2px}
-.n{font-family:var(--font-mono);font-size:11px;color:var(--color-muted);width:112px;flex:none}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}
-.sem{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--color-border);font-family:var(--font-mono);font-size:11px}
-.sem span:last-child{color:var(--color-muted)}
-</style></head><body>
-<div class="cols">
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+</head><body class="m-0 p-5 bg-surface text-ink font-sans text-small">
+<div class="grid grid-cols-2 gap-7">
   <div>
-    <p class="k">Scale — 4px base</p>
-    <div class="row"><span class="n">--space-1 · p-1</span><div class="bar" style="width:4px"></div></div>
-    <div class="row"><span class="n">--space-2 · p-2</span><div class="bar" style="width:8px"></div></div>
-    <div class="row"><span class="n">--space-3 · p-3</span><div class="bar" style="width:12px"></div></div>
-    <div class="row"><span class="n">--space-4 · p-4</span><div class="bar" style="width:16px"></div></div>
-    <div class="row"><span class="n">--space-6 · p-6</span><div class="bar" style="width:24px"></div></div>
-    <div class="row"><span class="n">--space-8 · p-8</span><div class="bar" style="width:32px"></div></div>
-    <div class="row"><span class="n">--space-12 · p-12</span><div class="bar" style="width:48px"></div></div>
-    <div class="row"><span class="n">--space-16 · p-16</span><div class="bar" style="width:64px"></div></div>
-    <div class="row"><span class="n">--space-24 · p-24</span><div class="bar" style="width:96px"></div></div>
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Scale — 4px base</p>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-1 · p-1</span><div class="bg-brand-500 h-3 rounded-sm" style="width:4px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-2 · p-2</span><div class="bg-brand-500 h-3 rounded-sm" style="width:8px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-3 · p-3</span><div class="bg-brand-500 h-3 rounded-sm" style="width:12px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-4 · p-4</span><div class="bg-brand-500 h-3 rounded-sm" style="width:16px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-6 · p-6</span><div class="bg-brand-500 h-3 rounded-sm" style="width:24px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-8 · p-8</span><div class="bg-brand-500 h-3 rounded-sm" style="width:32px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-12 · p-12</span><div class="bg-brand-500 h-3 rounded-sm" style="width:48px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-16 · p-16</span><div class="bg-brand-500 h-3 rounded-sm" style="width:64px"></div></div>
+    <div class="flex items-center gap-2.5 mb-1"><span class="font-mono text-data text-muted w-28 flex-none">--space-24 · p-24</span><div class="bg-brand-500 h-3 rounded-sm" style="width:96px"></div></div>
     <p style="font-size:11px;color:var(--color-muted);line-height:1.5;margin-top:14px">
       The index matches Tailwind&rsquo;s scale exactly, so <code style="font-family:var(--font-mono)">p-4</code> in a
       Handlebars template and <code style="font-family:var(--font-mono)">var(--space-4)</code> in a React component are
@@ -29,28 +20,28 @@ body{margin:0;padding:20px;background:var(--color-surface);color:var(--color-ink
     </p>
   </div>
   <div>
-    <p class="k">Semantic aliases — reach for these first</p>
-    <div class="sem"><span>--pad-card</span><span>20px</span></div>
-    <div class="sem"><span>--pad-row</span><span>12px</span></div>
-    <div class="sem"><span>--gap-inline</span><span>8px</span></div>
-    <div class="sem"><span>--gap-card</span><span>16px</span></div>
-    <div class="sem"><span>--gap-grid</span><span>24px</span></div>
-    <div class="sem"><span>--gap-field</span><span>6px</span></div>
-    <div class="sem"><span>--stack-md</span><span>32px</span></div>
-    <div class="sem"><span>--stack-lg</span><span>64px</span></div>
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Semantic aliases — reach for these first</p>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--pad-card</span><span>20px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--pad-row</span><span>12px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--gap-inline</span><span>8px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--gap-card</span><span>16px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--gap-grid</span><span>24px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--gap-field</span><span>6px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--stack-md</span><span>32px</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--stack-lg</span><span>64px</span></div>
 
-    <p class="k" style="margin-top:20px">Containers</p>
-    <div class="sem"><span>--container-prose</span><span>42rem &middot; reading measure</span></div>
-    <div class="sem"><span>--container-narrow</span><span>56rem &middot; forms, auth</span></div>
-    <div class="sem"><span>--container-page</span><span>72rem &middot; page shell</span></div>
-    <div class="sem"><span>--container-wide</span><span>88rem &middot; catalog, dashboards</span></div>
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2" style="margin-top:20px">Containers</p>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--container-prose</span><span>42rem &middot; reading measure</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--container-narrow</span><span>56rem &middot; forms, auth</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--container-page</span><span>72rem &middot; page shell</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--container-wide</span><span>88rem &middot; catalog, dashboards</span></div>
 
-    <p class="k" style="margin-top:20px">Elevation order &mdash; six layers, no more</p>
-    <div class="sem"><span>--z-raised</span><span>10</span></div>
-    <div class="sem"><span>--z-sticky</span><span>100 &middot; navbar, sidebar</span></div>
-    <div class="sem"><span>--z-dropdown</span><span>200 &middot; menus, tooltips</span></div>
-    <div class="sem"><span>--z-overlay</span><span>300 &middot; modal, drawer</span></div>
-    <div class="sem"><span>--z-toast</span><span>400</span></div>
+    <p class="font-mono text-label uppercase text-label-ink m-0 mb-2" style="margin-top:20px">Elevation order &mdash; six layers, no more</p>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--z-raised</span><span>10</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--z-sticky</span><span>100 &middot; navbar, sidebar</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--z-dropdown</span><span>200 &middot; menus, tooltips</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--z-overlay</span><span>300 &middot; modal, drawer</span></div>
+    <div class="flex justify-between py-[5px] border-b border-border font-mono text-data [&>span:last-child]:text-muted"><span>--z-toast</span><span>400</span></div>
   </div>
 </div>
 </body></html>

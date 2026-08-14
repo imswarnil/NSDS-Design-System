@@ -14,7 +14,7 @@
    - Labels are real <label> elements. Placeholder text is never a label:
      it disappears exactly when the user needs it most.
    - Controls hold --target-comfy (40px) so they are thumb-sized on mobile. */
-@layer components {
+@layer ns-components {
 
   /* --- Field wrapper ------------------------------------------------------
      label → control → (help | error). One vertical rhythm for every field so
@@ -166,19 +166,25 @@
 
   .ns-checkbox::before {
     content: ""; inline-size: 0.625rem; block-size: 0.625rem;
-    transform: scale(0); transform-origin: center;
-    transition: transform var(--duration-fast) var(--ease-out);
     box-shadow: inset 1em 1em var(--color-on-brand);
+    /* Collapsed onto the tick's own start corner — same six points as the
+       checked path, so the two interpolate and the stroke sweeps out of the
+       corner instead of popping in scaled from nothing. */
+    clip-path: polygon(14% 44%, 0 65%, 14% 44%, 14% 44%, 14% 44%, 14% 44%);
+    transition: clip-path var(--duration-base) var(--ease-out);
+  }
+  .ns-checkbox:checked::before {
     clip-path: polygon(14% 44%, 0 65%, 40% 100%, 100% 16%, 84% 0, 39% 66%);
   }
-  .ns-checkbox:checked::before { transform: scale(1); }
+  /* Indeterminate is a state, not a step on the way to checked, so it wipes in
+     from the leading edge rather than drawing like a tick. */
   .ns-checkbox:indeterminate::before {
-    transform: scale(1); clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%);
+    clip-path: polygon(0 40%, 100% 40%, 100% 60%, 0 60%);
   }
   .ns-radio::before {
     content: ""; inline-size: 0.5rem; block-size: 0.5rem;
     border-radius: var(--radius-pill); background: var(--color-on-brand);
-    transform: scale(0); transition: transform var(--duration-fast) var(--ease-out);
+    transform: scale(0); transition: transform var(--duration-base) var(--ease-out);
   }
   .ns-radio:checked::before { transform: scale(1); }
 
@@ -216,11 +222,16 @@
     inset-inline-start: 0.1875rem; translate: 0 -50%;
     inline-size: 0.875rem; block-size: 0.875rem;
     border-radius: var(--radius-pill); background: var(--color-muted);
-    transition: translate var(--duration-fast) var(--ease-out),
-                background-color var(--duration-fast) var(--ease-out);
+    /* The slide is the affordance — it is what tells the reader the setting
+       took effect, so it gets the full 180ms rather than the 120ms used for
+       hover states. Still one transform, still no bounce. */
+    transition: translate var(--duration-base) var(--ease-out),
+                inline-size var(--duration-fast) var(--ease-out),
+                background-color var(--duration-base) var(--ease-out);
   }
   .ns-switch:checked { background: var(--color-brand-500); border-color: var(--color-brand-500); }
   .ns-switch:checked::before { translate: 1rem -50%; background: var(--color-on-brand); }
+  .ns-switch:active::before { inline-size: 1.0625rem; }
   .ns-switch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-switch:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -248,4 +259,195 @@
     .ns-checkbox::before, .ns-radio::before, .ns-switch::before { box-shadow: none; background: ButtonFace; }
     .ns-input, .ns-select, .ns-textarea { border-color: ButtonBorder; }
   }
+
+  /* --- Combobox -----------------------------------------------------------
+     Type-ahead over a known list: a course, a tag, an org. A <select> cannot
+     be searched and a bare text input cannot be trusted, so this is the third
+     thing — an input that filters a listbox and commits a real value.
+
+     It is a TEXT INPUT plus a listbox, not a custom widget: the field is a
+     real <input> so autofill, IME, mobile keyboards and paste all behave, and
+     the list is role="listbox" with role="option" children so the pairing is
+     announced. aria-expanded lives on the input, aria-activedescendant points
+     at the highlighted option — the highlight is therefore never a class the
+     assistive layer cannot see.
+
+     Requires JS to filter. Without it the input still submits its value, which
+     is the correct degradation: a search box that types is better than a
+     combobox that does nothing. */
+  .ns-combobox { position: relative; display: block; inline-size: 100%; }
+  .ns-combobox__list {
+    position: absolute; inset-block-start: calc(100% + var(--space-1)); inset-inline: 0;
+    z-index: var(--z-dropdown);
+    margin: 0; padding: var(--space-1); list-style: none;
+    max-block-size: 16rem; overflow-y: auto;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  .ns-combobox__list[hidden] { display: none; }
+  .ns-combobox__option {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-size: var(--size-small); color: var(--color-ink); cursor: pointer;
+  }
+  /* aria-selected is the highlight, and it is driven by the same attribute
+     aria-activedescendant points at — one source, so the visible row and the
+     announced row cannot disagree. Hover is deliberately the same treatment:
+     pointer and keyboard should not show two different "current" rows. */
+  .ns-combobox__option:hover,
+  .ns-combobox__option[aria-selected="true"] { background: var(--color-surface-sunken); }
+  .ns-combobox__option[aria-selected="true"] { box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-combobox__match { font-weight: var(--weight-body-strong); color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-combobox__match { color: var(--color-brand-300); }
+  .ns-combobox__meta { margin-inline-start: auto; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
+  .ns-combobox__empty { padding: var(--space-3); font-size: var(--size-small); color: var(--color-muted); }
+
+  /* --- Segmented control --------------------------------------------------
+     One choice from two to four, where the options are a VIEW rather than
+     data: grid or list, week or month, all or mine. The whole set is visible
+     at once, which is the difference from a select, and it is one connected
+     object, which is the difference from a row of buttons.
+
+     Real radios inside a fieldset. That is what makes it work with no JS,
+     arrow-key between options for free, and submit inside a form. .ns-choice
+     in catalog.css is the multi-select filter chip — related, not the same.
+
+     Four options is the ceiling: past that the labels get too short to read
+     and it wants to be a select. */
+  .ns-segmented {
+    display: inline-flex; padding: 2px; gap: 2px;
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface-sunken);
+  }
+  .ns-segmented__option { position: relative; display: flex; }
+  .ns-segmented__option input {
+    position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer;
+  }
+  .ns-segmented__option span {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    color: var(--color-muted); white-space: nowrap;
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-segmented__option input:checked + span {
+    background: var(--color-surface); color: var(--color-brand-600);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  [data-theme="dark"] .ns-segmented__option input:checked + span { color: var(--color-brand-300); }
+  .ns-segmented__option input:focus-visible + span {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset);
+  }
+  .ns-segmented__option input:disabled + span { opacity: var(--opacity-disabled); cursor: not-allowed; }
+
+  /* --- Date field ---------------------------------------------------------
+     Native <input type="date">, styled to match .ns-input. Deliberately not a
+     custom calendar: the platform picker is localised, keyboard-operable,
+     understands the user's date format and is the one their phone already
+     shows. A hand-built one is a month of work to be worse in every locale.
+
+     The only real work here is the picker indicator, which UA-styles to a
+     grey glyph that ignores dark mode. */
+  .ns-datefield { position: relative; display: block; }
+  .ns-datefield input { font-family: var(--font-mono); font-size: var(--size-mono); }
+  .ns-datefield input::-webkit-calendar-picker-indicator {
+    cursor: pointer; opacity: 0.55;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-datefield input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+  /* The UA glyph is a black raster; in dark mode it disappears against the
+     navy, so it is inverted rather than recoloured (there is no property that
+     recolours it). */
+  [data-theme="dark"] .ns-datefield input::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+
+  /* --- Calendar -----------------------------------------------------------
+     The themed date picker, replacing the native one on every device.
+
+     That is a real trade and worth stating: the platform picker is localised,
+     keyboard-operable and already familiar, and it costs nothing. Replacing it
+     means owning all of that ourselves. What we get back is a picker that
+     matches the system on desktop, where the native control is a grey box that
+     ignores the theme entirely.
+
+     What that obligation actually is, in this component:
+       - Month and weekday names come from Intl, never a hard-coded array, so
+         the grid is correct in every locale and the week can start on Monday
+         or Sunday according to the reader's own.
+       - A roving tabindex, not aria-activedescendant: only one day is ever
+         tabbable, and arrow keys move real focus. Screen readers announce the
+         focused cell without any live-region trickery.
+       - A real <table> with column headers, so the day/column relationship is
+         announced rather than implied by position.
+       - Esc closes and returns focus to the field. Always.
+
+     Sizing is in ch/rem rather than fixed px so a 2-digit day and the weekday
+     header stay aligned when the reader zooms text. */
+  .ns-calendar {
+    position: absolute; inset-block-start: calc(100% + var(--space-1)); inset-inline-start: 0;
+    z-index: var(--z-dropdown);
+    inline-size: max-content; padding: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  .ns-calendar[hidden] { display: none; }
+  .ns-calendar__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-block-end: var(--space-2);
+  }
+  /* The month is a live region: arrow-keying across a month boundary changes
+     it, and without this the only feedback is visual. */
+  .ns-calendar__month {
+    flex: 1; text-align: center;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-calendar__nav {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: 1.75rem; block-size: 1.75rem; flex: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: none; cursor: pointer; color: var(--color-muted);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-calendar__nav:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-calendar__grid { border-collapse: collapse; }
+  .ns-calendar__dow {
+    inline-size: 2.25rem; padding-block-end: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-calendar__day {
+    inline-size: 2.25rem; block-size: 2.25rem; padding: 0;
+    border: 0; border-radius: var(--radius-sm);
+    background: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-small);
+    font-variant-numeric: tabular-nums; color: var(--color-ink);
+    transition: background var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-calendar__day:hover { background: var(--color-surface-sunken); }
+  .ns-calendar__day:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  /* Today is a ring, selected is a fill. Two different claims — "where you
+     are in the world" and "what you chose" — so they must be able to coexist
+     on the same cell without either winning. */
+  .ns-calendar__day[data-today] { box-shadow: inset 0 0 0 1px var(--color-brand-500); }
+  .ns-calendar__day[aria-selected="true"] { background: var(--color-brand-500); color: var(--color-on-brand); }
+  .ns-calendar__day[data-outside] { color: var(--color-label); }
+  .ns-calendar__day:disabled { opacity: var(--opacity-disabled); cursor: not-allowed; }
+  .ns-calendar__day:disabled:hover { background: none; }
+  .ns-calendar__foot {
+    display: flex; gap: var(--space-2); margin-block-start: var(--space-2);
+    padding-block-start: var(--space-2); border-block-start: 1px solid var(--color-border);
+  }
+
 }

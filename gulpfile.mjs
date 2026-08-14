@@ -9,7 +9,7 @@
    Tasks:
      gulp            dev loop — build, then serve with watch + live reload
      gulp build      tokens → css bundle → preview page
-     gulp check      the five CI checks
+     gulp check      the CI checks (add --site-built to include link integrity)
      gulp site       build + stage the deployable static site into _site/
      gulp serve      serve an existing build, no watching
 */
@@ -42,14 +42,20 @@ export const build = gulp.series(tokens, css, preview);
 export const check = gulp.series(
   run("build-tokens.mjs", "--check"),
   run("lint-principles.mjs"),
+  /* The cascade check guards the one promise the Tailwind layer rests on — a
+     utility always beats a .ns-* default. It parses the @import graph itself,
+     so it runs before build-css and cannot pass on a stale dist/. */
+  run("check-cascade.mjs"),
   run("check-components.mjs"),
   run("check-palette.mjs"),
   run("build-css.mjs", "--check"),
 );
 
 /* The deployable static site — what CI publishes to Pages, and what you
-   rsync to any server. */
-export const site = gulp.series(build, run("build-site.mjs"));
+   rsync to any server. Link integrity is checked HERE rather than in `check`
+   because it needs _site/ to exist; running it as part of the build is what
+   makes it unskippable. */
+export const site = gulp.series(build, run("build-site.mjs"), run("check-links.mjs"));
 
 /* Serve without watching (an existing build, e.g. reviewing a branch). */
 export const serve = (done) => {

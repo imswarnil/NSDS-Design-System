@@ -63,6 +63,12 @@
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+/* In @layer base, not unlayered. The !important is what makes this work and it
+   keeps working from here: an important declaration beats a normal one from any
+   layer, so this still overrides a Tailwind `transition-duration` utility. Being
+   layered just stops it from being the single strongest thing in the stylesheet. */
+@layer base {
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
 }

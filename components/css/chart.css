@@ -15,7 +15,7 @@
    surface; a 2px surface gap between touching fills; recessive hairline
    grid. Load animations are single-run, plain ease-out, and collapse under
    the global reduced-motion guard. */
-@layer components {
+@layer ns-components {
   .ns-chart {
     display: block;
     border: 1px solid var(--color-border);

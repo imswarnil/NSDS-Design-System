@@ -31,7 +31,7 @@
 
    Wiring: assets/js/code.js (copy, wrap, run, tabs). The Ask-AI and Share
    menus are native popovers — no JS at all. */
-@layer components {
+@layer ns-components {
 
   /* --- Frame --------------------------------------------------------------
      A code block is a card that happens to contain code, so it wears the

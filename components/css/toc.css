@@ -1,0 +1,148 @@
+/* NS Design System — table of contents.
+   =========================================================================
+   Where you are in a long piece. Its own module rather than a blog feature:
+   a post, a lesson, a doc page and a training unit all need the same outline,
+   and three copies of it is three places for the scroll-spy to drift.
+
+   It is a real <nav> of real anchor links. It works with JS off; the scroll-spy
+   in assets/js/toc.js only adds [aria-current] to whichever heading is on
+   screen, and [data-toc-from] can build the list from the article's own
+   headings for a CMS that emits a body but no outline.
+
+   TWO LEVELS ONLY. A table of contents that needs three is a table of contents
+   for a page that needs splitting.
+
+   The variations are about WHERE it sits, not how it looks:
+     (default)     the sticky rail, beside the text on a wide screen
+     --card        boxed, for a rail that needs to read as a distinct object
+     --inline      a horizontal strip above the article — the mobile answer
+                   when a disclosure is one tap too many
+     --collapsible a <details> above the text, for narrow screens
+     --numbered    mono indices, for procedures where the order is the content
+     --float       a fixed launcher bottom-end that opens the outline as a
+                   sheet, for long docs read on a phone */
+@layer ns-components {
+  .ns-toc { display: flex; flex-direction: column; border-inline-start: 1px solid var(--color-border); }
+  .ns-toc__title {
+    padding: 0 var(--space-3) var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-toc__link {
+    display: block; padding: var(--space-1-5) var(--space-3);
+    margin-inline-start: -1px; border-inline-start: 2px solid transparent;
+    font-size: var(--size-small); line-height: var(--leading-heading);
+    color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-toc__link:hover { color: var(--color-ink); }
+  .ns-toc__link[aria-current="true"] { border-inline-start-color: var(--color-brand-500); color: var(--color-brand-600); font-weight: var(--weight-medium); }
+  [data-theme="dark"] .ns-toc__link[aria-current="true"] { color: var(--color-brand-300); }
+  /* h3s indent. Two levels is the limit: a table of contents that needs
+     three is a table of contents for a page that needs splitting. */
+  .ns-toc__link--sub { padding-inline-start: var(--space-6); font-size: var(--size-fine); }
+  /* Below lg the TOC folds into a disclosure above the text — a sticky rail
+     with nowhere to stick. */
+  .ns-toc--collapsible > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3); cursor: pointer; list-style: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-toc--collapsible > summary::-webkit-details-marker { display: none; }
+  .ns-toc--collapsible > summary i { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-toc--collapsible[open] > summary i { rotate: 180deg; }
+
+  /* --- Reading progress ---------------------------------------------------
+     A hairline that fills as the piece is read, at the top of the rail. It is
+     decoration in the honest sense — the TOC already says where you are — so
+     it is aria-hidden and never the only indicator. */
+  .ns-toc__progress {
+    block-size: 2px; inline-size: 100%; margin-block-end: var(--space-3);
+    background: var(--color-border); border-radius: var(--radius-pill); overflow: hidden;
+  }
+  .ns-toc__progress::after {
+    content: ""; display: block; block-size: 100%;
+    inline-size: var(--ns-toc-progress, 0%);
+    background: var(--color-brand-500);
+    transition: inline-size var(--duration-fast) var(--ease-out);
+  }
+
+  /* --- Card ---------------------------------------------------------------
+     The rail as a distinct object. For a sidebar that already holds other
+     blocks and needs the outline not to blend into them. */
+  .ns-toc--card {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    padding: var(--space-4); background: var(--color-surface);
+  }
+  .ns-toc--card .ns-toc__link { margin-inline-start: 0; }
+
+  /* --- Numbered -----------------------------------------------------------
+     Mono indices, for a procedure where the order IS the content — a setup
+     guide, a migration. A counter rather than markup, so the numbers cannot
+     get out of step with the list. */
+  .ns-toc--numbered { counter-reset: ns-toc; }
+  .ns-toc--numbered .ns-toc__link { counter-increment: ns-toc; }
+  .ns-toc--numbered .ns-toc__link::before {
+    content: counter(ns-toc, decimal-leading-zero) "  ";
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-toc--numbered .ns-toc__link--sub { counter-increment: none; }
+  .ns-toc--numbered .ns-toc__link--sub::before { content: none; }
+
+  /* --- Inline -------------------------------------------------------------
+     A horizontal strip above the article. The mobile answer when a disclosure
+     is one tap too many and the outline is short enough to scan sideways.
+     Scrolls rather than wraps: a wrapped strip changes the article's start
+     position depending on how many headings it has. */
+  .ns-toc--inline {
+    flex-direction: row; gap: var(--space-2);
+    border-inline-start: 0; border-block-end: 1px solid var(--color-border);
+    padding-block-end: var(--space-2); margin-block-end: var(--space-5);
+    overflow-x: auto; scrollbar-width: thin;
+  }
+  .ns-toc--inline .ns-toc__link {
+    flex: none; border-inline-start: 0; margin-inline-start: 0;
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm); white-space: nowrap;
+  }
+  .ns-toc--inline .ns-toc__link[aria-current="true"] { background: var(--color-surface-sunken); }
+  .ns-toc--inline .ns-toc__link--sub { display: none; }
+
+  /* --- Float --------------------------------------------------------------
+     A launcher pinned bottom-end that opens the outline as a sheet. For long
+     documentation read on a phone, where the reader wants the outline at the
+     point they get lost — not only at the top where they have already scrolled
+     past it.
+
+     Native <details>, so it closes on Esc and is keyboard-operable with no JS.
+     Pinned bottom-END rather than bottom-centre: it must not sit under a
+     thumb that is scrolling. */
+  .ns-toc--float {
+    position: fixed; inset-block-end: var(--space-5); inset-inline-end: var(--space-5);
+    z-index: var(--z-dropdown); border-inline-start: 0;
+  }
+  .ns-toc--float > summary {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4); cursor: pointer; list-style: none;
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    background: var(--color-surface); box-shadow: var(--shadow-raised);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-toc--float > summary::-webkit-details-marker { display: none; }
+  .ns-toc--float__panel {
+    position: absolute; inset-block-end: calc(100% + var(--space-2)); inset-inline-end: 0;
+    inline-size: 16rem; max-block-size: 60dvh; overflow-y: auto;
+    display: flex; flex-direction: column;
+    padding: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); box-shadow: var(--shadow-raised);
+  }
+  /* The float is a phone affordance; above lg the sticky rail is better in
+     every way and this would be a second outline competing with it. */
+  @media (min-width: 64rem) { .ns-toc--float { display: none; } }
+}

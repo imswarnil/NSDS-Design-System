@@ -15,6 +15,195 @@ semver, with one design-system-specific reading of it:
 A color *value* changing is a **major** even though nothing breaks at build
 time: every screen in both products moves.
 
+## [3.0.0]
+
+### Changed — BREAKING: the component layer is `ns-components`, not `components`
+
+Every rule in `components/css/**` moved from `@layer components` to
+`@layer ns-components`, and `styles.css` now opens with an explicit order:
+
+```css
+@layer theme, base, ns-components, components, utilities;
+```
+
+Two things this fixes, both of which were silent:
+
+- A consuming app's own `components` layer used to collide with ours, so which
+  one won depended on import order rather than on intent. Now the app's layer
+  is above ours by declaration.
+- There was no `utilities` layer at all for a standalone consumer, so "a
+  utility always beats a component default" was true only by accident.
+
+**If you consume `dist/namaste-ui.css` and never wrote `@layer` yourself,
+nothing changes.** If you did put your own CSS in `@layer components`, it now
+beats the design system where it did not before — which is what you wanted.
+
+### Fixed — a Tailwind utility now actually beats a `.ns-*` default
+
+Three stylesheets sat outside any layer, and an unlayered rule beats *every*
+layered rule regardless of specificity — so each of these outranked the whole
+of Tailwind:
+
+- `icons/phosphor.css` — `.ph { font-family: "Phosphor" !important }` and
+  `display: inline-block` made `font-*`, `flex` and `hidden` no-ops on every
+  icon in the system. The `!important`s are deleted (`.ph` and `.ph-fill` are
+  never used on the same element, so they never competed) and the file is
+  imported with `layer(ns-components)` rather than edited, since it is
+  generated.
+- `icons/icons-gap.css` — layered alongside it, in the *same* layer, because
+  it overrides `phosphor.css` purely by source order.
+- `patterns/patterns.css` — `.ns-pattern > * { position: relative }` blocked
+  `absolute` and `sticky` on every child of a pattern container.
+
+Also moved: the `prefers-reduced-motion` guard in `tokens/effects.css` into
+`@layer base` (an `!important` still beats any normal declaration from any
+layer, so the guard is unchanged in effect), and `color-scheme` out of
+`tokens/colors.css` into `tokens/base.css` — it is a real declaration, and
+unlayered it outranked Tailwind's `scheme-*` utilities.
+
+`scripts/check-cascade.mjs` now fails the build on any unlayered rule or any
+undeclared `!important`, so this cannot come back.
+
+### Fixed — BREAKING: `text-label` is the label TYPE again; the colour is `text-label-ink`
+
+Tailwind resolves `text-*` against both `--text-*` and `--color-*`, and the
+colour wins. So while the bridge exported `--color-label`, writing
+`text-label` produced the label *colour* and silently dropped the kicker's
+tracking and weight — exactly the half-applied kicker that the `--text-label`
+token, with its `--letter-spacing` and `--font-weight` companions, exists to
+prevent.
+
+The Tailwind alias is now `--color-label-ink`, matching the `-ink` suffix this
+file already uses for status text colours. **The CSS custom property
+`--color-label` is unchanged**; only the utility name moved:
+
+| before | after |
+|---|---|
+| `text-label` (gave a colour) | `text-label-ink` |
+| `text-label` (wanted the type) | `text-label` — now correct |
+
+`scripts/build-tokens.mjs` refuses to emit any `--text-x` / `--color-x` pair
+from now on.
+
+### Added — the token bridge is complete; 12 tokens had no utility at all
+
+Eleven tokens were defined in `tokens/*.css` and never emitted into
+`tokens/tailwind.css`, so from Tailwind they simply did not exist. That does
+not stop anyone using the value — it makes them write an arbitrary value
+instead, and **an arbitrary value is a token nobody can find, audit or
+change**. The styleguide had accumulated 117 `text-[11px]`, 23 hand-tuned
+`tracking-[…]` in three near-duplicate flavours, and a body weight that could
+not be reached at all.
+
+Now bridged: `text-fine`, `text-mega` (with its solid leading and tracking),
+`tracking-tight`, `tracking-wide`, `tracking-mega`, `leading-mega`,
+`font-body`, `font-body-strong`, `font-label`, `shadow-brand`, `shadow-focus`.
+
+`--weight-body: 450` is the one worth calling out. 450 (Book) is the *reading*
+weight — `fonts/README.md` explains why 400 is not — and it had no utility, so
+any component authored in Tailwind rendered body copy a half-step light with
+nothing in review to show for it.
+
+Also added, and it is a genuine second token rather than an oversight:
+
+- **`text-data`** — the same 11px as `text-label`, deliberately *without* the
+  weight and tracking. Two roles share one size and are not interchangeable: a
+  kicker is a shouted eyebrow that must arrive whole (Principle 2), while mono
+  data — a token name, a value, a count, a timestamp — is quiet by definition
+  and reads wrong bold and tracked. The component layer had always used
+  `var(--size-label)` plainly for exactly this (`.ns-tag`, `.ns-badge`,
+  `.ns-footer__head`); only the bridge forced the two together.
+
+`scripts/build-tokens.mjs` now fails the build if any `--size-*`,
+`--tracking-*`, `--leading-*`, `--weight-*` or `--shadow-*` token has no
+matching Tailwind key, so the bridge cannot fall behind the tokens again.
+
+### Not adopted — SLDS ink values, and why
+
+The SLDS neutrals and status inks were evaluated against this system's actual
+surfaces and **rejected on contrast**. Every candidate is worse than what is
+already here, and two fail WCAG AA on `--color-surface-sunken`:
+
+| token | current | SLDS candidate | on sunken |
+|---|---|---|---|
+| `muted` | 6.87:1 | `#706E6B` — 5.08:1 | 4.69 |
+| `success-ink` | 6.57:1 | `#04844B` — 4.76:1 | **4.40 — fails** |
+| `warning-ink` | 6.80:1 | `#B25E00` — 4.67:1 | **4.31 — fails** |
+| `error-ink` | 6.77:1 | `#BA0517` — 6.73:1 | no gain |
+
+The reasoning already in `tokens/colors.css` — that `#5c5a57` is "the exact
+grey people mean when they say a page looks washed out", at 6.87:1 — holds.
+Shadow-based elevation, pastel status fills, additional hue families and
+300–500ms motion were likewise not adopted: they revoke Principles 1, 3 and 5.
+
+### Added — `dist/namaste-ui.tailwind.css`
+
+A second bundle: Tailwind v4 + the design system, correctly layered, built
+from the new `tailwind.entry.css`. Every page in this repo loads it, which is
+why a Tailwind class now works on the styleguide.
+
+**Ghost and the Next.js LMS should NOT switch to it** — they bring their own
+Tailwind and their own content globs, and this bundle would give them a second
+preflight and a second copy of every utility. Keep importing the three pieces
+separately as documented in INTEGRATION.md.
+
+The token bridge is safelisted in it, so `bg-brand-700` and `p-card` exist
+whether or not this repo happens to use them yet.
+
+### Added — components that were inline-styled are now real classes
+
+Nine components stopped styling themselves with `style={{}}` objects and now
+render `.ns-*` classes, which means the Ghost theme can render them for the
+first time. The debt count in `npm run check` went from 22 to 11.
+
+- New CSS: `.ns-badge`, `.ns-chip`, `.ns-logo`, `.ns-stepper`,
+  `.ns-footer__blurb`, `.ns-footer__social`, `.ns-kicker--center/--light`.
+- Adopted existing CSS that had been written for them and never used:
+  `AvatarRing` → `.ns-avatar-ring` (whose comment already said "the AvatarRing
+  React component renders this markup"), `Hero` → `.ns-band` + `.ns-hero`,
+  `Footer` → `.ns-footer`, `TableOfContents` → `.ns-toc`.
+- New Handlebars snippets: `templates/{badge,chip,kicker,avatar,logo,stepper,table-of-contents}.html`.
+- `CodeBlock` and `CodePanel` are now thin shims over `SyntaxHighlighter`,
+  which is what their own deprecation notice had said to use since they were
+  written. `CodePanel`'s per-panel light/dark toggle is gone: the code surface
+  follows the page theme, because a panel that stays light on a dark page is
+  the one thing on screen ignoring the reader's setting. `defaultTheme="dark"`
+  still forces the navy console.
+
+Prop changes on the converted components: `Chip.size` and `AvatarRing.size`
+take `"sm" | "md" | "lg"` instead of a pixel number (a lockup that can be any
+height is one neither product can match); `AvatarRing` gains `progress`;
+`Hero.stats` is replaced by `proof`.
+
+### Fixed — site integrity
+
+- `guidelines/brand-logo-lockups.card.html` rendered completely unstyled on
+  the live site: it linked `../../styles.css` from one directory deep, and
+  loaded `../../_ds_bundle.js`, a file that does not exist anywhere in this
+  repo. Rewritten as static markup like the other 41 cards, with no React,
+  Babel or CDN dependency.
+- `templates/*.html` are fragments for a Ghost site served at *its* root, so
+  their `/assets/...` paths 404'd on every `demo-*.html` page. The demo writer
+  now rewrites them at render time; the shipped fragment stays correct for its
+  real consumer.
+- `templates/navbar-course.html`'s curriculum toggle pointed
+  `aria-controls="player-rail"` at nothing. The rail in
+  `templates/course-player.html` now carries that id, and the demo composes
+  the two.
+- `scripts/check-links.mjs` walks the built `_site/` and fails on a broken
+  relative path, a root-absolute *asset*, a duplicate id or a dangling
+  `aria-controls`. Wired into `gulp site`.
+
+### Changed — the styleguide is authored in utilities
+
+All 23 `guidelines/*.card.html` specimens dropped their local `<style>` blocks
+in favour of Tailwind utilities (~430 lines of CSS deleted). Literal hex in the
+palette cards stays inline — those values *are* the documentation.
+
+`brand-content-creation/`'s poster cards keep their CSS on purpose: keyframe
+animations and `.dark`/`.light` variant descendants where the CSS is the
+artwork, not a layout helper.
+
 ## [Unreleased]
 
 ### Added — Blog, as its own family

@@ -95,7 +95,6 @@
   --ns-muted: #5c5a57;
   --ns-label: #45566b; /* mono/uppercase structural-label ink */
   --ns-grid: rgba(3, 45, 96, 0.055); /* hairline grid tint, light */
-  color-scheme: light;
 
   /* Ink that sits ON a filled surface rather than on the page.
      These are deliberately NOT theme-reactive: brand blue is the same blue in
@@ -170,7 +169,6 @@
   /* Darker, not lighter: on a navy page the scrim still has to read as the
      page receding behind the modal. */
   --ns-scrim: rgb(2 8 15 / 0.6);
-  color-scheme: dark;
 
   /* Status ink lightens on the navy console surface — the light-mode inks
      are far too dark to read on #051222. */

@@ -12,7 +12,7 @@
      .ns-instructor   the author module, single or multi
      .ns-filters      the listing rail: checkboxes, price range, applied chips
      .ns-testimonials learner quotes, with the rating they actually gave */
-@layer components {
+@layer ns-components {
 
   /* ====================================================== Course hero ====
      Five versions because a course page has five honest situations, not
@@ -315,4 +315,52 @@
   }
   .ns-band--dark .ns-testimonial { background: transparent; border-color: var(--color-on-dark-border); }
   .ns-band--dark .ns-testimonial__quote, .ns-band--dark .ns-testimonial__name { color: var(--color-on-dark); }
+
+  /* --- Resource card ------------------------------------------------------
+     A downloadable or external thing: a cheat sheet, a template, a tool. The
+     TYPE is a word (PDF, XLSX, TOOL), not an icon alone — a reader deciding
+     whether to click needs to know what lands on their machine. */
+  .ns-resource {
+    display: flex; align-items: center; gap: var(--space-4);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-resource:hover { border-color: var(--color-brand-500); }
+  .ns-resource__icon {
+    flex: none; display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-resource__body { flex: 1; min-inline-size: 0; display: flex; flex-direction: column; }
+  .ns-resource__title { font-weight: var(--weight-body-strong); color: var(--color-ink); }
+  .ns-resource__type {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-resource__cue { flex: none; color: var(--color-muted); transition: color var(--duration-fast) var(--ease-out); }
+  a.ns-resource:hover .ns-resource__cue { color: var(--color-brand-600); }
+
+  /* --- Ad slot ------------------------------------------------------------
+     A dashed placeholder, deliberately plain. It is the one surface in the
+     system that is allowed to look unfinished, because that is what it is
+     until something fills it — dressing it up makes an empty slot read as a
+     broken component. */
+  .ns-adslot {
+    display: flex; align-items: center; justify-content: center;
+    min-block-size: 7.5rem; padding: var(--pad-card);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+  }
+  .ns-adslot__label {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
 }

@@ -8,7 +8,7 @@
    Principle 3 in practice: `primary` is the ONLY solid fill. If a screen has
    two solid buttons, one of them is wrong — not "a bit loud", wrong, because
    the whole colour system rests on solid-blue meaning "the one action". */
-@layer components {
+@layer ns-components {
 
   .ns-btn {
     display: inline-flex; align-items: center; justify-content: center;

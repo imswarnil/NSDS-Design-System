@@ -1,10 +1,16 @@
 import React from "react";
-/** Avatar with a thin hairline brand ring (offset, not a solid color wrap) — precise, not decorative. */
-export function AvatarRing({ src, alt = "", size = 40 }) {
+/** Avatar with a thin hairline brand ring — precise, not decorative.
+ *  The ring doubles as a progress arc: pass `progress` (0–100) and the
+ *  conic-gradient in .ns-avatar-ring fills to that point. Styling lives in
+ *  components/css/display.css, which is what templates/avatar.html renders. */
+export function AvatarRing({ src, alt = "", size = "md", progress = 100, initials, className = "", ...rest }) {
+  const avatar = ["ns-avatar", size !== "md" && `ns-avatar--${size}`].filter(Boolean).join(" ");
   return (
-    <span style={{ display: "inline-flex", position: "relative", width: size, height: size }}>
-      <img src={src} alt={alt} style={{ width: size, height: size, borderRadius: "9999px", display: "block", objectFit: "cover" }} />
-      <span style={{ position: "absolute", inset: -3, borderRadius: "9999px", boxShadow: "0 0 0 1.5px var(--color-brand-500)" }} />
+    <span className={["ns-avatar-ring", className].filter(Boolean).join(" ")}
+          style={{ "--p": progress }} {...rest}>
+      <span className={avatar}>
+        {src ? <img src={src} alt={alt} /> : initials}
+      </span>
     </span>
   );
 }

@@ -32,14 +32,14 @@ const codeBodyPlain = (src, lang, marks) => `  <div class="ns-code__body">
     <pre class="ns-code__pre"><code>${highlightLines(src, lang, marks)}</code></pre>
   </div>`;
 
-export const FAMILIES = ["Actions", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Blog", "CMS", "Sections"];
+export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Training", "Blog", "Content blocks", "CMS", "Sections"];
 
 export const COMPONENTS = [
 
   /* ======================================================== Actions ==== */
   {
-    id: "button", title: "Button", family: "Actions",
-    summary: "The action primitive. Solid brand fill is reserved for `primary` — the one thing to click on a screen. Everything else is a hairline. Press is an instant opacity dim: no bounce, no lift.",
+    id: "button", title: "Button", family: "Components",
+    summary: "The action primitive. Solid brand fill is reserved for <code>primary</code> — the one thing to click on a screen. Everything else is a hairline. Press is an instant opacity dim: no bounce, no lift.",
     use: ["Submitting, confirming, starting — real actions", "One primary per screen; outline for the secondary", "quiet for the lowest-stakes action beside a confirm"],
     not: ["Navigation that just goes somewhere — use a link; a button that navigates lies to screen readers", "Two primaries side by side — one of them is wrong", "Toggling state — use Switch or a pressed button-group member"],
     a11y: ["Icon-only buttons need aria-label", "Loading keeps the label in the DOM (dimmed) so width and accessible name survive the wait", "disabled removes it from the tab order; aria-disabled keeps link-shaped buttons announceable"],
@@ -393,6 +393,7 @@ export const COMPONENTS = [
     not: ["A score against a threshold — Meter (\"how good\" is a different question)"],
     a11y: ["aria-label names what the bar measures — a bare percentage means nothing announced alone"],
     variants: [
+      { name: "Indeterminate", stack: true, note: "A different claim from a determinate bar: “something is happening, duration unknown”. The only looping animation here — a determinate bar animates because the number changed, which is feedback.", html: `<progress class="ns-progress ns-progress--indeterminate" aria-label="Loading"></progress>` },
       { name: "In progress / complete", note: "Complete runs green: \"done\" is a status, not the interactive signal.", html: `<div class="ns-progress-row" style="max-inline-size:20rem">
   <progress class="ns-progress" value="35" max="100" aria-label="35% complete"></progress>
   <span class="ns-progress-row__value">35%</span>
@@ -449,6 +450,20 @@ export const COMPONENTS = [
     not: ["Card-shaped content forced into rows"],
     a11y: ["tabindex=\"0\" on the wrapper — a scroll region must be keyboard-reachable", "Sortable headers put aria-sort on the <th> and a real <button> inside it"],
     variants: [
+      { name: "Compact and bordered", stack: true, note: "No zebra striping in any variant: striping is a second structuring device competing with the hairline, and with mono numerals the rows already read as rows.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--bordered">
+  <thead><tr><th scope="col">Object</th><th scope="col">Records</th><th scope="col">Storage</th></tr></thead>
+  <tbody>
+    <tr><td>Account</td><td class="ns-table__num">12,480</td><td class="ns-table__num">24 MB</td></tr>
+    <tr><td>Contact</td><td class="ns-table__num">38,102</td><td class="ns-table__num">71 MB</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Key / value", stack: true, note: "A spec table whose first column is the label. Related to Definition list — use this when the rest of the page is already tabular.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--keyvalue">
+  <tbody>
+    <tr><th scope="row">API version</th><td>v62.0</td></tr>
+    <tr><th scope="row">Edition</th><td>Enterprise</td></tr>
+    <tr><th scope="row">Org ID</th><td>00D5j000000abcAAA</td></tr>
+  </tbody>
+</table></div>` },
       { name: "Default", html: `<div class="ns-table-wrap" tabindex="0" style="max-inline-size:28rem">
   <table class="ns-table">
     <thead><tr><th scope="col">Lesson</th><th scope="col">Duration</th><th scope="col" class="ns-table__num">Score</th></tr></thead>
@@ -470,6 +485,28 @@ export const COMPONENTS = [
     not: ["Steps in a sequence — Steps or a wizard", "Navigation between pages — links"],
     a11y: ["Roving tabindex: only the selected tab is tabbable; arrows move between tabs, Tab leaves to the panel (the React Tabs wires this)"],
     variants: [
+      { name: "Vertical", stack: true, note: "aria-orientation=\"vertical\" is not decoration — tabs.js reads it to swap the arrow keys, and a vertical tablist answering to Left/Right is a keyboard trap in slow motion.", html: `<div class="ns-tabs-layout">
+  <div class="ns-tabs ns-tabs--vertical" role="tablist" aria-orientation="vertical" aria-label="Settings">
+    <button class="ns-tab" role="tab" aria-selected="true" aria-controls="vt-1" id="vtab-1">Profile</button>
+    <button class="ns-tab" role="tab" aria-selected="false" aria-controls="vt-2" id="vtab-2">Security</button>
+    <button class="ns-tab" role="tab" aria-selected="false" aria-controls="vt-3" id="vtab-3">Billing</button>
+  </div>
+  <div role="tabpanel" id="vt-1" aria-labelledby="vtab-1" tabindex="0"><p class="ns-card__text">Name, avatar and the public bits.</p></div>
+  <div role="tabpanel" id="vt-2" aria-labelledby="vtab-2" tabindex="0"><p class="ns-card__text">Password, sessions, two-factor.</p></div>
+  <div role="tabpanel" id="vt-3" aria-labelledby="vtab-3" tabindex="0"><p class="ns-card__text">Plan and invoices.</p></div>
+</div>` },
+      { name: "Pill", stack: true, note: "For switching a RENDERING rather than a section of content. If the thing being switched is a view, consider Segmented control instead.", html: `<div class="ns-tabs ns-tabs--pill" role="tablist" aria-label="View">
+  <button class="ns-tab" role="tab" aria-selected="true" aria-controls="pt-1" id="ptab-1">Grid</button>
+  <button class="ns-tab" role="tab" aria-selected="false" aria-controls="pt-2" id="ptab-2">List</button>
+</div>
+<div role="tabpanel" id="pt-1" aria-labelledby="ptab-1" tabindex="0"><p class="ns-card__text">Cards in a grid.</p></div>
+<div role="tabpanel" id="pt-2" aria-labelledby="ptab-2" tabindex="0"><p class="ns-card__text">Rows in a list.</p></div>` },
+      { name: "Icons and counts", stack: true, note: "The label always stays — an icon-only tab row is a memory test. A count is the one extra thing a tab can carry without becoming a menu.", html: `<div class="ns-tabs" role="tablist" aria-label="Inbox">
+  <button class="ns-tab" role="tab" aria-selected="true" aria-controls="it-1" id="itab-1"><i class="ph ph-chat-circle ns-tab__icon" aria-hidden="true"></i>Comments<span class="ns-tab__count">12</span></button>
+  <button class="ns-tab" role="tab" aria-selected="false" aria-controls="it-2" id="itab-2"><i class="ph ph-flag ns-tab__icon" aria-hidden="true"></i>Flagged<span class="ns-tab__count">3</span></button>
+</div>
+<div role="tabpanel" id="it-1" aria-labelledby="itab-1" tabindex="0"><p class="ns-card__text">Twelve comments.</p></div>
+<div role="tabpanel" id="it-2" aria-labelledby="itab-2" tabindex="0"><p class="ns-card__text">Three flagged.</p></div>` },
       { name: "Default", html: `<div class="ns-tabs" role="tablist" style="max-inline-size:26rem">
   <button class="ns-tab" role="tab" aria-selected="true">Overview</button>
   <button class="ns-tab" role="tab" aria-selected="false" tabindex="-1">Curriculum</button>
@@ -484,6 +521,14 @@ export const COMPONENTS = [
     not: ["Content everyone needs — just show it"],
     a11y: ["Give items the same name attribute for native exclusive-open behaviour"],
     variants: [
+      { name: "Flush", stack: true, note: "No outer box, rules only — for a FAQ inside prose, where a boxed accordion reads as a widget dropped into the article.", html: `<div class="ns-accordion ns-accordion--flush">
+  <details class="ns-accordion__item" open><summary class="ns-accordion__summary">Do I need a developer org?<i class="ph ph-caret-down ns-accordion__marker" aria-hidden="true"></i></summary><div class="ns-accordion__content">Yes, and it is free. Sign up before the first lesson.</div></details>
+  <details class="ns-accordion__item"><summary class="ns-accordion__summary">Is there a certificate?<i class="ph ph-caret-down ns-accordion__marker" aria-hidden="true"></i></summary><div class="ns-accordion__content">On track completion, with a verifiable credential ID.</div></details>
+</div>` },
+      { name: "Separated, plus marker", stack: true, note: "--plus rotates a plus into a cross: it reads as “expand” rather than “reveal below”, which is better when the panel is long enough that the reader scrolls away from the trigger.", html: `<div class="ns-accordion ns-accordion--separated ns-accordion--plus">
+  <details class="ns-accordion__item"><summary class="ns-accordion__summary">Module 1 — Objects and fields<i class="ph ph-plus ns-accordion__marker" aria-hidden="true"></i></summary><div class="ns-accordion__content">Six units covering the data model.</div></details>
+  <details class="ns-accordion__item" open><summary class="ns-accordion__summary">Module 2 — Security<i class="ph ph-plus ns-accordion__marker" aria-hidden="true"></i></summary><div class="ns-accordion__content">Profiles, permission sets, sharing.</div></details>
+</div>` },
       { name: "Numbered", note: "The mono index motif on the summary row.", html: `<div class="ns-accordion" style="max-inline-size:28rem">
   <details class="ns-accordion__item" open>
     <summary class="ns-accordion__summary"><span class="ns-accordion__index">01</span>What is an org?</summary>
@@ -519,6 +564,20 @@ export const COMPONENTS = [
     not: ["Infinite feeds"],
     a11y: ["aria-current=\"page\" on the current number; icon links carry visually-hidden names"],
     variants: [
+      { name: "With prev and next", stack: true, note: "Labelled controls, not bare arrows: “‹ ›” alone is unreadable to a screen reader and ambiguous in RTL. The disabled end stays in the DOM so the row does not reflow.", html: `<nav class="ns-pagination" aria-label="Pages">
+  <a class="ns-pagination__step" href="#0" aria-disabled="true"><i class="ph ph-caret-left" aria-hidden="true"></i>Prev</a>
+  <a class="ns-pagination__link" href="#0" aria-current="page">1</a>
+  <a class="ns-pagination__link" href="#0">2</a>
+  <a class="ns-pagination__link" href="#0">3</a>
+  <span class="ns-pagination__ellipsis">&hellip;</span>
+  <a class="ns-pagination__link" href="#0">24</a>
+  <a class="ns-pagination__step" href="#0">Next<i class="ph ph-caret-right" aria-hidden="true"></i></a>
+</nav>` },
+      { name: "Compact", stack: true, note: "For mobile, and for any set where numbered links would wrap to two rows.", html: `<nav class="ns-pagination ns-pagination--compact" aria-label="Pages">
+  <a class="ns-pagination__step" href="#0"><i class="ph ph-caret-left" aria-hidden="true"></i>Prev</a>
+  <span class="ns-pagination__status">Page 3 of 24</span>
+  <a class="ns-pagination__step" href="#0">Next<i class="ph ph-caret-right" aria-hidden="true"></i></a>
+</nav>` },
       { name: "Default", html: `<nav aria-label="Pagination">
   <ul class="ns-pagination">
     <li><a class="ns-pagination__link" href="#" rel="prev"><i class="ph ph-caret-left" aria-hidden="true"></i><span class="ns-visually-hidden">Previous page</span></a></li>
@@ -1249,12 +1308,12 @@ export const COMPONENTS = [
   </div>
   <aside class="ns-course-detail__rail">
     <div class="ns-railbox">
-      <p class="ns-railbox__head">This course</p>
+      <p class="ns-railbox__title">This course</p>
       <p style="font-size:var(--size-small);color:var(--color-muted)">12 lessons · 3h 40m · certificate</p>
       <button class="ns-btn ns-btn--primary ns-btn--block" style="margin-block-start:var(--space-3)">Start learning free</button>
     </div>
     <div class="ns-railbox">
-      <p class="ns-railbox__head">Instructor</p>
+      <p class="ns-railbox__title">Instructor</p>
       <div style="display:flex;align-items:center;gap:var(--space-3)">
         <span class="ns-avatar">SW</span>
         <span style="font-size:var(--size-small)">Swarnil Singhai<br><span style="color:var(--color-muted)">Salesforce architect</span></span>
@@ -1327,7 +1386,7 @@ export const COMPONENTS = [
       "The title is the page's h1; the kicker above it is not a heading",
     ],
     variants: [
-      { name: "Split — the default", flush: true, note: "Content beside a media card. The workhorse: the preview video has somewhere to live above the fold. Below 64rem the media moves FIRST — on a phone the preview is the strongest argument, and it should not be the fourth thing.", html: `<section class="ns-chero ns-chero--split">
+      { name: "Split — the default", flush: true, note: "Content beside a media card. The workhorse: the preview video has somewhere to live above the fold. Below 64rem the media moves FIRST — on a phone the preview is the strongest argument, and it should not be the fourth thing.", html: `<section class="ns-chero">
   <div class="ns-chero__inner">
     <div class="ns-chero__grid">
       <div class="ns-chero__body">
@@ -1935,7 +1994,7 @@ export const COMPONENTS = [
     ],
   },
   {
-    id: "logo-row", title: "Logo row", family: "Sections",
+    id: "logo-row", title: "Logo row", family: "Components",
     summary: "The quiet trust band: partner or “as used by” marks, label-gray at rest, ink on hover. Mono text placeholders until real marks exist.",
     use: ["Employers/partners under the hero, in a tight sunken band"],
     not: ["Badges, award seals, app-store buttons"],
@@ -2136,7 +2195,7 @@ export const COMPONENTS = [
       "Reading progress (.ns-lprogress--article) is a role=\"progressbar\" with a live aria-valuenow",
     ],
     variants: [
-      { name: "The three-column page", flush: true, note: "Live — scroll the demo and watch the TOC mark the section you are in. The outline here is hand-authored; pass <code>data-toc-from=\"#post-body\"</code> instead and <code>assets/js/blog.js</code> builds it from the article's own h2/h3.", html: `<div class="ns-post" style="padding-block:var(--space-6)">
+      { name: "The three-column page", flush: true, note: "Live — scroll the demo and watch the TOC mark the section you are in. The outline here is hand-authored; pass <code>data-toc-from=\"#post-body\"</code> instead and <code>assets/js/toc.js</code> builds it from the article's own h2/h3.", html: `<div class="ns-post" style="padding-block:var(--space-6)">
   <nav class="ns-post__rail ns-toc" aria-label="On this page">
     <p class="ns-toc__title">On this page</p>
     <a class="ns-toc__link" href="#s-limits" aria-current="true">The limit is the transaction</a>
@@ -2631,6 +2690,731 @@ export const COMPONENTS = [
 <span class="ns-tag ns-tag--pill">Flows <span class="ns-tag__count">11</span></span>` },
       { name: "Removable", html: `<span class="ns-tag">Apex <button class="ns-tag__x" aria-label="Remove Apex"><i class="ph ph-x" aria-hidden="true"></i></button></span>
 <span class="ns-tag">SOQL <button class="ns-tag__x" aria-label="Remove SOQL"><i class="ph ph-x" aria-hidden="true"></i></button></span>` },
+    ],
+  },
+  {
+    id: "combobox", title: "Combobox", family: "Forms",
+    summary: "Type-ahead over a known list — a course, a tag, an org. A <code>&lt;select&gt;</code> cannot be searched and a bare text input cannot be trusted; this is the third thing.",
+    use: ["A list too long to scan but closed enough to validate against", "Where the reader knows roughly what they want and can type it faster than they can find it"],
+    not: ["Under about seven options — use a Select; searching five things is friction, not help", "Free text — if any value is allowed it is an Input, not a combobox", "Multi-select — use Tag input"],
+    a11y: ["A real &lt;input&gt;, so autofill, IME, mobile keyboards and paste all behave", "aria-expanded on the input; role=listbox / role=option on the list", "aria-activedescendant points at the highlighted option, so the highlight is never a class the assistive layer cannot see", "Without JS the input still submits its value — a search box that types beats a combobox that does nothing"],
+    variants: [
+      { name: "Open, filtering", note: "The matched run is emphasised inside each option so the reader can see WHY a row matched.", html: `<div class="ns-combobox">
+  <input class="ns-input" type="text" role="combobox" aria-expanded="true" aria-controls="cb-list" aria-autocomplete="list" value="apex" autocomplete="off">
+  <ul class="ns-combobox__list" id="cb-list" role="listbox">
+    <li class="ns-combobox__option" role="option" aria-selected="true"><span><span class="ns-combobox__match">Apex</span> fundamentals</span><span class="ns-combobox__meta">12 lessons</span></li>
+    <li class="ns-combobox__option" role="option" aria-selected="false"><span><span class="ns-combobox__match">Apex</span> triggers in depth</span><span class="ns-combobox__meta">8 lessons</span></li>
+    <li class="ns-combobox__option" role="option" aria-selected="false"><span>Testing <span class="ns-combobox__match">Apex</span></span><span class="ns-combobox__meta">6 lessons</span></li>
+  </ul>
+</div>` },
+      { name: "No matches", note: "Say what was searched. “No results” alone leaves the reader unsure whether the query or the data is wrong.", html: `<div class="ns-combobox">
+  <input class="ns-input" type="text" role="combobox" aria-expanded="true" aria-controls="cb-empty" value="vlocity" autocomplete="off">
+  <ul class="ns-combobox__list" id="cb-empty" role="listbox">
+    <li class="ns-combobox__empty" role="option" aria-selected="false">No course matches <strong>vlocity</strong>.</li>
+  </ul>
+</div>` },
+    ],
+  },
+  {
+    id: "segmented", title: "Segmented control", family: "Forms",
+    summary: "One choice from two to four, where the options are a <em>view</em> rather than data: grid or list, week or month, all or mine. The whole set is visible at once — that is the difference from a Select.",
+    use: ["Switching how the same content is displayed", "Two to four options with short, parallel labels"],
+    not: ["More than four — the labels get too short to read and it wants to be a Select", "Multi-select filtering — that is Filter rail's choice chips", "An action — a segment changes a view, it does not do a thing"],
+    a11y: ["Real radios inside a fieldset with a legend, so arrow-key navigation, form submission and grouping all come from the platform", "No JS required for the control itself", "The legend names what is being switched; the labels name the options"],
+    variants: [
+      { name: "Two and three up", html: `<fieldset class="ns-segmented">
+  <label class="ns-segmented__option"><input type="radio" name="view" checked><span><i class="ph ph-squares-four" aria-hidden="true"></i>Grid</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="view"><span><i class="ph ph-rows" aria-hidden="true"></i>List</span></label>
+</fieldset>
+<fieldset class="ns-segmented">
+  <label class="ns-segmented__option"><input type="radio" name="scope" checked><span>All</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="scope"><span>In progress</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="scope"><span>Complete</span></label>
+</fieldset>` },
+      { name: "Disabled option", note: "Disable the segment, not the whole control — the reader can still see the option exists.", html: `<fieldset class="ns-segmented">
+  <label class="ns-segmented__option"><input type="radio" name="plan" checked><span>Monthly</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="plan"><span>Yearly</span></label>
+  <label class="ns-segmented__option"><input type="radio" name="plan" disabled><span>Lifetime</span></label>
+</fieldset>` },
+    ],
+  },
+  {
+    id: "datefield", title: "Date field", family: "Forms",
+    summary: "A themed date picker over a native <code>&lt;input type=\"date\"&gt;</code>. The input keeps its type, so the value stays a valid ISO date, form submission is unchanged, and a script failure returns the platform picker.",
+    use: ["Publish scheduling, cohort start dates, deadlines", "Anywhere a single date is the answer"],
+    not: ["A date RANGE — use two fields with a real relationship between them", "A date the reader must not change — that is text", "Times — a date picker that also picks minutes is two controls in one"],
+    a11y: ["Month and weekday names come from Intl, never a hard-coded array — that array is wrong in most of the world, and silently so. The first day of the week follows the locale too", "A roving tabindex, not aria-activedescendant: exactly one day is tabbable and arrows move real focus, so the focused cell is announced with no live region", "A real &lt;table&gt; with &lt;th scope=\"col\"&gt;, so the day/column relationship is announced rather than implied by position", "Esc closes and returns focus to the field, from anywhere inside", "Today is a ring and selected is a fill — two different claims, so they coexist on the same cell without either winning"],
+    variants: [
+      { name: "Themed picker", stack: true, note: "data-ns-calendar replaces the native popup with the system's own. Click the field or press Down/Enter; arrows move by day, PageUp/Down by month, Esc closes and returns focus.", html: `<div class="ns-datefield" data-ns-calendar><input class="ns-input" type="date" value="2026-09-14" aria-label="Publish date"></div>` },
+      { name: "Native fallback", note: "Without data-ns-calendar — and this is also exactly what the reader gets if the script never loads, which is why the input keeps type=\"date\".", html: `<div class="ns-datefield"><input class="ns-input" type="date" aria-label="Publish date"></div>` },
+      { name: "In a field", html: `<div class="ns-field">
+  <label class="ns-field__label" for="d-pub">Publish date</label>
+  <div class="ns-datefield"><input class="ns-input" id="d-pub" type="date" value="2026-09-14"></div>
+  <p class="ns-field__help">Scheduled posts go live at 09:00 in the site timezone.</p>
+</div>` },
+    ],
+  },
+  {
+    id: "divider", title: "Divider", family: "Surfaces",
+    summary: "A rule between things. Principle&nbsp;1 says the hairline <em>is</em> the structure, so this is the one component that is nothing but the hairline.",
+    use: ["Separating groups that a heading would over-announce", "--labelled for an OR between two routes, or a date break in a feed"],
+    not: ["Between every item in a list — List already rules its own rows", "As decoration — a rule with nothing on either side of it is noise"],
+    a11y: ["A bare rule is a real &lt;hr&gt;", "The labelled form's text is real text between two rules, so it survives selection and copy — not a background trick"],
+    variants: [
+      { name: "Plain", html: `<p class="ns-card__text">Above the rule.</p>
+<hr class="ns-divider">
+<p class="ns-card__text">Below it.</p>` },
+      { name: "Labelled", html: `<div class="ns-divider ns-divider--labelled">or</div>` },
+      { name: "Tight", note: "Inside a card or a menu, where the default rhythm is too much air.", html: `<p class="ns-card__text">Above.</p>
+<hr class="ns-divider ns-divider--tight">
+<p class="ns-card__text">Below.</p>` },
+    ],
+  },
+  {
+    id: "kbd", title: "Kbd", family: "Surfaces",
+    summary: "A key, and sequences of keys. The key affordance is a 2px bottom border rather than a shadow — the same borders-not-depth rule as everything else, and it reads as a keycap because keycaps are lit from above.",
+    use: ["Documenting a shortcut in help, a menu or a tooltip", "The editor and admin toolbars, which both have shortcuts and had no way to print one"],
+    not: ["Code — that is <code>&lt;code&gt;</code>; a kbd is a key the reader presses", "Inventing shortcuts in docs that the product does not implement"],
+    a11y: ["Real &lt;kbd&gt; elements, so the meaning survives with CSS off", "The separator is content, not a ::before — it says whether keys are pressed together or in sequence, which is not decoration"],
+    variants: [
+      { name: "Chord — pressed together", html: `<span class="ns-kbd-seq"><kbd class="ns-kbd">⌘</kbd><span class="ns-kbd-seq__sep">+</span><kbd class="ns-kbd">K</kbd></span>
+<span class="ns-kbd-seq"><kbd class="ns-kbd">Ctrl</kbd><span class="ns-kbd-seq__sep">+</span><kbd class="ns-kbd">Shift</kbd><span class="ns-kbd-seq__sep">+</span><kbd class="ns-kbd">P</kbd></span>` },
+      { name: "Sequence — pressed in turn", note: "“then”, not “+”. The two are different instructions and must not look the same.", html: `<span class="ns-kbd-seq"><kbd class="ns-kbd">G</kbd><span class="ns-kbd-seq__sep">then</span><kbd class="ns-kbd">D</kbd></span>` },
+    ],
+  },
+  {
+    id: "copy", title: "Copy", family: "Surfaces",
+    summary: "Copy one short string: an org ID, an API key, a token name, a share link. The code block has its own copy button because it copies a whole file; this is the inline one for a value in a table or a spec row.",
+    use: ["A value the reader will paste somewhere else", "Beside an ID, key, endpoint or token name"],
+    not: ["A whole code block — Syntax highlighter has copy built in", "A value short enough to retype, like a two-digit number"],
+    a11y: ["data-copied is an attribute, not a class, so the same hook can carry aria-live text — a copy button that only changes colour tells a screen-reader user nothing", "A real &lt;button&gt; with an accessible name that includes what is being copied"],
+    variants: [
+      { name: "Default and confirmed", note: "The right-hand one shows the state JS sets after a successful copy.", html: `<button class="ns-copy" type="button"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>
+<button class="ns-copy" type="button" data-copied><i class="ph ph-check-circle" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>` },
+      { name: "In a spec row", html: `<dl class="ns-deflist">
+  <dt>Org ID</dt><dd><button class="ns-copy" type="button" aria-label="Copy org ID"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button></dd>
+  <dt>API version</dt><dd>v62.0</dd>
+</dl>` },
+    ],
+  },
+  {
+    id: "deflist", title: "Definition list", family: "Surfaces",
+    summary: "Term and value pairs: course specs, Salesforce metadata attributes, an order summary. Terms are mono — Principle&nbsp;2 doing its job, so the eye separates key from content without a rule between them.",
+    use: ["Specs, attributes, metadata — anything shaped like key: value", "Where a two-column Table would be overkill"],
+    not: ["Tabular data with more than two columns — that is a Table", "A form — values here are read-only"],
+    a11y: ["A real &lt;dl&gt;, because that is exactly what a &lt;dl&gt; is for and screen readers announce the pairing", "Stacks to one column below 48rem — a 12rem term column is unreadable on a phone"],
+    variants: [
+      { name: "Two column", html: `<dl class="ns-deflist">
+  <dt>Level</dt><dd>Beginner</dd>
+  <dt>Duration</dt><dd>6 hours 40 minutes</dd>
+  <dt>Last updated</dt><dd>January 2026</dd>
+  <dt>Includes</dt><dd>12 lessons, 4 exercises, a certificate</dd>
+</dl>` },
+      { name: "Stacked", note: "For a narrow rail, where even a short term column costs more than it explains.", html: `<dl class="ns-deflist ns-deflist--stack">
+  <dt>Object</dt><dd>Opportunity</dd>
+  <dt>Field</dt><dd>StageName</dd>
+</dl>` },
+    ],
+  },
+  {
+    id: "timeline", title: "Timeline", family: "Progress & data",
+    summary: "A vertical feed of things that happened: course activity, a changelog, a learner's history. Every entry is stamped with a mono time — the time is data, the title is writing.",
+    use: ["Activity, history, audit trails, changelogs", "Reverse-chronological by convention"],
+    not: ["A flow the reader is inside and can finish — that is Stepper", "A list they can act on — that is Curriculum or List", "Anything where every entry is 'current'"],
+    a11y: ["An ordered list, because the order is the meaning", "data-state drives the dot; only the entry still happening takes the signal colour — a feed where every dot is brand blue has no emphasis at all", "Times are tabular-nums so a column of them aligns"],
+    variants: [
+      { name: "With icons", stack: true, note: "An icon in place of the dot, when the KIND of event matters as much as the fact of it. The icon sits on the surface so the rail appears to pass behind it.", html: `<ol class="ns-timeline ns-timeline--icons">
+  <li class="ns-timeline__item" data-state="current"><span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-rocket-launch"></i></span><span class="ns-timeline__time">Today 09:14</span><div class="ns-timeline__title">Deployed v3.0.0</div></li>
+  <li class="ns-timeline__item" data-state="done"><span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-check-circle"></i></span><span class="ns-timeline__time">12 Jan</span><div class="ns-timeline__title">Review approved</div></li>
+  <li class="ns-timeline__item"><span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-chat-circle"></i></span><span class="ns-timeline__time">04 Jan</span><div class="ns-timeline__title">Comment from Priya</div></li>
+</ol>` },
+      { name: "Horizontal", stack: true, note: "A run of milestones on one rail. Scrolls rather than wraps — a wrapped timeline stops being a timeline. Takes a time and a title, nothing longer.", html: `<ol class="ns-timeline ns-timeline--horizontal">
+  <li class="ns-timeline__item" data-state="done"><span class="ns-timeline__dot" aria-hidden="true"></span><span class="ns-timeline__time">Q1</span><div class="ns-timeline__title">Admin track live</div></li>
+  <li class="ns-timeline__item" data-state="done"><span class="ns-timeline__dot" aria-hidden="true"></span><span class="ns-timeline__time">Q2</span><div class="ns-timeline__title">Developer track</div></li>
+  <li class="ns-timeline__item" data-state="current"><span class="ns-timeline__dot" aria-hidden="true"></span><span class="ns-timeline__time">Q3</span><div class="ns-timeline__title">Certification prep</div></li>
+  <li class="ns-timeline__item"><span class="ns-timeline__dot" aria-hidden="true"></span><span class="ns-timeline__time">Q4</span><div class="ns-timeline__title">Architect track</div></li>
+</ol>` },
+      { name: "Activity", html: `<ol class="ns-timeline">
+  <li class="ns-timeline__item" data-state="current">
+    <span class="ns-timeline__dot" aria-hidden="true"></span>
+    <span class="ns-timeline__time">Today 09:14</span>
+    <div class="ns-timeline__title">Started “Testing Apex”</div>
+    <p class="ns-timeline__text">Lesson 1 of 6.</p>
+  </li>
+  <li class="ns-timeline__item" data-state="done">
+    <span class="ns-timeline__dot" aria-hidden="true"></span>
+    <span class="ns-timeline__time">12 Jan 16:02</span>
+    <div class="ns-timeline__title">Completed “Apex triggers in depth”</div>
+    <p class="ns-timeline__text">Certificate issued.</p>
+  </li>
+  <li class="ns-timeline__item">
+    <span class="ns-timeline__dot" aria-hidden="true"></span>
+    <span class="ns-timeline__time">04 Jan 11:30</span>
+    <div class="ns-timeline__title">Enrolled</div>
+  </li>
+</ol>` },
+    ],
+  },
+  {
+    id: "tree", title: "Tree", family: "Navigation",
+    summary: "Nested, expandable structure — a metadata explorer, a repo of examples, nested categories. Every branch is a native <code>&lt;details&gt;</code>, so the component ships no JS at all.",
+    use: ["Hierarchy the reader browses rather than searches", "Two or three levels; a file or metadata explorer"],
+    not: ["Flat navigation — use Docs sidebar", "Deeper than three levels — the indent eats the label and it wants to be a search box", "A curriculum — that has its own component with progress"],
+    a11y: ["Open/closed state, keyboard operation and in-page find all come from &lt;details&gt;", "aria-current marks the active node — one attribute for both the highlight and the announcement", "Indentation is padding on the nested list, so a node's hover and focus ring still span the full rail; an indented hit area that starts 2rem in is one people miss"],
+    variants: [
+      { name: "Metadata explorer", html: `<ul class="ns-tree">
+  <li><details class="ns-tree__branch" open>
+    <summary><i class="ph ph-caret-right ns-tree__twist" aria-hidden="true"></i><i class="ph ph-folder-open ns-tree__icon" aria-hidden="true"></i><span class="ns-tree__label">objects</span><span class="ns-tree__meta">3</span></summary>
+    <ul>
+      <li><a class="ns-tree__node" href="#0" aria-current="true"><i class="ph ph-file-text ns-tree__icon" aria-hidden="true"></i><span class="ns-tree__label">Opportunity.object</span></a></li>
+      <li><a class="ns-tree__node" href="#0"><i class="ph ph-file-text ns-tree__icon" aria-hidden="true"></i><span class="ns-tree__label">Account.object</span></a></li>
+    </ul>
+  </details></li>
+  <li><details class="ns-tree__branch">
+    <summary><i class="ph ph-caret-right ns-tree__twist" aria-hidden="true"></i><i class="ph ph-folder-open ns-tree__icon" aria-hidden="true"></i><span class="ns-tree__label">classes</span><span class="ns-tree__meta">12</span></summary>
+    <ul><li><a class="ns-tree__node" href="#0"><i class="ph ph-brackets-curly ns-tree__icon" aria-hidden="true"></i><span class="ns-tree__label">GreetingService.cls</span></a></li></ul>
+  </details></li>
+</ul>` },
+    ],
+  },
+  {
+    id: "banner", title: "Banner", family: "Feedback",
+    summary: "An <em>app-level</em> notice: trial ending, scheduled maintenance, “you are viewing a draft”. Full-bleed, above the content, persistent until dismissed.",
+    use: ["Something true regardless of which page the reader is on", "State that stays true until something external changes it"],
+    not: ["Feedback about a form or a lesson — that is an Alert, inline and next to the thing", "Confirming an action just taken — that is a Toast", "Two at once: stacked banners is a product telling the reader it has lost track of what matters"],
+    a11y: ["Not a live region — it is present on load, so announcing it would interrupt", "The action is a link because a banner's action always goes somewhere (billing, the schedule, the published version)", "Dismiss has a real accessible name"],
+    variants: [
+      { name: "Info and warning", note: "Status recolours the leading EDGE, not the whole strip. A full-width warning wash is the loudest thing a page can do, and this is ambient information.", html: `<div class="ns-banner ns-banner--info">
+  <i class="ph ph-info ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">You are viewing an unpublished draft.</span>
+  <a class="ns-btn ns-btn--outline ns-btn--sm ns-banner__action" href="#0">View published</a>
+  <button class="ns-banner__dismiss" type="button" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>
+<div class="ns-banner ns-banner--warning">
+  <i class="ph ph-warning ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">Scheduled maintenance on 14 September, 02:00–04:00 UTC.</span>
+  <button class="ns-banner__dismiss" type="button" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>` },
+      { name: "Dark", dark: true, html: `<div class="ns-banner ns-banner--dark">
+  <i class="ph ph-megaphone ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">New: the Apex testing track is live.</span>
+  <a class="ns-btn ns-btn--primary ns-btn--sm ns-banner__action" href="#0">Start</a>
+</div>` },
+    ],
+  },
+  {
+    id: "track", title: "Track", family: "Training",
+    summary: "The header of a curriculum: what it is, and how far in you are. Progress is over <strong>modules</strong>, not units — a learner thinks in “3 of 8 modules”, and a percentage over 60 units is a number nobody can act on.",
+    use: ["The top of a training track — Salesforce Administrator, Developer", "Where the reader decides whether to start or resume"],
+    not: ["A course — a course is a playlist and uses Course hero", "A single module's page — that is Module head"],
+    a11y: ["The stat figures are real text, so the numbers are selectable and announced", "Mono numerals are tabular so the stat row does not jitter as values change"],
+    variants: [
+      { name: "Track header", stack: true, html: `<header class="ns-track">
+  <div class="ns-track__body">
+    <span class="ns-track__kicker">// Training track</span>
+    <h1 class="ns-track__title">Salesforce Administrator</h1>
+    <p class="ns-track__lede">Everything an admin is expected to know, in the order the platform actually teaches it — objects and fields before automation, security before sharing.</p>
+  </div>
+  <div class="ns-track__meta">
+    <div class="ns-track__stat"><b>3/8</b>Modules</div>
+    <div class="ns-track__stat"><b>62%</b>Complete</div>
+    <div class="ns-track__stat"><b>14h</b>Remaining</div>
+  </div>
+</header>` },
+    ],
+  },
+  {
+    id: "modules", title: "Connected modules", family: "Training",
+    summary: "The spine of a track. Modules hang off a vertical rail with a node each, so the eye reads <em>dependency and progress in one pass</em> — a flat list of cards would say these are alternatives, which is a lie about the content.",
+    use: ["The body of a track page", "Any curriculum where one unit earns the next"],
+    not: ["A course curriculum — that is a playlist, and Curriculum renders it as a list because a playlist IS a list", "Unordered collections — if the order does not matter, the spine is a false claim"],
+    a11y: ["An ordered list, because the sequence is the meaning", "data-state carries done / current / locked; locked dims the whole row so the reader sees it is unreachable rather than discovering it on click", "Locked modules are not links — an unreachable link is a trap"],
+    variants: [
+      { name: "A track's modules", stack: true, html: `<ol class="ns-modules">
+  <li class="ns-module" data-state="done">
+    <span class="ns-module__node" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <a class="ns-module__card" href="#0">
+      <div class="ns-module__head"><span class="ns-module__title">Objects, fields and relationships</span><span class="ns-module__meta">6 units · 2h</span></div>
+      <p class="ns-module__text">The data model first: everything else on the platform is a consequence of it.</p>
+    </a>
+  </li>
+  <li class="ns-module" data-state="current">
+    <span class="ns-module__node" aria-hidden="true">02</span>
+    <a class="ns-module__card" href="#0">
+      <div class="ns-module__head"><span class="ns-module__title">Security and access</span><span class="ns-module__meta">8 units · 3h</span></div>
+      <p class="ns-module__text">Profiles, permission sets, roles and sharing — in that order, because each one only makes sense given the last.</p>
+      <ul class="ns-units">
+        <li class="ns-unit" data-state="done"><i class="ph ph-check-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">Profiles vs permission sets</span><span class="ns-unit__type">Reading</span><span class="ns-unit__time">12 min</span></li>
+        <li class="ns-unit"><i class="ph ph-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">The role hierarchy</span><span class="ns-unit__type">Video</span><span class="ns-unit__time">18 min</span></li>
+        <li class="ns-unit"><i class="ph ph-circle ns-unit__check" aria-hidden="true"></i><span class="ns-unit__title">Sharing rules in practice</span><span class="ns-unit__type">Exercise</span><span class="ns-unit__time">25 min</span></li>
+      </ul>
+    </a>
+  </li>
+  <li class="ns-module" data-state="locked">
+    <span class="ns-module__node" aria-hidden="true">03</span>
+    <div class="ns-module__card">
+      <div class="ns-module__head"><span class="ns-module__title">Automation: Flow</span><span class="ns-module__meta">9 units · 4h</span></div>
+      <p class="ns-module__text">Finish Security and access to unlock.</p>
+    </div>
+  </li>
+</ol>` },
+    ],
+  },
+  {
+    id: "trainingnav", title: "Training nav", family: "Training",
+    summary: "The curriculum rail: track → module → unit, as nested <code>&lt;details&gt;</code>. On load it opens the module holding the current unit, closes the rest, and scrolls it into view <em>inside the rail</em>.",
+    use: ["Any track or module page", "Curricula long enough that scrolling to find your place is the main cost"],
+    not: ["Flat documentation — use Docs sidebar", "A course player — that has its own rail with a playlist"],
+    a11y: ["Open/closed, keyboard operation and in-page find all come from &lt;details&gt;", "aria-current=\"page\" marks the unit AND is what the script reads to decide which module to open — one attribute, so highlight and announcement cannot drift", "Progressive: the markup ships every module <code>open</code>, so with JS off nothing is hidden — the rail is only longer", "Once the reader opens a module themselves the script stops managing state; a nav that re-collapses what you just opened is fighting you"],
+    variants: [
+      { name: "Rail with the current module open", stack: true, html: `<nav class="ns-trainingnav" data-ns-trainingnav aria-label="Curriculum" style="position:static;max-block-size:22rem;inline-size:100%">
+  <a class="ns-trainingnav__track" href="#0">Salesforce Administrator</a>
+  <details class="ns-trainingnav__module" open>
+    <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Objects and fields<span class="ns-trainingnav__count">6</span></summary>
+    <ul class="ns-trainingnav__list">
+      <li><a class="ns-trainingnav__link" data-state="done" href="#0">Standard vs custom objects</a></li>
+      <li><a class="ns-trainingnav__link" data-state="done" href="#0">Field types</a></li>
+    </ul>
+  </details>
+  <details class="ns-trainingnav__module" open>
+    <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Security and access<span class="ns-trainingnav__count">8</span></summary>
+    <ul class="ns-trainingnav__list">
+      <li><a class="ns-trainingnav__link" data-state="done" href="#0">Profiles vs permission sets</a></li>
+      <li><a class="ns-trainingnav__link" href="#0" aria-current="page">The role hierarchy</a></li>
+      <li><a class="ns-trainingnav__link" href="#0">Sharing rules in practice</a></li>
+    </ul>
+  </details>
+  <details class="ns-trainingnav__module" open>
+    <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Automation: Flow<span class="ns-trainingnav__count">9</span></summary>
+    <ul class="ns-trainingnav__list"><li><a class="ns-trainingnav__link" href="#0">Record-triggered flows</a></li></ul>
+  </details>
+</nav>` },
+    ],
+  },
+  {
+    id: "modulehead", title: "Module head", family: "Training",
+    summary: "The header of a single module's page: which module of how many, its title, and what it covers.",
+    use: ["The top of a module page, above its units"],
+    not: ["The track page — that is Track", "A lesson — units inside a module use the unit row"],
+    a11y: ["The crumb states position in words (“Module 2 of 8”), not just a number, so it is meaningful read aloud out of context"],
+    variants: [
+      { name: "Module head", stack: true, html: `<header class="ns-modulehead">
+  <span class="ns-modulehead__crumb">Salesforce Administrator · Module 2 of 8</span>
+  <h1 class="ns-modulehead__title">Security and access</h1>
+  <p class="ns-modulehead__lede">Profiles, permission sets, roles and sharing — in that order, because each one only makes sense given the last.</p>
+</header>` },
+    ],
+  },
+  {
+    id: "motion", title: "Page motion", family: "Progress & data",
+    summary: "Nine entrance animations, and a hard limit on what they are for. Principle&nbsp;5 governs <em>interaction</em> — 120–180ms, no bounce. Entrance is the one place a longer curve is allowed, because nobody is waiting on it: its job is to tell the eye what order to read a page in.",
+    use: ["One entrance per BLOCK — a section, a card grid, a band", "--onview for content below the fold", "--stagger on a container whose children arrive together"],
+    not: ["One animation per element — a page where twelve things fly in individually is a page nobody can read while it assembles", "Anything travelling further than half a rem; past that it reads as a slide deck", "Interaction feedback — a hover or a press is 120ms and lives on the component"],
+    a11y: ["All nine are off under prefers-reduced-motion: the global guard in tokens/effects.css collapses every animation to 0.001ms, so none of these carries its own media query", "That is deliberate — a per-component opt-out is a per-component chance to forget", "Nothing here gates content: every element is readable if the animation never runs"],
+    variants: [
+      { name: "The nine", stack: true, note: "Reload the page to replay. rise is the workhorse; fall is only for things that belong to what is above them.", html: `<div class="ns-anim-stagger" style="display:grid;gap:var(--space-2)">
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">01 · fade</span><span class="ns-card__text">Already in place, just arrives.</span></div></div>
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">02 · rise</span><span class="ns-card__text">The workhorse — cards, sections, list blocks.</span></div></div>
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">03 · fall</span><span class="ns-card__text">Only for things belonging to what is above them.</span></div></div>
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">04/05 · enter-start / enter-end</span><span class="ns-card__text">Logical edges, so they flip in RTL.</span></div></div>
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">06 · expand</span><span class="ns-card__text">Uncovered rather than moved.</span></div></div>
+</div>` },
+      { name: "Individually", stack: true, html: `<div class="ns-anim ns-card"><div class="ns-card__body"><span class="ns-card__kicker">fade</span></div></div>
+<div class="ns-anim ns-anim--rise ns-card"><div class="ns-card__body"><span class="ns-card__kicker">rise</span></div></div>
+<div class="ns-anim ns-anim--fall ns-card"><div class="ns-card__body"><span class="ns-card__kicker">fall</span></div></div>
+<div class="ns-anim ns-anim--enter-start ns-card"><div class="ns-card__body"><span class="ns-card__kicker">enter-start</span></div></div>
+<div class="ns-anim ns-anim--enter-end ns-card"><div class="ns-card__body"><span class="ns-card__kicker">enter-end</span></div></div>
+<div class="ns-anim ns-anim--expand ns-card"><div class="ns-card__body"><span class="ns-card__kicker">expand</span></div></div>
+<div class="ns-anim ns-anim--settle ns-card"><div class="ns-card__body"><span class="ns-card__kicker">settle — scales DOWN onto the mark; scaling up is the pop P5 forbids</span></div></div>
+<div><span class="ns-anim ns-anim--draw" style="display:block;block-size:2px;background:var(--color-brand-500)"></span><span class="ns-card__kicker">draw — the one animation slow enough to read as a gesture</span></div>` },
+      { name: "Stagger, capped", stack: true, note: "40ms apart, capped at the fifth child. Past ~200ms of accumulated delay the last item feels broken rather than choreographed — every stagger that hurts is one that multiplied the index without a ceiling.", html: `<ul class="ns-anim-stagger ns-list">
+  <li class="ns-list__row"><span class="ns-list__index">01</span><span class="ns-list__title">Arrives first</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">02</span><span class="ns-list__title">+40ms</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">03</span><span class="ns-list__title">+80ms</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">04</span><span class="ns-list__title">+120ms</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">05</span><span class="ns-list__title">+160ms</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">06</span><span class="ns-list__title">+200ms — and everything after</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">07</span><span class="ns-list__title">+200ms</span></li>
+</ul>` },
+      { name: "Scroll-triggered", stack: true, note: "--onview uses native animation-timeline: view() — no observer, no JS. Where unsupported the declaration is dropped and it runs on load, which is visible either way.", html: `<div class="ns-anim ns-anim--rise ns-anim--onview ns-card"><div class="ns-card__body"><span class="ns-card__kicker">onview</span><span class="ns-card__text">Completes before the block is centred, so a fast scroll never shows content assembling.</span></div></div>` },
+    ],
+  },
+  {
+    id: "marquee", title: "Marquee", family: "Components",
+    summary: "A continuously scrolling strip — logos, credentials, certifications. Two identical tracks translated 50%, which is the only implementation that loops without a visible seam.",
+    use: ["Ambient content: partner logos, certifications, “now teaching”", "A band that needs motion without asking for attention"],
+    not: ["Anything the reader NEEDS. It is infinite — look away and it is gone, with no way back", "Navigation or actions as the only route to them", "More than one per page: two strips moving at once is a fairground"],
+    a11y: ["The duplicate track is aria-hidden, so nothing is announced twice — the second track is the wrap, not decoration", "Pauses on hover AND focus-within, so a keyboard user can reach a link inside it without chasing a moving target", "Stops entirely under prefers-reduced-motion via the global guard", "Speed is a distance-per-second, not a UI timing — Principle 5 governs response to input, and nothing here responds to anything"],
+    variants: [
+      { name: "Logos, windowed", stack: true, note: "--window fades both edges with a mask rather than clipping, so it reads as a view onto something longer. A mask works over any background; a gradient overlay would have to know the surface colour and would be wrong on a dark band.", html: `<div class="ns-marquee ns-marquee--window">
+  <div class="ns-marquee__track">
+    <a class="ns-marquee__item" href="#0">Acme Cloud</a><a class="ns-marquee__item" href="#0">Northwind</a><a class="ns-marquee__item" href="#0">Globex</a><a class="ns-marquee__item" href="#0">Initech</a><a class="ns-marquee__item" href="#0">Umbrella Ops</a>
+  </div>
+  <div class="ns-marquee__track" aria-hidden="true">
+    <span class="ns-marquee__item">Acme Cloud</span><span class="ns-marquee__item">Northwind</span><span class="ns-marquee__item">Globex</span><span class="ns-marquee__item">Initech</span><span class="ns-marquee__item">Umbrella Ops</span>
+  </div>
+</div>` },
+      { name: "Reverse and slow", stack: true, note: "A second strip running the other way is the one case for two — stacked, they read as a texture rather than a race.", html: `<div class="ns-marquee ns-marquee--window ns-marquee--slow ns-marquee--reverse">
+  <div class="ns-marquee__track">
+    <span class="ns-marquee__item">Administrator</span><span class="ns-marquee__item">Platform Developer I</span><span class="ns-marquee__item">Sales Cloud Consultant</span><span class="ns-marquee__item">Data Architect</span>
+  </div>
+  <div class="ns-marquee__track" aria-hidden="true">
+    <span class="ns-marquee__item">Administrator</span><span class="ns-marquee__item">Platform Developer I</span><span class="ns-marquee__item">Sales Cloud Consultant</span><span class="ns-marquee__item">Data Architect</span>
+  </div>
+</div>` },
+      { name: "Display scale", stack: true, dark: true, note: "The poster band. Type-fx's .ns-kinetic stays separate — that one is a typographic effect with its own outline treatment; this is the general-purpose strip.", html: `<div class="ns-marquee ns-marquee--window ns-marquee--display ns-marquee--tight">
+  <div class="ns-marquee__track">
+    <span class="ns-marquee__item">APEX</span><span class="ns-marquee__item ns-marquee__item--outline">LWC</span><span class="ns-marquee__item">FLOW</span><span class="ns-marquee__item ns-marquee__item--outline">SOQL</span>
+  </div>
+  <div class="ns-marquee__track" aria-hidden="true">
+    <span class="ns-marquee__item">APEX</span><span class="ns-marquee__item ns-marquee__item--outline">LWC</span><span class="ns-marquee__item">FLOW</span><span class="ns-marquee__item ns-marquee__item--outline">SOQL</span>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "toc", title: "Table of contents", family: "Navigation",
+    summary: "Where you are in a long piece. Its own module rather than a blog feature — a post, a lesson, a doc page and a training unit all need the same outline, and three copies is three places for the scroll-spy to drift.",
+    use: ["Any prose over about four headings", "--inline or --float on narrow screens, where a sticky rail has nowhere to stick"],
+    not: ["Three levels — a TOC that needs h4 is a TOC for a page that needs splitting", "Short pages: an outline of two items is longer than the shortcut it offers", "As the only navigation — it is an outline of one page, not a site map"],
+    a11y: ["A real &lt;nav&gt; of real anchor links: it works with JS off, and the scroll-spy only adds [aria-current] on top", "[data-toc-from] builds the list from the article's own headings for a CMS that emits a body but no outline; a hand-authored TOC is left exactly as it is", "The progress bar is aria-hidden and never the only indicator — the marked link already says where you are"],
+    variants: [
+      { name: "Rail — the default", note: "The hairline is the rail and the active item takes the 2px brand edge, the same current-item device the navbar and lesson row use.", html: `<nav class="ns-toc" aria-label="On this page">
+  <span class="ns-toc__title">On this page</span>
+  <a class="ns-toc__link" href="#0" aria-current="true">What is Apex</a>
+  <a class="ns-toc__link ns-toc__link--sub" href="#0">Governor limits</a>
+  <a class="ns-toc__link ns-toc__link--sub" href="#0">Bulkification</a>
+  <a class="ns-toc__link" href="#0">Testing</a>
+</nav>` },
+      { name: "Card, with reading progress", html: `<nav class="ns-toc ns-toc--card" aria-label="On this page" style="--ns-toc-progress:38%">
+  <span class="ns-toc__progress" aria-hidden="true"></span>
+  <span class="ns-toc__title">On this page</span>
+  <a class="ns-toc__link" href="#0">What is Apex</a>
+  <a class="ns-toc__link" href="#0" aria-current="true">Governor limits</a>
+  <a class="ns-toc__link" href="#0">Testing</a>
+</nav>` },
+      { name: "Numbered", note: "For a procedure where the order IS the content. A CSS counter, so the numbers cannot get out of step with the list.", html: `<nav class="ns-toc ns-toc--numbered" aria-label="Steps">
+  <a class="ns-toc__link" href="#0">Create the sandbox</a>
+  <a class="ns-toc__link" href="#0" aria-current="true">Deploy metadata</a>
+  <a class="ns-toc__link" href="#0">Run the test suite</a>
+</nav>` },
+      { name: "Inline — the mobile strip", stack: true, note: "Scrolls sideways rather than wrapping: a wrapped strip changes where the article starts depending on how many headings it has.", html: `<nav class="ns-toc ns-toc--inline" aria-label="On this page">
+  <a class="ns-toc__link" href="#0" aria-current="true">What is Apex</a>
+  <a class="ns-toc__link" href="#0">Governor limits</a>
+  <a class="ns-toc__link" href="#0">Bulkification</a>
+  <a class="ns-toc__link" href="#0">Testing</a>
+</nav>` },
+      { name: "Collapsible", stack: true, html: `<details class="ns-toc ns-toc--collapsible">
+  <summary>On this page<i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+  <a class="ns-toc__link" href="#0" aria-current="true">What is Apex</a>
+  <a class="ns-toc__link" href="#0">Governor limits</a>
+</details>` },
+    ],
+  },
+  {
+    id: "takeaway", title: "Takeaway", family: "Content blocks",
+    summary: "“In short” — the argument compressed. Near the top for a reader who will not finish, or at the end for one who did.",
+    use: ["A long post whose thesis is worth stating on its own", "The summary a reader would screenshot"],
+    not: ["A callout — that is an aside about the paragraph beside it; this is the whole argument said faster", "More than one per post"],
+    a11y: ["A leading rule and a mono label rather than a tinted panel — it reads as a change of register, not a different kind of content"],
+    variants: [
+      { name: "In short", stack: true, html: `<aside class="ns-takeaway">
+  <span class="ns-takeaway__label">In short</span>
+  <p class="ns-takeaway__text">Profiles say what a user can do to an object. The role hierarchy and sharing rules say which records they can see. Almost every access bug is someone solving one half with the other half&rsquo;s tool.</p>
+</aside>` },
+    ],
+  },
+  {
+    id: "statblock", title: "Stat block", family: "Content blocks",
+    summary: "One number at display scale, with what it measures and where it came from. The source line is structural, not optional — a stat with no attribution visibly collides with the next paragraph.",
+    use: ["A figure the argument turns on", "Benchmark results, survey findings, limits"],
+    not: ["Several numbers — that is a Stat band or a Table", "A number you cannot source. The design will make that obvious, which is the point"],
+    a11y: ["Tabular numerals, so a column of these aligns", "The figure and its label are separate elements, so the number is never read without its unit"],
+    variants: [
+      { name: "Inline", stack: true, html: `<figure class="ns-statblock">
+  <span class="ns-statblock__figure">100</span>
+  <div class="ns-statblock__body">
+    <span class="ns-statblock__label">SOQL queries per synchronous transaction — the limit that shapes every trigger you will write.</span>
+    <cite class="ns-statblock__source">Apex Developer Guide · Execution Governors</cite>
+  </div>
+</figure>` },
+      { name: "Stacked", stack: true, html: `<figure class="ns-statblock ns-statblock--stack">
+  <span class="ns-statblock__figure">6MB</span>
+  <div class="ns-statblock__body">
+    <span class="ns-statblock__label">Heap size in a synchronous transaction.</span>
+    <cite class="ns-statblock__source">Apex Developer Guide</cite>
+  </div>
+</figure>` },
+    ],
+  },
+  {
+    id: "compare", title: "Compare", family: "Content blocks",
+    summary: "Two options side by side — Flow vs Apex, profiles vs permission sets. The shape a technical post reaches for constantly and has to hand-build every time.",
+    use: ["Two legitimate choices with different trade-offs", "--verdict when you ARE recommending one"],
+    not: ["Do and don't — colouring one green and one red makes an editorial judgement the content may not be making. That is why this is neutral by default", "Three or more options — use a Table"],
+    a11y: ["Each side has a real heading, so the comparison is navigable by heading rather than by reading order", "--verdict marks the recommendation with the same 2px brand edge used for every current-item in the system"],
+    variants: [
+      { name: "Neutral", stack: true, html: `<div class="ns-compare">
+  <div class="ns-compare__side"><p class="ns-compare__title">Flow</p><ul><li>No deployment for small changes</li><li>Admins can maintain it</li><li>Harder to unit test</li></ul></div>
+  <div class="ns-compare__side"><p class="ns-compare__title">Apex</p><ul><li>Real tests and version control</li><li>Handles bulk cleanly</li><li>Needs a developer</li></ul></div>
+</div>` },
+      { name: "With a verdict", stack: true, html: `<div class="ns-compare">
+  <div class="ns-compare__side"><p class="ns-compare__title">Workflow rules</p><ul><li>Retired for new automation</li></ul></div>
+  <div class="ns-compare__side ns-compare__side--verdict"><p class="ns-compare__title">Record-triggered flow</p><ul><li>The supported path</li><li>Before-save updates are fast</li></ul></div>
+</div>` },
+    ],
+  },
+  {
+    id: "checklist", title: "Checklist", family: "Content blocks",
+    summary: "Things to verify. Real checkboxes, disabled in an article — the reader is reading, not filling a form, and an enabled checkbox promises persistence the page cannot deliver.",
+    use: ["Pre-flight checks before a deployment", "A lesson task list, where dropping `disabled` makes it interactive with no other change"],
+    not: ["Ordered steps — that is Procedure", "A form"],
+    a11y: ["data-state drives both the mark and the muted text, so completion is not colour alone", "In an article the marks are decorative and the text carries the meaning"],
+    variants: [
+      { name: "Pre-deployment", stack: true, html: `<ul class="ns-checklist">
+  <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">All tests pass in the sandbox</span></li>
+  <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">Code coverage above 75%</span></li>
+  <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">Permission sets assigned in production</span></li>
+  <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">Rollback plan written down</span></li>
+</ul>` },
+    ],
+  },
+  {
+    id: "procedure", title: "Procedure", family: "Content blocks",
+    summary: "Numbered steps for a how-to. A mono index in the margin with a connecting rail, so a step containing a code block does not push its own number out of alignment — the failure of every <code>list-style</code> version of this.",
+    use: ["Setup guides, migrations, anything with an order", "Steps that contain code, images or callouts"],
+    not: ["Unordered checks — that is Checklist", "A flow the reader is inside — that is Stepper"],
+    a11y: ["A real ordered list; the visible numbers come from a CSS counter so they can never drift from the list order"],
+    variants: [
+      { name: "With a code step", stack: true, html: `<ol class="ns-procedure">
+  <li><span class="ns-procedure__title">Authorise the org</span><p class="ns-card__text">Use the alias you will reference later.</p></li>
+  <li><span class="ns-procedure__title">Retrieve the metadata</span><p class="ns-card__text">The number stays aligned even with a block below it.</p></li>
+  <li><span class="ns-procedure__title">Run the tests</span><p class="ns-card__text">Local tests only, so a failure is yours.</p></li>
+</ol>` },
+    ],
+  },
+  {
+    id: "terms", title: "Terms", family: "Content blocks",
+    summary: "An inline glossary. Salesforce writing is dense with terms a newcomer has not met, and sending them to a separate glossary page loses them.",
+    use: ["The first time a cluster of jargon appears", "Object and field names a reader will meet again"],
+    not: ["A single definition — define that inline, in the sentence", "Long explanations — a term entry is a sentence"],
+    a11y: ["A real &lt;dl&gt;, so the term/definition pairing is announced", "Stacks to one column below 48rem"],
+    variants: [
+      { name: "Glossary", stack: true, html: `<aside class="ns-terms">
+  <span class="ns-terms__label">Terms in this section</span>
+  <dl>
+    <dt>Profile</dt><dd>What a user can do to an object — create, read, edit, delete.</dd>
+    <dt>Permission set</dt><dd>Additive grants on top of a profile. Never subtractive.</dd>
+    <dt>Role</dt><dd>Position in the hierarchy, which decides record visibility upward.</dd>
+  </dl>
+</aside>` },
+    ],
+  },
+  {
+    id: "related", title: "Related", family: "Content blocks",
+    summary: "Further reading, placed where the tangent actually comes up rather than piled at the end — which is where links go to be ignored.",
+    use: ["Mid-article, at the moment the reader might want the detour", "Linking a lesson from a post, or a post from a lesson"],
+    not: ["A list of everything you have written", "The end of the article — the post footer already does that"],
+    a11y: ["The kind (LESSON, DOC, POST) is text, so the destination type is announced rather than guessed from an icon"],
+    variants: [
+      { name: "Mid-article", stack: true, html: `<aside class="ns-related">
+  <span class="ns-related__label">Related</span>
+  <ul>
+    <li><a href="#0"><span class="ns-related__kind">Lesson</span>Profiles vs permission sets</a></li>
+    <li><a href="#0"><span class="ns-related__kind">Doc</span>Sharing rules reference</a></li>
+  </ul>
+</aside>` },
+    ],
+  },
+  {
+    id: "certificate", title: "Certificate", family: "LMS",
+    summary: "Proof of completion in the Salesforce register: the navy console ground, a hairline frame, mono for every piece of data, and a credential ID that can actually be verified.",
+    use: ["Course and track completion", "An account page, a share card, a print"],
+    not: ["A badge for finishing one lesson — a certificate that is cheap to earn is worth nothing to show", "A rendered image. See below"],
+    a11y: ["The seal is aria-hidden and the verify URL is real text beside it — a credential whose only proof is a graphic proves nothing to anyone not looking at it", "It is a real document, not a picture of one: name, course, date and ID are TEXT, so they are selectable, translatable, searchable and readable by a screen reader. A PNG is none of those", "The credential ID is mono and prominent — it is the only part that proves anything, and treating it as small print says the opposite", "Container query units, so it scales inside an account card and when printed full width; a vw-based size would be wrong in one of them", "@media print inverts to ink-on-paper — the navy ground would empty a cartridge, and a certificate is meant to be printed"],
+    variants: [
+      { name: "Completion", html: `<div class="ns-certificate">
+  <div class="ns-certificate__inner">
+    <div class="ns-certificate__head">
+      <img class="ns-certificate__mark" src="../assets/logo/favicon.svg" alt="">
+      <span class="ns-certificate__issuer">Namaste Salesforce &middot; Authorised Training</span>
+    </div>
+
+    <div class="ns-certificate__body">
+      <div class="ns-certificate__award">
+        <span class="ns-certificate__kicker">// This certifies that</span>
+        <span class="ns-certificate__name">Swarnil Singhai</span>
+        <span class="ns-certificate__course">has successfully completed <strong>Salesforce Administrator</strong> &mdash; eight modules and 62 units covering the data model, security and sharing, declarative automation, and reporting &mdash; and demonstrated competence in the assessed exercises.</span>
+        <div class="ns-certificate__tags">
+          <span class="ns-certificate__tag">Track &middot; Administrator</span>
+          <span class="ns-certificate__tag">Level &middot; Foundation</span>
+          <span class="ns-certificate__tag">Assessed</span>
+        </div>
+      </div>
+      <div class="ns-certificate__proof">
+        <span class="ns-certificate__seal" aria-hidden="true"><i class="ph ph-seal-check"></i></span>
+        <span class="ns-certificate__verify">Verify at<br>nmst.dev/v/0F3A91</span>
+      </div>
+    </div>
+
+    <div class="ns-certificate__foot">
+      <span class="ns-certificate__field">Issued<b>14 Aug 2026</b></span>
+      <span class="ns-certificate__field">Valid to<b>14 Aug 2028</b></span>
+      <span class="ns-certificate__field">Hours<b>41.5</b></span>
+      <span class="ns-certificate__field">Score<b>92%</b></span>
+      <span class="ns-certificate__sign">Swarnil Singhai<b>Lead Instructor</b></span>
+      <span class="ns-certificate__field ns-certificate__id">Credential ID<b>NS-ADM-2026-0F3A91</b></span>
+    </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "leaderboard", title: "Leaderboard", family: "Progress & data",
+    summary: "Ranked standing for a cohort or a challenge. Mostly an exercise in restraint: a leaderboard is the one component in a learning product that can actively demotivate.",
+    use: ["A cohort with a shared goal and a defined period", "Where the reader can see their own position"],
+    not: ["A podium with gold, silver and bronze — rank is a mono number, which is what it is", "A top ten that cuts the reader off. If they are 340th, show them 340th", "Anything with no end date: a permanent ranking is a permanent judgement"],
+    a11y: ["An ordered list, because the ordering is the entire content", "Movement is an arrow AND a number — colour is the third signal, never the first", "The reader's own row is aria-current and carries the same 2px brand edge as every other current-item in the system", "Scores are tabular-nums and end-aligned, which is the one thing a leaderboard has to get right"],
+    variants: [
+      { name: "Cohort standing", stack: true, note: "The top three get a stronger ink and nothing else. The reader's row is pinned below the gap rather than hidden.", html: `<ol class="ns-leaderboard">
+  <li class="ns-leaderboard__row" data-rank="1"><span class="ns-leaderboard__rank">01</span><span class="ns-leaderboard__name">Priya Raghavan</span><span class="ns-leaderboard__meta">12 modules</span><span class="ns-leaderboard__score">4,820</span><span class="ns-leaderboard__move" data-dir="up">&uarr;2</span></li>
+  <li class="ns-leaderboard__row" data-rank="2"><span class="ns-leaderboard__rank">02</span><span class="ns-leaderboard__name">Marcus Bell</span><span class="ns-leaderboard__meta">11 modules</span><span class="ns-leaderboard__score">4,610</span><span class="ns-leaderboard__move" data-dir="down">&darr;1</span></li>
+  <li class="ns-leaderboard__row" data-rank="3"><span class="ns-leaderboard__rank">03</span><span class="ns-leaderboard__name">Aiko Tanaka</span><span class="ns-leaderboard__meta">11 modules</span><span class="ns-leaderboard__score">4,455</span><span class="ns-leaderboard__move">&mdash;</span></li>
+  <li class="ns-leaderboard__gap">&middot; &middot; &middot;</li>
+  <li class="ns-leaderboard__row" aria-current="true" data-rank="47"><span class="ns-leaderboard__rank">47</span><span class="ns-leaderboard__name">You</span><span class="ns-leaderboard__meta">6 modules</span><span class="ns-leaderboard__score">1,940</span><span class="ns-leaderboard__move" data-dir="up">&uarr;9</span></li>
+</ol>` },
+    ],
+  },
+  {
+    id: "video-player", title: "Video player", family: "LMS",
+    summary: "One themed control surface over three sources that are not alike: a self-hosted file, a Mux HLS stream, and a YouTube embed. The differences are documented rather than papered over.",
+    use: ["Lesson video, wherever it is hosted", "Anywhere chapters matter as much as the video"],
+    not: ["Background or decorative video — that is a poster with no controls", "Replacing the native controls when you have nothing to add: the browser's own player is good, and a worse copy of it is a regression"],
+    a11y: ["The scrubber is a real &lt;input type=\"range\"&gt;: keyboard seeking, screen-reader announcement and touch behaviour all come free, and every div-based scrubber reimplements them worse", "Progressive: the markup contains a real &lt;video&gt; and the chapter list is server-rendered text, so with JS off the video plays in the browser's own controls and the chapters are still readable", "The playing chapter is aria-current — the highlighted row and the announced row are one thing", "YouTube's player is a cross-origin iframe and cannot be restyled. These controls DRIVE it via the IFrame API, which is why the chrome sits outside the frame: an overlay would sit on top of YouTube's own controls and fight them"],
+    variants: [
+      { name: "Self-hosted, with chapters", stack: true, note: "Chapters live BELOW the player as a real list, not hovering over it. A chapter list is content: it is how a reader decides whether to watch at all, it should be readable without playing, and it should be in the page for search. Hiding it inside the video is the common mistake.", html: `<div class="ns-vplayer" data-ns-video data-state="paused">
+  <div class="ns-vplayer__stage">
+    <video preload="metadata" poster="../assets/img/publication-cover.svg" playsinline></video>
+    <button class="ns-vplayer__big" type="button" aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
+  </div>
+  <div class="ns-vplayer__bar">
+    <button class="ns-vplayer__btn" type="button" data-ns-video-play aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
+    <span class="ns-vplayer__time" data-ns-video-current>0:00</span>
+    <input class="ns-vplayer__seek" type="range" min="0" max="100" value="0" aria-label="Seek">
+    <span class="ns-vplayer__time" data-ns-video-duration>0:00</span>
+    <details class="ns-vplayer__menu">
+      <summary class="ns-vplayer__btn" aria-label="Settings"><i class="ph ph-gear-six" aria-hidden="true"></i></summary>
+      <div class="ns-vplayer__panel" role="group" aria-label="Playback speed">
+        <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="false" data-rate="0.75">0.75&times;</button>
+        <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="true" data-rate="1">Normal</button>
+        <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="false" data-rate="1.5">1.5&times;</button>
+        <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="false" data-rate="2">2&times;</button>
+      </div>
+    </details>
+  </div>
+  <ol class="ns-vchapters">
+    <li class="ns-vchapters__item" data-start="0" aria-current="true"><button class="ns-vchapters__btn" type="button"><span class="ns-vchapters__time">0:00</span><span class="ns-vchapters__title">What an org actually is</span></button></li>
+    <li class="ns-vchapters__item" data-start="95"><button class="ns-vchapters__btn" type="button"><span class="ns-vchapters__time">1:35</span><span class="ns-vchapters__title">Objects, fields and records</span></button></li>
+    <li class="ns-vchapters__item" data-start="240"><button class="ns-vchapters__btn" type="button"><span class="ns-vchapters__time">4:00</span><span class="ns-vchapters__title">Where metadata lives</span></button></li>
+  </ol>
+</div>` },
+      { name: "Mux and YouTube", stack: true, note: "Same markup, one attribute different. Mux serves HLS: Safari plays it natively, and elsewhere the player uses window.Hls if you have loaded it — this system does not bundle hls.js, because it is 40KB+ and most pages never play a video. If neither is available the player says so rather than showing a dead frame.", html: `<!-- Mux -->
+<div class="ns-vplayer" data-ns-video data-mux="PLAYBACK_ID" data-state="paused">
+  <div class="ns-vplayer__stage"><video preload="metadata" playsinline></video></div>
+  <div class="ns-vplayer__bar">
+    <button class="ns-vplayer__btn" type="button" data-ns-video-play aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
+    <span class="ns-vplayer__time" data-ns-video-current>0:00</span>
+    <input class="ns-vplayer__seek" type="range" min="0" max="100" value="0" aria-label="Seek">
+    <span class="ns-vplayer__time" data-ns-video-duration>0:00</span>
+  </div>
+</div>
+
+<!-- YouTube: the iframe is injected, and these controls drive it via the IFrame API -->
+<div class="ns-vplayer" data-ns-video data-youtube="VIDEO_ID" data-title="Lesson 1" data-state="paused">
+  <div class="ns-vplayer__stage"></div>
+  <div class="ns-vplayer__bar">
+    <button class="ns-vplayer__btn" type="button" data-ns-video-play aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
+    <span class="ns-vplayer__time" data-ns-video-current>0:00</span>
+    <input class="ns-vplayer__seek" type="range" min="0" max="100" value="0" aria-label="Seek">
+    <span class="ns-vplayer__time" data-ns-video-duration>0:00</span>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "badge", title: "Badge", family: "Surfaces",
+    summary: "Status as a hairline box and a coloured <strong>dot</strong> — never a pastel fill. Principle 3: the dot carries the colour and the text stays ink, so five badges in a row are one signal colour apart rather than five competing washes.",
+    use: ["A state the reader cannot change — draft, published, failed", "A short mono word, not a sentence"],
+    not: ["Anything clickable — a tag is a noun you can click, a badge is a state you cannot. Use Tag", "A tinted background per status — that is the pastel-pill pattern this replaces", "Long text — if it wraps it is not a badge"],
+    a11y: ["The dot is decorative and aria-hidden; the word carries the meaning", "Colour is never the only signal — the label always says the state in words"],
+    variants: [
+      { name: "Statuses", note: "Only the dot changes hue. The ink stays --color-ink in all five.", html: `<span class="ns-badge"><span class="ns-badge__dot" aria-hidden="true"></span>Draft</span>
+<span class="ns-badge ns-badge--success"><span class="ns-badge__dot" aria-hidden="true"></span>Published</span>
+<span class="ns-badge ns-badge--warning"><span class="ns-badge__dot" aria-hidden="true"></span>Review</span>
+<span class="ns-badge ns-badge--error"><span class="ns-badge__dot" aria-hidden="true"></span>Failed</span>
+<span class="ns-badge ns-badge--accent"><span class="ns-badge__dot" aria-hidden="true"></span>Beta</span>` },
+      { name: "With an icon", note: "An icon REPLACES the dot; it never joins it. Two status marks on one badge is two claims about the same state.", html: `<span class="ns-badge ns-badge--success"><i class="ph ph-seal-check ns-badge__icon" aria-hidden="true"></i>Certified</span>
+<span class="ns-badge ns-badge--error"><i class="ph ph-warning ns-badge__icon" aria-hidden="true"></i>Deprecated</span>` },
+      { name: "Overridden by a utility", note: "The badge sits in @layer ns-components, so a Tailwind utility wins with no !important — this is the override contract, rendered.", html: `<span class="ns-badge">Default</span>
+<span class="ns-badge rounded-pill px-card">Utilities applied</span>` },
+    ],
+  },
+  {
+    id: "chip", title: "Chip", family: "Surfaces",
+    summary: "The icon tile that fronts a feature row or an empty state. The fill and its hairline are <code>color-mix</code>ed from one hue at two strengths, so they are provably the same colour — no second token, no soft glow.",
+    use: ["Leading a feature row, a benefit list or an empty state", "Where an icon needs weight without becoming a button"],
+    not: ["As a button — it has no action and no focus state. Use an icon Button", "Carrying meaning alone — the icon decorates the text beside it"],
+    a11y: ["The icon is aria-hidden: the adjacent heading is the real label", "Never the only way to tell two rows apart"],
+    variants: [
+      { name: "Sizes", note: "Three fixed steps. The glyph scales from the tile, so the ratio holds at every size.", html: `<span class="ns-chip ns-chip--sm"><i class="ph ph-code" aria-hidden="true"></i></span>
+<span class="ns-chip"><i class="ph ph-lightning" aria-hidden="true"></i></span>
+<span class="ns-chip ns-chip--lg"><i class="ph ph-graduation-cap" aria-hidden="true"></i></span>` },
+      { name: "Accent", html: `<span class="ns-chip"><i class="ph ph-cube" aria-hidden="true"></i></span>
+<span class="ns-chip ns-chip--accent"><i class="ph ph-sparkle" aria-hidden="true"></i></span>` },
+    ],
+  },
+  {
+    id: "logo", title: "Logo", family: "Surfaces",
+    summary: "The wordmark lockup: the favicon asset plus the name. Three fixed sizes rather than a free pixel value — a lockup that can be any height is one neither product can match.",
+    use: ["Site header, footer, and any on-dark band", "Compact in a narrow header, where the name still needs announcing"],
+    not: ["A pictorial mark invented beyond the favicon asset — see the Brand guidelines", "Recoloured, stretched or shadowed"],
+    a11y: ["Compact hides the name visually but keeps it in the DOM, so an icon-only header is still a named link", "The mark itself is alt=\"\" — the text beside it is the accessible name"],
+    variants: [
+      { name: "Sizes", html: `<span class="ns-logo ns-logo--sm"><img class="ns-logo__mark" src="../assets/logo/favicon.svg" alt=""><span class="ns-logo__text">Namaste Salesforce</span></span>
+<span class="ns-logo"><img class="ns-logo__mark" src="../assets/logo/favicon.svg" alt=""><span class="ns-logo__text">Namaste Salesforce</span></span>
+<span class="ns-logo ns-logo--lg"><img class="ns-logo__mark" src="../assets/logo/favicon.svg" alt=""><span class="ns-logo__text">Namaste Salesforce</span></span>` },
+      { name: "Compact", note: "Icon only — the name is still announced.", html: `<span class="ns-logo ns-logo--compact"><img class="ns-logo__mark" src="../assets/logo/favicon.svg" alt=""><span class="ns-logo__text">Namaste Salesforce</span></span>` },
+      { name: "On dark", dark: true, html: `<span class="ns-logo ns-logo--light"><img class="ns-logo__mark" src="../assets/logo/favicon.svg" alt=""><span class="ns-logo__text">Namaste Salesforce</span></span>` },
+    ],
+  },
+  {
+    id: "stepper", title: "Stepper", family: "Progress & data",
+    summary: "A short <strong>labelled</strong> flow the reader is currently inside — checkout, onboarding, a quiz. Mono-numbered nodes on a connecting hairline.",
+    use: ["Three to five labelled steps with a clear current position", "Where the reader needs to know what comes next, not just how far along"],
+    not: ["A long curriculum — use the Curriculum list", "An anonymous how-far bar — use Steps", "More than about five steps: it stops being readable"],
+    a11y: ["An &lt;ol&gt;, because it is an ordered list of steps", "aria-current=\"step\" marks position; data-state drives the paint from the same source", "A done step shows a check instead of its number — the number is no longer the useful information"],
+    variants: [
+      { name: "Vertical", stack: true, note: "The same flow on its side, for a narrow rail or a checkout summary where the labels are too long to sit side by side.", html: `<ol class="ns-stepper ns-stepper--vertical">
+  <li class="ns-stepper__step" data-state="done"><span class="ns-stepper__node"><i class="ph ph-check-circle" aria-hidden="true"></i></span><span class="ns-stepper__label">Account created</span></li>
+  <li class="ns-stepper__line" data-state="done" aria-hidden="true"></li>
+  <li class="ns-stepper__step" data-state="current" aria-current="step"><span class="ns-stepper__node">02</span><span class="ns-stepper__label">Payment details</span></li>
+  <li class="ns-stepper__line" aria-hidden="true"></li>
+  <li class="ns-stepper__step"><span class="ns-stepper__node">03</span><span class="ns-stepper__label">Confirm and enrol</span></li>
+</ol>` },
+      { name: "In progress", html: `<ol class="ns-stepper">
+  <li class="ns-stepper__step" data-state="done"><span class="ns-stepper__node"><i class="ph ph-check-circle" aria-hidden="true"></i></span><span class="ns-stepper__label">Account</span></li>
+  <li class="ns-stepper__line" data-state="done" aria-hidden="true"></li>
+  <li class="ns-stepper__step" data-state="current" aria-current="step"><span class="ns-stepper__node">02</span><span class="ns-stepper__label">Payment</span></li>
+  <li class="ns-stepper__line" aria-hidden="true"></li>
+  <li class="ns-stepper__step"><span class="ns-stepper__node">03</span><span class="ns-stepper__label">Confirm</span></li>
+</ol>` },
+      { name: "First step", html: `<ol class="ns-stepper">
+  <li class="ns-stepper__step" data-state="current" aria-current="step"><span class="ns-stepper__node">01</span><span class="ns-stepper__label">Details</span></li>
+  <li class="ns-stepper__line" aria-hidden="true"></li>
+  <li class="ns-stepper__step"><span class="ns-stepper__node">02</span><span class="ns-stepper__label">Review</span></li>
+  <li class="ns-stepper__line" aria-hidden="true"></li>
+  <li class="ns-stepper__step"><span class="ns-stepper__node">03</span><span class="ns-stepper__label">Done</span></li>
+</ol>` },
     ],
   },
   {

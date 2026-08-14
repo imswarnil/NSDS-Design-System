@@ -1,17 +1,11 @@
 <!-- @dsCard group="Type" viewport="760x360" name="Circular Text, Links & Citations" subtitle="Type on a curve, the three link treatments, footnote citations and heading anchors" -->
-<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
-<style>
-body{margin:0;padding:22px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:15px;line-height:1.7}
-.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 10px}
-.grid{display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
-.note{font-size:12px;color:var(--color-muted);margin:6px 0 18px;max-width:56ch}
-.seals{display:flex;gap:18px;align-items:center}
-h3{font-family:var(--font-heading);font-size:var(--size-h4);margin:0 0 6px}
-</style></head><body>
-<div class="grid">
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+</head>
+<body class="m-0 p-[22px] bg-surface text-ink font-sans text-body leading-body">
+<div class="grid grid-cols-[auto_1fr] gap-8 items-start">
 <div>
-  <p class="k">Circular — <code>.ns-curve</code></p>
-  <div class="seals">
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Circular — <code>.ns-curve</code></p>
+  <div class="flex gap-[18px] items-center">
     <span class="ns-curve ns-curve--spin" style="color:var(--color-brand-600)">Namaste Salesforce · Certified ·
       <span class="ns-curve__center"><i class="ph ph-seal-check" aria-hidden="true" style="font-size:2rem;color:var(--color-brand-500)"></i></span>
     </span>
@@ -19,22 +13,22 @@ h3{font-family:var(--font-heading);font-size:var(--size-h4);margin:0 0 6px}
       <span class="ns-curve__center" style="font-family:var(--font-heading);font-weight:800;font-size:1.5rem">NS</span>
     </span>
   </div>
-  <p class="note">SVG <code>&lt;textPath&gt;</code> — the only thing that rotates each glyph to the tangent. JS builds it from the plain text in the markup and keeps that string as the accessible name, so a seal announces once, in order. For badges and seals; never for text the reader has to read in sequence.</p>
+  <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">SVG <code>&lt;textPath&gt;</code> — the only thing that rotates each glyph to the tangent. JS builds it from the plain text in the markup and keeps that string as the accessible name, so a seal announces once, in order. For badges and seals; never for text the reader has to read in sequence.</p>
 </div>
 
 <div>
-  <p class="k">Links — <code>.ns-link</code></p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Links — <code>.ns-link</code></p>
   <p>The rule draws in from the leading edge: <a class="ns-link ns-link--grow" href="#0">read the token reference</a>. It can also have a direction: <a class="ns-link ns-link--wipe" href="#0">wipe across</a>. And for nav and buttons only, the label rolls over: <a class="ns-link ns-link--roll" href="#0"><span>Start learning</span><span>Start learning</span></a>.</p>
-  <p class="note">All three animate the <em>underline</em>, never the text position — a link that moves on hover is a link you have to chase. <code>--roll</code> changes line height, so it stays out of paragraphs.</p>
+  <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">All three animate the <em>underline</em>, never the text position — a link that moves on hover is a link you have to chase. <code>--roll</code> changes line height, so it stays out of paragraphs.</p>
 
-  <p class="k">Citation — <code>.ns-cite</code></p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Citation — <code>.ns-cite</code></p>
   <p>Governor limits are per-transaction, not per-org<span class="ns-cite"><a class="ns-cite__ref" href="#note-1" id="ref-1">1</a><span class="ns-cite__src">Apex Developer Guide — Execution Governors and Limits.<cite>developer.salesforce.com</cite></span></span> — which is why bulkification is the first thing taught.</p>
   <ol class="ns-notes" id="note-1"><li>Apex Developer Guide, “Execution Governors and Limits”. <a class="ns-link" href="#ref-1">↩</a></li></ol>
-  <p class="note">A real link to a real footnote. The hover card only ever repeats what is at the destination, so nothing is hover-only.</p>
+  <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">A real link to a real footnote. The hover card only ever repeats what is at the destination, so nothing is hover-only.</p>
 
-  <p class="k">Anchor — <code>.ns-anchor</code></p>
-  <h3 class="ns-anchor" id="bulkification"><a class="ns-anchor__link" href="#bulkification" aria-label="Link to this section">§</a>Bulkification</h3>
-  <p class="note">Present in the DOM at all times with a real name — revealing a control only on hover hides it from touch and keyboard. It fades opacity, never <code>display</code>, and goes inline below 64rem where hover never arrives.</p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2.5">Anchor — <code>.ns-anchor</code></p>
+  <h3 class="ns-anchor font-heading text-h4 m-0 mb-1.5" id="bulkification"><a class="ns-anchor__link" href="#bulkification" aria-label="Link to this section">§</a>Bulkification</h3>
+  <p class="text-small text-muted mt-1.5 mb-0 max-w-[56ch]">Present in the DOM at all times with a real name — revealing a control only on hover hides it from touch and keyboard. It fades opacity, never <code>display</code>, and goes inline below 64rem where hover never arrives.</p>
 </div>
 </div>
 <script src="../assets/js/type-fx.js" defer></script>

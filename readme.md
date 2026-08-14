@@ -18,7 +18,7 @@ A design system for **Namaste Salesforce**, an open-source Ghost theme (`imswarn
 This system is not "brand blue on white Tailwind cards." It follows **five explicit rules**, borrowed from developer-tool product design (Mux, Vercel, Linear) rather than marketing-site conventions — every component in `components/` inherits them, and any new component should be checked against this list before it ships.
 
 1. **The hairline is the structure, not the shadow.** Cards, inputs, and tags are built from a single `1px` border (`--color-border`). Soft drop-shadows are almost entirely retired (`--shadow-card` is nearly flat) — elevation comes from a border brightening to brand-blue on hover, never a floating lift.
-2. **Monospace is a structural material, not a code-block accessory.** N&M Mono renders every index, duration, timestamp, status tag and section kicker — N&M Text is reserved for prose, N&M Display for headings. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
+2. **Monospace is a structural material, not a code-block accessory.** The mono face renders every index, duration, timestamp, status tag and section kicker — Switzer is reserved for prose and headings, Sentient for quotations. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
 3. **One signal color.** Brand blue (`#0176D3`) is the only color that means "interactive" or "active." Status (success/warning/error) shows as a small dot + mono text, never a background wash — so a screen with a solid blue button on it has exactly one obvious next action.
 4. **Sharp, specific geometry.** `--radius-card` (6px) and `--radius-btn` (4px) replace the generic "12px + pill-everywhere" look; `--radius-pill` is reserved for true pills (tags). Nothing is rounded just because rounding is the default.
 5. **Motion is instant, not springy.** State changes (hover, press, active) resolve in 120–180ms with a plain ease-out — no bounce, no scale-pop, no translateY lift on hover. The one exception is the small float loop on decorative illustrations. This is what makes the UI feel like a precise tool, not a marketing page.
@@ -44,7 +44,7 @@ Governed by the five Design Principles above. In short:
 
 - **Color:** one working blue (`#0176D3`) carries every interactive/active signal. Status colors show as a dot + mono text, never a tinted background fill.
 - **Dark mode:** semantic role tokens (`--color-surface`, `--color-ink`, `--color-muted`, `--color-border`) flip under `[data-theme="dark"]` on `<html>`, resolving to the brand navy scale (`--color-brand-800`/`900`) rather than a generic slate — dark mode is *this brand's* console, not a GitHub reskin.
-- **Type:** N&M Display for headings (800), N&M Text for prose at **450 — "Book", not Regular** (`--weight-body`; see *Font pairing* for why 400 reads grey in this face); N&M Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
+- **Type:** Switzer for headings (700) and prose (**400 at 14px** — the compact scale, after [carapace](https://github.com/openclaw/carapace)); Sentient for quotations; the system mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
 - **Geometry:** `--radius-card` 6px, `--radius-btn` 4px — sharp and specific, not "rounded because rounded." `--radius-pill` only for true pill tags.
 - **Elevation:** a `1px` hairline border is the primary structuring device; hover brightens the border to brand-blue (or draws a left/top accent line), it never lifts on a shadow.
 - **Spacing:** a 4px scale (`--space-*`) whose index matches Tailwind's 1:1, so `p-4` in a Handlebars template and `var(--space-4)` in a React component are the same 16px. Semantic aliases (`--pad-card`, `--gap-grid`, `--stack-lg`) carry the repeated structural relationships.
@@ -164,8 +164,8 @@ NS-Design-System/
 │   ├── course/        LMS-specific React components
 │   └── forms/ overlays/ navigation/ feedback/ progress/
 ├── icons/             both icon sets: Phosphor subset (font + classes) + bespoke sprite
-├── fonts/             the N&M family (Display, Text, Mono) — variable woff2s, the
-│                   static OFL package in fonts/static/, weight docs in its README
+├── fonts/             Switzer + Sentient — latin-subset variable woff2s (69 KB),
+│                   the Fontshare EULA, and the weight docs in its README
 ├── patterns/          nine hairline background patterns (pure CSS)
 ├── templates/         framework-agnostic HTML for full surfaces
 ├── assets/            logo, images, theme-init.js
@@ -287,7 +287,7 @@ conventions someone has to remember.
   the tab strip, all delegated from the document so blocks added after load
   work with no re-init. The Ask-AI and Share menus use the native popover API
   and need no JS at all.
-- `assets/js/blog.js` — the post page's wiring: the table of contents'
+- `assets/js/toc.js` — the post page's wiring: the table of contents'
   scroll-spy, and building that outline from the article's own headings when
   a CMS emits a body but no outline. The TOC is real anchor links either way.
 - `assets/js/lms.js` — the learner layer's wiring: curriculum expand-all, the
@@ -309,9 +309,11 @@ conventions someone has to remember.
   **Content Design**, and the four type cards: **Text Effects**, **Display
   Typography**, **Circular Text / Links / Citations** and **Typographic
   Accessibility**.
-- `fonts/` — the N&M family: three variable woff2s, `OFL.txt`, and the static
-  OFL package in `fonts/static/`. `scripts/build-fonts.py` regenerates the
-  statics; `fonts/README.md` is the weight and optical-rules reference.
+- `fonts/` — Switzer + Sentient variable woff2s and `FONTSHARE-EULA.txt`,
+  which must travel with them. No static package is generated: the EULA
+  permits self-hosting but not redistributing the font software, and shipping
+  a derived static family is redistribution. `fonts/README.md` holds the
+  weight tables, the optical rules and the subsetting recipe.
 - `scripts/` — the build, the five checks, and the preview generator + server.
 - `docs/` — `INTEGRATION.md` (wiring both products), `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
 
@@ -336,51 +338,52 @@ it is not. One neutral copy, adapted at the edge, keeps the contract single.
 
 ## Font pairing
 
-The **N&M type system** — three custom-named cuts, one per role. The files
-are OFL-licensed faces renamed into the brand's own family (the same move as
-Airbnb Cereal): N&M Display is a Manrope cut, N&M Text a Nunito Sans cut,
-N&M Mono a Red Hat Mono cut. The OFL credit is embedded in each woff2's name
-table.
+Two shipped faces and one system stack — **69 KB** for the pair. Both are
+[Indian Type Foundry](https://www.indiantypefoundry.com) cuts from
+[Fontshare](https://www.fontshare.com), latin-subset variable woff2, under the
+Fontshare Free Font EULA (free for personal and commercial use, self-hosting
+provided for). The licence ships in `fonts/FONTSHARE-EULA.txt`.
 
 | Role | Face | Weights | Why |
 |---|---|---|---|
-| Headings & display | **N&M Display** (variable 200–800) | 800 headings, 700 sub-heads | Tight, geometric, but warm — reads "product", not "marketing". |
-| Prose & UI copy | **N&M Text** (variable 200–1000) | **450 body**, 600 bold | The friendliest reading face that still holds a grid. |
-| Structure: indexes, labels, timestamps, kickers, code | **N&M Mono** (variable 300–700) | 400 code, 700 labels | Open, legible mono — the "developer console" identity without the terminal chill. |
+| Headings, display **and** prose | **Switzer** (variable 100–900) | 700 headings, 600 sub-heads, 500 nav, **400 body** | One grotesque across the whole range. Neutral, tightly drawn, reads "product" rather than "marketing". |
+| Quotations — the editorial voice | **Sentient** (variable 200–700) | 400 | A real serif for pull-quotes, drop caps and section quotations: the register that quotes rather than argues. |
+| Structure: indexes, labels, timestamps, kickers, code | *system mono* — **not shipped** | 400 code, 700 labels | `ui-monospace` / SF Mono / Consolas. Short tracked uppercase runs, where the reader's own console face beats anything we could send. |
 
-The pairing works because the three faces **never compete for a job**: if it
-is display, it is N&M Display; if it is a sentence, it is N&M Text; if it is
-data, it is N&M Mono, uppercase and tracked (`--tracking-label`). That hard
-rule is Principle 2. All three share open, rounded counters, so the system
-reads as one family at three volumes rather than three fonts negotiating.
+**One sans, not a display/text pair.** The previous system ran two cuts — one
+to speak, one to explain — and the seam between them had to be managed at
+every size: two sets of metrics, two optical weights meaning different things,
+a heading never quite on the same rhythm as the paragraph under it. Switzer
+covers the range alone, separated by **weight and size** rather than by face.
+`--font-heading` survives as a token name (components reference it, and a
+future display face is one token away); it resolves to the same stack.
+
+The faces still **never compete for a job** — that hard rule is Principle 2.
+If it is a sentence it is Switzer; if it is a quotation it is Sentient; if it
+is data it is mono, uppercase and tracked (`--tracking-label`).
 
 Optical corrections applied (the part generic deployments miss):
 
-- **`--tracking-tight` (-0.022em) on h1–h3.** N&M Display, like most
-  geometric grotesques, sets loose at display sizes; large headings tighten.
-  Body text is never tightened — negative tracking at reading sizes hurts
-  legibility.
+- **`--tracking-tight` (-0.022em) on h1–h3.** Switzer sets fairly tight
+  already, so this is a smaller correction than the previous cut needed — but
+  large sizes still want closing up, because tracking is drawn for text sizes
+  and does not scale down on its own. Body text is never tightened.
 - **`text-wrap: balance` on headings**, so a two-line title breaks evenly
   instead of leaving one orphaned word.
 - **Tabular numerals** (`font-variant-numeric: tabular-nums`) on every
-  duration, count and score, so digits align in columns.
-- **Body copy is 450, not 400.** N&M Text's true Regular renders *grey*
-  rather than black at 16px — the one real complaint about a Nunito-derived
-  face. The system's reading regular is **Book (450)**, one interpolation
-  step up the `wght` axis: free on a variable font, and a named weight rather
-  than an ad-hoc value, so the static package ships it too. Two changes travel
-  with it — greyscale antialiasing is now **dark-mode only** (forcing it
-  globally strips about a quarter-step of apparent weight off every glyph),
-  and `--color-muted` was darkened from 4.93:1 to 6.87:1 on white.
-- All three cuts are **self-hosted variable woff2s** with metric-matched
-  fallbacks (`N&M Text Fallback`) — no FOUT jump, no third-party font host.
+  duration, count and score — this is also what keeps digits aligned across
+  the three different platform mono faces.
+- **Body copy is 400, not 450.** The previous Nunito-derived cut rendered
+  *grey* rather than black at reading sizes, so this system used **450
+  ("Book")** — an interpolation step invented for that face's problem.
+  Switzer's Regular is properly fitted and does not have it; carrying 450
+  across would have been cargo. Switzer also has a real **500**, which the old
+  family lacked, so the ramp is 400 / 500 / 600 / 700 and every step is a
+  weight that was actually drawn.
+- Both shipped faces are **self-hosted variable woff2s** with a metric-matched
+  fallback (`Switzer Fallback`) — no FOUT jump, no third-party font host.
 
-`fonts/` is a complete, redistributable **OFL package**: the three variable
-files, `OFL.txt`, and a full static family in `fonts/static/` (21 cuts × woff2
-+ ttf, plus a ready `@font-face` sheet) generated by
-`python3 scripts/build-fonts.py`. Nothing in the system loads the static
-files — they exist so the family can be installed, printed with, or
-open-sourced on its own. Weight tables and optical rules: `fonts/README.md`.
+Weight tables, the subsetting recipe and the reasoning: `fonts/README.md`.
 
 ## Dark mode
 

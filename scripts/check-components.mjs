@@ -69,16 +69,10 @@ try {
    get shorter; a new entry means someone added to the debt.
 
    TRACKED: see CHANGELOG "Known debt". */
-const LEGACY = new Set([
-  "components/core/AvatarRing.jsx", "components/core/Badge.jsx", "components/core/Chip.jsx",
-  "components/core/CodeBlock.jsx", "components/core/CodePanel.jsx", "components/core/Footer.jsx",
-  "components/core/Hero.jsx", "components/core/Kicker.jsx", "components/core/Logo.jsx",
-  "components/core/TableOfContents.jsx", "components/core/TimelineStepper.jsx",
-  "components/course/AdSlot.jsx", "components/course/AuthorBox.jsx", "components/course/BlogCard.jsx",
-  "components/course/CourseCard.jsx", "components/course/CourseStats.jsx", "components/course/CurriculumList.jsx",
-  "components/course/LevelBadge.jsx", "components/course/ResourceCard.jsx", "components/course/RoadmapCard.jsx",
-  "components/course/TrainingCard.jsx", "components/course/VideoPoster.jsx",
-]);
+/* Empty, and it should stay that way. Every component now renders .ns-*
+   classes that both products share; a new entry here means someone reintroduced
+   a component the Ghost theme cannot render. */
+const LEGACY = new Set([]);
 
 const STYLING_PROP = /\b(background|backgroundColor|color|borderRadius|borderColor|fontFamily|fontSize|fontWeight|boxShadow|padding|letterSpacing)\s*:/;
 

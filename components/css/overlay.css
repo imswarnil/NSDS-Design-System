@@ -17,7 +17,7 @@
 
    All of them close on Esc and return focus to the trigger. If you build a
    new overlay that does not, it is not finished. */
-@layer components {
+@layer ns-components {
 
   /* --- Scrim --------------------------------------------------------------
      Deliberately a plain low-opacity navy rather than a blur: backdrop-filter

@@ -1,58 +1,48 @@
 <!-- @dsCard group="Foundations" viewport="700x420" name="Content Design" subtitle="Voice, casing, and the exact words for errors, empty states and buttons" -->
-<!DOCTYPE html><html><head><link rel="stylesheet" href="../styles.css">
-<style>
-body{margin:0;padding:20px;background:var(--color-surface);color:var(--color-ink);font-family:var(--font-sans);font-size:12.5px;line-height:1.6}
-.k{font-family:var(--font-mono);font-size:var(--size-label);font-weight:700;letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin:0 0 8px}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-.do,.dont{padding:8px 10px;border-left:3px solid;margin-bottom:8px;font-size:12px}
-.do{border-color:var(--color-success)}
-.dont{border-color:var(--color-error)}
-.lbl{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:2px}
-.do .lbl{color:var(--color-success-ink)}
-.dont .lbl{color:var(--color-error-ink)}
-</style></head><body>
-<div class="cols">
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+</head><body class="m-0 p-5 bg-surface text-ink font-sans text-fine leading-relaxed">
+<div class="grid grid-cols-2 gap-[26px]">
 <div>
-  <p class="k">Voice</p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Voice</p>
   <p style="margin:0 0 14px">
     Plain English, encouraging, practical. Explain <em>why</em>, not just <em>what</em>. Second person for instruction
     (&ldquo;You&rsquo;ll learn to&hellip;&rdquo;), third person for the product. Sentence case everywhere &mdash; except
     uppercase mono kickers and lesson-type badges. No emoji in product copy.
   </p>
 
-  <p class="k">Buttons — name the action, not the mechanism</p>
-  <div class="do"><span class="lbl">Do</span>Start learning &middot; Send sign-in link &middot; Browse courses</div>
-  <div class="dont"><span class="lbl">Don&rsquo;t</span>Submit &middot; Click here &middot; OK</div>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Buttons — name the action, not the mechanism</p>
+  <div class="px-2.5 py-2 border-s-[3px] border-success mb-2 text-small"><span class="font-mono text-[9.5px] tracking-wide uppercase block mb-0.5 text-success-ink">Do</span>Start learning &middot; Send sign-in link &middot; Browse courses</div>
+  <div class="px-2.5 py-2 border-s-[3px] border-error mb-2 text-small"><span class="font-mono text-[9.5px] tracking-wide uppercase block mb-0.5 text-error-ink">Don&rsquo;t</span>Submit &middot; Click here &middot; OK</div>
 
-  <p class="k">Errors — what happened, and what to do</p>
-  <div class="do"><span class="lbl">Do</span>We could not find an account for that address. Create one instead.</div>
-  <div class="dont"><span class="lbl">Don&rsquo;t</span>Error: authentication failed (code 401)</div>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Errors — what happened, and what to do</p>
+  <div class="px-2.5 py-2 border-s-[3px] border-success mb-2 text-small"><span class="font-mono text-[9.5px] tracking-wide uppercase block mb-0.5 text-success-ink">Do</span>We could not find an account for that address. Create one instead.</div>
+  <div class="px-2.5 py-2 border-s-[3px] border-error mb-2 text-small"><span class="font-mono text-[9.5px] tracking-wide uppercase block mb-0.5 text-error-ink">Don&rsquo;t</span>Error: authentication failed (code 401)</div>
   <p style="font-size:11px;color:var(--color-muted);margin:0">
     Never blame the reader (&ldquo;you entered an invalid&hellip;&rdquo;). Never expose a status code as the whole message.
   </p>
 </div>
 <div>
-  <p class="k">Empty states — three required parts</p>
-  <div class="do">
-    <span class="lbl">Do</span>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Empty states — three required parts</p>
+  <div class="px-2.5 py-2 border-s-[3px] border-success mb-2 text-small">
+    <span class="font-mono text-[9.5px] tracking-wide uppercase block mb-0.5">Do</span>
     <strong>No courses yet</strong><br>
     Courses you start will appear here so you can pick up where you left off.<br>
     <em>Browse courses &rarr;</em>
   </div>
-  <div class="dont"><span class="lbl">Don&rsquo;t</span>No data.</div>
+  <div class="px-2.5 py-2 border-s-[3px] border-error mb-2 text-small"><span class="font-mono text-[9.5px] tracking-wide uppercase block mb-0.5 text-error-ink">Don&rsquo;t</span>No data.</div>
   <p style="font-size:11px;color:var(--color-muted);margin:0 0 14px">
     What is not here &middot; why &middot; the one thing to do. If there genuinely is nothing to do, say so &mdash;
     do not leave the reader to guess.
   </p>
 
-  <p class="k">Labels &amp; kickers</p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Labels &amp; kickers</p>
   <p style="margin:0 0 14px">
     Mono, uppercase, tracked &mdash; and always a <em>noun</em>: <code style="font-family:var(--font-mono)">DURATION</code>,
     <code style="font-family:var(--font-mono)">LEVEL</code>, <code style="font-family:var(--font-mono)">LESSON 03</code>.
     Section kickers keep the code-comment voice: <code style="font-family:var(--font-mono)">// Getting started</code>.
   </p>
 
-  <p class="k">Numbers</p>
+  <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Numbers</p>
   <p style="margin:0">
     Concrete only &mdash; &ldquo;75%+ coverage&rdquo;, &ldquo;200-record data load&rdquo;, &ldquo;five sections&rdquo;.
     Never decorative stats. Mono and tabular so digits line up in a column.

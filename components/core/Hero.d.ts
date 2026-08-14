@@ -6,8 +6,8 @@ export interface HeroProps {
   subtitle?: React.ReactNode;
   /** Right-column media (image, icon, VideoPoster) — ignored in centered/compact */
   media?: React.ReactNode;
-  /** Pass a <CourseStats/> element */
-  stats?: React.ReactNode;
+  /** One concrete mono fact under the actions — never a stat wall. */
+  proof?: React.ReactNode;
   /** Button(s) */
   actions?: React.ReactNode;
 }

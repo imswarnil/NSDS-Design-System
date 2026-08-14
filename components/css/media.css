@@ -4,7 +4,7 @@
    6px radius as every other surface; the media is the only loud thing in
    it. No lightbox chrome, no filmstrip arrows drawn over the image —
    controls sit outside the frame in the system's own buttons. */
-@layer components {
+@layer ns-components {
 
   /* --- Image / figure -----------------------------------------------------
      An image in content wears the card frame; the caption is mono, below,
