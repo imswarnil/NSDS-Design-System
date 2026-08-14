@@ -11,7 +11,61 @@ A design system for **Namaste Salesforce**, an open-source Ghost theme (`imswarn
 **Sources used to build this system** (not attached to this project — explore them yourself for deeper context or to extend this system):
 - GitHub repo: [imswarnil/Namaste-Salesforce](https://github.com/imswarnil/Namaste-Salesforce) — the Ghost theme itself. Read `assets/css/screen.css` (Tailwind v4 `@theme` tokens), `assets/css/theme/*.css` (the LMS component layer: `tokens.css`, `base.css`, `components.css`, `navbar.css`, `course.css`), `training-docs.md` (how the training roadmap's tags/routes fit together), `dummy-content/*.json` (real sample course & lesson copy), and `prompt.md` (the brand's own image-generation style guide — useful for commissioning matching illustrations).
 
-**Important caveat:** the repository as attached contains no `.hbs` template files — only the compiled design tokens, CSS, self-hosted fonts/icons, and dummy content JSON. The theme's actual page layouts (`home.hbs`, `courses.hbs`, `training.hbs`, partials, etc.) described in its own README were not present to read. Everything here — the components and the LMS UI kit — was reconstructed from the CSS component classes (`.ns-ccard`, `.ns-curriculum`, `.ns-road__*`, `.ns-course-hero`, etc.), their extensive inline comments, and the dummy content copy. If you have the missing `.hbs`/`partials/` files, attach them and this system can be tightened to match exactly.
+**On provenance:** this system was originally reconstructed from the Ghost
+theme's compiled CSS, its inline comments and its dummy content, without the
+`.hbs` templates to read. It has since grown well past that: `templates/`
+now holds the framework-agnostic markup for every component, and the
+`.ns-*` layer here is the source of truth rather than a reconstruction of one.
+If you are wiring the Ghost side up, start from `docs/INTEGRATION.md`.
+
+## What it looks like
+
+Every page below is generated from the real artifacts — the same tokens and the
+same `.ns-*` classes both products render — so the styleguide cannot drift from
+the system it documents.
+
+### The styleguide
+
+[![Overview](docs/images/overview.jpg)](https://dev.imswarnil.com/NS-Design-System/)
+
+255 tokens, 1,139 classes, 118 components. The sidebar collapses to the section
+you are in and scrolls it into view; every component page carries its own
+use / not-for / accessibility contract beside the demos.
+
+### Color
+
+![Colors](docs/images/colors.jpg)
+
+One working blue and a neutral reading layer. Each chip shows the public token
+and the private `--ns-*` source it follows.
+
+### Typography
+
+![Typography](docs/images/typography.jpg)
+
+Two shipped faces and one system stack. Reading copy is 14px.
+
+### Dark mode
+
+![Dark mode](docs/images/dark-mode.jpg)
+
+Semantic roles flip under `[data-theme="dark"]` to the brand navy — not a
+generic slate. Product code reaches for `--color-surface`, never a raw brand
+step.
+
+### A component page
+
+![Component page](docs/images/component-page.jpg)
+
+### The certificate, and the training family
+
+![Certificate](docs/images/certificate.jpg)
+
+![Training](docs/images/training.jpg)
+
+The training rail collapses to the active module on load and scrolls it into
+view — but ships every section `open`, so a JS failure leaves the curriculum
+long rather than hidden.
 
 ## Design Principles
 
@@ -53,6 +107,83 @@ Governed by the five Design Principles above. In short:
 - **Hover/press:** hover = border brightens to brand-blue + an accent line (top on cards, left on rows); press = instant opacity dim. No color-lightening, no scale-pop except the video-poster play ring and card-media zoom (1.03–1.05x).
 - **Buttons:** the default is a `--size-small` label at a 40px target — a control lives *inside* something, and a default button set at body size is visually larger than the card title above it. Height is the accessibility property, type size the typographic one, and they are set independently. Sections never define their own action; they leave `.ns-band__actions` and the page puts a button in it.
 - **Cards:** `1px` hairline border + `6px` radius, no shadow at rest; brand-blue border + top accent line on hover.
+
+## Color reference
+
+The full palette lives on the styleguide's **Colors** page, generated from the
+token files. This is the working subset.
+
+**Brand — the one signal colour.** 500 is the working blue for fills and active
+states; 600 is interactive text on light, 300 on dark. 50–100 are wash-free —
+they exist for charts and rare tint borders, never for status washes.
+
+| | 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| hex | `#eef6ff` | `#d8edff` | `#b0d7ff` | `#7cbeff` | `#1b96ff` | `#0176d3` | `#0b5cab` | `#03386b` | `#032d60` | `#001a3e` |
+
+**Semantic roles.** These are what product code reaches for. They flip under
+`[data-theme="dark"]`; a raw brand step for a surface is always a bug.
+
+| token | light | dark | role |
+|---|---|---|---|
+| `--color-surface` | `#ffffff` | `#051222` | the page |
+| `--color-surface-raised` | `#ffffff` | `#081a30` | cards, menus |
+| `--color-surface-sunken` | `#f4f6f8` | `#02080f` | wells, code, inset rows |
+| `--color-border` | `#dddbda` | `rgba(124,190,255,.16)` | **the hairline — the primary structuring device** |
+| `--color-ink` | `#181818` | `#eaf2fb` | body text |
+| `--color-muted` | `#5c5a57` | `#7fa0c2` | secondary text — 6.87:1 on white |
+| `--color-label` | `#45566b` | `#8fb3d9` | mono/uppercase structural labels |
+
+**Status.** The hue is for the dot, the border, the icon. For status *text* use
+the `-ink` pair, which is darkened to clear 4.5:1 on both surface and sunken —
+the raw hues do not.
+
+| | hue | ink (light) | contrast on white |
+|---|---|---|---|
+| success | `#2e844a` | `#1a6b34` | 6.57:1 |
+| warning | `#fe9339` | `#8a4b00` | 6.80:1 |
+| error | `#ea001e` | `#ba0017` | 6.77:1 |
+
+Chart colours are validated separately: `npm run check:palette` asserts an
+OKLCH lightness band, a chroma floor, adjacent-pair separability under three
+CVD types *and* normal vision, and ≥3:1 against the surface.
+
+## Type scale
+
+Compact, after [openclaw/carapace](https://github.com/openclaw/carapace).
+Reading copy is **14px**, not 16 — this is a product with an app inside it, and
+at 16 the player, admin and tables all had to fight the base size with
+`--size-small` everywhere, which is the tell that the base was wrong for most
+of the screens being built.
+
+| token | size | for |
+|---|---|---|
+| `--size-mega` | `clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem)` | poster / campaign only |
+| `--size-display` | `clamp(2rem, 1.55rem + 2.2vw, 3.25rem)` | hero |
+| `--size-h1` | 2.5rem / 40px | |
+| `--size-h2` | 2rem / 32px | |
+| `--size-h3` | 1.5rem / 24px | |
+| `--size-h4` | 1.25rem / 20px | |
+| `--size-body-lg` | 1.0625rem / 17px | ledes, standfirsts |
+| `--size-body` | **0.875rem / 14px** | **reading copy** |
+| `--size-small` | 0.8125rem / 13px | dense UI, meta |
+| `--size-fine` | 0.75rem / 12px | legal, captions |
+| `--size-label` | 0.6875rem / 11px | mono kickers and labels |
+| `--size-mono` | 0.8125rem / 13px | code, timestamps |
+
+Only the top two steps clamp: a hero has to survive a 360px phone, a paragraph
+does not. Everything is `rem`, because one `px` font-size is one piece of text
+that stops responding to browser zoom.
+
+**Weights** are `400 / 500 / 600 / 700` — every step a weight Switzer's
+designer actually drew, no interpolations of our own. Body is 400.
+
+Two Tailwind utilities worth knowing apart:
+
+- `text-label` is the **kicker**: 11px, 700, `0.09em` tracking, arriving whole
+  so it cannot be half-applied.
+- `text-data` is the same 11px **without** the weight and tracking — for mono
+  data, which is quiet by definition and reads wrong bold.
 
 ## Iconography
 
@@ -115,7 +246,7 @@ with — and every task is a thin wrapper over `scripts/*.mjs`, so plain
 ```bash
 gulp          # dev loop: build, serve, watch, live reload   (npm run dev)
 gulp build    # tokens → css bundle → preview page           (npm run build)
-gulp check    # the five CI checks                           (npm run check)
+gulp check    # the seven CI checks                          (npm run check)
 gulp site     # stage the deployable styleguide into _site/  (npm run site)
 gulp serve    # serve an existing build, no watching
 ```
@@ -137,6 +268,25 @@ is relative, so it hosts correctly under a subpath. CI already publishes it to
 GitHub Pages on every push to `main`; the same bundle drops onto Netlify, S3,
 or plain nginx (`rsync -a _site/ server:/var/www/design`). Full detail in
 [`LIVE.md`](LIVE.md).
+
+## The checks
+
+`npm run check` runs seven gates. Each exists because the thing it catches
+shipped broken at least once and nothing noticed:
+
+| check | catches |
+|---|---|
+| `check:tokens` | `tokens.json` / `.js` / `.d.ts` / `tailwind.css` drifting from the token CSS — and any `--text-x`/`--color-x` name collision, or a token with no utility |
+| `check:principles` | a raw hex, radius, z-index, timing, font or spacing literal in the component layer |
+| `check:cascade` | **a rule outside a layer, or an undeclared `!important`** — either one silently revokes "a utility always wins" |
+| `check:components` | a `.jsx` that styles itself with a `style={{}}` object, which the Ghost theme cannot render |
+| `check:markup` | **a `.ns-*` class used in markup with no rule** — it renders as an unstyled element and nobody notices until a screenshot |
+| `check:palette` | a chart hue failing the OKLCH band, chroma floor, CVD separability or contrast |
+| `check:css` | a stale `dist/` bundle |
+
+`gulp site` additionally runs `check:links`, which walks the built `_site/` for
+broken relative paths, root-absolute assets, duplicate ids and dangling
+`aria-controls`.
 
 ## CI/CD
 
@@ -169,7 +319,7 @@ NS-Design-System/
 ├── patterns/          nine hairline background patterns (pure CSS)
 ├── templates/         framework-agnostic HTML for full surfaces
 ├── assets/            logo, images, theme-init.js
-├── scripts/           build + the five checks + the preview generator
+├── scripts/           build + the seven checks + the preview generator
 ├── docs/              INTEGRATION.md, CONTRIBUTING.md, CHANGELOG.md
 ├── .github/workflows/ CI (checks on every PR) + CD (Pages deploy from main)
 ├── gulpfile.mjs       gulp orchestration over scripts/
@@ -314,7 +464,7 @@ conventions someone has to remember.
   permits self-hosting but not redistributing the font software, and shipping
   a derived static family is redistribution. `fonts/README.md` holds the
   weight tables, the optical rules and the subsetting recipe.
-- `scripts/` — the build, the five checks, and the preview generator + server.
+- `scripts/` — the build, the seven checks, and the preview generator + server.
 - `docs/` — `INTEGRATION.md` (wiring both products), `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
 
 ## Templates — the generic markup layer

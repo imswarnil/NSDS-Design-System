@@ -178,8 +178,6 @@ export type TokenName =
   | "zOverlay"
   | "zToast"
   | "zMax"
-  | "gutter"
-  | "gutter"
   | "nsFontSans"
   | "nsFontHeading"
   | "nsFontMono"

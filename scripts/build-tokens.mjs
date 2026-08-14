@@ -58,6 +58,14 @@ function classify(name, value, kindHint) {
    block separately — the dark values are an override layer, not new tokens. */
 function parseBlocks(css, file) {
   const out = { light: [], dark: [] };
+  /* A token may be REDECLARED inside a media query — --gutter steps up at 48rem
+     and 64rem, which is correct responsive CSS. The exports must still describe
+     the BASE value: tokens.js is a flat object, so a second entry silently
+     overwrote the first (and emitted a duplicate key, which is invalid), and
+     tokens.json ended up reporting --gutter as its desktop value.
+     First declaration wins; the breakpoint variants are their own tokens
+     (--gutter-md, --gutter-lg) and are exported on their own. */
+  const already = { light: new Set(), dark: new Set() };
   // Match a selector plus its brace body, non-greedy, one nesting level deep
   // is all these token files use.
   const blockRe = /(:root|\[data-theme="dark"\])\s*\{([\s\S]*?)\n\}/g;
@@ -70,6 +78,8 @@ function parseBlocks(css, file) {
     while ((d = declRe.exec(body))) {
       const name = d[1];
       const value = d[2].trim();
+      if (already[mode].has(name)) continue;
+      already[mode].add(name);
       out[mode].push({ name, value, kind: classify(name, value, d[3]), definedIn: file });
     }
   }
