@@ -1,67 +1,94 @@
 <!--
-  Namaste UI template — course player
+  NS Design System template — course player, ARTICLE lesson
   =====================================================================
-  Framework-agnostic markup: the same .ns-* classes the React components
-  render. Adapt the marked slots to your stack:
-    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
-              ({{@site.url}}, {{title}}, …). data-members-* attributes are
-              Ghost Members hooks and work as-is.
-    Next.js → prefer the React components in components/; this file is the
-              markup contract they implement.
+  The same player, the other kind of lesson. Framework-agnostic markup:
+  the same .ns-* classes the React components render.
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers.
+    Next.js → prefer components/player/; this file is the markup contract.
     Static  → use directly.
--->
-<!-- Two columns ≥ lg, stage-first single column below (player.css).
-     Slots: the media element in the stage, kicker/title/meta, prev/next
-     hrefs, and the rail's lesson rows (repeat .ns-lesson per lesson;
-     data-state="done|locked", aria-current="true" on the current one).
 
-     --fixed locks the player to one viewport: the PAGE stops scrolling and
-     the two columns scroll independently inside it, so scrubbing never
-     pushes the stage off the top and a 40-lesson rail scrolls beside a
-     pinned frame. Set data-player="fixed" on <html> alongside it, or the
-     document scrolls behind the locked layout. Below lg it reverts to the
-     scrolling variant automatically — a viewport-locked two-pane layout on
-     a phone is a one-pane layout with the content amputated. -->
-<div class="ns-player" data-rail="open">
+  WHAT CHANGES from course-player.html, and only this:
+    .ns-player--article   no 16:9 stage at all, and the content column is set
+                          to the reading measure and centred. A written lesson
+                          that keeps a black 16:9 box at the top is a video
+                          page with the video missing.
+    .ns-lprogress--article  the progress is a 2px hairline at the top edge
+                          driven by scroll, not a time code — for a written
+                          lesson, position IS the progress.
+    The title steps up to --size-h2, because it is now the top of the page
+    rather than a caption under a frame.
+
+  WHAT DOES NOT CHANGE: the rail, the docked prev/next bar, the lesson kinds,
+  the CTA. One player, two layouts — not two players.
+-->
+<div class="ns-player ns-player--article" data-rail="open">
   <div class="ns-player__main">
-    <div class="ns-player__stage">
-      <!-- your <video> / <iframe> here. The poster below is the slot's
-           stand-in: aspect-ratio reserves the box before media loads, so the
-           page never jumps when metadata arrives. -->
-      <span class="ns-ph" aria-hidden="true"></span>
-    </div>
     <header class="ns-player__head">
       <p class="ns-player__kicker">
-        <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
-        lesson 07 of 12
+        <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0"><i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
+        lesson 08 of 12
       </p>
-      <h1 class="ns-player__title">SOQL joins: relationships in queries</h1>
-      <p class="ns-player__meta"><span>21:15</span><span>updated Jan 2026</span></p>
-      <!-- Per-lesson progress. Swap for --article (a hairline over the
-           reading column, data-target pointing at the article) or --quiz
-           (pips plus the score) when the lesson is not a video. -->
-      <div class="ns-lprogress ns-lprogress--video" style="--fx-progress:38%">
-        <span class="ns-lprogress__label">Video</span>
-        <span class="ns-lprogress__track">
-          <span class="ns-lprogress__fill"></span>
-          <span class="ns-lprogress__chapter" style="--fx-at:22%"></span>
-          <span class="ns-lprogress__chapter" style="--fx-at:55%"></span>
-        </span>
-        <span class="ns-lprogress__time">08:03 / 21:15</span>
-      </div>
+      <h1 class="ns-player__title">Aggregate queries, and when to stop using them</h1>
+      <p class="ns-player__meta"><span>18 min read</span><span>updated Jan 2026</span></p>
     </header>
+
+    <!-- The reading hairline. Sticky at the top of the scrolling column and
+         driven by assets/js/lms.js from data-target; 2px and no label, because
+         a reading-progress widget with a percentage is a distraction from the
+         thing it is measuring. -->
+    <div class="ns-lprogress ns-lprogress--article" data-target="#lesson-body" style="--fx-progress:34%"></div>
+    <!-- The lesson itself. .ns-prose is the whole typographic contract for a
+         written lesson — headings, lists, code, callouts and tables all render
+         in the system's voice with no further classes. -->
+    <article class="ns-player__body ns-prose" id="lesson-body">
+      <p class="ns-lead">SOQL can count, sum and group for you. That is convenient right up to the row where it stops being allowed, and knowing where that row is saves a rewrite.</p>
+
+      <h2>What an aggregate query is</h2>
+      <p>An aggregate query asks the database for a <em>summary</em> rather than for records: how many opportunities per stage, the total amount per owner, the newest case per account. The platform does the arithmetic before the rows ever reach your Apex, which is why it is faster than looping and why it counts differently against the limits.</p>
+
+      <figure class="ns-code" data-lang="apex">
+        <figcaption class="ns-code__bar">
+          <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>Aggregates.cls</span></span>
+          <span class="ns-code__actions"><span class="ns-code__lang">apex</span></span>
+        </figcaption>
+        <div class="ns-code__body">
+          <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3</pre>
+          <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-type">AggregateResult</span><span class="ns-tok-punct">[]</span> byStage <span class="ns-tok-punct">=</span> <span class="ns-tok-punct">[</span><span class="ns-tok-kw">SELECT</span> <span class="ns-tok-type">StageName</span><span class="ns-tok-punct">,</span> <span class="ns-tok-fn">SUM</span><span class="ns-tok-punct">(</span><span class="ns-tok-type">Amount</span><span class="ns-tok-punct">)</span> total</span><span class="ns-code__line">                             <span class="ns-tok-kw">FROM</span> <span class="ns-tok-type">Opportunity</span></span><span class="ns-code__line">                             <span class="ns-tok-kw">GROUP BY</span> <span class="ns-tok-type">StageName</span><span class="ns-tok-punct">];</span></span></code></pre>
+        </div>
+      </figure>
+
+      <h2>Where it stops</h2>
+      <p>An aggregate query still returns rows, and those rows still count: 50,000 of them, same as any other query. A <code>GROUP BY</code> on a field with high cardinality — a date, an id, an email — will hit that ceiling on a real org, and it will do it in production rather than in your scratch org.</p>
+
+      <div class="ns-callout ns-callout--warn">
+        <i class="ph ph-warning" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Watch out</span>Grouping by a date field groups by the <em>timestamp</em>, not the day. Use <code>DAY_ONLY()</code> or you get one row per second.</div>
+      </div>
+
+      <h2>What to reach for instead</h2>
+      <ul>
+        <li>A rollup summary field, when the relationship is master-detail and the number is wanted on the record.</li>
+        <li>A scheduled batch writing to a summary object, when the grouping is expensive and the answer can be an hour old.</li>
+        <li>A report type, when a human is the consumer and nobody needs it in Apex at all.</li>
+      </ul>
+
+      <p>Next, we take the same query and make it selective — which is the difference between a report that runs and one that times out at nine in the morning.</p>
+    </article>
+
     <!-- Prev/next by NAME. An arrow pair with no titles makes the learner
          click to find out where they are going. -->
     <nav class="ns-player__nav ns-lesson-nav ns-lesson-nav--split" aria-label="Lesson navigation">
       <a class="ns-lesson-nav__btn" href="#prev">
         <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
         <span class="ns-lesson-nav__dir">Previous</span>
-        <span class="ns-lesson-nav__name">SELECT and WHERE</span>
+        <span class="ns-lesson-nav__name">SOQL joins: relationships</span>
       </a>
       <a class="ns-lesson-nav__up" href="#curriculum"><i class="ph ph-list" aria-hidden="true"></i> All 12 lessons</a>
       <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#next">
         <span class="ns-lesson-nav__dir">Next</span>
-        <span class="ns-lesson-nav__name">Aggregate queries</span>
+        <span class="ns-lesson-nav__name">Selective queries</span>
         <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
       </a>
     </nav>

@@ -908,7 +908,7 @@ export const COMPONENTS = [
     variants: [
       { name: "Default", html: `<div class="ns-card ns-ccard" style="max-inline-size:18rem">
   <span class="ns-ccard__mediawrap">
-    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-tag ns-ccard__level">Beginner</span>
   </span>
   <div class="ns-card__body">
@@ -920,7 +920,7 @@ export const COMPONENTS = [
 </div>` },
       { name: "With progress", note: "Continue learning: the foot swaps meta for the real progress element.", html: `<div class="ns-card ns-ccard" style="max-inline-size:18rem">
   <span class="ns-ccard__mediawrap">
-    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-tag ns-ccard__level">Intermediate</span>
   </span>
   <div class="ns-card__body">
@@ -934,7 +934,7 @@ export const COMPONENTS = [
   </div>
 </div>` },
       { name: "Row — continue learning", note: "The horizontal form for the dashboard's resume shelf.", html: `<div class="ns-card ns-card--row ns-ccard" style="max-inline-size:30rem">
-  <img class="ns-card__media" src="../assets/img/training-trail.svg" alt="">
+  <span class="ns-card__media ns-ph" aria-hidden="true"></span>
   <div class="ns-card__body">
     <span class="ns-card__kicker">// Continue</span>
     <a class="ns-card__link" href="#"><span class="ns-card__title">Admin certification path</span></a>
@@ -944,7 +944,7 @@ export const COMPONENTS = [
 </div>` },
       { name: "Members-only", note: "Locked stays a real link — to the join page; the lock is a tag, never an overlay wash.", html: `<div class="ns-card ns-ccard" style="max-inline-size:18rem">
   <span class="ns-ccard__mediawrap">
-    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-tag ns-ccard__level"><i class="ph ph-lock-simple" aria-hidden="true"></i> Members</span>
   </span>
   <div class="ns-card__body">
@@ -955,7 +955,7 @@ export const COMPONENTS = [
 </div>` },
           { name: "Full meta", note: "Everything a card can carry, so the parts are visible in one place: a corner flag, the runtime chip on the media, the play affordance, rating, learner count, level, authors and price. A real card picks three or four of these — this is the vocabulary, not a recommendation. The rating's NUMBER comes first in the DOM; the stars are decoration over it.", html: `<div class="ns-card ns-ccard" style="max-inline-size:19rem">
   <span class="ns-ccard__mediawrap">
-    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-tag ns-ccard__level">Beginner</span>
     <span class="ns-ccard__badge">Bestseller</span>
     <span class="ns-ccard__dur">3h 40m</span>
@@ -995,7 +995,7 @@ export const COMPONENTS = [
 </div>` },
       { name: "Lesson peek", note: "What is actually IN the course, without leaving the grid. <strong>Hover or tab into the card.</strong> It is real content in the DOM at all times — collapsed with a <code>grid-template-rows</code> transition rather than <code>display:none</code>, so in-page find reaches it and a screen reader reads it whether or not a pointer is over the card. Where hover does not exist it is simply open, because the alternative is content no touch user can reach. Show three or four rows: a peek listing twenty is the syllabus in the wrong place.", html: `<div class="ns-card ns-ccard" style="max-inline-size:19rem">
   <span class="ns-ccard__mediawrap">
-    <img class="ns-card__media" src="../assets/img/training-trail.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-tag ns-ccard__level">Intermediate</span>
     <span class="ns-ccard__dur">2h 10m</span>
   </span>
@@ -1015,7 +1015,7 @@ export const COMPONENTS = [
 </div>` },
       { name: "Shapes", note: "Five shapes, one anatomy — a course in a grid, in a search result, in a rail and in a related strip is the same object at four sizes, and four bespoke cards is how the meta rows drift apart. <code>--row</code> for lists, <code>--compact</code> for dense rails, <code>--minimal</code> for a card inside another card.", html: `<div style="display:grid;gap:var(--space-4);max-inline-size:32rem">
   <div class="ns-card ns-ccard ns-ccard--row">
-    <span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""></span>
+    <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span></span>
     <div class="ns-card__body">
       <span class="ns-card__kicker">// Continue</span>
       <a class="ns-card__link" href="#"><span class="ns-card__title">Admin certification path</span></a>
@@ -1039,7 +1039,7 @@ export const COMPONENTS = [
 </div>` },
       { name: "Featured", note: "The one promoted course. Two columns, more meta, a larger title — and exactly one of these per screen, or it is not featured.", html: `<div class="ns-card ns-ccard ns-ccard--featured" style="max-inline-size:38rem">
   <span class="ns-ccard__mediawrap">
-    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-ccard__badge ns-ccard__badge--new">New</span>
   </span>
   <div class="ns-card__body">
@@ -1190,7 +1190,7 @@ export const COMPONENTS = [
       <span class="ns-curriculum__meta"><span>2 free</span><i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i></span>
     </summary>
     <a class="ns-lesson ns-lesson--compact" href="#">
-      <img class="ns-lesson__thumb" src="../assets/img/training-trail.svg" alt="">
+      <span class="ns-lesson__thumb ns-ph ns-ph--sm" aria-hidden="true"></span>
       <span class="ns-lesson__body"><span class="ns-lesson__title">Welcome &amp; setup</span><span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span><span class="ns-lesson__badge">Preview</span></span></span>
       <span class="ns-lesson__time">04:20</span>
     </a>
@@ -1303,7 +1303,7 @@ export const COMPONENTS = [
       { name: "Modules — training", note: "The OTHER shape, and the only one that keeps sections. A training module carries a still, a sentence saying what it is for, and its own progress, because a module is a thing you choose to start — a course lesson is not. Courses never render this.", html: `<div class="ns-curriculum ns-curriculum--modules" style="max-inline-size:34rem;inline-size:100%">
   <details class="ns-curriculum__section" open>
     <summary class="ns-curriculum__head">
-      <img class="ns-curriculum__cover" src="../assets/img/training-trail.svg" alt="">
+      <span class="ns-curriculum__cover ns-ph ns-ph--sm" aria-hidden="true"></span>
       <span class="ns-curriculum__headbody">
         <span class="ns-curriculum__title"><span class="ns-curriculum__index">01</span> Security and access</span>
         <span class="ns-curriculum__desc">Profiles, permission sets and the sharing model — who can see which record, and why the answer is almost never “profiles”.</span>
@@ -1330,7 +1330,7 @@ export const COMPONENTS = [
   </details>
   <details class="ns-curriculum__section">
     <summary class="ns-curriculum__head">
-      <img class="ns-curriculum__cover" src="../assets/img/publication-cover.svg" alt="">
+      <span class="ns-curriculum__cover ns-ph ns-ph--sm" aria-hidden="true"></span>
       <span class="ns-curriculum__headbody">
         <span class="ns-curriculum__title"><span class="ns-curriculum__index">02</span> Automation</span>
         <span class="ns-curriculum__desc">Flow first, Apex when flow runs out — and how to tell which situation you are in before you build.</span>
@@ -1427,7 +1427,7 @@ export const COMPONENTS = [
   <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#0">
     <span class="ns-lesson-nav__dir">Next course</span>
     <span class="ns-lesson-nav__name">Bulk-safe Apex patterns</span>
-    <img class="ns-lesson-nav__thumb" src="../assets/img/training-trail.svg" alt="">
+    <span class="ns-lesson-nav__thumb ns-ph ns-ph--sm" aria-hidden="true"></span>
     <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
   </a>
 </nav>` },
@@ -1596,10 +1596,10 @@ export const COMPONENTS = [
     </select>
   </div>
   <div class="ns-course-grid">
-    <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Beginner</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a><span class="ns-ccard__meta"><span>12 lessons</span></span></div></div>
-    <div class="ns-card ns-ccard" data-topic="admin"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Beginner</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Admin fundamentals</span></a><span class="ns-ccard__meta"><span>14 lessons</span></span></div></div>
-    <div class="ns-card ns-ccard" data-topic="admin"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-ccard__level">Intermediate</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
-    <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><img class="ns-card__media" src="../assets/img/training-trail.svg" alt=""><span class="ns-tag ns-ccard__level">Advanced</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Bulk-safe Apex</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Beginner</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a><span class="ns-ccard__meta"><span>12 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="admin"><span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Beginner</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Admin fundamentals</span></a><span class="ns-ccard__meta"><span>14 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="admin"><span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Intermediate</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
+    <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Advanced</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Bulk-safe Apex</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
   </div>
 </div>` },
       { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-listing.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
@@ -1644,7 +1644,7 @@ export const COMPONENTS = [
         </div>
       </div>
       <div class="ns-chero__media">
-        <img src="../assets/img/publication-cover.svg" alt="">
+        <span class="ns-ph" aria-hidden="true"></span>
         <button type="button" class="ns-chero__play" aria-label="Play the course preview"><i class="ph ph-play-circle" aria-hidden="true"></i></button>
         <span class="ns-chero__caption">Preview · 02:14</span>
       </div>
@@ -1652,7 +1652,7 @@ export const COMPONENTS = [
   </div>
 </section>` },
       { name: "Cover", flush: true, note: "A photographic still behind the content, scrimmed to the brand navy. For a course whose subject is visual. The scrim runs from 92% to 62% across the inline axis, so the text edge is always the dark end whatever the image does.", html: `<section class="ns-chero ns-chero--cover">
-  <div class="ns-chero__bg"><img src="../assets/img/training-trail.svg" alt=""></div>
+  <div class="ns-chero__bg"><span class="ns-ph" aria-hidden="true"></span></div>
   <div class="ns-chero__inner">
     <div class="ns-chero__grid">
       <div class="ns-chero__body">
@@ -1678,7 +1678,7 @@ export const COMPONENTS = [
 </section>` },
       { name: "Video loop", flush: true, note: "The same as --cover, with a muted looping clip instead of a still. It is decoration with a bandwidth cost, so: <code>muted loop playsinline</code>, a <code>poster</code> that stands alone, and hidden entirely under <code>prefers-reduced-motion</code> — which leaves exactly the cover version, correctly. (The demo below uses the poster; the markup is what ships.)", html: `<section class="ns-chero ns-chero--video">
   <div class="ns-chero__bg">
-    <video autoplay muted loop playsinline poster="../assets/img/publication-cover.svg" aria-hidden="true">
+    <video autoplay muted loop playsinline aria-hidden="true">
       <source src="/media/course-loop.mp4" type="video/mp4">
     </video>
   </div>
@@ -1737,7 +1737,7 @@ export const COMPONENTS = [
         </div>
       </div>
       <div class="ns-chero__media">
-        <img src="../assets/img/training-trail.svg" alt="">
+        <span class="ns-ph" aria-hidden="true"></span>
       </div>
     </div>
   </div>
@@ -1755,7 +1755,7 @@ export const COMPONENTS = [
           <a class="ns-btn ns-btn--outline" href="#0">Syllabus</a>
         </div>
       </div>
-      <img class="ns-chero__media" src="../assets/img/training-trail.svg" alt="">
+      <span class="ns-chero__media ns-ph" aria-hidden="true"></span>
     </div>
   </div>
 </header>` },
@@ -1796,7 +1796,7 @@ export const COMPONENTS = [
     ],
     variants: [
       { name: "In the rail", html: `<aside class="ns-buybox" style="max-inline-size:20rem">
-  <img class="ns-buybox__media" src="../assets/img/publication-cover.svg" alt="">
+  <span class="ns-buybox__media ns-ph" aria-hidden="true"></span>
   <div class="ns-buybox__body">
     <span class="ns-price">
       <span class="ns-price__now">$49</span>
@@ -1985,7 +1985,7 @@ export const COMPONENTS = [
   </figure>
 </div>` },
       { name: "With a portrait", note: "<code>--media</code>: the one testimonial a page leads with, using the taped print from Picture frames so the person reads as a person rather than as a stock avatar.", html: `<figure class="ns-testimonial ns-testimonial--media" style="max-inline-size:36rem">
-  <span class="ns-pframe ns-pframe--photo"><img src="../assets/img/publication-cover.svg" alt=""></span>
+  <span class="ns-pframe ns-pframe--photo"><span class="ns-ph" aria-hidden="true"></span></span>
   <span>
     <span class="ns-testimonial__result"><i class="ph ph-seal-check" aria-hidden="true"></i>Hired as a junior developer</span>
     <blockquote class="ns-testimonial__quote">I built the volunteer-shift project from the course and talked through it in the interview. That was the interview.</blockquote>
@@ -2166,6 +2166,7 @@ export const COMPONENTS = [
     <span class="ns-player__side-cta-meta">Lifetime access · certificate</span>
   </div>
 </div>` },
+      { name: "Article lesson", note: "The same player, the other kind of lesson: no 16:9 stage at all, the column set to the reading measure, and the progress a 2px hairline driven by scroll rather than a time code. A written lesson that keeps a black video box at the top is a video page with the video missing. The rail, the docked prev/next and the CTA are untouched — one player with two layouts, not two players.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-article.html" target="_blank" rel="noopener">Open the article-lesson demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
       { name: "Full layout", note: "The complete two-column screen — the framework-agnostic template rendered with the real stylesheet. Resize it to see the single-column collapse.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
           { name: "Per-type progress", note: "\"How far through this lesson am I\" has three different honest answers, so it has three different controls. One bar for all three is how a quiz ends up claiming you are 60% <em>correct</em> when you are 60% <em>finished</em>. Video counts time and marks chapters; article counts scroll and is a hairline, never a widget; a quiz has TWO numbers — answered and score — and pips can say what a length cannot.", html: `<div style="display:grid;gap:var(--space-6);inline-size:100%;max-inline-size:34rem">
   <div class="ns-lprogress ns-lprogress--video" style="--fx-progress:38%">
@@ -2395,7 +2396,7 @@ export const COMPONENTS = [
     variants: [
       { name: "Default", html: `<article class="ns-card ns-bcard" style="max-inline-size:19rem">
   <span class="ns-bcard__cover">
-    <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-card__media ns-ph" aria-hidden="true"></span>
     <span class="ns-tag ns-bcard__cat">Apex</span>
   </span>
   <div class="ns-card__body">
@@ -2411,7 +2412,7 @@ export const COMPONENTS = [
       { name: "Featured, row and minimal", note: "<code>--wide</code> is the one featured piece: two columns, a display-scale title, three lines of excerpt. <code>--row</code> is the archive and search-result shape. <code>--minimal</code> drops the cover and the frame entirely — for a sidebar, where a column of small cover images is texture rather than information.", html: `<div style="display:grid;gap:var(--space-6);inline-size:100%">
   <article class="ns-card ns-bcard ns-bcard--wide">
     <span class="ns-bcard__cover">
-      <img src="../assets/img/training-trail.svg" alt="">
+      <span class="ns-ph" aria-hidden="true"></span>
       <span class="ns-tag ns-bcard__cat">Architecture</span>
     </span>
     <div class="ns-card__body">
@@ -2426,7 +2427,7 @@ export const COMPONENTS = [
   </article>
 
   <article class="ns-card ns-bcard ns-bcard--row" style="max-inline-size:34rem">
-    <span class="ns-bcard__cover"><img src="../assets/img/publication-cover.svg" alt=""></span>
+    <span class="ns-bcard__cover"><span class="ns-ph" aria-hidden="true"></span></span>
     <div class="ns-card__body">
       <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">SOQL: what the query planner actually does</h3></a>
       <p class="ns-bcard__excerpt">Selectivity, indexes, and why your report times out at 50,000 rows.</p>
@@ -2451,7 +2452,7 @@ export const COMPONENTS = [
 </div>` },
       { name: "Overlay, and no cover art", note: "<code>--overlay</code> sets the title on the image, scrimmed to the brand navy. The empty-cover state is the honest alternative to a grey rectangle pretending an image failed to load — most posts have no art, and saying so with the system's own glyph is better than faking one.", html: `<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-4);max-inline-size:38rem">
   <article class="ns-card ns-bcard ns-bcard--overlay">
-    <span class="ns-bcard__cover"><img src="../assets/img/training-trail.svg" alt=""></span>
+    <span class="ns-bcard__cover"><span class="ns-ph" aria-hidden="true"></span></span>
     <div class="ns-card__body">
       <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Five orgs, one deployment pipeline</h3></a>
       <div class="ns-postmeta"><span><time datetime="2026-06-30">30 Jun 2026</time></span><span>11 min read</span></div>
@@ -2492,12 +2493,12 @@ export const COMPONENTS = [
       <span>6 min read</span>
       <span>Updated 12 Aug</span>
     </div>
-    <img class="ns-posthead__cover" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-posthead__cover ns-ph ns-ph--sm" aria-hidden="true"></span>
     <span class="ns-posthead__credit">Illustration · Namaste Salesforce</span>
   </div>
 </header>` },
       { name: "Cover", flush: true, note: "Full-bleed image behind the text, scrimmed bottom-up to the brand navy so the meta line sits on the darkest part.", html: `<header class="ns-posthead ns-posthead--cover">
-  <div class="ns-posthead__bg"><img src="../assets/img/training-trail.svg" alt=""></div>
+  <div class="ns-posthead__bg"><span class="ns-ph" aria-hidden="true"></span></div>
   <div class="ns-posthead__inner">
     <a class="ns-tag ns-posthead__cat" href="#">Architecture</a>
     <h1 class="ns-posthead__title">The data model is the product</h1>
@@ -2522,7 +2523,7 @@ export const COMPONENTS = [
           <span>9 min read</span>
         </div>
       </div>
-      <img class="ns-posthead__cover" src="../assets/img/publication-cover.svg" alt="">
+      <span class="ns-posthead__cover ns-ph ns-ph--sm" aria-hidden="true"></span>
     </div>
   </div>
 </header>` },
@@ -2686,7 +2687,7 @@ export const COMPONENTS = [
   <div>
     <article class="ns-card ns-bcard ns-bcard--wide" style="margin-block-end:var(--space-8)">
       <span class="ns-bcard__cover">
-        <img src="../assets/img/training-trail.svg" alt="">
+        <span class="ns-ph" aria-hidden="true"></span>
         <span class="ns-tag ns-bcard__cat">Architecture</span>
       </span>
       <div class="ns-card__body">
@@ -2702,7 +2703,7 @@ export const COMPONENTS = [
 
     <div class="ns-blog-grid">
       <article class="ns-card ns-bcard">
-        <span class="ns-bcard__cover"><img class="ns-card__media" src="../assets/img/publication-cover.svg" alt=""><span class="ns-tag ns-bcard__cat">Apex</span></span>
+        <span class="ns-bcard__cover"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-bcard__cat">Apex</span></span>
         <div class="ns-card__body">
           <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Why your trigger fails at 201 records</h3></a>
           <p class="ns-bcard__excerpt">Governor limits are per transaction, not per record.</p>
@@ -3019,7 +3020,7 @@ export const COMPONENTS = [
   <div class="ns-card__foot">12 lessons · 3h 40m</div>
 </div>` },
       { name: "With media", note: "16:9 media on top; the frame crops, the caption never overlays.", html: `<div class="ns-card" style="max-inline-size:20rem">
-  <img class="ns-card__media" src="../assets/img/publication-cover.svg" alt="">
+  <span class="ns-card__media ns-ph" aria-hidden="true"></span>
   <div class="ns-card__body">
     <span class="ns-card__kicker">// Blog</span>
     <span class="ns-card__title">Why flows beat process builder</span>
@@ -3035,7 +3036,7 @@ export const COMPONENTS = [
   <div class="ns-card__foot">Step 01 of 06</div>
 </div>` },
       { name: "Horizontal", note: "Media beside body — the list-like form for dense collections.", html: `<div class="ns-card ns-card--row" style="max-inline-size:28rem">
-  <img class="ns-card__media" src="../assets/img/training-trail.svg" alt="">
+  <span class="ns-card__media ns-ph" aria-hidden="true"></span>
   <div class="ns-card__body">
     <span class="ns-card__kicker">// Training</span>
     <span class="ns-card__title">Trailhead in a weekend</span>
@@ -3704,7 +3705,7 @@ export const COMPONENTS = [
     variants: [
       { name: "Self-hosted, with chapters", stack: true, note: "Chapters live BELOW the player as a real list, not hovering over it. A chapter list is content: it is how a reader decides whether to watch at all, it should be readable without playing, and it should be in the page for search. Hiding it inside the video is the common mistake.", html: `<div class="ns-vplayer" data-ns-video data-state="paused">
   <div class="ns-vplayer__stage">
-    <video preload="metadata" poster="../assets/img/publication-cover.svg" playsinline></video>
+    <video preload="metadata" playsinline></video>
     <button class="ns-vplayer__big" type="button" aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
   </div>
   <div class="ns-vplayer__bar">
@@ -4597,16 +4598,16 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     a11y: ["alt describes what the image shows; empty alt only if truly decorative", "The caption supplements alt, it does not replace it"],
     variants: [
       { name: "Aspect ratios", html: `<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--gap-grid);inline-size:100%">
-  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>16 : 9</figcaption></figure>
-  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>4 : 3</figcaption></figure>
-  <figure class="ns-figure ns-figure--square"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>1 : 1</figcaption></figure>
+  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>16 : 9</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>4 : 3</figcaption></figure>
+  <figure class="ns-figure ns-figure--square"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>1 : 1</figcaption></figure>
 </div>` },
       { name: "With caption", html: `<figure class="ns-figure ns-figure--16x9" style="max-inline-size:24rem">
-  <span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt="The training trail illustration"></span>
+  <span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span>
   <figcaption>Fig 01 · The training trail</figcaption>
 </figure>` },
       { name: "Plain", note: "No frame — for transparent illustrations that carry their own shape.", html: `<figure class="ns-figure ns-figure--plain" style="max-inline-size:16rem">
-  <span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt=""></span>
+  <span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span>
 </figure>` },
     ],
   },
@@ -4618,7 +4619,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     a11y: ["The play button names its video: aria-label=\"Play: What is an org?\"", "Embedded players keep captions on by default where the platform allows"],
     variants: [
       { name: "Poster + play", html: `<div class="ns-video" style="max-inline-size:26rem">
-  <img class="ns-video__poster" src="../assets/img/publication-cover.svg" alt="">
+  <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
   <button class="ns-video__play" aria-label="Play: What is an org?"><i class="ph ph-play" aria-hidden="true"></i></button>
   <span class="ns-video__dur">08:12</span>
 </div>` },
@@ -4639,7 +4640,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   dlg.addEventListener('close', function () { frame.src = 'about:blank'; });
   dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
 });`, html: `<div class="ns-video" style="max-inline-size:26rem">
-  <img class="ns-video__poster" src="../assets/img/publication-cover.svg" alt="">
+  <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
   <button class="ns-video__play" data-video-modal="vm-demo" aria-label="Play: What is an org?"><i class="ph ph-play" aria-hidden="true"></i></button>
   <span class="ns-video__dur">08:12</span>
 </div>
@@ -4659,13 +4660,13 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     a11y: ["Each image keeps its own alt; the gallery adds nothing to announce"],
     variants: [
       { name: "Auto grid", html: `<div class="ns-gallery" style="inline-size:100%">
-  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>Setup</figcaption></figure>
-  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt=""></span><figcaption>Trail</figcaption></figure>
-  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>Deploy</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>Setup</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>Trail</figcaption></figure>
+  <figure class="ns-figure ns-figure--4x3"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>Deploy</figcaption></figure>
 </div>` },
       { name: "Two-up", note: "Locked pair — before/after, light/dark.", html: `<div class="ns-gallery ns-gallery--two" style="inline-size:100%">
-  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><img src="../assets/img/publication-cover.svg" alt=""></span><figcaption>Before</figcaption></figure>
-  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><img src="../assets/img/training-trail.svg" alt=""></span><figcaption>After</figcaption></figure>
+  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>Before</figcaption></figure>
+  <figure class="ns-figure ns-figure--16x9"><span class="ns-figure__frame"><span class="ns-ph" aria-hidden="true"></span></span><figcaption>After</figcaption></figure>
 </div>` },
     ],
   },
@@ -4904,19 +4905,19 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     variants: [
       { name: "The four", note: "<code>--photo</code> a print in an album · <code>--polaroid</code> the deep bottom margin, caption in the reader's own voice (Sentient) · <code>--matted</code> a museum mat, for something being presented · <code>--tape</code> stuck down at two corners, the only rotation in the system.", html: `<div class="ns-pframes">
   <figure class="ns-pframe ns-pframe--photo" style="inline-size:12rem">
-    <img src="../assets/img/training-trail.svg" alt="">
+    <span class="ns-ph" aria-hidden="true"></span>
     <figcaption>Bengaluru meetup, 2026</figcaption>
   </figure>
   <figure class="ns-pframe ns-pframe--polaroid" style="inline-size:12rem">
-    <img src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-ph" aria-hidden="true"></span>
     <figcaption>First trigger that survived the load</figcaption>
   </figure>
   <figure class="ns-pframe ns-pframe--matted" style="inline-size:14rem">
-    <img src="../assets/img/training-trail.svg" alt="">
+    <span class="ns-ph" aria-hidden="true"></span>
     <figcaption>Certificate 0042</figcaption>
   </figure>
   <figure class="ns-pframe ns-pframe--tape" style="inline-size:12rem">
-    <img src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-ph" aria-hidden="true"></span>
     <figcaption>Study group, week 6</figcaption>
   </figure>
 </div>` },
@@ -5185,7 +5186,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
 </div>` },
       { name: "Rich snippet", note: "A link, unfurled: thumbnail, title, one line, host. For a blog post or an external doc — anything that is not a catalog object.", html: `<div style="max-inline-size:36rem;display:grid;gap:var(--space-3)">
   <a class="ns-aisnippet" href="#0">
-    <img class="ns-aisnippet__thumb" src="../assets/img/publication-cover.svg" alt="">
+    <span class="ns-aisnippet__thumb ns-ph ns-ph--sm" aria-hidden="true"></span>
     <span>
       <span class="ns-aisnippet__kicker">// Blog</span>
       <span class="ns-aisnippet__title">The trigger that survived a 200-record load</span>
@@ -5194,7 +5195,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     </span>
   </a>
   <a class="ns-aisnippet" href="#0">
-    <img class="ns-aisnippet__thumb" src="../assets/img/training-trail.svg" alt="">
+    <span class="ns-aisnippet__thumb ns-ph ns-ph--sm" aria-hidden="true"></span>
     <span>
       <span class="ns-aisnippet__kicker">// Reference</span>
       <span class="ns-aisnippet__title">Execution governors and limits</span>
@@ -5204,7 +5205,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   </a>
 </div>` },
       { name: "Image", note: "Framed, captioned, and labelled when it was generated. The badge is not decoration — it is the difference between a diagram and a source.", html: `<figure class="ns-aiimage" style="max-inline-size:28rem">
-  <img src="../assets/img/training-trail.svg" alt="A diagram of the trigger execution order">
+  <span class="ns-ph" aria-hidden="true"></span>
   <figcaption class="ns-aiimage__cap">Trigger execution order, simplified <span class="ns-badge ns-badge--warning"><span class="ns-badge__dot" aria-hidden="true"></span>Generated</span></figcaption>
 </figure>` },
       { name: "Downloadable", note: "For a cheat sheet or a starter repo the assistant hands over, the catalog's resource row is already the right object.", html: `<div style="max-inline-size:36rem">

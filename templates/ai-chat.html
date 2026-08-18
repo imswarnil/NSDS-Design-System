@@ -32,27 +32,17 @@
       <button type="button" class="ns-btn ns-btn--outline ns-btn--sm ns-btn--block" data-ai-new>
         <i class="ph ph-plus" aria-hidden="true"></i> New chat
       </button>
-      <span class="ns-input-wrap">
-        <i class="ph ph-magnifying-glass ns-input-wrap__icon" aria-hidden="true"></i>
-        <input class="ns-input ns-input--has-icon" type="search" placeholder="Search chats" aria-label="Search conversations">
-      </span>
     </div>
 
     <div class="ns-aiside__list">
       <div class="ns-aiside__group">
         <p class="ns-aiside__label">Today</p>
         <a class="ns-aiside__item" href="#0" aria-current="true">
-          <span>
-            <span class="ns-aiside__course">Apex basics</span>
-            <span class="ns-aiside__title">Why does my trigger hit governor limits?</span>
-          </span>
+          <span class="ns-aiside__title">Why does my trigger hit governor limits?</span>
           <span class="ns-aiside__when">09:12</span>
         </a>
         <a class="ns-aiside__item" href="#0">
-          <span>
-            <span class="ns-aiside__course">Career</span>
-            <span class="ns-aiside__title">Resume review for admin roles</span>
-          </span>
+          <span class="ns-aiside__title">Resume review for admin roles</span>
           <span class="ns-aiside__when">08:40</span>
         </a>
       </div>
@@ -60,38 +50,22 @@
       <div class="ns-aiside__group">
         <p class="ns-aiside__label">Earlier this week</p>
         <a class="ns-aiside__item" href="#0">
-          <span>
-            <span class="ns-aiside__course">Flows, end to end</span>
-            <span class="ns-aiside__title">Record-triggered vs scheduled flow</span>
-          </span>
+          <span class="ns-aiside__title">Record-triggered vs scheduled flow</span>
           <span class="ns-aiside__when">Tue</span>
         </a>
         <a class="ns-aiside__item" href="#0">
-          <span>
-            <span class="ns-aiside__course">LWC from scratch</span>
-            <span class="ns-aiside__title">Passing data between components</span>
-          </span>
+          <span class="ns-aiside__title">Passing data between components</span>
           <span class="ns-aiside__when">Mon</span>
         </a>
         <a class="ns-aiside__item" href="#0">
-          <span>
-            <span class="ns-aiside__course">Project ideas</span>
-            <span class="ns-aiside__title">Something to put on GitHub</span>
-          </span>
+          <span class="ns-aiside__title">Something to put on GitHub</span>
           <span class="ns-aiside__when">Mon</span>
         </a>
       </div>
     </div>
 
-    <!-- Quota as a meter, not a warning. It is information until it is
-         nearly gone; the upgrade link is a text link, not a solid button —
-         the primary action on this screen is still asking a question. -->
     <div class="ns-aiside__foot">
-      <div class="ns-aiside__quota">
-        <span class="ns-aiside__quota-row">Questions today <b>12 / 30</b></span>
-        <progress class="ns-progress" value="12" max="30" aria-label="12 of 30 questions used today"></progress>
-        <a class="ns-link" href="#0">Go unlimited with Pro</a>
-      </div>
+      <a class="ns-link" href="#0">Settings</a>
     </div>
   </aside>
 
@@ -135,20 +109,6 @@
             Assistant
             <time datetime="2026-03-04T09:12">09:12</time>
           </header>
-
-          <details class="ns-aitrace">
-            <summary><i class="ph ph-caret-right" aria-hidden="true"></i> How I answered this <span class="ns-aisource__num">3 steps</span></summary>
-            <div class="ns-aitrace__steps">
-              <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Read</b> your progress — Apex basics, lesson 03 of 12, no bulk lessons completed yet.</span></p>
-              <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Searched</b> the catalog for bulk-safe Apex material.</span></p>
-              <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Checked</b> the Platform Developer I exam outline against what you have finished.</span></p>
-            </div>
-          </details>
-
-          <p>
-            <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Searched catalog<span class="ns-aitool__count">6</span></span>
-            <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Read your progress</span>
-          </p>
 
           <div class="ns-aiturn__body ns-prose">
             <p>Your trigger is written for one record at a time. Salesforce hands a trigger up to 200 records in a single call, so anything you do <em>inside</em> the loop — a SOQL query, a DML statement — runs 200 times and blows the per-transaction limit (100 queries, 150 DML statements).</p>
@@ -330,11 +290,6 @@
             <span class="ns-aifile__size">4 KB</span>
             <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--xs" aria-label="Remove AccountTrigger.cls"><i class="ph ph-x" aria-hidden="true"></i></button>
           </span>
-          <span class="ns-aifile" data-state="uploading">
-            <i class="ph ph-circle-notch" aria-hidden="true"></i>
-            <span class="ns-aifile__name">error-log.txt</span>
-            <span class="ns-aifile__size">uploading</span>
-          </span>
         </div>
 
         <label class="ns-visually-hidden" for="ai-input">Ask the assistant</label>
@@ -346,9 +301,7 @@
             <i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <i class="ph ph-caret-down" aria-hidden="true"></i>
           </button>
           <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-paperclip" aria-hidden="true"></i></button>
-          <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Dictate"><i class="ph ph-microphone" aria-hidden="true"></i></button>
           <span class="ns-aicomposer__spacer"></span>
-          <span class="ns-aicomposer__count" data-state="ok" data-ai-count>0 / 4000</span>
           <span class="ns-aicomposer__hint">Enter to send · Shift+Enter for a new line</span>
           <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send message">
             <i class="ph ph-paper-plane-tilt" aria-hidden="true"></i>

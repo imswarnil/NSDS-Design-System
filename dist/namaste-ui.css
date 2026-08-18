@@ -7145,6 +7145,53 @@
   @media (prefers-reduced-motion: reduce) {
     .ns-pframe--tape, .ns-pframes .ns-pframe--tape:nth-child(even) { rotate: none; }
   }
+
+  /* =============================================== Image placeholder ====
+     What sits in a media slot when there is no image — a course with no
+     cover yet, a lesson still that has not been cut, a demo.
+
+     It is deliberately NOTHING: a sunken panel, a hairline, and an optional
+     mono label. This replaced two decorative SVG illustrations that were
+     standing in across the entire styleguide, and the reason they had to go
+     is that a placeholder which looks like ART is a placeholder that gets
+     read as content — every card looked like it shipped with the same
+     picture, and no reviewer could tell an empty slot from a filled one.
+
+     Drop-in: put .ns-ph on the same element the <img> would have been, with
+     the same slot class, so it inherits that slot's size and radius.
+
+       <span class="ns-card__media ns-ph" aria-hidden="true"></span>
+       <span class="ns-card__media ns-ph" data-ph="Course cover"></span>   */
+  .ns-ph {
+    display: grid; place-items: center;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-label);
+    min-block-size: var(--space-12);
+  }
+  /* The one mark it carries: a hairline slash, corner to corner, at very low
+     contrast. Enough to say "this is a slot", not enough to look drawn. */
+  .ns-ph::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(to bottom right,
+      transparent calc(50% - 1px), var(--color-border) 50%, transparent calc(50% + 1px));
+    opacity: 0.5;
+  }
+  .ns-ph { position: relative; overflow: hidden; }
+  /* An optional label, for a slot whose job is not obvious from context. */
+  .ns-ph[data-ph]::after {
+    content: attr(data-ph);
+    position: relative;
+    padding: var(--space-0-5) var(--space-2);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  /* Tiny slots — a rail thumb, a snippet thumb — drop the slash: at 3rem it
+     is a smudge rather than a mark. */
+  .ns-ph--sm { min-block-size: 0; }
+  .ns-ph--sm::before { display: none; }
 }
 /* NS Design System — prose: styled content elements.
    =========================================================================
@@ -8763,7 +8810,7 @@
      of the thread from scrolling the page behind the app. */
   .ns-ai__scroll {
     overflow-y: auto; overscroll-behavior: contain;
-    padding: var(--space-8) var(--gutter);
+    padding: var(--space-10) var(--gutter);
     scroll-behavior: smooth;
   }
   .ns-ai--embedded .ns-ai__scroll { max-block-size: 60vh; padding: var(--pad-card); }
@@ -8838,8 +8885,8 @@
 
   .ns-aiside__item {
     display: grid; grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center; gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
+    align-items: baseline; gap: var(--space-3);
+    padding: var(--space-2-5) var(--space-4);
     border-inline-start: 2px solid transparent;
     color: var(--color-ink); text-decoration: none;
     font-size: var(--size-small);
@@ -8887,12 +8934,20 @@
   .ns-aiturn { display: flex; flex-direction: column; gap: var(--space-4); }
   .ns-aiturn + .ns-aiturn { margin-block-start: var(--space-10); }
 
+  /* One quiet line. This carried an avatar, a mono role label and a timestamp
+     on every turn — three pieces of chrome per message, repeated down the
+     page, none of which the reader was there for. The timestamp now only
+     shows on hover, and the role is the only thing always drawn. */
   .ns-aiturn__head {
     display: flex; align-items: center; gap: var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
+  .ns-aiturn__head time { opacity: 0; transition: opacity var(--duration-fast) var(--ease-out); }
+  .ns-aiturn:hover .ns-aiturn__head time,
+  .ns-aiturn:focus-within .ns-aiturn__head time { opacity: 1; }
+  @media (hover: none) { .ns-aiturn__head time { opacity: 1; } }
   .ns-aiturn__head time { margin-inline-start: auto; color: var(--color-muted); font-variant-numeric: tabular-nums; }
 
   /* The assistant's mark: a hairline square with the sparkle, never a
@@ -9341,11 +9396,17 @@
     border-block-start: 1px solid var(--color-border);
   }
   .ns-aicomposer__spacer { margin-inline-start: auto; }
+  /* The Enter/Shift+Enter hint is help, and help that is always on screen is
+     furniture. It appears when the box has focus — which is exactly when the
+     question arises — and is gone the rest of the time. */
   .ns-aicomposer__hint {
     margin-inline: var(--space-3) var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-muted); white-space: nowrap;
+    opacity: 0; transition: opacity var(--duration-fast) var(--ease-out);
   }
+  .ns-aicomposer:focus-within .ns-aicomposer__hint { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .ns-aicomposer__hint { transition: none; } }
   /* Character/token budget. Turns warning near the ceiling and error past
      it — a status, so it is a dot-and-text signal, not a red field. */
   .ns-aicomposer__count {
@@ -9609,12 +9670,43 @@
     color: var(--color-muted); font-variant-numeric: tabular-nums;
   }
 
+  /* --- The player's own navigation ---------------------------------------
+     DOCKED, not parked at the end of the article. Previously prev/next lived
+     at the bottom of the scrolling column, which meant the control for
+     leaving a lesson was only reachable by reading to the end of it — fine
+     for a 3-minute video, useless for a 20-minute one you want to skip out of
+     at 04:00, and invisible entirely while the stage is sticky above it.
+
+     Now it is a sticky bar at the foot of the content column: always on
+     screen, always the same two targets, and it carries the lesson counter so
+     "where am I" is answered without opening the rail.
+
+     It is INSIDE the scrolling column rather than fixed to the viewport, so
+     it never overlaps the rail and never covers the composer on a phone. */
   .ns-player__nav {
-    display: flex; align-items: center; gap: var(--space-2);
-    padding: 0 var(--pad-card) var(--pad-card);
-    margin-block-start: auto; /* pins to the bottom of the column on tall screens */
+    position: sticky; inset-block-end: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-3);
+    margin-block-start: auto;
+    padding: var(--space-2-5) var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
   }
-  .ns-player__nav .ns-progress-row { flex: 1; margin-inline: var(--space-4); }
+  /* The counter sits between the two controls and takes the slack, so prev
+     and next stay pinned to the edges whatever the lesson titles do. */
+  .ns-player__nav .ns-progress-row { flex: 1; justify-content: center; margin-inline: var(--space-4); }
+  .ns-player__nav .ns-lesson-nav { border-block-start: 0; padding-block: 0; inline-size: 100%; }
+
+  /* A lesson counter that is not a progress bar: at twelve lessons the bar is
+     twelve pixels of information and the fraction is all of it. */
+  .ns-player__count {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 47.999rem) {
+    .ns-player__nav { padding-inline: var(--gutter-md); }
+    .ns-player__count { display: none; }
+  }
 
   /* Body content under the header (tabs: notes / transcript / resources
      reuse .ns-tabs; prose respects the reading measure even though the

@@ -1577,6 +1577,7 @@ ${v.html}
    body, wrapped with the real stylesheet. */
 const DEMOS = [
   { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "one viewport, one scrollbar — the rail is fixed and ends in the CTA", lock: true },
+  { out: "demo-player-article.html", tpl: "course-player-article.html", title: "Course player, article lesson — full layout demo", back: "c-player.html", note: "the same player with no stage: reading measure, hairline progress, same rail", lock: true },
   { out: "demo-admin-dashboard.html", tpl: "admin-dashboard.html", title: "Admin dashboard — full screen demo", back: "c-admin-shell.html", note: "shell + nav + stats + drafts" },
   /* The two editor surfaces are the CONTENT of an admin screen — in product
      they render inside the shell's <main>, so the demo wraps them in one.

@@ -141,12 +141,43 @@
     color: var(--color-muted); font-variant-numeric: tabular-nums;
   }
 
+  /* --- The player's own navigation ---------------------------------------
+     DOCKED, not parked at the end of the article. Previously prev/next lived
+     at the bottom of the scrolling column, which meant the control for
+     leaving a lesson was only reachable by reading to the end of it — fine
+     for a 3-minute video, useless for a 20-minute one you want to skip out of
+     at 04:00, and invisible entirely while the stage is sticky above it.
+
+     Now it is a sticky bar at the foot of the content column: always on
+     screen, always the same two targets, and it carries the lesson counter so
+     "where am I" is answered without opening the rail.
+
+     It is INSIDE the scrolling column rather than fixed to the viewport, so
+     it never overlaps the rail and never covers the composer on a phone. */
   .ns-player__nav {
-    display: flex; align-items: center; gap: var(--space-2);
-    padding: 0 var(--pad-card) var(--pad-card);
-    margin-block-start: auto; /* pins to the bottom of the column on tall screens */
+    position: sticky; inset-block-end: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-3);
+    margin-block-start: auto;
+    padding: var(--space-2-5) var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
   }
-  .ns-player__nav .ns-progress-row { flex: 1; margin-inline: var(--space-4); }
+  /* The counter sits between the two controls and takes the slack, so prev
+     and next stay pinned to the edges whatever the lesson titles do. */
+  .ns-player__nav .ns-progress-row { flex: 1; justify-content: center; margin-inline: var(--space-4); }
+  .ns-player__nav .ns-lesson-nav { border-block-start: 0; padding-block: 0; inline-size: 100%; }
+
+  /* A lesson counter that is not a progress bar: at twelve lessons the bar is
+     twelve pixels of information and the fraction is all of it. */
+  .ns-player__count {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 47.999rem) {
+    .ns-player__nav { padding-inline: var(--gutter-md); }
+    .ns-player__count { display: none; }
+  }
 
   /* Body content under the header (tabs: notes / transcript / resources
      reuse .ns-tabs; prose respects the reading measure even though the

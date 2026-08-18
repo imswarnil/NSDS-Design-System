@@ -7,7 +7,7 @@ What an answer can carry beyond prose — the reason this is an LMS assistant an
 
 <Snippet kicker="// Blog" title="The trigger that survived a 200-record load"
   description="One real bulkification bug, from the debug log to the pattern that fixes it."
-  host="namastesalesforce.com" meta="8 min read" image="/assets/img/publication-cover.svg" />
+  host="namastesalesforce.com" meta="8 min read" />
 
 <LearningPath title="Route to Platform Developer I" meta="6 weeks · 5 steps" onSave={save}
   steps={[

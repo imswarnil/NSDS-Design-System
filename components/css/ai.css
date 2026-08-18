@@ -115,7 +115,7 @@
      of the thread from scrolling the page behind the app. */
   .ns-ai__scroll {
     overflow-y: auto; overscroll-behavior: contain;
-    padding: var(--space-8) var(--gutter);
+    padding: var(--space-10) var(--gutter);
     scroll-behavior: smooth;
   }
   .ns-ai--embedded .ns-ai__scroll { max-block-size: 60vh; padding: var(--pad-card); }
@@ -190,8 +190,8 @@
 
   .ns-aiside__item {
     display: grid; grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center; gap: var(--space-2);
-    padding: var(--space-2) var(--space-4);
+    align-items: baseline; gap: var(--space-3);
+    padding: var(--space-2-5) var(--space-4);
     border-inline-start: 2px solid transparent;
     color: var(--color-ink); text-decoration: none;
     font-size: var(--size-small);
@@ -239,12 +239,20 @@
   .ns-aiturn { display: flex; flex-direction: column; gap: var(--space-4); }
   .ns-aiturn + .ns-aiturn { margin-block-start: var(--space-10); }
 
+  /* One quiet line. This carried an avatar, a mono role label and a timestamp
+     on every turn — three pieces of chrome per message, repeated down the
+     page, none of which the reader was there for. The timestamp now only
+     shows on hover, and the role is the only thing always drawn. */
   .ns-aiturn__head {
     display: flex; align-items: center; gap: var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
+  .ns-aiturn__head time { opacity: 0; transition: opacity var(--duration-fast) var(--ease-out); }
+  .ns-aiturn:hover .ns-aiturn__head time,
+  .ns-aiturn:focus-within .ns-aiturn__head time { opacity: 1; }
+  @media (hover: none) { .ns-aiturn__head time { opacity: 1; } }
   .ns-aiturn__head time { margin-inline-start: auto; color: var(--color-muted); font-variant-numeric: tabular-nums; }
 
   /* The assistant's mark: a hairline square with the sparkle, never a
@@ -693,11 +701,17 @@
     border-block-start: 1px solid var(--color-border);
   }
   .ns-aicomposer__spacer { margin-inline-start: auto; }
+  /* The Enter/Shift+Enter hint is help, and help that is always on screen is
+     furniture. It appears when the box has focus — which is exactly when the
+     question arises — and is gone the rest of the time. */
   .ns-aicomposer__hint {
     margin-inline: var(--space-3) var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-muted); white-space: nowrap;
+    opacity: 0; transition: opacity var(--duration-fast) var(--ease-out);
   }
+  .ns-aicomposer:focus-within .ns-aicomposer__hint { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .ns-aicomposer__hint { transition: none; } }
   /* Character/token budget. Turns warning near the ceiling and error past
      it — a status, so it is a dot-and-text signal, not a red field. */
   .ns-aicomposer__count {
