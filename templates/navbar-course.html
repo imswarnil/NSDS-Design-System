@@ -18,7 +18,10 @@
   Behaviour: assets/js/nav.js (defer) for the account menu and theme switch.
 -->
 <nav class="ns-coursenav" aria-label="Course">
-  <!-- Leaving is one control, and it says where it goes. -->
+  <!-- Leaving is one control, and it says where it goes. The CURRICULUM
+       toggle is deliberately not here: it lives in the rail's own head, where
+       a control for a panel belongs. Below lg, where there is no rail, the
+       panel bar at the foot is the way to the lesson list. -->
   <a class="ns-coursenav__back" href="/courses/salesforce-admin/">
     <i class="ph ph-arrow-left" aria-hidden="true"></i>
     <span>Salesforce Admin</span>
@@ -26,15 +29,20 @@
 
   <span class="ns-topnav__divider" aria-hidden="true"></span>
 
+  <!-- The LESSON, and only the lesson: with the back button and the divider
+       to its left the bar reads "Salesforce Admin | Objects, fields &
+       relationships". The mono "Module 02 · Lesson 07 / 24" line that used to
+       sit above it was a third coordinate on a bar that already had the
+       progress and the rail. -->
   <span class="ns-coursenav__id">
-    <span class="ns-coursenav__kicker">Module 02 · Lesson 07 / 24</span>
     <span class="ns-coursenav__title">Objects, fields &amp; relationships</span>
   </span>
 
-  <!-- Course completion. Labelled and announced: unlike the blog's reading
-       line, this is a number the learner acts on. -->
+  <!-- Course completion: the meter takes the slack between the title and the
+       actions, vertically centred, with the fraction at its trailing end. Two
+       readings of one number — the bar for "roughly where", the fraction for
+       "exactly" — and the rail no longer repeats either. -->
   <div class="ns-coursenav__progress">
-    <span class="ns-coursenav__pct">29%</span>
     <div class="ns-coursenav__bar" role="progressbar" aria-label="Course progress"
          aria-valuenow="29" aria-valuemin="0" aria-valuemax="100" style="--p:29">
       <span></span>
@@ -43,25 +51,57 @@
   </div>
 
   <div class="ns-coursenav__actions">
-    <button type="button" class="ns-navicon" aria-label="Previous lesson">
-      <i class="ph ph-caret-left" aria-hidden="true"></i>
-    </button>
-    <button type="button" class="ns-navicon" aria-label="Notes">
-      <i class="ph ph-note" aria-hidden="true"></i>
-    </button>
-    <button type="button" class="ns-navicon" aria-label="Toggle curriculum" aria-expanded="true" aria-controls="player-rail">
-      <i class="ph ph-sidebar" aria-hidden="true"></i>
-    </button>
+    <!-- Site-wide search, and only the icon. This bar carries NO primary
+         action: "Complete & next" used to sit here, which put the same action
+         in two places — the docked prev/next at the foot of the lesson is
+         where you finish a lesson, and a second solid blue button in the
+         chrome competes with it for the one click the screen is allowed.
+
+         A LINK to the search page rather than a button that opens a dialog:
+         search here is a way out of the lesson to the rest of the site, and a
+         modal over a lesson you are mid-way through is the wrong shape for
+         that. Middle-click and cmd-click work, which they never do on a
+         button. -->
+    <a class="ns-navicon ns-tooltip-host" href="/search/" aria-label="Search the site">
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i><span class="ns-tooltip ns-tooltip--below">Search</span>
+    </a>
 
     <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
             aria-label="Dark mode" data-ns-theme-toggle>
-      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
     </button>
 
-    <!-- The one primary: finish this lesson and go to the next. -->
-    <button type="button" class="ns-btn ns-btn--primary ns-btn--sm">
-      <i class="ph ph-check" aria-hidden="true"></i>
-      <span class="ns-coursenav__next-label">Complete &amp; next</span>
-    </button>
+    <!-- The account, at the trailing edge where every product puts it. The
+         ring around the avatar carries the same completion the bar's line
+         does, so the two never disagree. -->
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="course-account" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar-ring" style="--p:29"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span></span>
+      </button>
+      <div class="ns-usermenu__panel" id="course-account">
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity">
+            <span class="ns-usermenu__fullname">Aarti Kulkarni</span>
+            <span class="ns-usermenu__email">aarti@example.com</span>
+          </span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <div class="ns-usermenu__progress">
+          <span class="ns-usermenu__progress-label"><span>Salesforce Admin</span><span>29%</span></span>
+          <progress class="ns-progress" value="29" max="100" aria-label="Course progress">29%</progress>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/"><i class="ph ph-user" aria-hidden="true"></i> Profile</a>
+        <a class="ns-menu__item" href="/account/certificates/"><i class="ph ph-medal" aria-hidden="true"></i> Certificates</a>
+        <a class="ns-menu__item" href="/account/notes/"><i class="ph ph-note" aria-hidden="true"></i> My notes</a>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/settings/"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
+        <a class="ns-menu__item" href="/help/"><i class="ph ph-question" aria-hidden="true"></i> Help</a>
+        <hr class="ns-menu__sep">
+        <button type="button" class="ns-menu__item ns-menu__item--danger" data-members-signout><i class="ph ph-arrow-up-right" aria-hidden="true"></i> Sign out</button>
+      </div>
+    </div>
   </div>
+
 </nav>

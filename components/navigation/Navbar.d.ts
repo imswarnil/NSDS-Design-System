@@ -139,21 +139,27 @@ export declare function NavStat(props: {
   icon?: React.ReactNode; value?: React.ReactNode; children?: React.ReactNode;
 }): React.JSX.Element;
 
-/** Chrome for a page you are inside: where am I, how far through, what next.
- *  Carries no site navigation on purpose. */
+/** Chrome for a page you are inside: where am I, and how far through. Carries
+ *  no site navigation on purpose — and no primary action either: finishing a
+ *  lesson belongs to the player's docked prev/next, and a second solid button
+ *  up here would compete for the one click a screen is allowed. */
 export declare function CourseNav(props: {
   backHref?: string;
+  /** The COURSE. With the divider after it the bar reads "Course | Lesson",
+   *  which is why there is no separate position line any more. */
   backLabel: React.ReactNode;
-  /** Mono position line — "Module 02 · Lesson 07 / 24". */
-  kicker?: React.ReactNode;
+  /** The lesson. */
   title: React.ReactNode;
-  /** Course completion; labelled and announced, unlike the reading line. */
+  /** Course completion. The meter takes the slack between the title and the
+   *  actions; `position` is the same number said exactly. */
   percent?: number;
   position?: React.ReactNode;
   dark?: boolean;
   onPrev?: () => void;
-  onNext?: () => void;
-  nextLabel?: string;
+  /** Renders the site-search icon as a LINK. Search from inside a lesson is a
+   *  way out to the rest of the site, so it navigates rather than opening a
+   *  dialog over work in progress — and middle-click works. */
+  searchHref?: string;
   actions?: React.ReactNode;
   children?: React.ReactNode;
 }): React.JSX.Element;

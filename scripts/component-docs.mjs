@@ -32,7 +32,7 @@ const codeBodyPlain = (src, lang, marks) => `  <div class="ns-code__body">
     <pre class="ns-code__pre"><code>${highlightLines(src, lang, marks)}</code></pre>
   </div>`;
 
-export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Training", "Blog", "AI", "Content blocks", "CMS", "Sections"];
+export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Teaching", "Training", "Blog", "AI", "Content blocks", "Monetization", "CMS", "Sections"];
 
 export const COMPONENTS = [
 
@@ -445,16 +445,176 @@ export const COMPONENTS = [
   },
   {
     id: "table", title: "Table", family: "Progress & data",
-    summary: "Hairlines only, no zebra — mono numerals already make rows read as rows. Numeric columns are tabular and end-aligned so digits stack. The wrapper is mandatory: it is what makes a wide table scroll inside itself on a phone.",
-    use: ["Lesson lists, scores, anything genuinely tabular"],
-    not: ["Card-shaped content forced into rows"],
-    a11y: ["tabindex=\"0\" on the wrapper — a scroll region must be keyboard-reachable", "Sortable headers put aria-sort on the <th> and a real <button> inside it"],
+    summary: "Hairlines only. Numeric columns are tabular and end-aligned so digits stack; the wrapper is mandatory, because it is what makes a wide table scroll inside itself on a phone. Everything past the base is an opt-in modifier — four header treatments, three densities, row state, cell tone, data bars and a heat ramp — and state is always an <code>attribute</code> a server can print from a value, never a class a template has to map.",
+    use: ["Lesson lists, scores, gradebooks, storage reports — anything genuinely tabular", "Admin lists, where <code>--compact</code> plus row actions is the working shape", "A matrix (activity by week, coverage by module) with <code>--matrix</code> and the heat ramp"],
+    not: ["Card-shaped content forced into rows", "A layout — the wrapper and a grid do that job without lying to a screen reader", "A chart. A data bar in a cell annotates a number; a cell with only a bar in it is a chart that lost its axis"],
+    a11y: [
+      "tabindex=\"0\" on the wrapper — a scroll region must be keyboard-reachable",
+      "Sortable headers put aria-sort on the &lt;th&gt; and a real &lt;button&gt; inside it",
+      "Every tone, state and heat level is a wash PLUS an edge, a glyph or a printed value — colour is never the only signal, and every wash is dropped under forced-colors and in print",
+      "Row actions reveal on :hover AND :focus-within; on touch they are simply always visible",
+      "--stacked hides the header visually but keeps it in the DOM, so the table is still a table to a screen reader",
+    ],
     variants: [
-      { name: "Compact and bordered", stack: true, note: "No zebra striping in any variant: striping is a second structuring device competing with the hairline, and with mono numerals the rows already read as rows.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--bordered">
-  <thead><tr><th scope="col">Object</th><th scope="col">Records</th><th scope="col">Storage</th></tr></thead>
+      { name: "Header treatments", stack: true, note: "The default — mono, uppercase, label ink — is right for almost every table in the product. <code>--head-filled</code> is for a header that scrolls (it re-announces itself as chrome), <code>--head-strong</code> brackets a table that has a <code>tfoot</code> total, <code>--head-plain</code> is for a table inside an <em>article</em>, where mono uppercase reads as product chrome dropped into the writing, and <code>--head-brand</code> is the report header — at most one per screen, because it is a filled band and two of them compete.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--head-filled">
+  <thead><tr><th scope="col">Filled</th><th scope="col" class="ns-table__num">Records</th></tr></thead>
+  <tbody><tr><td>Account</td><td class="ns-table__num">12,480</td></tr></tbody>
+</table></div>
+<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--head-strong">
+  <thead><tr><th scope="col">Strong</th><th scope="col" class="ns-table__num">Records</th></tr></thead>
+  <tbody><tr><td>Account</td><td class="ns-table__num">12,480</td></tr></tbody>
+</table></div>
+<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--head-plain">
+  <thead><tr><th scope="col">Plain</th><th scope="col" class="ns-table__num">Records</th></tr></thead>
+  <tbody><tr><td>Account</td><td class="ns-table__num">12,480</td></tr></tbody>
+</table></div>
+<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--head-brand">
+  <thead><tr><th scope="col">Brand</th><th scope="col" class="ns-table__num">Records</th></tr></thead>
+  <tbody><tr><td>Account</td><td class="ns-table__num">12,480</td></tr></tbody>
+</table></div>` },
+      { name: "Density and rules", stack: true, note: "<code>--compact</code> for an admin list the reader is scanning for one row; <code>--roomy</code> for a short table that is the main content of the screen. <code>--bordered</code> adds the vertical hairline, for a grid where the column is a real unit; <code>--open</code> drops the horizontal one, for a table short enough that the header rule alone holds it.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--compact ns-table--bordered">
+  <thead><tr><th scope="col">Object</th><th scope="col" class="ns-table__num">Records</th><th scope="col" class="ns-table__num">Storage</th></tr></thead>
   <tbody>
     <tr><td>Account</td><td class="ns-table__num">12,480</td><td class="ns-table__num">24 MB</td></tr>
     <tr><td>Contact</td><td class="ns-table__num">38,102</td><td class="ns-table__num">71 MB</td></tr>
+  </tbody>
+</table></div>
+<div class="ns-table-wrap"><table class="ns-table ns-table--roomy ns-table--open">
+  <thead><tr><th scope="col">Object</th><th scope="col" class="ns-table__num">Records</th><th scope="col" class="ns-table__num">Storage</th></tr></thead>
+  <tbody>
+    <tr><td>Account</td><td class="ns-table__num">12,480</td><td class="ns-table__num">24 MB</td></tr>
+    <tr><td>Contact</td><td class="ns-table__num">38,102</td><td class="ns-table__num">71 MB</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Row state", stack: true, note: "<code>data-state</code> on the <code>&lt;tr&gt;</code> — an attribute a server prints from a value, so Handlebars and React produce the same markup without either owning a mapping. Every state is a 3px leading edge <em>plus</em> a wash, so it survives grayscale and forced-colors. Use it when the whole row is the story; use cell tone below when one value is.", html: `<div class="ns-table-wrap"><table class="ns-table">
+  <thead><tr><th scope="col">Learner</th><th scope="col">Status</th><th scope="col" class="ns-table__num">Score</th></tr></thead>
+  <tbody>
+    <tr data-state="current"><td class="ns-table__strong">Priya Nair</td><td><span class="ns-status ns-status--info">In progress</span></td><td class="ns-table__num">—</td></tr>
+    <tr data-state="success"><td>Arun Menon</td><td><span class="ns-status ns-status--success">Passed</span></td><td class="ns-table__num">94</td></tr>
+    <tr data-state="warning"><td>Kavya Rao</td><td><span class="ns-status ns-status--warning">At risk</span></td><td class="ns-table__num">61</td></tr>
+    <tr data-state="danger"><td>Dev Sharma</td><td><span class="ns-status ns-status--error">Failed</span></td><td class="ns-table__num">38</td></tr>
+    <tr data-state="muted"><td>Meera Iyer</td><td><span class="ns-status ns-status--idle">Withdrawn</span></td><td class="ns-table__num">—</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Cell tone and delta", stack: true, note: "<code>data-tone</code> tints one cell when one value in an otherwise fine row is the story. The wash is deliberately weak and the ink carries the signal — a saturated fill behind body text fails contrast on the first long value. <code>.ns-table__delta</code> is a caret <em>and</em> a sign <em>and</em> a colour; <code>data-polarity=\"inverse\"</code> flips it for a metric where up is bad.", html: `<div class="ns-table-wrap"><table class="ns-table">
+  <thead><tr><th scope="col">Module</th><th scope="col" class="ns-table__num">Completion</th><th scope="col" class="ns-table__num">Drop-off</th></tr></thead>
+  <tbody>
+    <tr><td>Objects &amp; fields</td><td class="ns-table__num" data-tone="success">96% pass</td><td class="ns-table__num"><span class="ns-table__delta" data-dir="down" data-polarity="inverse">2.1%</span></td></tr>
+    <tr><td>SOQL basics</td><td class="ns-table__num" data-tone="warning">64% pass</td><td class="ns-table__num"><span class="ns-table__delta" data-dir="up" data-polarity="inverse">8.4%</span></td></tr>
+    <tr><td>Apex triggers</td><td class="ns-table__num" data-tone="danger">31% pass</td><td class="ns-table__num"><span class="ns-table__delta" data-dir="up" data-polarity="inverse">14.9%</span></td></tr>
+    <tr><td>Flow builder</td><td class="ns-table__num" data-tone="neutral">not run</td><td class="ns-table__num"><span class="ns-table__delta">0.0%</span></td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Data bars", stack: true, note: "Magnitude encoded in <em>length</em>, which reads pre-attentively and survives every colour condition there is. The percentage arrives as a custom property — <code>style=\"--ns-bar:62%\"</code> — which is the one inline style this system allows, because it is a datum rather than a style choice. The number stays printed in the cell.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--compact">
+  <thead><tr><th scope="col">Module</th><th scope="col">Cohort completion</th></tr></thead>
+  <tbody>
+    <tr><td>Objects &amp; fields</td><td><span class="ns-table__bar" style="--ns-bar:96%" data-tone="success">96%</span></td></tr>
+    <tr><td>SOQL basics</td><td><span class="ns-table__bar" style="--ns-bar:64%">64%</span></td></tr>
+    <tr><td>Apex triggers</td><td><span class="ns-table__bar" style="--ns-bar:31%" data-tone="warning">31%</span></td></tr>
+    <tr><td>Integration</td><td><span class="ns-table__bar" style="--ns-bar:8%" data-tone="danger">8%</span></td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Heat matrix", stack: true, note: "<code>data-heat=\"0\"</code>–<code>\"4\"</code> against the sequential dataviz ramp — four steps, because that is the honest resolution of the ramp. The wash is capped low enough that the cell's own value stays readable on both themes, which is the point: heat is an <em>accent on a printed number</em>, never a replacement for it. A grid of empty coloured squares is unreadable to anyone who cannot see the hue and unprintable for everyone.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--matrix ns-table--bordered ns-table--stickycol">
+  <thead><tr><th scope="col">Module</th><th scope="col">W1</th><th scope="col">W2</th><th scope="col">W3</th><th scope="col">W4</th><th scope="col">W5</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Objects</th><td data-heat="4">41</td><td data-heat="3">28</td><td data-heat="2">12</td><td data-heat="1">4</td><td data-heat="0">0</td></tr>
+    <tr><th scope="row">SOQL</th><td data-heat="1">6</td><td data-heat="4">39</td><td data-heat="3">22</td><td data-heat="2">11</td><td data-heat="1">3</td></tr>
+    <tr><th scope="row">Apex</th><td data-heat="0">0</td><td data-heat="1">5</td><td data-heat="3">26</td><td data-heat="4">44</td><td data-heat="2">14</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Sortable and sticky", stack: true, note: "The sort control is a real <code>&lt;button&gt;</code> inside the <code>&lt;th&gt;</code>, so it is keyboard reachable; the <code>&lt;th&gt;</code> carries <code>aria-sort</code>, which is what gets announced. <code>--sticky</code> pins the header to the wrapper's scroll — sorting is a property of the column, and a reader three hundred rows down has no header on screen to remind them which one it was.", html: `<div class="ns-table-wrap" tabindex="0" style="max-block-size:12rem"><table class="ns-table ns-table--compact ns-table--sticky ns-table--head-filled">
+  <thead><tr>
+    <th scope="col">Lesson</th>
+    <th scope="col">Duration</th>
+    <th scope="col" class="ns-table__num" aria-sort="descending"><button type="button" class="ns-table__sort">Score</button></th>
+  </tr></thead>
+  <tbody>
+    <tr><td>Your first org</td><td>12:04</td><td class="ns-table__num">100</td></tr>
+    <tr><td>Objects &amp; fields</td><td>18:30</td><td class="ns-table__num">92</td></tr>
+    <tr><td>SOQL basics</td><td>21:15</td><td class="ns-table__num">78</td></tr>
+    <tr><td>Apex triggers</td><td>26:40</td><td class="ns-table__num">64</td></tr>
+    <tr><td>Flow builder</td><td>19:02</td><td class="ns-table__num">55</td></tr>
+    <tr><td>Integration</td><td>31:18</td><td class="ns-table__num">41</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "The full data table", stack: true, note: "Toolbar, selection column, row actions, totals and a footer count — all inside the wrapper, so the box frames the whole apparatus as one object instead of leaving three loose elements stacked on the page. The actions reveal on hover <em>and</em> focus-within, at a reserved width so revealing them does not reflow the table.", html: `<div class="ns-table-wrap">
+  <div class="ns-table__toolbar">
+    <span class="ns-table__toolbar-title">Enrolments</span>
+    <span class="ns-table__count">2 selected</span>
+    <span class="ns-table__toolbar-end">
+      <button class="ns-btn ns-btn--outline ns-btn--xs">Export</button>
+      <button class="ns-btn ns-btn--primary ns-btn--xs">Invite</button>
+    </span>
+  </div>
+  <table class="ns-table ns-table--compact">
+    <thead><tr>
+      <th scope="col" class="ns-table__select"><input type="checkbox" class="ns-checkbox" aria-label="Select all rows"></th>
+      <th scope="col">Learner</th>
+      <th scope="col">Track</th>
+      <th scope="col" class="ns-table__num">Progress</th>
+      <th scope="col"><span class="ns-visually-hidden">Actions</span></th>
+    </tr></thead>
+    <tbody>
+      <tr aria-selected="true">
+        <td class="ns-table__select"><input type="checkbox" class="ns-checkbox" checked aria-label="Select Priya Nair"></td>
+        <td><span class="ns-table__stack"><span class="ns-table__strong">Priya Nair</span><span class="ns-table__sub">priya@example.com</span></span></td>
+        <td class="ns-table__code">ADMIN-201</td>
+        <td class="ns-table__num">82%</td>
+        <td class="ns-table__actions"><button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--xs" aria-label="Edit Priya Nair"><i class="ph ph-pen-nib" aria-hidden="true"></i></button></td>
+      </tr>
+      <tr aria-selected="true">
+        <td class="ns-table__select"><input type="checkbox" class="ns-checkbox" checked aria-label="Select Arun Menon"></td>
+        <td><span class="ns-table__stack"><span class="ns-table__strong">Arun Menon</span><span class="ns-table__sub">arun@example.com</span></span></td>
+        <td class="ns-table__code">DEV-101</td>
+        <td class="ns-table__num">100%</td>
+        <td class="ns-table__actions"><button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--xs" aria-label="Edit Arun Menon"><i class="ph ph-pen-nib" aria-hidden="true"></i></button></td>
+      </tr>
+      <tr>
+        <td class="ns-table__select"><input type="checkbox" class="ns-checkbox" aria-label="Select Kavya Rao"></td>
+        <td><span class="ns-table__stack"><span class="ns-table__strong">Kavya Rao</span><span class="ns-table__sub">kavya@example.com</span></span></td>
+        <td class="ns-table__code">DEV-101</td>
+        <td class="ns-table__num">47%</td>
+        <td class="ns-table__actions"><button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--xs" aria-label="Edit Kavya Rao"><i class="ph ph-pen-nib" aria-hidden="true"></i></button></td>
+      </tr>
+    </tbody>
+    <tfoot><tr><td colspan="3">3 learners</td><td class="ns-table__num">76%</td><td></td></tr></tfoot>
+  </table>
+  <div class="ns-table__footer">
+    <span class="ns-table__count">1–3 of 128</span>
+    <span class="ns-table__toolbar-end">
+      <button class="ns-btn ns-btn--outline ns-btn--xs" disabled>Previous</button>
+      <button class="ns-btn ns-btn--outline ns-btn--xs">Next</button>
+    </span>
+  </div>
+</div>` },
+      { name: "Rows as links", stack: true, note: "The clickable thing stays a real <code>&lt;a&gt;</code> in the first cell, stretched over its row — a row-level click handler is invisible to the keyboard and to a screen reader, and cannot be opened in a new tab. The caret in the last cell appears on hover and on focus-within, so the affordance reaches both.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--rowlink">
+  <thead><tr><th scope="col">Course</th><th scope="col">Lessons</th><th scope="col" class="ns-table__num">Enrolled</th></tr></thead>
+  <tbody>
+    <tr><td><a class="ns-table__link ns-table__link--stretch" href="#">Salesforce Admin 201</a></td><td>34</td><td class="ns-table__num">1,204</td></tr>
+    <tr><td><a class="ns-table__link ns-table__link--stretch" href="#">Apex Development 101</a></td><td>28</td><td class="ns-table__num">862</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Empty", stack: true, note: "An empty table keeps its header — the columns are information about what <em>would</em> be here, and a table that collapses to a bare sentence has thrown that away.", html: `<div class="ns-table-wrap"><table class="ns-table">
+  <thead><tr><th scope="col">Learner</th><th scope="col">Track</th><th scope="col" class="ns-table__num">Progress</th></tr></thead>
+  <tbody><tr><td class="ns-table__empty" colspan="3">
+    <span class="ns-table__empty-title">No enrolments yet</span>
+    Invite your first learner and they will appear here.
+  </td></tr></tbody>
+</table></div>` },
+      { name: "Stacked on small screens", stack: true, note: "The default answer for a wide table on a phone is the scrolling wrapper. This is the other one: below 48rem each row becomes a small card and each cell prints its own column label from <code>data-label</code>. Right when a row is an <em>entity</em> the reader acts on; wrong when the table is a grid of figures compared down the column, because stacking destroys the column, which was the comparison. Narrow the window to see it.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--stacked">
+  <thead><tr><th scope="col">Invoice</th><th scope="col">Date</th><th scope="col">Status</th><th scope="col" class="ns-table__num">Amount</th></tr></thead>
+  <tbody>
+    <tr><td data-label="Invoice" class="ns-table__code">INV-20841</td><td data-label="Date">12 Aug 2026</td><td data-label="Status"><span class="ns-status ns-status--success">Paid</span></td><td data-label="Amount" class="ns-table__num">₹4,999</td></tr>
+    <tr data-state="warning"><td data-label="Invoice" class="ns-table__code">INV-20842</td><td data-label="Date">19 Aug 2026</td><td data-label="Status"><span class="ns-status ns-status--warning">Due</span></td><td data-label="Amount" class="ns-table__num">₹9,499</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Zebra — opt-in only", stack: true, note: "The base does not stripe: striping is a second structuring device competing with the hairline, and with mono numerals the rows already read as rows. <code>--zebra</code> exists for the one case that argument does not cover — a wide table that scrolls sideways, where the eye travels a long way from the row label to the cell. If the table fits on screen without scrolling, the answer is no. Scroll this one to see why.", html: `<div class="ns-table-wrap" tabindex="0"><table class="ns-table ns-table--compact ns-table--zebra ns-table--stickycol" style="min-inline-size:52rem">
+  <thead><tr><th scope="col">Learner</th><th scope="col">W1</th><th scope="col">W2</th><th scope="col">W3</th><th scope="col">W4</th><th scope="col">W5</th><th scope="col">W6</th><th scope="col">W7</th><th scope="col" class="ns-table__num">Total</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">Priya Nair</th><td>8</td><td>9</td><td>7</td><td>10</td><td>9</td><td>8</td><td>10</td><td class="ns-table__num">61</td></tr>
+    <tr><th scope="row">Arun Menon</th><td>10</td><td>10</td><td>9</td><td>9</td><td>10</td><td>10</td><td>9</td><td class="ns-table__num">67</td></tr>
+    <tr><th scope="row">Kavya Rao</th><td>6</td><td>5</td><td>7</td><td>4</td><td>6</td><td>5</td><td>7</td><td class="ns-table__num">40</td></tr>
+    <tr><th scope="row">Dev Sharma</th><td>4</td><td>6</td><td>3</td><td>5</td><td>4</td><td>6</td><td>5</td><td class="ns-table__num">33</td></tr>
   </tbody>
 </table></div>` },
       { name: "Key / value", stack: true, note: "A spec table whose first column is the label. Related to Definition list — use this when the rest of the page is already tabular.", html: `<div class="ns-table-wrap"><table class="ns-table ns-table--keyvalue">
@@ -674,7 +834,7 @@ export const COMPONENTS = [
 <div id="demo-menu" popover="auto" role="menu" class="ns-popover ns-menu">
   <div class="ns-menu__label">Lesson</div>
   <button class="ns-menu__item" role="menuitem"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Restart</button>
-  <button class="ns-menu__item" role="menuitem"><i class="ph ph-download-simple" aria-hidden="true"></i> Download notes</button>
+  <button class="ns-menu__item" role="menuitem"><i class="ph ph-arrow-down" aria-hidden="true"></i> Download notes</button>
   <hr class="ns-menu__sep">
   <button class="ns-menu__item ns-menu__item--danger" role="menuitem"><i class="ph ph-trash" aria-hidden="true"></i> Clear progress</button>
 </div>` },
@@ -894,7 +1054,7 @@ export const COMPONENTS = [
   </article>
 </div>` },
       { name: "Attachment target", html: `<label class="ns-attach" style="max-inline-size:24rem">
-  <i class="ph ph-paperclip" aria-hidden="true"></i> Attach a screenshot (optional)
+  <i class="ph ph-folder-open" aria-hidden="true"></i> Attach a screenshot (optional)
   <input type="file">
 </label>` },
     ],
@@ -1091,15 +1251,16 @@ export const COMPONENTS = [
       </span>
     </summary>
     <a class="ns-lesson" href="#" data-state="done">
-      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
       <span class="ns-lesson__body">
         <span class="ns-lesson__title">What is an org?<span class="ns-visually-hidden"> (completed)</span></span>
+      <span class="ns-tooltip">What is an org?</span>
         <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span></span>
       </span>
       <span class="ns-lesson__time">08:12</span>
     </a>
     <a class="ns-lesson" href="#" data-state="done">
-      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
       <span class="ns-lesson__body">
         <span class="ns-lesson__title">Objects &amp; fields<span class="ns-visually-hidden"> (completed)</span></span>
         <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--article"><i class="ph ph-article" aria-hidden="true"></i>Article</span></span>
@@ -1153,16 +1314,16 @@ export const COMPONENTS = [
   <span class="ns-ltype ns-ltype--quiz"><i class="ph ph-question" aria-hidden="true"></i>Quiz</span>
   <span class="ns-ltype ns-ltype--lab"><i class="ph ph-flask" aria-hidden="true"></i>Lab</span>
   <span class="ns-ltype ns-ltype--live"><i class="ph ph-video-camera" aria-hidden="true"></i>Live</span>
-  <span class="ns-ltype"><i class="ph ph-download-simple" aria-hidden="true"></i>Download</span>
+  <span class="ns-ltype"><i class="ph ph-arrow-down" aria-hidden="true"></i>Download</span>
 </div>` },
       { name: "Timeline", note: "The connector runs behind the index column and stops at the last section, so it reads as a path with an end rather than a rule that ran off the card. The section dot carries the state — done, current, or ahead. For a certification track or a roadmap, where the ORDER is the point.", html: `<div class="ns-curriculum ns-curriculum--timeline" style="max-inline-size:30rem;inline-size:100%">
   <details class="ns-curriculum__section" data-state="done" open>
     <summary class="ns-curriculum__head">
-      <span class="ns-curriculum__index"><i class="ph ph-check" aria-hidden="true"></i></span>
+      <span class="ns-curriculum__index"><i class="ph ph-check-circle" aria-hidden="true"></i></span>
       <h3 class="ns-curriculum__title">Foundations</h3>
       <span class="ns-curriculum__meta"><span class="ns-curriculum__done">Complete</span><i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i></span>
     </summary>
-    <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span><span class="ns-lesson__title">The data model</span><span class="ns-lesson__time">18:00</span></a>
+    <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span><span class="ns-lesson__title">The data model</span><span class="ns-lesson__time">18:00</span></a>
   </details>
   <details class="ns-curriculum__section" data-state="current" open>
     <summary class="ns-curriculum__head">
@@ -1212,7 +1373,7 @@ export const COMPONENTS = [
     <span class="ns-curriculum__totals ns-curriculum__done">3 done</span>
   </div>
   <a class="ns-lesson" href="#0" data-state="done">
-    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
     <span class="ns-lesson__body">
       <span class="ns-lesson__title">What is an org?</span>
     </span>
@@ -1222,7 +1383,7 @@ export const COMPONENTS = [
     <span class="ns-lesson__time">08:12</span>
   </a>
   <a class="ns-lesson" href="#0" data-state="done">
-    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
     <span class="ns-lesson__body"><span class="ns-lesson__title">Objects &amp; fields</span></span>
     <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
       <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span>
@@ -1312,7 +1473,7 @@ export const COMPONENTS = [
       <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
     </summary>
     <a class="ns-lesson" href="#0" data-state="done">
-      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
       <span class="ns-lesson__body"><span class="ns-lesson__title">The permission set model</span></span>
       <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
         <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span>
@@ -1463,7 +1624,7 @@ export const COMPONENTS = [
     <h3 class="ns-curriculum__title">SOQL &amp; data</h3>
     <form method="dialog" style="margin-inline-start:auto"><button class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon" aria-label="Close"><i class="ph ph-x" aria-hidden="true"></i></button></form>
   </header>
-  <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span><span class="ns-lesson__title">SELECT and WHERE</span><span class="ns-lesson__time">14:02</span></a>
+  <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span><span class="ns-lesson__title">SELECT and WHERE</span><span class="ns-lesson__time">14:02</span></a>
   <a class="ns-lesson" href="#" aria-current="true"><span class="ns-lesson__index" aria-hidden="true">07</span><span class="ns-lesson__title">SOQL joins: relationships</span><span class="ns-lesson__time">21:15</span></a>
   <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">08</span><span class="ns-lesson__title">Aggregate queries</span><span class="ns-lesson__time">18:40</span></a>
 </dialog>` },
@@ -1479,7 +1640,7 @@ export const COMPONENTS = [
   </div>
   <div class="ns-lessonmodal__list">
     <a class="ns-lesson" href="#0" data-state="done">
-      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
       <span class="ns-lesson__title">SELECT and WHERE</span>
       <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
       <span class="ns-lesson__time">14:02</span></a>
@@ -1508,10 +1669,10 @@ export const COMPONENTS = [
   },
   {
     id: "course-detail", title: "Course detail page", family: "LMS",
-    summary: "The course's landing: dark hero (title, meta, the one primary action), then description + curriculum in the content column with a sticky rail — includes, instructor, the enroll card. One primary button on the whole page.",
+    summary: "The course's landing: hero (title, meta, the one primary action), the stat band, the outcomes, and then the five arguments — overview, curriculum, instructors, reviews, FAQ — as TABS in the content column, with the enrol card sticky in the rail beside them. One primary button on the whole page.",
     use: ["Every course's public page, both products"],
     not: ["The lesson experience — Course player"],
-    a11y: ["The hero's enroll button and the rail's are the same action — one label, both reachable", "The curriculum is the real component, so its row semantics come along"],
+    a11y: ["The hero's enroll button and the rail's are the same action — one label, both reachable", "The curriculum is the real component, so its row semantics come along", "Tabs are the real ARIA pattern via assets/js/tabs.js — and with no JS every panel is visible, so the stacked page is the fallback rather than a page with four sections missing"],
     variants: [
       { name: "Anatomy — content + sticky rail", note: "The grid at documentation scale; open the full-screen demo for the real thing.", html: `<div class="ns-course-detail" style="inline-size:100%">
   <div>
@@ -1541,7 +1702,7 @@ export const COMPONENTS = [
     </div>
   </aside>
 </div>` },
-      { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-detail.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Full page", note: "Three decisions worth knowing before you copy it. <strong>Tabs, not eight stacked bands</strong> — a course page carries five separate arguments, and stacked they make a page nobody reaches the bottom of, with the curriculum (the thing people came to read) buried three screens down. <strong>Outcomes above the tabs, never inside one</strong> — \"what will I be able to do\" is the question every visitor arrives with, and it decides whether they read anything else; each promise takes the icon of the thing it produces rather than a fifth identical tick, because five ticks is a list that has to be read and five glyphs is one that can be scanned. <strong>The lesson kind is an icon</strong> — twenty-four rows that each spell out VIDEO turn a curriculum into a spreadsheet; the word stays in the DOM and returns as a tooltip, which frees the row's second line for what the glyph cannot say: whether the row is open to you.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-detail.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
       { name: "The five shapes", note: "Same content, same components, five arrangements — because a $9 course, a certification track and a free tutorial are not the same sale. <code>--wide</code> puts the rail LEFT for a course whose curriculum is the product; <code>--stacked</code> drops the rail entirely (free courses: a sticky price rail advertising nothing); <code>--syllabus</code> leads with the curriculum for a returning learner; <code>--compact</code> is one prose column, the documentation-page look.", html: `<div style="display:grid;gap:var(--space-6);inline-size:100%">
   <div class="ns-course-detail ns-course-detail--wide" style="border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--pad-card)">
     <aside class="ns-course-detail__rail"><div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Rail left</span><span class="ns-card__title">$49</span></div></div></aside>
@@ -1602,7 +1763,7 @@ export const COMPONENTS = [
     <div class="ns-card ns-ccard" data-topic="dev"><span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Advanced</span></span><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Bulk-safe Apex</span></a><span class="ns-ccard__meta"><span>9 lessons</span></span></div></div>
   </div>
 </div>` },
-      { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-listing.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-listing.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
     ],
   },
 
@@ -1774,6 +1935,7 @@ export const COMPONENTS = [
         <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
         <span class="ns-certbadge__inner">
           <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+          <span class="ns-certbadge__rule" aria-hidden="true"></span>
           <span class="ns-certbadge__word">Certified</span>
           <span class="ns-certbadge__name">Platform Developer</span>
         </span>
@@ -1812,7 +1974,7 @@ export const COMPONENTS = [
       <li><i class="ph ph-video" aria-hidden="true"></i>6h 20m of video</li>
       <li><i class="ph ph-article" aria-hidden="true"></i>12 written lessons</li>
       <li><i class="ph ph-flask" aria-hidden="true"></i>5 hands-on labs</li>
-      <li><i class="ph ph-download-simple" aria-hidden="true"></i>Downloadable source</li>
+      <li><i class="ph ph-arrow-down" aria-hidden="true"></i>Downloadable source</li>
       <li><i class="ph ph-infinity" aria-hidden="true"></i>Lifetime access</li>
       <li><i class="ph ph-medal" aria-hidden="true"></i>Certificate of completion</li>
     </ul>
@@ -2053,10 +2215,10 @@ export const COMPONENTS = [
   <div>
     <p class="ns-kicker">What you'll learn</p>
     <ul class="ns-outcomes">
-      <li><i class="ph ph-check" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load.</span></li>
-      <li><i class="ph ph-check" aria-hidden="true"></i><span>Read a governor-limit error and know which line caused it.</span></li>
-      <li><i class="ph ph-check" aria-hidden="true"></i><span>Query selectively, and know when an index is being used.</span></li>
-      <li><i class="ph ph-check" aria-hidden="true"></i><span>Deploy with SFDX, with 75%+ coverage that means something.</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load.</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Read a governor-limit error and know which line caused it.</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Query selectively, and know when an index is being used.</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Deploy with SFDX, with 75%+ coverage that means something.</span></li>
     </ul>
   </div>
   <div>
@@ -2113,14 +2275,14 @@ export const COMPONENTS = [
   },
   {
     id: "player", title: "Course player", family: "LMS",
-    summary: "The screen a learner lives in: 16:9 stage on brand-900 in both themes, lesson header, prev/next with ←/→ shortcuts, and a FIXED curriculum rail ending in the course's standing action. One viewport, one scrollbar — only the content column moves. Two columns ≥ lg; below, a single column with the stage always first and the CTA above the list.",
-    use: ["Lesson pages in both products — Ghost via templates/course-player.html, Next.js via CoursePlayer/LessonRail", "--article for a lesson that is mostly reading: no stage, the column set to the reading measure", "--scroll where the document scroll is genuinely the right one"],
+    summary: "The screen a learner lives in: a 16:9 stage on brand-900 in both themes, the lesson header, the lesson's own detail tabs (chapters, transcript, resources, notes, Q&amp;A), a docked prev/next carrying the position, and a FIXED curriculum rail ending in the course's standing action. One viewport, one scrollbar — only the content column moves. Two columns &ge; lg; below, a single column with the stage always first, the CTA above the list, and the rail replaced by the panel bar and its popover.",
+    use: ["Lesson pages in both products — Ghost via templates/course-player.html, Next.js via CoursePlayer/LessonRail", "--article for a lesson that is mostly reading: no stage, prose at the measure with the lesson's outline in the space beside it", "--scroll where the document scroll is genuinely the right one"],
     not: ["Marketing pages with one embedded video — that is just a video in prose"],
     a11y: ["←/→ move lessons; space/k is left to the media element — stealing it breaks the player's own controls", "Row state is spelled for assistive tech (\"completed\", \"locked — members only\"), not only drawn", "Locked rows stay links (to the upgrade page) — a dead row explains nothing", "The rail toggle carries aria-expanded and lives in the lesson header, so it is still reachable once the rail is gone"],
     variants: [
       { name: "Lesson rows", note: "done replaces the index with a check — the number has done its job; current gets the accent line; locked dims but stays a link.", html: `<div style="max-inline-size:22rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
   <a class="ns-lesson" href="#" data-state="done">
-    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
     <span class="ns-lesson__title">SELECT and WHERE<span class="ns-visually-hidden"> (completed)</span></span>
     <span class="ns-lesson__time">14:02</span></a>
   <a class="ns-lesson" href="#" aria-current="true">
@@ -2151,7 +2313,37 @@ export const COMPONENTS = [
     <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Next lesson <i class="ph ph-caret-right" aria-hidden="true"></i></a>
   </div>
 </div>` },
-      { name: "The rail's foot", note: "The rail is a fixed three-row grid — head, scrolling list, and this. The standing action never scrolls away, because it is the one thing on the screen that is not navigation. One primary and one line of mono fine print: a rail that ends in three buttons is an upsell.", html: `<div style="max-inline-size:20rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+      { name: "The rail as a timeline", note: "Opt-in: add <code>ns-player__list--timeline</code> to the list and nothing else changes. A hairline runs down the index column and each lesson number becomes a node on it — the claim being that a course is a <strong>path</strong>, which a flat list of rows implies but never draws.<br><br><strong>Only the current node is filled.</strong> An earlier version put every finished lesson in a green disc and ran the line green behind it, which meant a learner nine lessons in got a column of green coins and one blue one — the thing you were looking for was the quietest mark on the rail. Completion is already said by the check that replaced the number and by the muted title; the fill is reserved for where you ARE, because that is the one question the rail exists to answer. A members-only node goes dashed: the path continues, but it is not yours yet.<br><br>The node keeps the index cell's existing width. The first grid column is <code>auto</code>, so shrinking the node shrinks the column and the line no longer passes through the middle of anything — which is exactly how it went off-centre the first time. The line's position is derived from the row's own tokens (leading border + inline padding + half the index cell), so it follows if any of them change, and it stops half-way at the first and last rows so the path has a beginning and an end.", html: `<div style="max-inline-size:17rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-player__list ns-player__list--timeline">
+    <a class="ns-lesson" href="#0" data-state="done">
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
+      <span class="ns-lesson__title">What is an org?<span class="ns-visually-hidden"> (completed)</span></span>
+      <span class="ns-tooltip">What is an org?</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip ns-tooltip--below">Video</span></span>
+      <span class="ns-lesson__time">08:12</span></a>
+    <a class="ns-lesson" href="#0" data-state="done">
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
+      <span class="ns-lesson__title">Objects &amp; fields<span class="ns-visually-hidden"> (completed)</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0"><i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
+      <span class="ns-lesson__time">12:40</span></a>
+    <a class="ns-lesson" href="#0" aria-current="true">
+      <span class="ns-lesson__index" aria-hidden="true">03</span>
+      <span class="ns-lesson__title">SOQL joins: relationships</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+      <span class="ns-lesson__time">21:15</span></a>
+    <a class="ns-lesson" href="#0">
+      <span class="ns-lesson__index" aria-hidden="true">04</span>
+      <span class="ns-lesson__title">Aggregate queries</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--quiz ns-tooltip-host" tabindex="0"><i class="ph ph-exam" aria-hidden="true"></i><span class="ns-tooltip">Quiz</span></span>
+      <span class="ns-lesson__time">05:00</span></a>
+    <a class="ns-lesson" href="#0" data-access="members">
+      <span class="ns-lesson__index" aria-hidden="true">05</span>
+      <span class="ns-lesson__title">Bulk-safe triggers<span class="ns-visually-hidden"> (locked \u2014 members only)</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0"><i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Hands-on lab</span></span>
+      <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span></a>
+  </div>
+</div>` },
+      { name: "The rail's foot — an action", note: "For the surfaces that still have a standing action: a locked course (enrol), a finished one (download the certificate). The LESSON player's rail does not — its progress is the full-width line on the course bar and its next action is the docked bar, so its foot is share and Ask AI instead (below). One primary and one line of fine print: a rail that ends in three buttons is an upsell.", html: `<div style="max-inline-size:20rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
   <div class="ns-player__side-cta">
     <span class="ns-player__side-cta-meta">Your progress <b>8 / 24</b></span>
     <progress class="ns-progress" value="8" max="24" aria-label="8 of 24 lessons complete"></progress>
@@ -2166,8 +2358,63 @@ export const COMPONENTS = [
     <span class="ns-player__side-cta-meta">Lifetime access · certificate</span>
   </div>
 </div>` },
-      { name: "Article lesson", note: "The same player, the other kind of lesson: no 16:9 stage at all, the column set to the reading measure, and the progress a 2px hairline driven by scroll rather than a time code. A written lesson that keeps a black video box at the top is a video page with the video missing. The rail, the docked prev/next and the CTA are untouched — one player with two layouts, not two players.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-article.html" target="_blank" rel="noopener">Open the article-lesson demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
-      { name: "Full layout", note: "The complete two-column screen — the framework-agnostic template rendered with the real stylesheet. Resize it to see the single-column collapse.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Detail tabs", note: "Everything the lesson carries besides the media, in one strip rather than stacked down the column. Stacked, the chapter list, the transcript, the files and the discussion push the next-lesson control below three screens of scroll; as tabs the column stays one screen deep and each is one click from the video. <code>.ns-player__body--wide</code> lets the strip take the column's full width — a chapter list squeezed to the reading measure wastes the half of the column the video already established — while prose inside a panel keeps its own measure.", html: `<div class="ns-player__body ns-player__body--wide" style="padding-inline:0">
+  <div class="ns-tabs" role="tablist" aria-label="Lesson details">
+    <button class="ns-tab" type="button" role="tab" id="pd-t1" aria-controls="pd-p1" aria-selected="true"><i class="ph ph-list ns-tab__icon" aria-hidden="true"></i> Chapters <span class="ns-tab__count">5</span></button>
+    <button class="ns-tab" type="button" role="tab" id="pd-t2" aria-controls="pd-p2" aria-selected="false"><i class="ph ph-article ns-tab__icon" aria-hidden="true"></i> Transcript</button>
+    <button class="ns-tab" type="button" role="tab" id="pd-t3" aria-controls="pd-p3" aria-selected="false"><i class="ph ph-folder-open ns-tab__icon" aria-hidden="true"></i> Resources <span class="ns-tab__count">3</span></button>
+  </div>
+  <div class="ns-tabpanel" role="tabpanel" id="pd-p1" aria-labelledby="pd-t1" tabindex="0">
+    <ol class="ns-vchapters">
+      <li class="ns-vchapters__item" data-start="0" data-state="done"><button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__title">What a relationship field stores</span><span class="ns-vchapters__time">00:00</span><span class="ns-vchapters__meta">3 min · watched</span></button></li>
+      <li class="ns-vchapters__item" data-start="483" aria-current="true"><button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__title">Subqueries: down to the children</span><span class="ns-vchapters__time">08:03</span><span class="ns-vchapters__meta">6 min · playing</span></button></li>
+      <li class="ns-vchapters__item" data-start="845"><button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__title">Where the two count against the limits</span><span class="ns-vchapters__time">14:05</span><span class="ns-vchapters__meta">4 min</span></button></li>
+    </ol>
+  </div>
+  <div class="ns-tabpanel" role="tabpanel" id="pd-p2" aria-labelledby="pd-t2" tabindex="0">
+    <dl class="ns-deflist">
+      <dt>00:12</dt><dd>A lookup field does not store the record. It stores an id.</dd>
+      <dt>08:03</dt><dd>Going down is a subquery, and it is a different shape.</dd>
+    </dl>
+  </div>
+  <div class="ns-tabpanel" role="tabpanel" id="pd-p3" aria-labelledby="pd-t3" tabindex="0">
+    <a class="ns-resource" href="#0"><span class="ns-resource__icon"><i class="ph ph-file-text" aria-hidden="true"></i></span><span class="ns-resource__body"><span class="ns-resource__title">Relationship queries cheat sheet</span><span class="ns-resource__type">PDF · 2 pages</span></span><i class="ph ph-arrow-down ns-resource__cue" aria-hidden="true"></i></a>
+  </div>
+</div>` },
+      { name: "The wired stage", note: "The bare <code>.ns-player__stage</code> is a slot you drop an <code>&lt;iframe&gt;</code> into and leave the vendor's controls on. <code>--player</code> is the slot holding the system's OWN player: the 16:9 box moves down to <code>.ns-vplayer__stage</code> and the stage becomes a plain container, because a control bar nailed inside a box that is already exactly 16:9 either covers the last inch of the picture or overflows. <code>data-chapters</code> points the player at the chapter list in the tab panel below — the list is content, so it lives in the page where it can be read without pressing play, and one player still drives it.", html: `<pre class="ns-code__pre"><code>&lt;div class="ns-player__stage ns-player__stage--player"&gt;
+  &lt;div class="ns-vplayer" data-ns-video data-youtube="VIDEO_ID"
+       data-chapters="#lesson-chapters" data-state="paused"&gt;
+    &lt;div class="ns-vplayer__stage"&gt;
+      &lt;button class="ns-vplayer__big" type="button" aria-label="Play"&gt;…&lt;/button&gt;
+    &lt;/div&gt;
+    &lt;div class="ns-vplayer__bar"&gt;…&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>` },
+      { name: "The rail's foot — the lesson player", note: "What you do WITH a lesson rather than where you go next: pass it on, or get help with it. Both secondary, so both quiet and neither ever the solid blue.<br><br>The AI rows are ordinary links with <code>target=\"_blank\" rel=\"noopener\"</code> — no key, no proxy, no request from us. <code>assets/js/lms.js</code> composes each href from ONE prompt written on the container (<code>data-ns-ask-prompt</code>) rather than repeating the same sentence in three hrefs that then drift apart, and appends the video's current timestamp when there is one, because \"explain what is happening at 08:03\" is a better question than \"explain this lesson\". The reader can see exactly what is being sent before they click: it is in the URL, and Copy puts it on the clipboard verbatim.", html: `<div style="max-inline-size:17rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-player__side-foot">
+    <div class="ns-share">
+      <span class="ns-share__label">Share</span>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></button>
+    </div>
+    <div class="ns-usermenu">
+      <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-ns-menu aria-expanded="false" aria-controls="ask-doc"><i class="ph ph-sparkle" aria-hidden="true"></i> Ask AI</button>
+      <div class="ns-usermenu__panel" id="ask-doc" role="menu">
+        <span class="ns-menu__label">Open this lesson in</span>
+        <a class="ns-menu__item" role="menuitem" href="#0"><i class="ph ph-sparkle" aria-hidden="true"></i> Claude</a>
+        <a class="ns-menu__item" role="menuitem" href="#0"><i class="ph ph-chat-circle-text" aria-hidden="true"></i> ChatGPT</a>
+        <a class="ns-menu__item" role="menuitem" href="#0"><i class="ph ph-magnifying-glass" aria-hidden="true"></i> Perplexity</a>
+        <hr class="ns-menu__sep">
+        <button type="button" class="ns-menu__item" role="menuitem"><i class="ph ph-file-text" aria-hidden="true"></i> Copy the prompt</button>
+      </div>
+    </div>
+  </div>
+</div>` },
+      { name: "Article lesson", note: "The same player, the other kind of lesson: no 16:9 stage at all, and the content column becomes a two-part reading block — prose at the measure, with the lesson's OUTLINE in the space beside it. The pair is sized together, so the header and the docked nav line up on the same left edge as the text; below lg the rail becomes the horizontal <code>.ns-toc--inline</code> strip, which has somewhere to go where a sticky rail does not. Progress is a 2px hairline driven by scroll rather than a time code. A written lesson that keeps a black video box at the top is a video page with the video missing — and one that leaves a third of the screen empty on each side, with its own contents list nowhere on the page, is a document you navigate by scrolling and hoping.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-article.html" target="_blank" rel="noopener">Open the article-lesson demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
+      { name: "Full layout", note: "The complete three-column screen — curriculum, lesson, chapters — rendered from the framework-agnostic template with the real stylesheet. The two lesson kinds link to each other, so prev/next walks between them with the cross-document view transition from motion.css: a cross-fade, no slide, because the rail and the docked bar did not move and should not look like they did.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player.html" target="_blank" rel="noopener">Video lesson <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-article.html" target="_blank" rel="noopener">Written lesson <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
+      { name: "At three widths", note: "The real pages in real iframes at 390, 768 and 1180 — because media queries answer to the VIEWPORT, and a narrow div would keep rendering the desktop layout at phone width and prove the opposite of what it looked like it was proving.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-responsive.html" target="_blank" rel="noopener">Open the responsive proof <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
           { name: "Per-type progress", note: "\"How far through this lesson am I\" has three different honest answers, so it has three different controls. One bar for all three is how a quiz ends up claiming you are 60% <em>correct</em> when you are 60% <em>finished</em>. Video counts time and marks chapters; article counts scroll and is a hairline, never a widget; a quiz has TWO numbers — answered and score — and pips can say what a length cannot.", html: `<div style="display:grid;gap:var(--space-6);inline-size:100%;max-inline-size:34rem">
   <div class="ns-lprogress ns-lprogress--video" style="--fx-progress:38%">
     <span class="ns-lprogress__label">Video</span>
@@ -2198,6 +2445,190 @@ export const COMPONENTS = [
     <span class="ns-lprogress__score">3/4 correct</span>
   </div>
 </div>` },
+    ],
+  },
+
+  /* ======================================================= Teaching ==== */
+  {
+    id: "deck", title: "Slide deck", family: "Teaching",
+    summary: "A presentation built out of the product's own parts. Six geometries — <code>lead</code>, <code>center</code>, <code>stack</code>, <code>split</code>, <code>aside</code>, <code>full</code> — and four tones, and that is the whole vocabulary; everything INSIDE a slide is a component that already exists (<code>.ns-code</code>, <code>.ns-compare</code>, <code>.ns-statblock</code>, <code>.ns-checklist</code>, <code>.ns-timeline</code>, <code>.ns-card</code>). A slide sizes itself in container units, so the same markup is legible on a projector, correct in a 15rem overview thumbnail, and readable on a phone — no scale transform, no resize listener. Light by default, because a projector in a lit room is a light surface; dark mode is the same deck under <code>[data-theme=\"dark\"]</code>.",
+    use: ["Teaching a course session, a workshop or a lunch-and-learn", "Walking a room through a POC or a project you are building", "A conference or meetup talk that has to be shared afterwards as a link", "Embedding the session's slides inside the written lesson — <code>data-mode=\"scroll\"</code>"],
+    not: ["A document — that is a lesson, and a lesson does not fit in 16:9", "A dashboard on a wall — the deck is driven, not ambient", "Anything where the audience reads at their own pace: the fragment reveal is a teaching device and becomes an obstacle the moment nobody is presenting"],
+    a11y: [
+      "The current slide carries aria-current — the state the room sees and the state a screen reader hears are the same attribute, and the CSS hides the rest from that one fact",
+      "→ ↓ Space PgDn advance, ← ↑ PgUp go back, Home/End jump, G overview, N notes, F fullscreen, B blackout, ? shortcuts, Esc closes. Typing in a field is never intercepted",
+      "Fragments dim rather than unmount, so nothing reflows on reveal and nothing is missing from the accessibility tree",
+      "Overview thumbnails are inert clones — forty cloned slides full of links would otherwise be forty extra tab stops behind the deck",
+      "Diagrams are boxes of real text, never a PNG: a screen reader reads the architecture slide and a translator translates it",
+      "With no JS every slide is on the page and every fragment is visible — the handout, which is also what prints",
+    ],
+    variants: [
+      { name: "The frame", note: "The three-row canvas every slide shares: head, body, running foot. The layout modifier changes what the BODY does and never where the head and the foot sit — which is what makes a 40-slide deck feel like one document instead of 40 posters. The 3px leading edge is the brand mark; it is on every slide so that none of them needs a logo.", stack: true, html: `<div class="ns-deck" data-mode="scroll" style="inline-size:100%;background:none">
+  <section class="ns-slide">
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head">
+        <span class="ns-kicker">Consequences</span>
+        <h2 class="ns-slide__title">Three things that follow from that</h2>
+        <span class="ns-slide__rule"></span>
+      </div>
+      <div class="ns-slide__body">
+        <ul class="ns-slide__points">
+          <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span><b class="ns-slide__point-title">Never query inside a loop</b><span class="ns-slide__point-note">200 records × one SOQL each is 200 queries against a limit of 100.</span></span></li>
+          <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span><b class="ns-slide__point-title">Trigger.new is a list, always</b><span class="ns-slide__point-note">Even when a user saved one record.</span></span></li>
+          <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span><b class="ns-slide__point-title">One trigger per object</b><span class="ns-slide__point-note">Two run in an order the platform does not promise.</span></span></li>
+        </ul>
+      </div>
+      <div class="ns-slide__foot">
+        <span class="ns-slide__where">Module 01</span>
+        <span class="ns-slide__num">06 / 25</span>
+      </div>
+    </div>
+  </section>
+</div>` },
+      { name: "Tones", note: "<code>--sunken</code> flips with the theme; <code>--dark</code> and <code>--brand</code> do NOT — they are the brand's own surfaces, identical in both themes, and they exist to mark a gear change in the talk. Use one dark slide per module and no more: a deck where every third slide is navy has no gear changes left. <code>--grid</code> adds the dissolving hairline motif, the same one the hero band carries.", stack: true, html: `<div class="ns-deck" data-mode="scroll" style="inline-size:100%;background:none">
+  <section class="ns-slide ns-slide--lead ns-slide--dark ns-slide--grid">
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head">
+        <span class="ns-kicker">Module 01</span>
+        <h2 class="ns-slide__title">What a trigger actually is</h2>
+        <p class="ns-slide__lede">Ten minutes. One idea, and then we look at real code.</p>
+      </div>
+      <div class="ns-slide__foot"><span class="ns-slide__where">Apex fundamentals</span><span class="ns-slide__num">04 / 25</span></div>
+    </div>
+  </section>
+  <section class="ns-slide ns-slide--center ns-slide--brand ns-slide--grid">
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head">
+        <span class="ns-kicker">The limit that shapes everything</span>
+        <span class="ns-slide__figure-value">100</span>
+        <p class="ns-slide__lede">SOQL queries per synchronous transaction.</p>
+        <span class="ns-slide__caption">Apex Developer Guide · Execution Governors</span>
+      </div>
+      <div class="ns-slide__foot"><span class="ns-slide__where">Module 03</span><span class="ns-slide__num">10 / 25</span></div>
+    </div>
+  </section>
+</div>` },
+      { name: "Explain, then show", note: "<code>--split</code>: the claim on the left, the code that proves it on the right. This is the shape most technical teaching wants and the one most decks skip, putting the code on its own slide where nobody can see what it was supposed to demonstrate. The code block is <code>.ns-code</code> — the same component the lesson pages use, re-tuned to the slide's type scale and nothing else.", stack: true, html: `<div class="ns-deck" data-mode="scroll" style="inline-size:100%;background:none">
+  <section class="ns-slide ns-slide--split ns-slide--split-figure">
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head">
+        <span class="ns-kicker">The pattern</span>
+        <h2 class="ns-slide__title">Collect the ids, query once, map, then act</h2>
+      </div>
+      <div class="ns-slide__body">
+        <div class="ns-slide__col">
+          <ul class="ns-slide__points ns-slide__points--tight">
+            <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span class="ns-slide__point-title">Walk the batch, collect the ids</span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span class="ns-slide__point-title">One SOQL, outside the loop</span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span class="ns-slide__point-title">Index it into a Map</span></li>
+          </ul>
+        </div>
+        <div class="ns-slide__col ns-slide__col--fill">
+          <figure class="ns-code ns-code--dark" data-lang="apex">
+            <figcaption class="ns-code__bar"><span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>CaseRouter.cls</span></span></figcaption>
+${codeBody(`Set<Id> ids = new Set<Id>();
+for (Case c : Trigger.new) ids.add(c.AccountId);
+
+// one query, outside the loop
+Map<Id, Account> byId = new Map<Id, Account>(
+  [SELECT Id, Tier__c FROM Account WHERE Id IN :ids]);`, "apex")}
+          </figure>
+        </div>
+      </div>
+      <div class="ns-slide__foot"><span class="ns-slide__where">Module 03</span><span class="ns-slide__num">07 / 25</span></div>
+    </div>
+  </section>
+</div>` },
+      { name: "The architecture slide", note: "Boxes and arrows as TEXT, never a picture. A PNG of a diagram cannot restyle for dark mode, cannot be read by a screen reader, cannot be translated, and cannot be edited next year by the person who inherits the deck. <code>aria-current</code> marks the box you are talking about — its border brightens to brand, because elevation here is a border and never a lift.", stack: true, html: `<div class="ns-deck" data-mode="scroll" style="inline-size:100%;background:none">
+  <section class="ns-slide">
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head">
+        <span class="ns-kicker">Where your code runs</span>
+        <h2 class="ns-slide__title">The order of execution, abridged</h2>
+        <span class="ns-slide__rule"></span>
+      </div>
+      <div class="ns-slide__body">
+        <div class="ns-slide__flow">
+          <div class="ns-slide__node"><span class="ns-slide__node-label">01 · load</span><span class="ns-slide__node-title">Record loaded</span><span class="ns-slide__node-note">From the DB, or initialised for an insert.</span></div>
+          <i class="ph ph-arrow-right ns-slide__arrow" aria-hidden="true"></i>
+          <div class="ns-slide__node" aria-current="true"><span class="ns-slide__node-label">02 · before</span><span class="ns-slide__node-title">Before triggers</span><span class="ns-slide__node-note">You are here. No DML needed to change the record.</span></div>
+          <i class="ph ph-arrow-right ns-slide__arrow" aria-hidden="true"></i>
+          <div class="ns-slide__node"><span class="ns-slide__node-label">03 · rules</span><span class="ns-slide__node-title">Validation rules</span><span class="ns-slide__node-note">Which is why a before trigger can fix data a rule would reject.</span></div>
+          <i class="ph ph-arrow-right ns-slide__arrow" aria-hidden="true"></i>
+          <div class="ns-slide__node"><span class="ns-slide__node-label">04 · after</span><span class="ns-slide__node-title">After triggers</span><span class="ns-slide__node-note">The record has an Id.</span></div>
+        </div>
+      </div>
+      <div class="ns-slide__foot"><span class="ns-slide__where">Module 02</span><span class="ns-slide__num">12 / 25</span></div>
+    </div>
+  </section>
+</div>` },
+      { name: "Hands on, and the check", note: "Two slides teaching needs and no general presentation tool ships: an exercise with a countdown THE ROOM can see — so it ends because time ran out rather than because the presenter got bored — and a question whose options are LABELLED, because a room answering out loud needs a handle and “the third one” is not one. The timer runs past zero on purpose; an exercise four minutes over is a fact worth showing, and a clock frozen at 00:00 hides it. The answer is a <code>&lt;details&gt;</code>, so opening it in the room also puts it in the handout. Live — press the timer, open the answer.", stack: true, html: `<div class="ns-deck" data-mode="scroll" style="inline-size:100%;background:none">
+  <section class="ns-slide ns-slide--split">
+    <span class="ns-slide__badge"><i class="ph ph-barbell" aria-hidden="true"></i> Hands on</span>
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head"><span class="ns-kicker">Your turn</span><h2 class="ns-slide__title">Build the router in your own org</h2></div>
+      <div class="ns-slide__body">
+        <div class="ns-slide__col">
+          <ol class="ns-slide__points ns-slide__points--tight">
+            <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span class="ns-slide__point-title">Create <code class="ns-code-inline">CaseRouter.cls</code></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span class="ns-slide__point-title">Wire it to a before-insert trigger</span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span class="ns-slide__point-title">Insert 200 cases and read the log</span></li>
+          </ol>
+        </div>
+        <div class="ns-slide__col">
+          <p class="ns-slide__caption">Time remaining — click to start</p>
+          <button type="button" class="ns-slide__timer" data-deck-timer="1500" data-state="idle" aria-label="Exercise timer, 25 minutes. Press to start."><span data-deck-timer-value>25:00</span><span class="ns-slide__timer-unit">min</span></button>
+        </div>
+      </div>
+      <div class="ns-slide__foot"><span class="ns-slide__where">Module 04</span><span class="ns-slide__num">16 / 25</span></div>
+    </div>
+  </section>
+  <section class="ns-slide">
+    <span class="ns-slide__badge"><i class="ph ph-question" aria-hidden="true"></i> Quick check</span>
+    <div class="ns-slide__inner">
+      <div class="ns-slide__head"><span class="ns-kicker">Everyone answer</span><h2 class="ns-slide__title">A user imports 500 cases. How many times does your trigger run?</h2></div>
+      <div class="ns-slide__body">
+        <div class="ns-slide__options">
+          <div class="ns-slide__option"><span class="ns-slide__option-key">A</span><span>Once — one import, one transaction</span></div>
+          <div class="ns-slide__option" data-state="correct"><span class="ns-slide__option-key">B</span><span>Three times — 200, 200, 100</span></div>
+          <div class="ns-slide__option"><span class="ns-slide__option-key">C</span><span>500 times — once per record</span></div>
+        </div>
+        <details class="ns-slide__answer">
+          <summary><i class="ph ph-caret-right" aria-hidden="true"></i> Show the answer</summary>
+          <p><b>B.</b> A bulk load is chunked into batches of 200, and each batch is its own transaction with its own governor limits — which is why “it worked on my one test record” proves nothing.</p>
+        </details>
+      </div>
+      <div class="ns-slide__foot"><span class="ns-slide__where">Check</span><span class="ns-slide__num">17 / 25</span></div>
+    </div>
+  </section>
+</div>` },
+      { name: "The presenter chrome", note: "All of it lives OUTSIDE the slides, so none of it appears in a printed handout, a PDF export or an overview thumbnail. The count and the 2px progress hairline are the same mono/rail pair the course bar uses for a course — here for a talk. The theme switch is the system's own: a deck is not a place for a second theme control.", stack: true, html: `<div style="inline-size:100%;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-deck__rail" aria-hidden="true"><span style="--p:24%"></span></div>
+  <div class="ns-deck__bar">
+    <span class="ns-deck__deckname"><i class="ph ph-presentation-chart" aria-hidden="true"></i> Apex fundamentals · module 01</span>
+    <span class="ns-deck__count"><b>06</b> / 25</span>
+    <div class="ns-deck__tools">
+      <button type="button" class="ns-navicon" aria-label="Previous slide"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" aria-label="Next slide"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" aria-label="All slides"><i class="ph ph-squares-four" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" aria-label="Speaker notes"><i class="ph ph-note" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" aria-label="Switch between presenting and the handout"><i class="ph ph-rows" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" aria-label="Full screen"><i class="ph ph-projector-screen" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" aria-label="Keyboard shortcuts"><i class="ph ph-question" aria-hidden="true"></i></button>
+    </div>
+  </div>
+</div>` },
+      { name: "Keyboard", note: "The set a presenter's clicker already sends, plus the panels. Advance reveals the next fragment before it moves to the next slide, and going BACK lands on a slide with everything already revealed — re-walking six fragments to reach the previous slide is how a presenter loses the room while pressing left arrow nine times.", stack: true, html: `<div class="ns-deck__help-card" style="inline-size:min(28rem,100%)">
+  <div class="ns-deck__help-row"><span>Next, or reveal the next point</span><span class="ns-kbd-seq"><kbd class="ns-kbd">→</kbd><span class="ns-kbd-seq__sep">or</span><kbd class="ns-kbd">Space</kbd></span></div>
+  <div class="ns-deck__help-row"><span>Back</span><span class="ns-kbd-seq"><kbd class="ns-kbd">←</kbd></span></div>
+  <div class="ns-deck__help-row"><span>Go to slide 12</span><span class="ns-kbd-seq"><kbd class="ns-kbd">1</kbd><kbd class="ns-kbd">2</kbd></span></div>
+  <div class="ns-deck__help-row"><span>All slides</span><span class="ns-kbd-seq"><kbd class="ns-kbd">G</kbd></span></div>
+  <div class="ns-deck__help-row"><span>Speaker notes</span><span class="ns-kbd-seq"><kbd class="ns-kbd">N</kbd></span></div>
+  <div class="ns-deck__help-row"><span>Full screen</span><span class="ns-kbd-seq"><kbd class="ns-kbd">F</kbd></span></div>
+  <div class="ns-deck__help-row"><span>Blackout — look at me, not the wall</span><span class="ns-kbd-seq"><kbd class="ns-kbd">B</kbd></span></div>
+  <div class="ns-deck__help-row"><span>Close anything</span><span class="ns-kbd-seq"><kbd class="ns-kbd">Esc</kbd></span></div>
+</div>` },
+      { name: "The whole deck", note: "Twenty-five slides, each a DIFFERENT shape, in the order a real course session uses them: open → agenda → teach → show → do → check → close. It is a pattern library rather than a talk — delete the ones you do not need and duplicate the ones you do. Press <kbd class=\"ns-kbd\">G</kbd> for the overview, <kbd class=\"ns-kbd\">N</kbd> for the notes, and the bar's rows icon to switch to the handout.", html: `<p><a class="ns-btn ns-btn--primary ns-btn--sm" href="./demo-deck.html" target="_blank" rel="noopener">Present it <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
     ],
   },
 
@@ -2249,9 +2680,9 @@ export const COMPONENTS = [
     </summary>
     <div class="ns-band__panel">
       <ul class="ns-outcomes ns-outcomes--plain">
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>A free Salesforce Developer org — we set one up in lesson 01.</span></li>
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>Any browser. Nothing to install.</span></li>
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>No prior Apex. Some experience with any programming language helps.</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>A free Salesforce Developer org — we set one up in lesson 01.</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Any browser. Nothing to install.</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>No prior Apex. Some experience with any programming language helps.</span></li>
       </ul>
     </div>
   </div>
@@ -2275,7 +2706,7 @@ export const COMPONENTS = [
   </div>
   <span class="ns-hero__proof">12 courses · 214 lessons · free while in beta</span>
 </div></div>` },
-      { name: "Full page", note: "All seven bands composed in canonical order — the framework-agnostic template rendered with the real stylesheet.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-sections.html" target="_blank" rel="noopener">Open the full-page demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Full page", note: "All seven bands composed in canonical order — the framework-agnostic template rendered with the real stylesheet.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-sections.html" target="_blank" rel="noopener">Open the full-page demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
     ],
   },
   {
@@ -2766,9 +3197,9 @@ export const COMPONENTS = [
     <button type="button" class="ns-btn ns-btn--outline ns-btn--sm">swarnil@…</button>
   </header>
 </div>` },
-      { name: "Full screens", note: "The three admin surfaces as full-screen demos — the framework-agnostic templates rendered with the real stylesheet.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-admin-dashboard.html" target="_blank" rel="noopener">Dashboard <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
-<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-admin-course-new.html" target="_blank" rel="noopener">Create a course <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
-<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-admin-lesson-editor.html" target="_blank" rel="noopener">Lesson editor <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Full screens", note: "The three admin surfaces as full-screen demos — the framework-agnostic templates rendered with the real stylesheet.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-admin-dashboard.html" target="_blank" rel="noopener">Dashboard <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-admin-course-new.html" target="_blank" rel="noopener">Create a course <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-admin-lesson-editor.html" target="_blank" rel="noopener">Lesson editor <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
     ],
   },
   {
@@ -3161,10 +3592,10 @@ export const COMPONENTS = [
     not: ["A whole code block — Syntax highlighter has copy built in", "A value short enough to retype, like a two-digit number"],
     a11y: ["data-copied is an attribute, not a class, so the same hook can carry aria-live text — a copy button that only changes colour tells a screen-reader user nothing", "A real &lt;button&gt; with an accessible name that includes what is being copied"],
     variants: [
-      { name: "Default and confirmed", note: "The right-hand one shows the state JS sets after a successful copy.", html: `<button class="ns-copy" type="button"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>
+      { name: "Default and confirmed", note: "The right-hand one shows the state JS sets after a successful copy.", html: `<button class="ns-copy" type="button"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>
 <button class="ns-copy" type="button" data-copied><i class="ph ph-check-circle" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button>` },
       { name: "In a spec row", html: `<dl class="ns-deflist">
-  <dt>Org ID</dt><dd><button class="ns-copy" type="button" aria-label="Copy org ID"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button></dd>
+  <dt>Org ID</dt><dd><button class="ns-copy" type="button" aria-label="Copy org ID"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-copy__value">00D5j000000abcAAA</span></button></dd>
   <dt>API version</dt><dd>v62.0</dd>
 </dl>` },
     ],
@@ -3304,7 +3735,7 @@ export const COMPONENTS = [
     variants: [
       { name: "A track's modules", stack: true, html: `<ol class="ns-modules">
   <li class="ns-module" data-state="done">
-    <span class="ns-module__node" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <span class="ns-module__node" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
     <a class="ns-module__card" href="#0">
       <div class="ns-module__head"><span class="ns-module__title">Objects, fields and relationships</span><span class="ns-module__meta">6 units · 2h</span></div>
       <p class="ns-module__text">The data model first: everything else on the platform is a consequence of it.</p>
@@ -3750,7 +4181,7 @@ export const COMPONENTS = [
     <span class="ns-vplayer__time" data-ns-video-duration>0:00</span>
   </div>
 </div>` },
-      { name: "Chapters", note: "A contents page for a video, not a log file. The old list set a mono timestamp and a title on one baseline in a bordered row, fifteen times — a table of numbers, when the reader is scanning TITLES and using time only to decide whether to commit. So the title leads, time is metadata under it, and the row's leading edge carries watched / playing / ahead — the same device the lesson rail uses.", html: `<ol class="ns-vchapters" style="max-inline-size:26rem;inline-size:100%;border:1px solid var(--color-border);border-radius:var(--radius-card)">
+      { name: "Chapters", note: "A contents page for a video, not a log file. The old list set a mono timestamp and a title on one baseline in a bordered row, fifteen times — a table of numbers, when the reader is scanning TITLES and using time only to decide whether to commit. So the title leads, time is metadata under it, and the row's leading edge carries watched / playing / ahead — the same device the lesson rail uses.", html: `<ol class="ns-vchapters ns-vchapters--notes" style="max-inline-size:26rem;inline-size:100%;border:1px solid var(--color-border);border-radius:var(--radius-card)">
   <li class="ns-vchapters__item" data-state="done">
     <button type="button" class="ns-vchapters__btn">
       <span class="ns-vchapters__title">What a trigger actually receives</span>
@@ -3877,7 +4308,7 @@ export const COMPONENTS = [
       { name: "Image", html: `<span class="ns-avatar ns-avatar--lg"><img src="../assets/logo/icon-512.png" alt="Namaste Salesforce"></span>` },
       { name: "Progress ring", note: "--p is percent complete; the arc is the same conic device as the chart ring.", html: `<span class="ns-avatar-ring" style="--p:25"><span class="ns-avatar">25</span></span>
 <span class="ns-avatar-ring" style="--p:64"><span class="ns-avatar">64</span></span>
-<span class="ns-avatar-ring" style="--p:100"><span class="ns-avatar"><i class="ph ph-check" aria-hidden="true"></i></span></span>` },
+<span class="ns-avatar-ring" style="--p:100"><span class="ns-avatar"><i class="ph ph-check-circle" aria-hidden="true"></i></span></span>` },
       { name: "Stack", note: "Overlapped with a surface ring; the last disc counts the rest.", html: `<span class="ns-avatar-stack">
   <span class="ns-avatar">AK</span>
   <span class="ns-avatar">RS</span>
@@ -3936,7 +4367,7 @@ export const COMPONENTS = [
     </button>
     <span class="ns-topnav__divider" aria-hidden="true"></span>
     <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
-      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
     </button>
     <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Sign up</a>
   </div>
@@ -3991,7 +4422,7 @@ export const COMPONENTS = [
     <span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
     <a class="ns-navicon" href="#" aria-label="Notifications — 3 unread"><i class="ph ph-bell" aria-hidden="true"></i><span class="ns-navicon__badge" aria-hidden="true">3</span></a>
     <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
-      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
     </button>
   </div>
 </nav>` },
@@ -4086,8 +4517,8 @@ export const COMPONENTS = [
   <ul class="ns-topnav__links"><li><a href="#" aria-current="page">Courses</a></li><li><a href="#">Docs</a></li></ul>
   <div class="ns-topnav__actions"><a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a></div>
 </nav>` },
-      { name: "The whole thing", note: "Announcement, mega menu, dropdown, search, theme, auth, hamburger and sheet — assembled, at full page width, from <code>templates/navbar.html</code>: <a href=\"./demo-navbar.html\">open the full navbar demo ↗</a>. Resize below 64rem to get the hamburger and the mobile sheet.", html: `<a class="ns-btn ns-btn--outline" href="./demo-navbar.html">Open the full navbar demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
-<a class="ns-btn ns-btn--outline" href="./demo-navbar-blog.html">Open the blog navbar demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>` },
+      { name: "The whole thing", note: "Announcement, mega menu, dropdown, search, theme, auth, hamburger and sheet — assembled, at full page width, from <code>templates/navbar.html</code>: <a href=\"./demo-navbar.html\">open the full navbar demo ↗</a>. Resize below 64rem to get the hamburger and the mobile sheet.", html: `<a class="ns-btn ns-btn--outline" href="./demo-navbar.html">Open the full navbar demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline" href="./demo-navbar-blog.html">Open the blog navbar demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>` },
     ],
   },
   {
@@ -4235,7 +4666,7 @@ export const COMPONENTS = [
         <a class="ns-menu__item" href="#"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
         <a class="ns-menu__item" href="#"><i class="ph ph-question" aria-hidden="true"></i> Help</a>
         <hr class="ns-menu__sep">
-        <button type="button" class="ns-menu__item ns-menu__item--danger"><i class="ph ph-arrow-square-out" aria-hidden="true"></i> Sign out</button>
+        <button type="button" class="ns-menu__item ns-menu__item--danger"><i class="ph ph-arrow-up-right" aria-hidden="true"></i> Sign out</button>
       </div>
     </div>
   </div>
@@ -4311,11 +4742,10 @@ export const COMPONENTS = [
     not: ["The marketing bar's mega menu on either — a learner mid-course does not need the catalog's information architecture", "A second row of tabs under the course bar; the curriculum rail is the course's navigation", "Three metrics in the chrome — that is a stat band, and it belongs on the page"],
     a11y: ["Course progress is a real progressbar with aria-valuenow: unlike the blog's reading line it is a number the learner acts on, so it is labelled and announced", "The back control names its destination — a bare chevron sends people to the browser's back button, and out of the video", "Every icon-only control (previous, notes, curriculum, notifications) carries an aria-label, and the notification badge is a count that appears in that label too", "Below md the bar sheds in a fixed order — the back label, then the inline meter, then the button labels. The lesson title and Next never go"],
     variants: [
-      { name: "Course bar", flush: true, note: "Back · position · title · completion · the one primary. Full page: <a href=\"./demo-navbar-course.html\">open the course bar demo ↗</a>", html: `<nav class="ns-coursenav" aria-label="Course example">
+      { name: "Course bar", flush: true, note: "Back · lesson · completion · account — and no primary action, because finishing a lesson belongs to the player\u2019s docked prev/next and a second solid button here would compete for the one click a screen is allowed. Full page: <a href=\"./demo-navbar-course.html\">open the course bar demo ↗</a>", html: `<nav class="ns-coursenav" aria-label="Course example">
   <a class="ns-coursenav__back" href="#"><i class="ph ph-arrow-left" aria-hidden="true"></i> <span>Salesforce Admin</span></a>
   <span class="ns-topnav__divider" aria-hidden="true"></span>
   <span class="ns-coursenav__id">
-    <span class="ns-coursenav__kicker">Module 02 · Lesson 07 / 24</span>
     <span class="ns-coursenav__title">Objects, fields &amp; relationships</span>
   </span>
   <div class="ns-coursenav__progress">
@@ -4326,14 +4756,13 @@ export const COMPONENTS = [
     <button type="button" class="ns-navicon" aria-label="Previous lesson"><i class="ph ph-caret-left" aria-hidden="true"></i></button>
     <button type="button" class="ns-navicon" aria-label="Notes"><i class="ph ph-note" aria-hidden="true"></i></button>
     <button type="button" class="ns-navicon" aria-label="Toggle curriculum" aria-expanded="true"><i class="ph ph-sidebar" aria-hidden="true"></i></button>
-    <button type="button" class="ns-btn ns-btn--primary ns-btn--sm"><i class="ph ph-check" aria-hidden="true"></i> <span class="ns-coursenav__next-label">Complete &amp; next</span></button>
+    <a class="ns-navicon" href="#0" aria-label="Search the site"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></a>
   </div>
 </nav>` },
       { name: "Course bar on the stage", dark: true, flush: true, note: "<code>--dark</code> for a player whose video stage stays navy in both themes — the bar meets the stage rather than framing it in white.", html: `<nav class="ns-coursenav ns-coursenav--dark" aria-label="Dark course example">
   <a class="ns-coursenav__back" href="#"><i class="ph ph-arrow-left" aria-hidden="true"></i> <span>Apex for Admins</span></a>
   <span class="ns-topnav__divider" aria-hidden="true"></span>
   <span class="ns-coursenav__id">
-    <span class="ns-coursenav__kicker">Lesson 12 / 31</span>
     <span class="ns-coursenav__title">Writing your first trigger</span>
   </span>
   <div class="ns-coursenav__progress">
@@ -4342,7 +4771,7 @@ export const COMPONENTS = [
   </div>
   <div class="ns-coursenav__actions">
     <button type="button" class="ns-navicon" aria-label="Previous lesson"><i class="ph ph-caret-left" aria-hidden="true"></i></button>
-    <button type="button" class="ns-btn ns-btn--white ns-btn--sm"><i class="ph ph-check" aria-hidden="true"></i> Complete</button>
+    <button type="button" class="ns-btn ns-btn--white ns-btn--sm"><i class="ph ph-check-circle" aria-hidden="true"></i> Complete</button>
   </div>
 </nav>` },
       { name: "Dashboard bar", flush: true, note: "Places, not pages: icons earn their space, the trigger opens what you were last in, and the avatar wears the trail's progress ring. Live: click <strong>Continue</strong> or the avatar. Full page: <a href=\"./demo-navbar-dashboard.html\">open the dashboard bar demo ↗</a>", html: `<nav class="ns-topnav ns-topnav--compact" aria-label="Dashboard example">
@@ -4369,7 +4798,7 @@ export const COMPONENTS = [
     <span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
     <a class="ns-navicon" href="#" aria-label="Notifications — 3 unread"><i class="ph ph-bell" aria-hidden="true"></i><span class="ns-navicon__badge" aria-hidden="true">3</span></a>
     <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
-      <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
     </button>
     <span class="ns-topnav__divider" aria-hidden="true"></span>
     <div class="ns-usermenu">
@@ -4403,23 +4832,26 @@ export const COMPONENTS = [
   },
   {
     id: "themetoggle", title: "Theme toggle", family: "Navigation",
-    summary: "Three forms of one control, all flipping the theme through <code>window.nsTheme</code> so the Ghost theme and the app can never disagree about what dark means. The segmented form offers Light · Auto · Dark, and <strong>Auto is the default</strong> — a two-state toggle silently converts every visitor into someone with an explicit preference, after which their OS switching at sunset does nothing.",
+    summary: "Two forms of one control — a quiet square and a bordered one, both a sun that morphs into a moon — plus the segmented Light · Auto · Dark. All flip the theme through <code>window.nsTheme</code> so the Ghost theme and the app can never disagree about what dark means. The segmented form offers Light · Auto · Dark, and <strong>Auto is the default</strong> — a two-state toggle silently converts every visitor into someone with an explicit preference, after which their OS switching at sunset does nothing.",
     use: ["The switch in the navbar actions cluster — the default", "The segmented form where Auto matters: settings pages, and the mobile sheet", "The icon square in a bar with nothing left to give — the course bar on a phone"],
-    not: ["Deciding the initial theme in the component — assets/js/theme-init.js sets it before first paint, and doing it after hydration IS the white flash everyone complains about", "An unlabelled icon button — aria-label or it is a mystery control", "Animating the whole page on switch: the swap is instant, only the glyph turns"],
-    a11y: ["Segmented is a real radiogroup: one tab stop, arrow keys inside, aria-checked on the selected option", "The icon form is role=\"switch\" with aria-checked and an accessible name", "Which glyph shows is decided in CSS from data-theme, so it is correct in the first painted frame with no JavaScript having run", "prefers-reduced-motion drops the crossfade and the thumb slide to instant"],
+    not: ["Deciding the initial theme in the component — assets/js/theme-init.js sets it before first paint, and doing it after hydration IS the white flash everyone complains about", "An unlabelled icon button — aria-label or it is a mystery control", "Animating the whole page on switch: the swap is instant, only the mark morphs"],
+    a11y: ["Segmented is a real radiogroup: one tab stop, arrow keys inside, aria-checked on the selected option", "The icon form is role=\"switch\" with aria-checked and an accessible name", "The state is decided in CSS from data-theme, so it is correct in the first painted frame with no JavaScript having run", "prefers-reduced-motion drops the morph to instant"],
     variants: [
-      { name: "Switch", note: "Live — it drives this page. The default in a bar, and a real switch: one moving part, a knob that slides along a track carrying the <em>current</em> mode's glyph. Both the position and the glyph are read from <code>data-theme</code> in CSS rather than from JavaScript state, so they are right in the first painted frame, before any script runs. The visible track is 1.5rem; the button around it is a full 2.5rem target.", html: `<button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
-  <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+      { name: "Switch", note: "Live — it drives this page, and the default in a bar. ONE button, and the sun <strong>morphs into the moon in place</strong>.<br><br>It used to be a knob sliding along a track. Two problems, and the second is the one that mattered: the knob carried <code>ph-sun</code> / <code>ph-moon</code>, neither of which is in the icon subset, so it was empty in both states — a switch with no indicator at all. And a sliding track is the wrong metaphor anyway; it says \"setting with two positions\" when what the reader wants to know is which mode they are in and how to leave it. A sun that becomes a moon says both in one shape.<br><br>Drawn, not set: one disc; <strong>eight tapered rays</strong> from a repeating conic gradient masked to an annulus; and a second disc the colour of the surface sliding across to bite the crescent. The rays were four box-shadows to begin with, which are round dots — a sun drawn with dots reads as a loading spinner. Going dark, the rays turn as they retract, the disc tips and grows, and the crescent closes: one movement, one element, no font. The state is read from <code>data-theme</code> in CSS, so it is right in the first painted frame.", html: `<button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+  <span class="ns-themeswitch__mark" aria-hidden="true"></span>
 </button>` },
       { name: "Segmented", note: "Live — it drives this page. Mono words rather than glyphs: every product draws the \"auto\" icon differently and none of them is read correctly, while a mono label is this system's own material. The thumb is a pseudo-element positioned by :has() reading aria-checked, so there is no state class and no JavaScript in the animation.", html: `<div class="ns-themetoggle" role="radiogroup" aria-label="Colour theme" data-ns-theme>
   <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Light" data-ns-theme-value="light">Light</button>
   <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="true" aria-label="Match the system setting" data-ns-theme-value="system">Auto</button>
   <button type="button" class="ns-themetoggle__opt" role="radio" aria-checked="false" aria-label="Dark" data-ns-theme-value="dark">Dark</button>
 </div>` },
-      { name: "Icon switch", note: "Live. Both glyphs are always in the DOM, stacked in the same box, so the swap is a crossfade-and-turn in place rather than a substitution that jumps the layout.", html: `<button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
-  <i class="ph ph-sun" aria-hidden="true"></i>
-  <i class="ph ph-moon" aria-hidden="true"></i>
+      { name: "Icon switch", note: "Live. The same mark and the same morph, in a bordered square — for a bar where the control needs to read as a button among buttons rather than as a quiet affordance.", html: `<button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+  <span class="ns-themeswitch__mark" aria-hidden="true"></span>
 </button>` },
+      { name: "The mark, enlarged", note: "The indicator on its own, enlarged. Click either control above and watch it.<br><br>The sun and the moon are <strong>drawn, not set</strong>: the icon font is a subset and carries neither, so the glyph pair this used to be rendered as two empty elements — a control with no indicator in either state. One disc; eight tapered rays from a conic gradient masked to a ring; a second disc the colour of the surface sliding across to bite the crescent. The rays turn as they retract, so the change is a rotation rather than a fade, and it costs no font at all. <code>prefers-reduced-motion</code> drops it to instant.", html: `<span style="display:inline-flex;align-items:center;gap:var(--space-6)">
+  <span class="ns-themeswitch__mark" style="inline-size:var(--space-6);block-size:var(--space-6)"></span>
+  <span style="font-size:var(--size-small);color:var(--color-muted);max-inline-size:22rem">The mark on its own, enlarged. Flip the page theme and the rays retract, the disc turns and the crescent closes — one movement, no glyph swap.</span>
+</span>` },
       { name: "On a navy bar", dark: true, flush: true, note: "Both forms pick up the on-dark inks from the bar, so neither needs a variant of its own.", html: `<nav class="ns-topnav ns-topnav--dark" aria-label="Theme on dark example">
   <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
   <div class="ns-topnav__actions">
@@ -4470,9 +4902,9 @@ export const COMPONENTS = [
       <div id="share-anatomy" popover="auto" class="ns-popover ns-menu ns-code__menu">
         <p class="ns-menu__label">Share</p>
         <button type="button" class="ns-menu__item" data-code="share"><i class="ph ph-link-simple" aria-hidden="true"></i>Copy link</button>
-        <button type="button" class="ns-menu__item" data-code="share" data-share="native"><i class="ph ph-arrow-square-out" aria-hidden="true"></i>Share via&hellip;</button>
+        <button type="button" class="ns-menu__item" data-code="share" data-share="native"><i class="ph ph-arrow-up-right" aria-hidden="true"></i>Share via&hellip;</button>
       </div>
-      <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+      <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
     </span>
   </figcaption>
 ${codeBody(`public with sharing class CaseRouter {
@@ -4488,7 +4920,7 @@ ${codeBody(`public with sharing class CaseRouter {
     <span class="ns-code__dots" aria-hidden="true"><i></i><i></i><i></i></span>
     <span class="ns-code__file"><span>useCourseProgress.js</span></span>
     <span class="ns-code__actions">
-      <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+      <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
     </span>
   </figcaption>
 ${codeBody(`export function useCourseProgress(id) {
@@ -4540,7 +4972,7 @@ Completed in 0.42s">
     <span class="ns-code__file"><i class="ph ph-database" aria-hidden="true"></i><span>queues.soql</span></span>
     <span class="ns-code__actions">
       <span class="ns-code__lang">soql</span>
-      <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+      <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
     </span>
   </figcaption>
 ${codeBody(`SELECT Id, Name, DeveloperName
@@ -4558,7 +4990,7 @@ ORDER BY Name ASC LIMIT 200`, "soql")}
       { name: "Marked lines", note: "Added, removed and called-out lines — a 2px leading edge plus a wash, the same accent-line device the rest of the system uses. Diff colour is never the only signal: the sample is introduced in prose, because a red line and a green line are one colour to a monochromat.", html: `<figure class="ns-code" data-lang="apex">
   <figcaption class="ns-code__bar">
     <span class="ns-code__file"><i class="ph ph-git-branch" aria-hidden="true"></i><span>CaseRouter.cls &mdash; the bulkification fix</span></span>
-    <span class="ns-code__actions"><button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button></span>
+    <span class="ns-code__actions"><button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button></span>
   </figcaption>
 ${codeBody(`public static void route(List<Case> cases) {
   Map<String, Id> queues = queueMap();
@@ -4572,7 +5004,7 @@ ${codeBody(`public static void route(List<Case> cases) {
       { name: "On the console surface", note: "<code>--dark</code> forces the navy console on a light page, which is what a docs body wants: code should look like code, not like an indented paragraph. Under <code>[data-theme=\"dark\"]</code> every block goes here automatically, so this modifier is only for the light-page case.", dark: true, html: `<figure class="ns-code ns-code--dark" data-lang="bash">
   <figcaption class="ns-code__bar">
     <span class="ns-code__file"><i class="ph ph-terminal-window" aria-hidden="true"></i><span>deploy.sh</span></span>
-    <span class="ns-code__actions"><button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button></span>
+    <span class="ns-code__actions"><button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button></span>
   </figcaption>
 ${codeBody(`# Deploy the metadata, then run the local tests only.
 sf project deploy start --source-dir force-app --test-level RunLocalTests --wait 30`, "bash")}
@@ -4581,7 +5013,7 @@ sf project deploy start --source-dir force-app --test-level RunLocalTests --wait
       { name: "Compact, no gutter, inline", note: "<code>--compact</code> tightens leading and drops a size, for a sample set beside prose rather than under a heading. Dropping the gutter is right whenever the lines are not going to be referred to by number. The inline chip is the one-liner sibling: same mono, same sunken chip, no chrome.", html: `<figure class="ns-code ns-code--compact" data-lang="javascript">
   <figcaption class="ns-code__bar">
     <span class="ns-code__file"><span>tokens.js</span></span>
-    <span class="ns-code__actions"><button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button></span>
+    <span class="ns-code__actions"><button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button></span>
   </figcaption>
 ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "javascript")}
 </figure>
@@ -4729,17 +5161,17 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     a11y: ["A real <code>&lt;ul&gt;</code>, so the count is announced — a grid of divs is a paragraph to a screen reader", "The tick is decorative and aria-hidden; the outcome is the text"],
     variants: [
       { name: "Two columns", note: "The default. Outcomes start with a verb, because the reader is buying an ability.", html: `<ul class="ns-outcomes" style="inline-size:100%">
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Query with SOQL and know when a query stops being selective</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Move logic out of a flow and into Apex — and say why</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Write tests that prove the bulk case, not the happy one</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Deploy with confidence from a scratch org</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Read a debug log without guessing</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Query with SOQL and know when a query stops being selective</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Move logic out of a flow and into Apex — and say why</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Write tests that prove the bulk case, not the happy one</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Deploy with confidence from a scratch org</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Read a debug log without guessing</span></li>
 </ul>` },
       { name: "Single column, quiet ticks", note: "<code>--single</code> for a rail; <code>--plain</code> drops the success colour where the list is informational rather than a promise.", html: `<ul class="ns-outcomes ns-outcomes--single ns-outcomes--plain" style="max-inline-size:22rem">
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Covers the Platform Developer I exam outline</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Includes the practice org and sample data</span></li>
-  <li><i class="ph ph-check" aria-hidden="true"></i><span>Certificate on completion</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Covers the Platform Developer I exam outline</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Includes the practice org and sample data</span></li>
+  <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Certificate on completion</span></li>
 </ul>` },
     ],
   },
@@ -4841,6 +5273,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
     <span class="ns-certbadge__inner">
       <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__rule" aria-hidden="true"></span>
       <span class="ns-certbadge__word">Certified</span>
       <span class="ns-certbadge__name">Associate</span>
     </span>
@@ -4850,6 +5283,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
     <span class="ns-certbadge__inner">
       <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__rule" aria-hidden="true"></span>
       <span class="ns-certbadge__word">Certified</span>
       <span class="ns-certbadge__name">Platform Developer</span>
     </span>
@@ -4870,6 +5304,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
     <span class="ns-certbadge__inner">
       <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__rule" aria-hidden="true"></span>
       <span class="ns-certbadge__word">Certified</span>
       <span class="ns-certbadge__name">Admin</span>
     </span>
@@ -4879,6 +5314,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
     <span class="ns-certbadge__inner">
       <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__rule" aria-hidden="true"></span>
       <span class="ns-certbadge__word">Certified</span>
       <span class="ns-certbadge__name">Admin</span>
     </span>
@@ -4932,7 +5368,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     not: ["A support ticket thread — that is Ticket thread, and it is a record with a status, not a conversation", "A comment section — a chat shell implies a reply is coming"],
     a11y: ["The rail is an <code>&lt;aside aria-label&gt;</code>; the toggle carries aria-controls and aria-expanded, so the announced state cannot drift from the CSS collapse", "Below 64rem the rail is an overlay and Escape closes it — a sheet you can only dismiss with a small button is a trap on a phone", "The transcript is a list of <code>&lt;article&gt;</code>s, so a screen reader can move turn by turn"],
     variants: [
-      { name: "Full screen", note: "The whole screen at once — rail, thread, composer, and every state a real assistant has. This is the visual test for the family.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-chat.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Full screen", note: "The whole screen at once — rail, thread, composer, and every state a real assistant has. This is the visual test for the family.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-chat.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
       { name: "Embedded", note: "The same shell with the viewport lock dropped, for a panel beside a lesson. The scroll region caps at 60vh and the surrounding page keeps its own scroll.", html: `<div class="ns-ai ns-ai--embedded">
   <div class="ns-ai__main">
     <header class="ns-ai__bar">
@@ -5051,7 +5487,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
       <p>Query once before the loop into a Map; collect changes into a List and insert once after it.</p>
     </div>
     <footer class="ns-aiturn__actions">
-      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy answer"><i class="ph ph-copy" aria-hidden="true"></i></button>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy answer"><i class="ph ph-file-text" aria-hidden="true"></i></button>
       <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Regenerate answer"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i></button>
       <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Helpful"><i class="ph ph-heart" aria-hidden="true"></i></button>
       <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Report a problem with this answer"><i class="ph ph-flag" aria-hidden="true"></i></button>
@@ -5086,17 +5522,17 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
       { name: "Thinking", note: "The label is the status; the dots are decoration. Name the stage — “Reading your progress” tells a waiting student more than a spinner ever will.", html: `<p class="ns-aithinking" role="status" aria-live="polite"><span class="ns-aithinking__dots" aria-hidden="true"><i></i><i></i><i></i></span>Reading your progress</p>` },
       { name: "Streaming", note: "A mono block caret on a 1.1s step timing — a cursor is a discrete thing, so it steps rather than fades.", html: `<div class="ns-aiturn__body" style="max-inline-size:36rem"><p>Three project ideas that map to what you have already built, hardest last<span class="ns-aistream" aria-hidden="true"></span></p></div>` },
       { name: "Tool calls", note: "What it read, as chips. Running spins, done checks, failed carries the error border — and a failed tool does not silently become an unsourced answer.", html: `<p>
-  <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Read your progress</span>
-  <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Searched catalog<span class="ns-aitool__count">6</span></span>
+  <span class="ns-aitool" data-state="done"><i class="ph ph-check-circle" aria-hidden="true"></i>Read your progress</span>
+  <span class="ns-aitool" data-state="done"><i class="ph ph-check-circle" aria-hidden="true"></i>Searched catalog<span class="ns-aitool__count">6</span></span>
   <span class="ns-aitool" data-state="running"><i class="ph ph-circle-notch" aria-hidden="true"></i>Checking exam outline</span>
   <span class="ns-aitool" data-state="failed"><i class="ph ph-x" aria-hidden="true"></i>Trailhead lookup</span>
 </p>` },
       { name: "Reasoning trace", note: "Collapsed by default. A beginner asking “what is a trigger” does not want a plan; a student debugging their own prompt very much does.", html: `<details class="ns-aitrace" open>
   <summary><i class="ph ph-caret-right" aria-hidden="true"></i> How I answered this <span class="ns-aisource__num">3 steps</span></summary>
   <div class="ns-aitrace__steps">
-    <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Read</b> your progress — Apex basics, lesson 03 of 12.</span></p>
-    <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Searched</b> the catalog for bulk-safe Apex material.</span></p>
-    <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Checked</b> the Platform Developer I outline against what you have finished.</span></p>
+    <p class="ns-aitrace__step"><i class="ph ph-check-circle" aria-hidden="true"></i><span><b>Read</b> your progress — Apex basics, lesson 03 of 12.</span></p>
+    <p class="ns-aitrace__step"><i class="ph ph-check-circle" aria-hidden="true"></i><span><b>Searched</b> the catalog for bulk-safe Apex material.</span></p>
+    <p class="ns-aitrace__step"><i class="ph ph-check-circle" aria-hidden="true"></i><span><b>Checked</b> the Platform Developer I outline against what you have finished.</span></p>
   </div>
 </details>` },
     ],
@@ -5114,7 +5550,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   <textarea class="ns-aicomposer__area" id="ai-doc-in" rows="2" placeholder="Ask about this lesson, paste your Apex, or ask for a project…"></textarea>
   <div class="ns-aicomposer__bar">
     <button type="button" class="ns-aimode" aria-haspopup="true" aria-expanded="false"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <i class="ph ph-caret-down" aria-hidden="true"></i></button>
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-paperclip" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-folder-open" aria-hidden="true"></i></button>
     <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Dictate"><i class="ph ph-microphone" aria-hidden="true"></i></button>
     <span class="ns-aicomposer__spacer"></span>
     <span class="ns-aicomposer__hint">Enter to send · Shift+Enter for a new line</span>
@@ -5133,7 +5569,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   <label class="ns-visually-hidden" for="ai-doc-in2">Ask the assistant</label>
   <textarea class="ns-aicomposer__area" id="ai-doc-in2" rows="2" placeholder="What is wrong with this trigger?"></textarea>
   <div class="ns-aicomposer__bar">
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-paperclip" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-folder-open" aria-hidden="true"></i></button>
     <span class="ns-aicomposer__spacer"></span>
     <span class="ns-aicomposer__count" data-state="near">3620 / 4000</span>
     <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send message"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button>
@@ -5200,7 +5636,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
       <span class="ns-aisnippet__kicker">// Reference</span>
       <span class="ns-aisnippet__title">Execution governors and limits</span>
       <span class="ns-aisnippet__desc">The per-transaction table: 100 SOQL queries, 150 DML statements, 50,000 rows retrieved.</span>
-      <span class="ns-aisnippet__meta"><i class="ph ph-arrow-square-out" aria-hidden="true"></i> developer.salesforce.com</span>
+      <span class="ns-aisnippet__meta"><i class="ph ph-arrow-up-right" aria-hidden="true"></i> developer.salesforce.com</span>
     </span>
   </a>
 </div>` },
@@ -5217,7 +5653,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
       <span class="ns-resource__title">Governor limits cheat sheet</span>
       <span class="ns-resource__type">PDF · 1 page</span>
     </span>
-    <i class="ph ph-download-simple ns-resource__cue" aria-hidden="true"></i>
+    <i class="ph ph-arrow-down ns-resource__cue" aria-hidden="true"></i>
   </a>
   </div>
 </div>` },
@@ -5315,7 +5751,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   <span class="ns-aisource__label">Sources</span>
   <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">1</span> Bulk-safe Apex patterns · lesson 04</a>
   <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">2</span> Apex basics · lesson 09</a>
-  <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">3</span> Execution governors and limits <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
+  <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">3</span> Execution governors and limits <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
 </div>` },
       { name: "Practice check", note: "The teaching move. After explaining governor limits it asks one question and waits — which is the whole difference between reading an answer and knowing it.", html: `<div class="ns-aicheck" style="max-inline-size:36rem">
   <span class="ns-aicheck__kicker">// Quick check</span>
@@ -5474,7 +5910,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
       </div>
     </div>
   </section>
-  <p style="margin-block-start:var(--space-4)"><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-settings.html" target="_blank" rel="noopener">Open the full settings screen <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>
+  <p style="margin-block-start:var(--space-4)"><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-settings.html" target="_blank" rel="noopener">Open the full settings screen <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>
 </div>` },
       { name: "Sign-in gate", note: "The reason first: the answers are built from this student's own progress, which an anonymous session does not have. Then what signing in buys, then the field.", html: `<div class="ns-aigate">
   <div>
@@ -5482,9 +5918,9 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <p class="ns-aigate__text">Answers are built from your own progress — which lessons you have finished, where you got stuck, what you are working towards. That needs an account.</p>
   </div>
   <ul class="ns-aigate__list">
-    <li><i class="ph ph-check" aria-hidden="true"></i> Answers that cite the lesson you are on</li>
-    <li><i class="ph ph-check" aria-hidden="true"></i> Learning paths saved to your dashboard</li>
-    <li><i class="ph ph-check" aria-hidden="true"></i> 30 questions a day on the free plan</li>
+    <li><i class="ph ph-check-circle" aria-hidden="true"></i> Answers that cite the lesson you are on</li>
+    <li><i class="ph ph-check-circle" aria-hidden="true"></i> Learning paths saved to your dashboard</li>
+    <li><i class="ph ph-check-circle" aria-hidden="true"></i> 30 questions a day on the free plan</li>
   </ul>
   <form class="ns-auth__form" action="#">
     <div class="ns-field">
@@ -5498,7 +5934,281 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   </form>
   <p class="ns-aigate__text">Free, no card. We do not train on your conversations.</p>
 </div>` },
-      { name: "The signed-out screen", note: "Gate, empty state and disabled composer in one room — what a visitor sees before they hand over an email address.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-signin.html" target="_blank" rel="noopener">Open the signed-out demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "The signed-out screen", note: "Gate, empty state and disabled composer in one room — what a visitor sees before they hand over an email address.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-signin.html" target="_blank" rel="noopener">Open the signed-out demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
+    ],
+  },
+
+  {
+    id: "extcard", title: "External resource card", family: "LMS",
+    summary: "A card that LEAVES the site: a Trailhead module, a vendor doc page, someone else's tutorial. Names its destination first, carries what the trip will cost, and says it is leaving before it is clicked rather than after.",
+    use: ["\"Go deeper\" at the end of a lesson, where the deeper material is somebody else's and there is no point paraphrasing it", "A prerequisite that lives on another site", "A row of them as a departures board — the destination is what is being chosen between"],
+    not: ["A file you take with you — that is Resource card, and it promises something different", "An internal link. Inside the site a card that announces it is leaving is a lie", "More than three or four. A lesson that ends in a wall of other people's material is a lesson that did not finish its own argument"],
+    a11y: [
+      "Pair the out-arrow with target=\"_blank\" rel=\"noopener\" — the arrow is the visible half of the same promise",
+      "The whole card is the &lt;a&gt;, so the accessible name is source + title + meta read as one thing",
+      "The arrow is aria-hidden: \"opens in a new tab\" belongs in the link text or its label, not in a glyph",
+    ],
+    variants: [
+      { name: "A departures board", stack: true, note: "The SOURCE leads. A row of these is a row of departures, and where it goes is the thing being chosen between; the title is what it is called once you get there. The meta says what it costs — kind, time, and whatever the destination counts in.", html: `<div class="ns-extcards" style="inline-size:100%">
+  <a class="ns-extcard" href="#0">
+    <span class="ns-extcard__icon"><i class="ph ph-graduation-cap" aria-hidden="true"></i></span>
+    <span class="ns-extcard__body">
+      <span class="ns-extcard__source">Trailhead · Salesforce</span>
+      <span class="ns-extcard__title">Salesforce Platform Basics</span>
+      <span class="ns-extcard__meta"><span>Module</span><span><i class="ph ph-clock" aria-hidden="true"></i>45 min</span><span>700 pts</span></span>
+    </span>
+    <i class="ph ph-arrow-up-right ns-extcard__cue" aria-hidden="true"></i>
+  </a>
+  <a class="ns-extcard" href="#0">
+    <span class="ns-extcard__icon"><i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+    <span class="ns-extcard__body">
+      <span class="ns-extcard__source">Developer docs · Salesforce</span>
+      <span class="ns-extcard__title">Execution governors and limits</span>
+      <span class="ns-extcard__meta"><span>Reference</span><span><i class="ph ph-clock" aria-hidden="true"></i>10 min</span></span>
+    </span>
+    <i class="ph ph-arrow-up-right ns-extcard__cue" aria-hidden="true"></i>
+  </a>
+</div>` },
+      { name: "In a lesson", note: "One column, at the foot of the written lesson — where \"and now go and do the official module\" belongs.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-article.html" target="_blank" rel="noopener">See it in place <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
+    ],
+  },
+
+  /* =================================================== Monetization ==== */
+  {
+    id: "sponsor", title: "Sponsor card", family: "Monetization",
+    summary: "The paid surface, in four shapes. Logo, name, one-line tagline, a sentence and an outline CTA — and a mono <strong>Sponsored</strong> label that is never optional. It is drawn in the system's own hairline vocabulary rather than a louder one, because a sponsor styled to shout is a sponsor that trains the reader to scroll past that style.",
+    use: [
+      "--skyscraper in a content rail: the one shape with room for the whole pitch stacked",
+      "--square in a narrow rail or a grid; the description is dropped, not clamped",
+      "--leaderboard under an article or above a footer, where a wide strip fits",
+      "--article INSIDE the reading flow, where a card would read as an endorsement",
+    ],
+    not: [
+      "A button for the CTA — it would compete with the one real action on the page. It is a text link with an arrow, the same shape “read more” takes everywhere else",
+      "More than one per surface. Two sponsors in a rail is a rail nobody looks at",
+      "Above the fold of a paid lesson: a learner who bought the course is not the audience for a second sale",
+      "Dropping the label because the design “looks better without it”. It is not decoration",
+    ],
+    a11y: [
+      "The Sponsored label is real text in the DOM, not a background image or a ::before — it must be readable, translatable and announced",
+      "The whole card is the &lt;a&gt;; the CTA inside it is a &lt;span&gt;, because a link inside a link is invalid and unnavigable",
+      "The logo takes the sponsor's name as its alt, so the card announces WHO it is for before what it says",
+    ],
+    variants: [
+      { name: "Skyscraper", note: "The rail shape, and the only one with room for the label, the mark, the tagline, the description and the action all stacked. Reach for it when the sponsor actually has something to say.", html: `<a class="ns-sponsor ns-sponsor--skyscraper" href="#0" style="max-inline-size:15rem">
+  <span class="ns-sponsor__label">Sponsor</span>
+  <img class="ns-sponsor__logo" src="../assets/logo/favicon.svg" alt="Orgforce">
+  <span class="ns-sponsor__body">
+    <span class="ns-sponsor__name">Orgforce</span>
+    <span class="ns-sponsor__tagline">Deploy without the change set</span>
+    <span class="ns-sponsor__text">CI for Salesforce orgs: a scratch org per pull request, a deploy per merge, and nobody clicking through Setup at midnight.</span>
+  </span>
+  <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+</a>` },
+      { name: "Square", note: "The compact rail or grid unit. The description is DROPPED rather than clamped: two words of a sentence followed by an ellipsis is worse than no sentence, and the tagline already exists to be the short version.", html: `<a class="ns-sponsor ns-sponsor--square" href="#0" style="max-inline-size:15rem">
+  <span class="ns-sponsor__label">Sponsor</span>
+  <img class="ns-sponsor__logo" src="../assets/logo/favicon.svg" alt="Orgforce">
+  <span class="ns-sponsor__body">
+    <span class="ns-sponsor__name">Orgforce</span>
+    <span class="ns-sponsor__tagline">Deploy without the change set</span>
+    <span class="ns-sponsor__text">Hidden at this size — the headline is the short version.</span>
+  </span>
+  <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+</a>` },
+      { name: "Leaderboard", stack: true, note: "One line: mark, text, action. For the full width of a content column — under an article, above a footer, between two bands. Stacks below 48rem, because three cells in a phone's width is a logo, four words and a truncated button.", html: `<a class="ns-sponsor ns-sponsor--leaderboard" href="#0" style="inline-size:100%">
+  <span class="ns-sponsor__label">Sponsored</span>
+  <img class="ns-sponsor__logo" src="../assets/logo/favicon.svg" alt="Orgforce">
+  <span class="ns-sponsor__body">
+    <span class="ns-sponsor__name">Orgforce</span>
+    <span class="ns-sponsor__tagline">Deploy without the change set</span>
+    <span class="ns-sponsor__text">A scratch org per pull request. A deploy per merge.</span>
+  </span>
+  <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+</a>` },
+      { name: "In the article", stack: true, note: "Deliberately NOT a card. A boxed object in a column of prose reads as a pull-quote — something the writer endorsed — and this is not that. Hairline rules top and bottom, no fill, no radius: the visual grammar of an interruption rather than of an inclusion. It is also the only shape set at the prose measure, so it sits inside the text block instead of spanning past it and announcing itself as chrome.", html: `<div class="ns-prose" style="inline-size:100%">
+  <p>An aggregate query still returns rows, and those rows still count: 50,000 of them, same as any other query.</p>
+</div>
+<a class="ns-sponsor ns-sponsor--article" href="#0" style="inline-size:100%">
+  <span class="ns-sponsor__label">Sponsored</span>
+  <img class="ns-sponsor__logo" src="../assets/logo/favicon.svg" alt="Orgforce">
+  <span class="ns-sponsor__body">
+    <span class="ns-sponsor__name">Orgforce</span>
+    <span class="ns-sponsor__tagline">Deploy without the change set</span>
+    <span class="ns-sponsor__text">Every pull request gets a scratch org — including the aggregate queries you just wrote.</span>
+  </span>
+  <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+</a>
+<div class="ns-prose" style="inline-size:100%">
+  <p>A <code>GROUP BY</code> on a field with high cardinality will hit that ceiling on a real org.</p>
+</div>` },
+      { name: "The empty slot", note: "Before a sponsor is sold. Dashed and plainly unfinished on purpose: it is the one surface in the system allowed to look like a placeholder, because that is exactly what it is. Never ship it to a reader — it is for the layout stage and for the sales page.", html: `<div class="ns-adslot" style="inline-size:100%;max-inline-size:26rem">
+  <span class="ns-adslot__label"><i class="ph ph-megaphone" aria-hidden="true"></i>Advertise with us</span>
+</div>` },
+      { name: "In place", note: "Both player surfaces carry one: <code>--skyscraper</code> or <code>--square</code> under the page rail's list, and <code>--article</code> once inside the lesson, below the fold.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player-article.html" target="_blank" rel="noopener">Article lesson <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player.html" target="_blank" rel="noopener">Video lesson <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
+    ],
+  },
+  {
+    id: "adunit", title: "Ad unit", family: "Monetization",
+    summary: "The third-party slot — AdSense or any other network. This component is not the ad, it is everything around it: it reserves the creative's exact height at every breakpoint so nothing shifts when the fill lands, discloses that it is an ad in real DOM text, holds a skeleton while the network thinks, and collapses honestly when no fill comes back. Every format is <em>one</em> class that changes size by breakpoint — 320&times;100 on a phone becomes 728&times;90 on a tablet becomes 970&times;90 on a desktop — so a page has one slot in one place in the markup rather than three with two of them <code>display:none</code>, which is how a page ends up requesting three ads and rendering one.",
+    use: [
+      "Any network slot: the frame goes here, the <code>&lt;ins&gt;</code> or iframe goes inside it",
+      "--leaderboard above the content, --halfpage or --skyscraper in a rail, --article between paragraphs",
+      "--fluid and --article below the fold, where a responsive unit that grows on render shifts only what the reader has already passed",
+      "The dummy creative during layout and local development, so a slot that never fills is still visible in a screenshot",
+    ],
+    not: [
+      "The Sponsor card. That one is a native placement we design, write and control; this is a box for someone else's artwork",
+      "A frame with no reserved height. <code>min-height:0</code> plus a late creative is the single largest source of layout shift on an ad-funded page",
+      "A slot above the reader's current line that can grow. Growing downward still moves the sentence they are reading",
+      "Chrome around a live creative — a border on a filled display unit makes it look native, which is the one thing it must not look",
+      "An interstitial on entry, or an anchor with no close button. Both are policy violations on every network that sells the format, and both are dark patterns before they are that",
+    ],
+    a11y: [
+      "The disclosure is the visible label, in the DOM, as real text — never an aria-label and never a background image. A screen reader user gets the same warning from the same node, so the two cannot drift",
+      "The interstitial is a real &lt;dialog&gt;, so focus trapping, Esc-to-close and inertness of the page behind come from the platform rather than from a script that gets it 80% right",
+      "The anchor's close button is a full --target-min touch target, present from the first frame",
+      "--parallax is motion tied to scroll, so it is switched off under prefers-reduced-motion rather than slowed down",
+      "Ads are removed in print — a reserved empty frame prints as a blank box in the middle of the article",
+    ],
+    variants: [
+      { name: "The responsive leaderboard", stack: true, note: "One class, three sizes. The phone step is not a scaled-down 728 — it is the 320&times;100 mobile leaderboard, a unit the networks sell separately, because a 728px creative squeezed into a phone is unreadable and a phone showing nothing is unsold inventory. Resize the window: the frame changes size, the markup does not.", html: `<div class="ns-ad ns-ad--leaderboard" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__dummy" aria-hidden="true">
+      <span class="ns-ad__dummy-name">Leaderboard</span>
+      <span class="ns-ad__dummy-size">320x100 &middot; 728x90 &middot; 970x90</span>
+    </span>
+  </div>
+</div>
+<div class="ns-ad ns-ad--billboard" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__dummy" aria-hidden="true">
+      <span class="ns-ad__dummy-name">Billboard</span>
+      <span class="ns-ad__dummy-size">300x250 &middot; 728x90 &middot; 970x250</span>
+    </span>
+  </div>
+</div>` },
+      { name: "Skeleton while it loads", stack: true, note: "<code>data-state=\"loading\"</code> is the default, and the space is already held at full height before a single byte of the creative has arrived — which is the entire job. The mono size stamp is a development aid that costs nothing in production: a slot that never fills is invisible in a screenshot unless it says what it was waiting for.", html: `<div class="ns-ad ns-ad--leaderboard" data-state="loading">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">728x90</span>
+  </div>
+</div>
+<div class="ns-ad ns-ad--rectangle" data-state="loading">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">300x250</span>
+  </div>
+</div>` },
+      { name: "Rectangles and squares", stack: true, note: "The in-content workhorses. <code>--rectangle</code> (300&times;250) is the most-sold display size on the internet; <code>--rectangle-lg</code> (336&times;280) is the same shape given a rail that can afford it; <code>--square</code> steps 250&times;250 → 300&times;250 at tablet.", html: `<div class="ns-ad ns-ad--rectangle" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Medium rectangle</span><span class="ns-ad__dummy-size">300x250</span></span></div>
+</div>
+<div class="ns-ad ns-ad--rectangle-lg" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Large rectangle</span><span class="ns-ad__dummy-size">336x280</span></span></div>
+</div>
+<div class="ns-ad ns-ad--square" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Square</span><span class="ns-ad__dummy-size">250x250 &middot; 300x250</span></span></div>
+</div>` },
+      { name: "The tall rail units", stack: true, note: "<code>--halfpage</code> (300&times;600), <code>--skyscraper</code> (160&times;600) and <code>--skyscraper-sm</code> (120&times;600). Wrap any of them in <code>.ns-ad-rail</code> and the unit sticks as the reader goes down a long article — sticky rather than fixed, so it stops at the end of its own column instead of floating over the footer.", html: `<div style="display:flex;gap:var(--space-5);align-items:flex-start">
+  <div class="ns-ad ns-ad--halfpage" data-state="filled">
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Half page</span><span class="ns-ad__dummy-size">300x600</span></span></div>
+  </div>
+  <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled">
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Skyscraper</span><span class="ns-ad__dummy-size">160x600</span></span></div>
+  </div>
+  <div class="ns-ad ns-ad--skyscraper-sm" data-state="filled">
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Narrow</span><span class="ns-ad__dummy-size">120x600</span></span></div>
+  </div>
+</div>` },
+      { name: "Phone-only banners", stack: true, note: "<code>--banner</code> (320&times;50) and <code>--banner-lg</code> (320&times;100) are hidden above 48rem, deliberately: a 320&times;50 banner on a desktop is not a small ad, it is a broken one. On this page they disappear when the window is wide — that is the component working.", html: `<div class="ns-ad ns-ad--banner" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-size">320x50</span></span></div>
+</div>
+<div class="ns-ad ns-ad--banner-lg" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-size">320x100</span></span></div>
+</div>` },
+      { name: "In-article", stack: true, note: "The native unit inside the prose, set at the reading measure with rules above and below — the same “this is an aside” device the article sponsor uses, so a reader who has learned one has learned both. Highest revenue and highest risk: an in-article unit that is not clearly labelled reads as a paragraph the writer wrote.", html: `<div class="ns-prose" style="inline-size:100%">
+  <p>A <code>GROUP BY</code> on a field with high cardinality will hit the query ceiling on a real org, and the governor limit is not negotiable from Apex.</p>
+</div>
+<div class="ns-ad ns-ad--article" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">In-article</span><span class="ns-ad__dummy-size">fluid</span></span></div>
+</div>
+<div class="ns-prose" style="inline-size:100%">
+  <p>The way around it is to aggregate in the database rather than in the loop, which is the whole reason aggregate functions exist.</p>
+</div>` },
+      { name: "In-feed", stack: true, note: "Between the cards in a listing, so it has to be card-shaped without being mistakable for a card. It keeps the dashed edge <em>even when filled</em>: in a grid of eight real courses, the one that is an ad has to be findable at a glance.", html: `<div class="ns-grid" style="grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--gap-grid);inline-size:100%">
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><span class="ns-card__title">Apex basics</span></div></div>
+  <div class="ns-ad ns-ad--feed" data-state="filled">
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">In-feed</span><span class="ns-ad__dummy-size">fluid</span></span></div>
+  </div>
+  <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><span class="ns-card__title">Flow builder</span></div></div>
+</div>` },
+      { name: "Multiplex", stack: true, note: "The grid of native recommendations — several ads in one block, so it is labelled <em>once</em>, at the top, for the whole thing.", html: `<div class="ns-ad ns-ad--multiplex" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <div class="ns-ad__grid">
+      <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Ship your first managed package</span><span class="ns-ad__tile-src">orgforce.dev</span></span>
+      <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Static analysis for Apex, free tier</span><span class="ns-ad__tile-src">lintforce.io</span></span>
+      <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Sandbox seeding in ninety seconds</span><span class="ns-ad__tile-src">seedbox.app</span></span>
+    </div>
+  </div>
+</div>` },
+      { name: "Parallax", stack: true, note: "A creative held still while the page scrolls over it, done with <code>background-attachment: fixed</code> on a clipped frame rather than a scroll listener — no JavaScript, nothing to jank. iOS Safari ignores it and falls back to a normal scrolling background, which is a graceful degradation rather than a bug to fight with a transform hack. Off entirely under reduced motion. Scroll the page to see it.", html: `<div class="ns-ad ns-ad--parallax" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame" style="background-image:linear-gradient(135deg,var(--color-brand-700),var(--color-brand-400))">
+    <span class="ns-ad__dummy" aria-hidden="true" style="background-color:transparent;background-image:none;border:0"><span class="ns-ad__dummy-name" style="color:var(--color-on-dark)">Parallax</span><span class="ns-ad__dummy-size" style="color:var(--color-on-dark)">fluid x 320</span></span>
+  </div>
+</div>` },
+      { name: "Anchor — the floating bottom strip", stack: true, note: "The most intrusive format still defensible, and only because of what is attached to it: a real close button at a full touch target, <code>.ns-ad-anchored</code> on the page shell so the last paragraph clears it, and <code>--z-sticky</code> rather than <code>--z-overlay</code> so the player bar or a save bar is never covered by an ad. Shown here in place rather than fixed, so it does not follow you around the styleguide — the page shell around it carries <code>.ns-ad-anchored</code>, which is what reserves the clearance.", html: `<div class="ns-ad-anchored" style="position:relative;inline-size:100%;padding-block-start:var(--space-8)">
+  <div class="ns-ad ns-ad--anchor" data-state="filled" style="position:static">
+    <button type="button" class="ns-ad__dismiss" aria-label="Close advertisement"><i class="ph ph-x" aria-hidden="true"></i></button>
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-size">320x100 &middot; 728x90</span></span></div>
+  </div>
+</div>` },
+      { name: "Interstitial", stack: true, note: "Inside the system's real <code>&lt;dialog&gt;</code>, so focus trapping, Esc and the backdrop come from the platform. The close button is present from the first frame at full size — an interstitial whose close control is a 12px grey &times; after a three-second delay is a dark pattern before it is a policy violation, and it is both.", script: `document.getElementById('ad-interstitial-open').addEventListener('click', function () { document.getElementById('ad-interstitial').showModal(); });
+document.getElementById('ad-interstitial-close').addEventListener('click', function () { document.getElementById('ad-interstitial').close(); });`, html: `<button class="ns-btn ns-btn--outline" id="ad-interstitial-open">Show interstitial</button>
+<dialog class="ns-modal ns-ad-modal" id="ad-interstitial" aria-label="Advertisement">
+  <button class="ns-btn ns-btn--quiet ns-btn--icon ns-ad-modal__close" id="ad-interstitial-close" aria-label="Close advertisement"><i class="ph ph-x" aria-hidden="true"></i></button>
+  <div class="ns-ad" data-state="filled">
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Interstitial</span><span class="ns-ad__dummy-size">336x280 &middot; 300x600</span></span></div>
+  </div>
+</dialog>` },
+      { name: "Empty and blocked", stack: true, note: "The two states everyone forgets. <code>empty</code> means no fill came back — add <code>data-collapse</code> and the slot removes itself entirely, because the reservation existed to stop a shift while the ad was in flight and once the answer is “there is no ad” the honest thing is to give the space back. <code>blocked</code> says so once, quietly, and never nags: “please disable your ad blocker” is a demand, and a line about membership is an offer.", html: `<div class="ns-ad ns-ad--rectangle" data-state="empty">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__note"><span class="ns-ad__note-title">No fill</span>This slot collapses in production.</span></div>
+</div>
+<div class="ns-ad ns-ad--rectangle" data-state="blocked">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__note"><span class="ns-ad__note-title">Ads are off</span>Members read without them &mdash; and so do you, right now.</span></div>
+</div>` },
+      { name: "Fluid / responsive auto", stack: true, note: "The network sizes this one itself, which means its height is unknown until it renders — the exact thing the reservation exists to prevent. The compromise the whole industry landed on: reserve the minimum the unit can serve and let it grow downward only. Which is why a fluid unit belongs below the fold, never above the reader's current line.", html: `<div class="ns-ad ns-ad--fluid" data-state="filled" style="max-inline-size:40rem">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Responsive</span><span class="ns-ad__dummy-size">100% x min 250</span></span></div>
+</div>` },
+      { name: "In place, on a real page", note: "Every placement wired into an actual blog post: leaderboard above the masthead, skyscraper in the rail, in-article after the first section, parallax deep in the scroll, fluid at the end of the body, multiplex and in-feed at the foot, a dismissible anchor and an interstitial behind a button. The skeletons are live — the slots start in <code>loading</code> and flip to <code>filled</code> after a beat, so you can watch the reservation hold. <strong>It carries every format at once and no real page should</strong>; the template says so at the top and names the three worth keeping. The responsive page is the same post in three real iframes, which is the only honest way to show a size ladder — media queries answer to the viewport, so a narrow <code>div</code> would keep serving the desktop unit.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-blog-ads.html" target="_blank" rel="noopener">Blog post with ads <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+<a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-blog-ads-responsive.html" target="_blank" rel="noopener">The ladder at three widths <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
+      { name: "The dummy creative", note: "Deliberately hatched and stamped with its own dimensions, so nobody screenshots a page for a client and ships a placeholder believing it was a live unit. Use it for layout work and local development where no network is wired up.", html: `<div class="ns-ad ns-ad--rectangle" data-state="filled">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__dummy" aria-hidden="true">
+      <span class="ns-ad__dummy-name">Your ad here</span>
+      <span class="ns-ad__dummy-size">300x250</span>
+    </span>
+  </div>
+</div>` },
     ],
   },
 ];

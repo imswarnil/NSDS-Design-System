@@ -1,0 +1,385 @@
+<!--
+  NS Design System template — blog post, monetized
+  =====================================================================
+  The same post as blog-post.html with every ad placement wired in, so the
+  slots can be seen where they actually land rather than in a row on a
+  documentation page. Framework-agnostic markup: the same .ns-* classes the
+  React components render.
+
+  READ THIS BEFORE COPYING THE FILE.
+
+  This page carries EVERY format at once, and no real page should. It is a
+  catalogue, not a layout. A reading page that runs a leaderboard, two
+  in-article units, a rail unit, a parallax, a multiplex, an anchor AND an
+  interstitial is a page with an article buried in it, and every network that
+  sells these formats has a policy against most of that combination. Pick two
+  or three placements from the list below and delete the rest.
+
+  If you keep only three, keep these:
+
+    1. IN-ARTICLE, after the first section. The reader has committed by then,
+       the unit is inside the measure, and it is the placement that earns.
+    2. ONE RAIL UNIT, sticky. It follows the reader down a long article
+       without ever moving anything.
+    3. THE MULTIPLEX AT THE FOOT, where the reader has finished and a
+       recommendation is genuinely the next useful thing.
+
+  Everything above the article's first paragraph competes with the reason the
+  reader came. Everything that moves competes with the sentence they are on.
+
+  Every slot here is marked data-placement="…" — that is a documentation hook
+  for the styleguide's annotation toggle and is inert in production. Delete it
+  or leave it; it costs nothing either way.
+
+  WIRING A REAL NETWORK. The frame is the component's job; the request is
+  yours. For AdSense the <ins class="adsbygoogle"> goes inside .ns-ad__frame,
+  and the state attribute moves loading → filled from the network's own
+  callback, never on a timer:
+
+    <div class="ns-ad ns-ad--rectangle" data-state="loading">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame">
+        <ins class="adsbygoogle" style="display:block"
+             data-ad-client="ca-pub-XXXX" data-ad-slot="1234567890"></ins>
+        <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">300x250</span>
+      </div>
+    </div>
+
+  The demo script at the foot of this file fakes those callbacks so the
+  states are visible. Delete it when you wire the real thing.
+-->
+<span class="ns-lprogress ns-lprogress--article" data-target="#post-body"
+      role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
+
+<!-- 1 — LEADERBOARD, above the masthead.
+     One class, three sizes: 320x100 on a phone, 728x90 on a tablet, 970x90 on
+     a desktop. It sits ABOVE the title rather than between the title and the
+     text, because a strip wedged into the header separates the headline from
+     the standfirst that explains it. -->
+<div class="ns-ad ns-ad--leaderboard" data-state="loading" data-placement="Leaderboard · top of page"
+     style="margin-block:var(--space-6)">
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__dummy" aria-hidden="true">
+      <span class="ns-ad__dummy-name">Leaderboard</span>
+      <span class="ns-ad__dummy-size">320x100 · 728x90 · 970x90</span>
+    </span>
+    <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">728x90</span>
+  </div>
+</div>
+
+<header class="ns-posthead ns-posthead--center">
+  <div class="ns-posthead__inner">
+    <a class="ns-tag ns-posthead__cat" href="/tag/apex">Apex</a>
+    <h1 class="ns-posthead__title">Why your trigger fails at 201 records</h1>
+    <p class="ns-posthead__standfirst">Governor limits are per transaction, not per record. Once that lands, bulkification stops being a rule you follow and becomes the only design that makes sense.</p>
+    <div class="ns-postmeta">
+      <span>
+        <img class="ns-postmeta__avatar" src="/assets/logo/favicon.svg" alt="">
+        <a class="ns-postmeta__author" href="/author/swarnil">Swarnil Singhai</a>
+      </span>
+      <span><time datetime="2026-08-04">4 August 2026</time></span>
+      <span>6 min read</span>
+    </div>
+  </div>
+</header>
+
+<div class="ns-post">
+  <!-- The rail is a plain <div> here rather than the <nav> blog-post.html
+       uses, because it now holds two things and only one of them is
+       navigation. The <nav> moved inward, onto the TOC itself, where it
+       describes what it actually is — an ad inside a landmark called
+       "On this page" is a lie to anyone navigating by landmark. -->
+  <div class="ns-post__rail">
+    <nav class="ns-toc" aria-label="On this page" data-toc-from="#post-body">
+      <p class="ns-toc__title">On this page</p>
+    </nav>
+
+    <!-- 2 — SKYSCRAPER in the rail.
+         160x600, and the width is why: .ns-post__rail is 14rem — 224px — so a
+         300px half page does not fit and would burst the column. This is the
+         everyday version of the ad-sizing problem, and the answer is always
+         to pick the unit the column can hold rather than to widen the column
+         for the ad.
+
+         .ns-ad-rail is what makes it LEAVE below 64rem. ns-post does not hide
+         the rail on a narrow screen, it stacks it into the content column —
+         so without this class the reader on a phone gets 600 pixels of ad
+         between the headline and the first paragraph, and the desktop view
+         everyone reviews looks perfectly fine. -->
+    <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled" data-placement="Skyscraper · rail"
+         style="margin-block-start:var(--space-8)">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame">
+        <span class="ns-ad__dummy" aria-hidden="true">
+          <span class="ns-ad__dummy-name">Skyscraper</span>
+          <span class="ns-ad__dummy-size">160x600</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <article class="ns-post__body">
+    <div class="ns-prose" id="post-body">
+      <p class="ns-lead">Every Apex developer meets this bug once: the trigger that worked all through development, then failed the first time someone imported a spreadsheet.</p>
+
+      <h2>The limit is the transaction</h2>
+      <p>Governor limits are counted per <em>transaction</em>, not per record. A trigger that runs one query per record does not use one query — it uses as many queries as the data load has rows, and the platform stops it at 101.</p>
+
+      <div class="ns-callout">
+        <i class="ph ph-info" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Note</span>The 101 is not a typo. The hundredth query succeeds; the hundred-and-first is what raises the exception.</div>
+      </div>
+
+      <h3>Counting the wrong thing</h3>
+      <p>The instinct is to count records. The platform counts statements, and the difference is the entire lesson.</p>
+
+    <!-- 3 — IN-ARTICLE, after the first section.
+         The placement that earns, and the one with the most at stake: it is
+         inside the reading measure and it is not a card, so the LABEL is the
+         only thing separating it from a paragraph the writer wrote. It comes
+         after the first section, never before the first paragraph — a reader
+         who has not started yet has nothing to interrupt. -->
+    <div class="ns-ad ns-ad--article" data-state="filled" data-placement="In-article · after section 1">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame">
+        <span class="ns-ad__dummy" aria-hidden="true">
+          <span class="ns-ad__dummy-name">In-article</span>
+          <span class="ns-ad__dummy-size">fluid</span>
+        </span>
+      </div>
+    </div>
+
+      <h2>The fix is a pattern</h2>
+      <p>Collect the ids first, query once, put the results in a map, then loop. It is three lines longer and it does not care whether the load is one record or two hundred.</p>
+
+      <figure class="ns-code" data-lang="apex">
+        <figcaption class="ns-code__bar">
+          <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>CaseRouter.cls</span></span>
+          <span class="ns-code__actions">
+            <span class="ns-code__lang">apex</span>
+            <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+          </span>
+        </figcaption>
+        <div class="ns-code__body">
+          <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4</pre>
+          <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-type">Map</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">String</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Id</span><span class="ns-tok-punct">&gt;</span> queues <span class="ns-tok-punct">=</span> <span class="ns-tok-fn">queueMap</span><span class="ns-tok-punct">();</span></span><span class="ns-code__line"><span class="ns-tok-kw">for</span> <span class="ns-tok-punct">(</span><span class="ns-tok-type">Case</span> c <span class="ns-tok-punct">:</span> cases<span class="ns-tok-punct">)</span> <span class="ns-tok-punct">{</span></span><span class="ns-code__line">  c<span class="ns-tok-punct">.</span><span class="ns-tok-type">OwnerId</span> <span class="ns-tok-punct">=</span> queues<span class="ns-tok-punct">.</span><span class="ns-tok-fn">get</span><span class="ns-tok-punct">(</span>c<span class="ns-tok-punct">.</span><span class="ns-tok-type">Origin</span><span class="ns-tok-punct">);</span></span><span class="ns-code__line"><span class="ns-tok-punct">}</span></span></code></pre>
+        </div>
+      </figure>
+
+      <div class="ns-callout ns-callout--warn">
+        <i class="ph ph-warning" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Watch out</span>A map keyed on a field that is not unique silently drops records. Key on the id unless you can prove otherwise.</div>
+      </div>
+
+    <!-- 4 — PARALLAX, deep in the article.
+         The creative is held still and the page scrolls over it. It is the
+         loudest format here and it belongs deep, past the point the reader
+         has decided to stay. iOS Safari renders it as an ordinary scrolling
+         background, and it is off entirely under prefers-reduced-motion —
+         both are the format degrading, not failing. -->
+    <div class="ns-ad ns-ad--parallax" data-state="filled" data-placement="Parallax · deep scroll">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame" style="background-image:linear-gradient(135deg,var(--color-brand-700),var(--color-brand-400))">
+        <span class="ns-ad__dummy" aria-hidden="true" style="background-color:transparent;background-image:none;border:0">
+          <span class="ns-ad__dummy-name" style="color:var(--color-on-dark)">Parallax</span>
+          <span class="ns-ad__dummy-size" style="color:var(--color-on-dark)">fluid · 320 tall</span>
+        </span>
+      </div>
+    </div>
+
+      <h2>Testing it honestly</h2>
+      <p>A test that inserts one record proves nothing about the case that broke. Insert two hundred.</p>
+
+      <div class="ns-callout ns-callout--tip">
+        <i class="ph ph-lightbulb" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Tip</span>Put the 200 in a constant your factory reads. When the limit changes, one edit fixes every test.</div>
+      </div>
+
+      <hr>
+      <p>Next in the series: what actually counts against each limit, and how to read the debug log that tells you.</p>
+    </div>
+
+    <!-- 5 — FLUID, at the end of the body.
+         A responsive unit sizes itself, so its height is unknown until it
+         renders — which is why it lives BELOW the last paragraph. If it grows
+         on render it moves only what the reader has already passed. -->
+    <div class="ns-ad ns-ad--fluid" data-state="loading" data-placement="Fluid · end of body"
+         style="margin-block-start:var(--space-8)">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame">
+        <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">100% × min 250</span>
+      </div>
+    </div>
+
+    <div style="display:grid;gap:var(--space-8);margin-block-start:var(--space-12)">
+      <div class="ns-authorbox">
+        <img class="ns-authorbox__avatar" src="/assets/logo/favicon.svg" alt="">
+        <div>
+          <p class="ns-authorbox__name"><a href="/author/swarnil">Swarnil Singhai</a></p>
+          <p class="ns-authorbox__role">Salesforce Architect · 11× certified</p>
+          <p class="ns-authorbox__bio">Eleven years building on the platform, most of them cleaning up other people's triggers. Writes about the model first and the syntax second.</p>
+          <div class="ns-authorbox__links">
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="/author/swarnil">All posts</a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 — MULTIPLEX at the foot.
+           Several ads in one block, so it is labelled once for the whole
+           thing. This is the honest place for a recommendation unit: the
+           reader has finished, and "what next" is a real question they now
+           have. -->
+      <div class="ns-ad ns-ad--multiplex" data-state="filled" data-placement="Multiplex · end of post">
+        <span class="ns-ad__label">Advertisement</span>
+        <div class="ns-ad__frame">
+          <div class="ns-ad__grid">
+            <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Ship your first managed package</span><span class="ns-ad__tile-src">orgforce.dev</span></span>
+            <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Static analysis for Apex, free tier</span><span class="ns-ad__tile-src">lintforce.io</span></span>
+            <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Sandbox seeding in ninety seconds</span><span class="ns-ad__tile-src">seedbox.app</span></span>
+            <span class="ns-ad__tile"><span class="ns-ad__tile-thumb"></span><span class="ns-ad__tile-title">Org monitoring that pages a human</span><span class="ns-ad__tile-src">watchtower.sh</span></span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="ns-postnav" aria-label="More posts">
+        <a class="ns-postnav__link" href="#">
+          <span class="ns-postnav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+          <span class="ns-postnav__title">Collections, maps and sets</span>
+        </a>
+        <a class="ns-postnav__link ns-postnav__link--next" href="#">
+          <span class="ns-postnav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+          <span class="ns-postnav__title">Governor limits in practice</span>
+        </a>
+      </nav>
+
+      <section>
+        <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
+          <div><span class="ns-kicker">Related</span><h2 class="ns-band__title" style="font-size:var(--size-h3)">More on Apex</h2></div>
+        </div>
+        <!-- 7 — IN-FEED, between the related cards.
+             Card-shaped so it belongs in the row, dashed even when filled so
+             it is findable as the one thing in the row that is not editorial. -->
+        <div class="ns-grid" style="grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--gap-grid)">
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Flow or Apex? A decision table</h3></a><div class="ns-postmeta"><span>5 min read</span></div></div></article>
+          <div class="ns-ad ns-ad--feed" data-state="filled" data-placement="In-feed · related row">
+            <span class="ns-ad__label">Advertisement</span>
+            <div class="ns-ad__frame">
+              <span class="ns-ad__dummy" aria-hidden="true">
+                <span class="ns-ad__dummy-name">In-feed</span>
+                <span class="ns-ad__dummy-size">fluid</span>
+              </span>
+            </div>
+          </div>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Test data factories that survive a refactor</h3></a><div class="ns-postmeta"><span>7 min read</span></div></div></article>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Notes on naming things</h3></a><div class="ns-postmeta"><span>3 min read</span></div></div></article>
+        </div>
+      </section>
+
+      <!-- 8 — THE TWO STATES EVERYONE FORGETS, shown side by side so they are
+           not theoretical. `empty` with data-collapse removes itself in
+           production; it is left visible here so it can be looked at. -->
+      <div class="ns-grid" style="grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:var(--gap-grid)">
+        <div class="ns-ad ns-ad--rectangle" data-state="empty" data-placement="No fill">
+          <span class="ns-ad__label">Advertisement</span>
+          <div class="ns-ad__frame">
+            <span class="ns-ad__note"><span class="ns-ad__note-title">No fill</span>Add data-collapse and this slot removes itself.</span>
+          </div>
+        </div>
+        <div class="ns-ad ns-ad--rectangle" data-state="blocked" data-placement="Blocked">
+          <span class="ns-ad__label">Advertisement</span>
+          <div class="ns-ad__frame">
+            <span class="ns-ad__note"><span class="ns-ad__note-title">Ads are off</span>Members read without them — and so do you, right now.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9 — INTERSTITIAL, behind a button.
+           Never on entry and never on a timer. A real <dialog>, so focus
+           trapping, Esc and the backdrop come from the platform, and the
+           close control is full size from the first frame. -->
+      <p><button class="ns-btn ns-btn--outline ns-btn--sm" id="ad-demo-interstitial-open">Show the interstitial</button></p>
+    </div>
+  </article>
+
+  <aside class="ns-post__aside ns-share ns-share--rail">
+    <span class="ns-share__label">Share</span>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save for later"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
+  </aside>
+</div>
+
+<dialog class="ns-modal ns-ad-modal" id="ad-demo-interstitial" aria-label="Advertisement">
+  <button class="ns-btn ns-btn--quiet ns-btn--icon ns-ad-modal__close" id="ad-demo-interstitial-close" aria-label="Close advertisement"><i class="ph ph-x" aria-hidden="true"></i></button>
+  <div class="ns-ad" data-state="filled">
+    <span class="ns-ad__label">Advertisement</span>
+    <div class="ns-ad__frame">
+      <span class="ns-ad__dummy" aria-hidden="true">
+        <span class="ns-ad__dummy-name">Interstitial</span>
+        <span class="ns-ad__dummy-size">336x280 · 300x600</span>
+      </span>
+    </div>
+  </div>
+</dialog>
+
+<!-- 10 — ANCHOR, pinned to the bottom of the viewport.
+     Dismissible, at --z-sticky so any docked product UI stays above it, and
+     the page shell carries .ns-ad-anchored so the last paragraph clears it.
+     Sits outside .ns-post because it is fixed to the viewport, not to the
+     article column. -->
+<div class="ns-ad ns-ad--anchor" data-state="filled" data-placement="Anchor · viewport bottom" id="ad-demo-anchor">
+  <button type="button" class="ns-ad__dismiss" id="ad-demo-anchor-close" aria-label="Close advertisement"><i class="ph ph-x" aria-hidden="true"></i></button>
+  <span class="ns-ad__label">Advertisement</span>
+  <div class="ns-ad__frame">
+    <span class="ns-ad__dummy" aria-hidden="true">
+      <span class="ns-ad__dummy-size">320x100 · 728x90</span>
+    </span>
+  </div>
+</div>
+
+<!-- DEMO WIRING ONLY. Delete this when a real network is attached: the state
+     transitions below fake the callbacks an ad server would fire, so the
+     skeleton is visible for a beat instead of being gone before the page
+     paints. Nothing here belongs in production. -->
+<script>
+(function () {
+  document.body.classList.add("ns-ad-anchored");
+
+  /* Fake the network calling back. A real integration flips data-state in the
+     ad server's own callback — never on a timer, which is exactly what makes
+     this demo-only code. */
+  setTimeout(function () {
+    document.querySelectorAll('.ns-ad[data-state="loading"]').forEach(function (slot) {
+      slot.setAttribute("data-state", "filled");
+      var frame = slot.querySelector(".ns-ad__frame");
+      if (frame && !frame.querySelector(".ns-ad__dummy")) {
+        var d = document.createElement("span");
+        d.className = "ns-ad__dummy";
+        d.setAttribute("aria-hidden", "true");
+        d.innerHTML = '<span class="ns-ad__dummy-name">Your ad here</span>';
+        frame.appendChild(d);
+      }
+    });
+  }, 1600);
+
+  var anchor = document.getElementById("ad-demo-anchor");
+  var anchorClose = document.getElementById("ad-demo-anchor-close");
+  if (anchor && anchorClose) {
+    anchorClose.addEventListener("click", function () {
+      anchor.remove();
+      document.body.classList.remove("ns-ad-anchored");
+    });
+  }
+
+  var dlg = document.getElementById("ad-demo-interstitial");
+  var open = document.getElementById("ad-demo-interstitial-open");
+  var close = document.getElementById("ad-demo-interstitial-close");
+  if (dlg && open) open.addEventListener("click", function () { dlg.showModal(); });
+  if (dlg && close) close.addEventListener("click", function () { dlg.close(); });
+})();
+</script>

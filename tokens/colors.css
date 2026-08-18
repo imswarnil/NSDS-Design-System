@@ -76,8 +76,23 @@
   --color-error-ink: var(--ns-error-ink);
   --color-info-ink: var(--ns-info-ink);
 
-  --color-level-intermediate-ink: #8a5a00;
-  --color-featured-ink: #7c4a03;
+  /* The amber inks. These are NOT --color-warning-ink wearing a different
+     name: warning means "you are about to do something you cannot undo", and
+     an intermediate course or a Pro lesson is neither a problem nor a risk.
+     Same hue family, different meaning, so a reader who has learned that
+     amber-on-a-row means "careful" is not told that twice for two things.
+
+     They were literals that never flipped, which made every one of them
+     unreadable on the navy console surface. Now they follow the --ns-*
+     pattern like the status inks, and lighten in dark for the same reason
+     those do. */
+  --ns-level-intermediate-ink: #8a5a00;
+  --ns-featured-ink: #7c4a03;
+
+  --color-level-intermediate-ink: var(--ns-level-intermediate-ink);
+  /* Also the PRO access ink — see .ns-laccess--pro in lms.css. A paid tier is
+     a "featured" claim, not a warning one. */
+  --color-featured-ink: var(--ns-featured-ink);
 
   /* Semantic role tokens — flip under [data-theme="dark"]. Light mode keeps
      the source's true white/near-white; dark mode is built from the brand
@@ -176,6 +191,14 @@
   --ns-warning-ink: #ffb15c;
   --ns-error-ink: #ff7b7b;
   --ns-info-ink: var(--color-brand-300);
+
+  /* The amber inks, re-solved on navy. Pulled AWAY from --ns-warning-ink
+     (#ffb15c) rather than lightened to meet it: in light mode the three are
+     easy to tell apart, and mechanically lightening them all lands them on
+     the same orange, which is exactly the collision the light-mode comment
+     is trying to avoid. */
+  --ns-level-intermediate-ink: #e8c169;
+  --ns-featured-ink: #f0cf7a;
 
   /* Syntax palette, dark. Same seven roles, re-solved against the navy
      console rather than lightened mechanically — the light plum and amber go

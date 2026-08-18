@@ -1479,6 +1479,7 @@ ${sidebar(page.file)}
 <script src="../assets/js/video.js" defer></script>
 <script src="../assets/js/toc.js" defer></script>
 <script src="../assets/js/ai.js" defer></script>
+<script src="../assets/js/deck.js" defer></script>
 </body>
 </html>
 `;
@@ -1576,8 +1577,13 @@ ${v.html}
    render unstyled. The docs links point here instead: the real template
    body, wrapped with the real stylesheet. */
 const DEMOS = [
-  { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "one viewport, one scrollbar — the rail is fixed and ends in the CTA", lock: true },
-  { out: "demo-player-article.html", tpl: "course-player-article.html", title: "Course player, article lesson — full layout demo", back: "c-player.html", note: "the same player with no stage: reading measure, hairline progress, same rail", lock: true },
+  /* The two lesson kinds LINK TO EACH OTHER: the prev/next controls in these
+     two files point at the other demo, so the pair is walkable and the
+     cross-document view transition (motion.css) is visible in place. */
+  { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "curriculum · lesson · chapters — press next to cross-fade to the written lesson", lock: true, realHeader: { back: "Apex fundamentals", kicker: "Lesson 07 / 12", title: "SOQL joins: relationships in queries", pct: 50, done: "6 / 12" },
+    links: { prev: "./demo-player-article.html", next: "./demo-player-article.html" } },
+  { out: "demo-player-article.html", tpl: "course-player-article.html", title: "Course player, article lesson — full layout demo", back: "c-player.html", note: "the same three columns with no stage — press prev to cross-fade back to the video", lock: true, realHeader: { back: "Apex fundamentals", kicker: "Lesson 08 / 12", title: "What is Salesforce?", pct: 58, done: "7 / 12" },
+    links: { prev: "./demo-player.html", next: "./demo-player.html" } },
   { out: "demo-admin-dashboard.html", tpl: "admin-dashboard.html", title: "Admin dashboard — full screen demo", back: "c-admin-shell.html", note: "shell + nav + stats + drafts" },
   /* The two editor surfaces are the CONTENT of an admin screen — in product
      they render inside the shell's <main>, so the demo wraps them in one.
@@ -1597,6 +1603,12 @@ const DEMOS = [
   { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
   { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
   { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
+  /* The same post, monetized. It carries EVERY ad format at once, which no
+     real page should — it is a catalogue of placements, and the template says
+     so at the top and names the three worth keeping. The slots start in
+     `loading` and flip to `filled` after a beat, so the skeleton is visible
+     instead of being gone before the page paints. */
+  { out: "demo-blog-ads.html", tpl: "blog-post-ads.html", title: "Blog post with ads — full page", back: "c-adunit.html", note: "every placement in situ — watch the skeletons fill, scroll for the parallax, dismiss the anchor, open the interstitial" },
   { out: "demo-type-specimen.html", tpl: "type-specimen.html", title: "Type specimen — full page", back: "type.html", note: "the whole family in place: scale, weights, measure, effects" },
   { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
   { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
@@ -1609,6 +1621,12 @@ const DEMOS = [
   { out: "demo-ai-chat.html", tpl: "ai-chat.html", title: "AI assistant — full screen demo", back: "c-ai-shell.html", note: "interactive — ask something; every third answer fails on purpose", lock: true },
   { out: "demo-ai-signin.html", tpl: "ai-signin.html", title: "AI assistant, signed out — full screen demo", back: "c-ai-settings.html", note: "gate + empty state + disabled composer", lock: true },
   { out: "demo-ai-settings.html", tpl: "ai-settings.html", title: "AI assistant settings — full page demo", back: "c-ai-settings.html", note: "how it teaches, what it reads, what it remembers" },
+  /* The deck. No `lock` — unlike the player, the deck locks the viewport from
+     assets/js/deck.js, because its own toggle switches to the scrolling
+     handout and a lock stamped into the page could not be undone. `bare`
+     because a demo strip would be a second bar competing with the presenter
+     bar the deck already ships; the docs link rides in the corner instead. */
+  { out: "demo-deck.html", tpl: "deck.html", title: "Teaching deck — 25 reusable slides", back: "c-deck.html", note: "arrow keys, G for the overview, N for the notes, F for full screen", bare: true },
 ];
 /* Demo-only wiring for the admin editors. In product this behaviour lives in
    the React components (components/admin/); here it is vanilla JS over the
@@ -1789,8 +1807,209 @@ const fragment = (name) => readFileSync(join(ROOT, `templates/${name}`), "utf8")
   .replace(/<!--[\s\S]*?-->\n?/, "")                       // adaptation header
   .replace(/(\s(?:src|href|poster)=")\/assets\//g, "$1../assets/");
 
+/* ---- the responsive proof ------------------------------------------------
+   Every layout claim in this system is a claim about a viewport, and the only
+   honest way to show one is at that viewport. Media queries answer to the
+   VIEWPORT, so a narrow <div> would keep rendering the desktop layout at 380
+   pixels wide and prove the opposite of what it looked like it was proving —
+   which is why these are iframes of the real pages rather than scaled
+   screenshots or resized boxes. */
+const RESPONSIVE = [
+  { w: 390, h: 720, label: "Phone · 390", note: "One column. The lesson first, the curriculum after it, the chapter list following the video, and the panel bar docked at the foot." },
+  { w: 768, h: 720, label: "Tablet · 768", note: "Still one column — the three-column layout needs 64rem before the rails earn their width." },
+  { w: 1180, h: 720, label: "Laptop · 1180", note: "Three columns: curriculum, lesson, chapters. The narrowest width the full layout runs at." },
+];
+writeFileSync(join(OUT, "demo-player-responsive.html"), `<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Course player — responsive</title>
+<link rel="icon" href="../assets/logo/favicon.svg">
+<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+<style>
+  body { padding: var(--space-8) var(--gutter) var(--space-16); }
+  .rgrid { display: flex; gap: var(--space-8); align-items: flex-start; overflow-x: auto; padding-block-end: var(--space-4); }
+  .rcol { flex: none; display: flex; flex-direction: column; gap: var(--space-3); }
+  .rcol h2 { font-size: var(--size-small); font-weight: var(--weight-semibold); }
+  .rcol p { font-size: var(--size-label); color: var(--color-muted); max-inline-size: 24rem; line-height: var(--leading-body); }
+  .rframe { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; background: var(--color-surface); }
+  .rframe iframe { display: block; border: 0; }
+</style>
+</head>
+<body>
+<header style="margin-block-end:var(--space-8)">
+  <p class="ns-kicker">Responsive</p>
+  <h1 style="font-size:var(--size-h2);line-height:var(--leading-tight)">The course player at three widths</h1>
+  <p style="color:var(--color-muted);max-inline-size:46rem;margin-block-start:var(--space-2)">The real pages in real iframes, because media queries answer to the viewport — a narrow div would keep rendering the desktop layout and prove the opposite of what it looked like it was proving. Scroll each frame; they are live.</p>
+  <p style="margin-block-start:var(--space-4)"><a class="ns-btn ns-btn--outline ns-btn--sm" href="./c-player.html">&larr; back to docs</a></p>
+</header>
+
+${["demo-player.html", "demo-player-article.html"].map((src, i) => `
+<section style="margin-block-end:var(--space-16)">
+  <h2 style="font-size:var(--size-h3);margin-block-end:var(--space-5)">${i === 0 ? "Video lesson" : "Written lesson"}</h2>
+  <div class="rgrid">
+    ${RESPONSIVE.map((r) => `<div class="rcol" style="inline-size:${r.w}px;max-inline-size:100%">
+      <h2>${r.label}</h2>
+      <div class="rframe"><iframe src="./${src}" title="${esc(r.label)} — ${i === 0 ? "video" : "written"} lesson" width="${r.w}" height="${r.h}" loading="lazy"></iframe></div>
+      <p>${r.note}</p>
+    </div>`).join("\n    ")}
+  </div>
+</section>`).join("")}
+
+<script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
+</body>
+</html>
+`);
+
+/* ---- the ad ladder, at three widths --------------------------------------
+   Same device as the player proof above, and for the ad slots it is not a
+   nicety — it is the only way to show the thing the component actually
+   claims. "One class, three sizes" is a claim about media queries, and media
+   queries answer to the VIEWPORT: a 390px <div> would keep serving the 970px
+   leaderboard and prove the exact opposite. These are iframes of the real
+   monetized post, so what you see is what a reader at that width gets. */
+const AD_RESPONSIVE = [
+  { w: 390, h: 760, label: "Phone · 390", note: "The leaderboard serves 320&times;100 &mdash; the mobile unit, not a squeezed 728. The rail has collapsed into the content column, and <code>.ns-ad-rail</code> has taken the skyscraper out with it: ns-post <em>stacks</em> its rail rather than hiding it, so without that class this reader would meet 600 pixels of ad before the first paragraph. The anchor is pinned at the foot, serving 320&times;100, and the page reserves its clearance." },
+  { w: 768, h: 760, label: "Tablet · 768", note: "The leaderboard and the anchor both step to 728&times;90, the size that fits a 768 viewport with the page gutters intact. Still one column, so the rail unit is still out. The phone-only 320-wide banners are hidden from here up." },
+  { w: 1180, h: 760, label: "Laptop · 1180", note: "970&times;90 across the top, and past 64rem the rail becomes a real column so the 160&times;600 skyscraper comes back, sticky against the article. Three placements, one set of markup &mdash; nothing was duplicated to get here." },
+];
+writeFileSync(join(OUT, "demo-blog-ads-responsive.html"), `<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ad units — responsive</title>
+<link rel="icon" href="../assets/logo/favicon.svg">
+<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+<style>
+  body { padding: var(--space-8) var(--gutter) var(--space-16); }
+  .rgrid { display: flex; gap: var(--space-8); align-items: flex-start; overflow-x: auto; padding-block-end: var(--space-4); }
+  .rcol { flex: none; display: flex; flex-direction: column; gap: var(--space-3); }
+  .rcol h2 { font-size: var(--size-small); font-weight: var(--weight-semibold); }
+  .rcol p { font-size: var(--size-label); color: var(--color-muted); max-inline-size: 24rem; line-height: var(--leading-body); }
+  .rframe { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; background: var(--color-surface); }
+  .rframe iframe { display: block; border: 0; }
+</style>
+</head>
+<body>
+<header style="margin-block-end:var(--space-8)">
+  <p class="ns-kicker">Responsive</p>
+  <h1 style="font-size:var(--size-h2);line-height:var(--leading-tight)">The ad ladder at three widths</h1>
+  <p style="color:var(--color-muted);max-inline-size:46rem;margin-block-start:var(--space-2)">One slot in one place in the markup, three different creatives served. The frames below are the real monetized post at real viewport widths &mdash; media queries answer to the viewport, so a narrow div would keep serving the desktop unit and prove the opposite of what it looked like it was proving. Scroll each frame; they are live.</p>
+  <p style="margin-block-start:var(--space-4)"><a class="ns-btn ns-btn--outline ns-btn--sm" href="./c-adunit.html">&larr; back to docs</a> <a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-blog-ads.html">open the full page &rarr;</a></p>
+</header>
+
+<section style="margin-block-end:var(--space-12)">
+  <div class="rgrid">
+    ${AD_RESPONSIVE.map((r) => `<div class="rcol" style="inline-size:${r.w}px;max-inline-size:100%">
+      <h2>${r.label}</h2>
+      <div class="rframe"><iframe src="./demo-blog-ads.html" title="${esc(r.label)} — monetized blog post" width="${r.w}" height="${r.h}" loading="lazy"></iframe></div>
+      <p>${r.note}</p>
+    </div>`).join("\n    ")}
+  </div>
+</section>
+
+<section>
+  <h2 style="font-size:var(--size-h3);margin-block-end:var(--space-4)">What each format serves, by width</h2>
+  <div class="ns-table-wrap" tabindex="0">
+    <table class="ns-table ns-table--compact ns-table--bordered ns-table--head-filled">
+      <thead><tr>
+        <th scope="col">Format</th>
+        <th scope="col">Phone &lt; 48rem</th>
+        <th scope="col">Tablet &ge; 48rem</th>
+        <th scope="col">Desktop &ge; 64rem</th>
+      </tr></thead>
+      <tbody>
+        <tr><th scope="row"><code>--leaderboard</code></th><td class="ns-table__code">320&times;100</td><td class="ns-table__code">728&times;90</td><td class="ns-table__code">970&times;90</td></tr>
+        <tr><th scope="row"><code>--billboard</code></th><td class="ns-table__code">300&times;250</td><td class="ns-table__code">728&times;90</td><td class="ns-table__code">970&times;250</td></tr>
+        <tr><th scope="row"><code>--square</code></th><td class="ns-table__code">250&times;250</td><td class="ns-table__code">300&times;250</td><td class="ns-table__code">300&times;250</td></tr>
+        <tr><th scope="row"><code>--rectangle</code></th><td class="ns-table__code">300&times;250</td><td class="ns-table__code">300&times;250</td><td class="ns-table__code">300&times;250</td></tr>
+        <tr><th scope="row"><code>--rectangle-lg</code></th><td class="ns-table__code">336&times;280</td><td class="ns-table__code">336&times;280</td><td class="ns-table__code">336&times;280</td></tr>
+        <tr><th scope="row"><code>--halfpage</code></th><td class="ns-table__code">300&times;600</td><td class="ns-table__code">300&times;600</td><td class="ns-table__code">300&times;600</td></tr>
+        <tr><th scope="row"><code>--skyscraper</code></th><td class="ns-table__code">160&times;600</td><td class="ns-table__code">160&times;600</td><td class="ns-table__code">160&times;600</td></tr>
+        <tr><th scope="row"><code>--skyscraper-sm</code></th><td class="ns-table__code">120&times;600</td><td class="ns-table__code">120&times;600</td><td class="ns-table__code">120&times;600</td></tr>
+        <tr><th scope="row"><code>--banner</code></th><td class="ns-table__code">320&times;50</td><td data-tone="neutral">hidden</td><td data-tone="neutral">hidden</td></tr>
+        <tr><th scope="row"><code>--banner-lg</code></th><td class="ns-table__code">320&times;100</td><td data-tone="neutral">hidden</td><td data-tone="neutral">hidden</td></tr>
+        <tr><th scope="row"><code>--article</code></th><td class="ns-table__code">fluid, min 250</td><td class="ns-table__code">fluid, min 250</td><td class="ns-table__code">fluid, min 250</td></tr>
+        <tr><th scope="row"><code>--interstitial</code></th><td class="ns-table__code">336&times;280</td><td class="ns-table__code">336&times;280</td><td class="ns-table__code">300&times;600 if the viewport is &ge; 52rem tall</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="color:var(--color-muted);font-size:var(--size-small);margin-block-start:var(--space-3);max-inline-size:46rem">The fixed sizes are fixed on purpose: a 300&times;250 is 300&times;250 everywhere because that is the creative the ad server has. Only the four formats with a real alternate unit at another width step, and the interstitial steps on viewport <em>height</em> rather than width &mdash; a wide-but-short laptop cannot hold a 600px creative inside a dialog that is capped to the screen.</p>
+</section>
+
+<script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
+</body>
+</html>
+`);
+
+/* The demo chrome. Most demos get the plain mono strip — they are fragments,
+   and a fake product bar over a fragment is a lie about what you are looking
+   at. The PLAYER demos get the real thing instead: .ns-coursenav, the bar this
+   layout is designed to sit under, because the player's height is literally
+   calc(100dvh - var(--navbar-h)) and a demo without a navbar is a demo of a
+   layout that is one bar too tall. The docs link rides in its actions, where a
+   product would put an account menu — the one concession, and it is a button
+   rather than a fake feature. */
+const realHeader = (d) => `<nav class="ns-coursenav" aria-label="Course">
+  <a class="ns-coursenav__back" href="./${d.back}">
+    <i class="ph ph-arrow-left" aria-hidden="true"></i>
+    <span>${esc(d.realHeader.back)}</span>
+  </a>
+  <span class="ns-topnav__divider" aria-hidden="true"></span>
+  <span class="ns-coursenav__id">
+    <span class="ns-coursenav__title">${esc(d.realHeader.title)}</span>
+  </span>
+  <div class="ns-coursenav__progress">
+    <div class="ns-coursenav__bar" role="progressbar" aria-label="Course progress"
+         aria-valuenow="${d.realHeader.pct}" aria-valuemin="0" aria-valuemax="100" style="--p:${d.realHeader.pct}">
+      <span></span>
+    </div>
+    <span class="ns-coursenav__pct">${esc(d.realHeader.done)}</span>
+  </div>
+  <div class="ns-coursenav__actions">
+    <a class="ns-navicon ns-tooltip-host" href="./index.html" aria-label="Search the site">
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i><span class="ns-tooltip ns-tooltip--below">Search</span>
+    </a>
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
+    </button>
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="demo-account" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar-ring" style="--p:${d.realHeader.pct}"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span></span>
+      </button>
+      <div class="ns-usermenu__panel" id="demo-account">
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity">
+            <span class="ns-usermenu__fullname">Aarti Kulkarni</span>
+            <span class="ns-usermenu__email">aarti@example.com</span>
+          </span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <div class="ns-usermenu__progress">
+          <span class="ns-usermenu__progress-label"><span>${esc(d.realHeader.back)}</span><span>${d.realHeader.pct}%</span></span>
+          <progress class="ns-progress" value="${d.realHeader.pct}" max="100" aria-label="Course progress">${d.realHeader.pct}%</progress>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/"><i class="ph ph-user" aria-hidden="true"></i> Profile</a>
+        <a class="ns-menu__item" href="/account/certificates/"><i class="ph ph-medal" aria-hidden="true"></i> Certificates</a>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="./${d.back}"><i class="ph ph-book-open-text" aria-hidden="true"></i> Back to the docs</a>
+      </div>
+    </div>
+  </div>
+</nav>`;
+
 for (const d of DEMOS) {
   let body = fragment(d.tpl);
+  /* The templates ship #prev / #next: they are framework-agnostic markup and
+     have no business knowing the name of a styleguide page. The DEMO is what
+     knows, so the two lesson pages are wired to each other HERE — which is
+     also what makes the cross-document view transition visible in place. */
+  if (d.links) {
+    if (d.links.prev) body = body.replace(/href="#prev"/g, `href="${d.links.prev}"`);
+    if (d.links.next) body = body.replace(/href="#next"/g, `href="${d.links.next}"`);
+  }
   /* <div>, not <main>, when the fragment already carries its own <main> —
      two mains in one document is invalid and makes the landmark useless. */
   if (d.wrap) {
@@ -1813,8 +2032,8 @@ for (const d of DEMOS) {
 <link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 </head>
 <body>
-<div class="flex items-center gap-row px-card py-inline border-b border-border font-mono text-label uppercase text-label-ink">templates/${esc(d.tpl)} — ${esc(d.note)}
-  <a class="ns-btn ns-btn--outline ns-btn--sm ms-auto" href="./${d.back}">&larr; back to docs</a></div>
+${d.realHeader ? realHeader(d) : d.bare ? `<a class="ns-btn ns-btn--quiet ns-btn--sm" href="./${d.back}" style="position:fixed;inset-block-start:var(--space-3);inset-inline-start:var(--space-3);z-index:var(--z-sticky)">&larr; back to docs</a>` : `<div class="flex items-center gap-row px-card py-inline border-b border-border font-mono text-label uppercase text-label-ink">templates/${esc(d.tpl)} — ${esc(d.note)}
+  <a class="ns-btn ns-btn--outline ns-btn--sm ms-auto" href="./${d.back}">&larr; back to docs</a></div>`}
 ${body}
 <script src="../assets/js/nav.js" defer></script>
 <script src="../assets/js/code.js" defer></script>
@@ -1826,6 +2045,7 @@ ${body}
 <script src="../assets/js/video.js" defer></script>
 <script src="../assets/js/toc.js" defer></script>
 <script src="../assets/js/ai.js" defer></script>
+<script src="../assets/js/deck.js" defer></script>
 <script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
 </body>
 </html>

@@ -11,9 +11,16 @@
     Static  → use directly.
 
   Requires assets/js/theme-init.js INLINED in <head> before any stylesheet,
-  and assets/js/nav.js (defer) to wire the controls. Which glyph shows is
-  decided in CSS from data-theme, so the icon is right in the first painted
-  frame, before any script has run.
+  and assets/js/nav.js (defer) to wire the controls. The state is decided in
+  CSS from data-theme, so the control is right in the first painted frame,
+  before any script has run.
+
+  THE SUN AND THE MOON ARE DRAWN, not set. The icon font is a subset and
+  carries neither, so the glyph pair these used to be rendered as two empty
+  elements — a toggle with no indicator in either state. One disc, a second
+  disc sliding across it to bite a crescent, and the rays as box-shadows that
+  scale away: one element animating two properties, so light-to-dark is a
+  single continuous motion rather than two things fading past each other.
 -->
 
 <!-- The switch. The default in a bar: it shows BOTH states and which one is
@@ -22,15 +29,14 @@
      it is right in the first painted frame. -->
 <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
         aria-label="Dark mode" data-ns-theme-toggle>
-  <span class="ns-themeswitch__knob" aria-hidden="true"><i class="ph ph-sun"></i><i class="ph ph-moon"></i></span>
+  <span class="ns-themeswitch__mark" aria-hidden="true"></span>
 </button>
 
-<!-- One square button, sun ⇄ moon crossfading in place. For a bar with no
-     room left — the course bar on a phone. -->
+<!-- One square button, the same drawn mark morphing in place. For a bar with
+     no room left — the course bar on a phone. -->
 <button type="button" class="ns-themetoggle-icon" role="switch" aria-checked="false"
         aria-label="Dark mode" data-ns-theme-toggle>
-  <i class="ph ph-sun" aria-hidden="true"></i>
-  <i class="ph ph-moon" aria-hidden="true"></i>
+  <span class="ns-themeswitch__mark" aria-hidden="true"></span>
 </button>
 
 <!-- Light · Auto · Dark. The honest form, and the one to prefer wherever

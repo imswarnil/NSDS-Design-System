@@ -40,6 +40,12 @@
       time: function () { return video.currentTime; },
       duration: function () { return video.duration || 0; },
       rate: function (r) { video.playbackRate = r; },
+      volume: function (v) { video.volume = v; video.muted = v === 0; },
+      muted: function () { return video.muted || video.volume === 0; },
+      captions: function (on) {
+        var tracks = video.textTracks || [];
+        for (var i = 0; i < tracks.length; i++) tracks[i].mode = on ? "showing" : "disabled";
+      },
       onTick: function (cb) {
         video.addEventListener("timeupdate", cb);
         video.addEventListener("loadedmetadata", cb);
@@ -66,7 +72,7 @@
     /* The IFrame API only reports state by postMessage, and only after the
        page subscribes. Duration and time are therefore polled — there is no
        timeupdate event to listen to across the origin boundary. */
-    var state = { t: 0, d: 0 };
+    var state = { t: 0, d: 0, muted: false };
     window.addEventListener("message", function (e) {
       if (!/youtube(-nocookie)?\.com/.test(e.origin)) return;
       try {
@@ -85,6 +91,14 @@
       time: function () { return state.t; },
       duration: function () { return state.d; },
       rate: function (r) { post("setPlaybackRate", [r]); },
+      /* The IFrame API takes 0–100 where the media element takes 0–1. The
+         adapters normalise on the media element's scale, so every caller
+         speaks one language. */
+      volume: function (v) { post(v === 0 ? "mute" : "unMute"); post("setVolume", [Math.round(v * 100)]); },
+      muted: function () { return state.muted; },
+      /* YouTube owns its own caption track and its own button for it; driving
+         it from here would fight the player rather than decorate it. */
+      captions: null,
       onTick: function (cb) { setInterval(cb, 250); },
       onState: function () { /* cross-origin: driven by the buttons themselves */ },
     };
@@ -120,10 +134,23 @@
 
     var playBtn = host.querySelector("[data-ns-video-play]");
     var bigBtn = host.querySelector(".ns-vplayer__big");
-    var seek = host.querySelector(".ns-vplayer__seek");
+    /* Explicitly the SCRUBBER. The volume slider is the same class — both are
+       real range inputs, which is the point — so a bare querySelector here
+       works only by DOM order, and would silently start driving the volume the
+       day someone puts it first. */
+    var seek = host.querySelector(".ns-vplayer__scrub .ns-vplayer__seek")
+      || host.querySelector(".ns-vplayer__seek:not([data-ns-video-volume])");
     var cur = host.querySelector("[data-ns-video-current]");
     var dur = host.querySelector("[data-ns-video-duration]");
-    var chapters = [].slice.call(host.querySelectorAll(".ns-vchapters__item"));
+    /* Chapters usually sit under the player, inside it. In the course player
+       they do not: the frame is sticky at the top of the lesson column and the
+       chapter list lives in a tab panel much further down, which is the right
+       place for it — it is content, and it should be readable by someone who
+       never presses play. data-chapters points at that list so one player can
+       still drive it. */
+    var chapterHost = host.getAttribute("data-chapters");
+    chapterHost = (chapterHost && document.querySelector(chapterHost)) || host;
+    var chapters = [].slice.call(chapterHost.querySelectorAll(".ns-vchapters__item"));
 
     var playing = false;
     function setPlaying(on) {
@@ -149,6 +176,7 @@
         if (document.activeElement !== seek) seek.value = String(Math.floor(t));
         seek.style.setProperty("--p", (t / d) * 100 + "%");
       }
+      placeTicks();
       /* Mark the chapter containing the playhead. aria-current, so the
          highlighted row and the announced row are one thing. */
       var active = -1;
@@ -176,6 +204,81 @@
         api.play(); setPlaying(true);
       });
     });
+
+    /* ---- volume, captions, fullscreen ---------------------------------- */
+    var vol = host.querySelector("[data-ns-video-volume]");
+    var muteBtn = host.querySelector("[data-ns-video-mute]");
+    var lastVolume = 1;
+
+    function paintMute(on) {
+      if (!muteBtn) return;
+      muteBtn.querySelector("i").className = "ph " + (on ? "ph-speaker-slash" : "ph-speaker-high");
+      muteBtn.setAttribute("aria-label", on ? "Unmute" : "Mute");
+      if (vol) vol.style.setProperty("--p", (on ? 0 : lastVolume * 100) + "%");
+    }
+    if (vol) {
+      vol.addEventListener("input", function () {
+        var v = Number(vol.value) / 100;
+        lastVolume = v || lastVolume;
+        api.volume(v);
+        paintMute(v === 0);
+      });
+      vol.style.setProperty("--p", "100%");
+    }
+    if (muteBtn) {
+      muteBtn.addEventListener("click", function () {
+        var on = !api.muted();
+        api.volume(on ? 0 : lastVolume);
+        if (vol) vol.value = String(on ? 0 : lastVolume * 100);
+        paintMute(on);
+      });
+    }
+
+    /* Captions are the source's, not ours: a <video> has text tracks we can
+       switch, and a YouTube embed has its own button for it. Where the adapter
+       cannot drive them the control is REMOVED rather than left inert — a
+       button that does nothing is worse than one that is not there. */
+    var ccBtn = host.querySelector("[data-ns-video-cc]");
+    if (ccBtn) {
+      if (!api.captions) ccBtn.remove();
+      else ccBtn.addEventListener("click", function () {
+        var on = ccBtn.getAttribute("aria-pressed") !== "true";
+        api.captions(on);
+        ccBtn.setAttribute("aria-pressed", String(on));
+      });
+    }
+
+    var fsBtn = host.querySelector("[data-ns-video-fullscreen]");
+    if (fsBtn) {
+      fsBtn.addEventListener("click", function () {
+        if (document.fullscreenElement) document.exitFullscreen();
+        else if (host.requestFullscreen) host.requestFullscreen();
+      });
+      document.addEventListener("fullscreenchange", function () {
+        var on = document.fullscreenElement === host;
+        fsBtn.querySelector("i").className = "ph " + (on ? "ph-corners-in" : "ph-corners-out");
+        fsBtn.setAttribute("aria-label", on ? "Exit full screen" : "Full screen");
+      });
+    }
+
+    /* ---- chapter ticks --------------------------------------------------
+       Positioned from the chapter list's own data-start values once the
+       duration is known, so the marks and the list cannot disagree. Where the
+       markup already carries --fx-at those values are simply overwritten with
+       the real ones. */
+    var ticks = [].slice.call(host.querySelectorAll(".ns-vplayer__tick"));
+    var ticksPlaced = false;
+    function placeTicks() {
+      if (ticksPlaced || !ticks.length || !chapters.length) return;
+      var d = api.duration();
+      if (!d) return;
+      ticksPlaced = true;
+      ticks.forEach(function (tick, i) {
+        var li = chapters[i + 1]; /* the first chapter starts at 0 — no mark */
+        if (!li) { tick.remove(); return; }
+        tick.style.setProperty("--fx-at", (Number(li.getAttribute("data-start") || 0) / d) * 100 + "%");
+      });
+    }
 
     host.querySelectorAll("[data-rate]").forEach(function (opt) {
       opt.addEventListener("click", function () {

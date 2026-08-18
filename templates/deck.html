@@ -1,0 +1,915 @@
+<!--
+  Namaste UI template — teaching deck
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into partials/, swap hrefs/text for Ghost helpers
+              ({{@site.url}}, {{title}}, …). data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/; this file is the
+              markup contract they implement.
+    Static  → use directly.
+
+  Requires assets/js/deck.js (defer) for present mode, fragments, the
+  overview, notes and the timer. WITHOUT IT this file is still a complete
+  document: a scrolling stack of readable 16:9 cards — the handout. That is
+  the intended failure mode, and the reason nothing on a slide is drawn by
+  script.
+
+  THIS IS A PATTERN LIBRARY, NOT A TALK. Twenty-five slides, each one a
+  DIFFERENT shape, in the order a real course session tends to use them:
+  open → agenda → teach → show → do → check → close. Delete the ones you do
+  not need and duplicate the ones you do; that is the whole workflow. The
+  slide's own comment says what it is for and when it is the wrong choice.
+
+  Six geometries carry all of it — lead, center, stack, split, aside, full —
+  and everything INSIDE a slide is a component that already exists elsewhere
+  in this system (.ns-code, .ns-compare, .ns-statblock, .ns-checklist,
+  .ns-timeline, .ns-card, .ns-quote, .ns-takeaway). A deck built from the
+  same parts as the product cannot say something the product contradicts.
+
+  Slots to change: every string, obviously — plus data-title on each slide
+  (the label in the overview and the notes drawer) and the .ns-slide__note
+  in each one, which is what to SAY and never appears on the slide.
+-->
+<div class="ns-deck" data-ns-deck data-mode="present">
+  <div class="ns-deck__stage">
+
+    <!-- 01 · THE OPENER ═════════════════════════════════════════════════
+         lead + dark + grid. The one slide that is allowed to be a poster.
+         Kicker says what this is, title says what you will be able to do,
+         and the foot carries who is teaching it — a title slide with no
+         name on it makes the first question of every session "sorry, who
+         are you?". No logo: the leading edge is the logo. -->
+    <section class="ns-slide ns-slide--lead ns-slide--dark ns-slide--grid" data-title="Cover" aria-label="Slide 1: cover">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Apex fundamentals · module 01</span>
+          <h2 class="ns-slide__title">Write your first trigger, and know why it is a trigger</h2>
+          <span class="ns-slide__rule"></span>
+          <p class="ns-slide__lede">Ninety minutes, one org, one working automation you keep.</p>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Swarnil Singhai · Namaste Salesforce</span>
+          <span class="ns-slide__num" data-deck-slide-num>01 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Don't read the title. Ask who has written Apex before — split the room and pitch to the smaller half.</p>
+    </section>
+
+    <!-- 02 · WHO IS TEACHING ════════════════════════════════════════════
+         split-text. Credentials as a LIST OF THINGS DONE, not adjectives.
+         Skip this slide entirely for an internal team session — they know
+         who you are, and the slide costs you ninety seconds of goodwill. -->
+    <section class="ns-slide ns-slide--split ns-slide--split-text" data-title="Who is teaching">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Before we start</span>
+          <h2 class="ns-slide__title">Who is teaching this</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__col">
+            <ul class="ns-slide__points ns-slide__points--tight">
+              <li class="ns-slide__point">
+                <span class="ns-slide__point-index"><i class="ph ph-briefcase" aria-hidden="true"></i></span>
+                <span><b class="ns-slide__point-title">Nine years on the platform</b><span class="ns-slide__point-note">Admin, then developer, then the person who fixes what both shipped.</span></span>
+              </li>
+              <li class="ns-slide__point">
+                <span class="ns-slide__point-index"><i class="ph ph-graduation-cap" aria-hidden="true"></i></span>
+                <span><b class="ns-slide__point-title">14,000 learners</b><span class="ns-slide__point-note">Namaste Salesforce — courses, not certifications-in-a-weekend.</span></span>
+              </li>
+              <li class="ns-slide__point">
+                <span class="ns-slide__point-index"><i class="ph ph-git-branch" aria-hidden="true"></i></span>
+                <span><b class="ns-slide__point-title">Everything here is open</b><span class="ns-slide__point-note">The org, the code and these slides ship with the course.</span></span>
+              </li>
+            </ul>
+          </div>
+          <div class="ns-slide__col">
+            <div class="ns-slide__figure">
+              <!-- Slot: a photo, or leave the figure out entirely. -->
+              <img src="../assets/logo/favicon.svg" alt="">
+            </div>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Apex fundamentals</span>
+          <span class="ns-slide__num" data-deck-slide-num>02 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Sixty seconds. If it runs longer you are selling, not teaching.</p>
+    </section>
+
+    <!-- 03 · THE AGENDA ═════════════════════════════════════════════════
+         stack + points--split. The contents page. Two columns because this
+         is the one list that legitimately runs long — it is a map, not an
+         argument. Come back to it between modules with --current. -->
+    <section class="ns-slide" data-title="Agenda">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Ninety minutes</span>
+          <h2 class="ns-slide__title">What we are covering</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__body">
+          <ol class="ns-slide__points ns-slide__points--tight ns-slide__points--split">
+            <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span><b class="ns-slide__point-title">What a trigger actually is</b><span class="ns-slide__point-note">And what it is not — 10 min</span></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span><b class="ns-slide__point-title">The order of execution</b><span class="ns-slide__point-note">The diagram that explains most bugs — 15 min</span></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span><b class="ns-slide__point-title">Bulkification</b><span class="ns-slide__point-note">Why your loop breaks at 201 records — 15 min</span></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">04</span><span><b class="ns-slide__point-title">Hands on: build one</b><span class="ns-slide__point-note">In your own dev org — 25 min</span></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">05</span><span><b class="ns-slide__point-title">Tests, and why 75% is a floor</b><span class="ns-slide__point-note">Not a target — 15 min</span></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">06</span><span><b class="ns-slide__point-title">Where to go next</b><span class="ns-slide__point-note">The rest of the course — 10 min</span></span></li>
+          </ol>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Agenda</span>
+          <span class="ns-slide__num" data-deck-slide-num>03 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Say the break out loud — after item 04. People stop listening when they don't know when they can leave.</p>
+    </section>
+
+    <!-- 04 · THE MODULE DIVIDER ═════════════════════════════════════════
+         lead + dark. A gear change: the room looks up because the wall went
+         navy. Use one per module and no more — a deck where every third
+         slide is dark has no gear changes left. -->
+    <section class="ns-slide ns-slide--lead ns-slide--dark" data-title="Module 01 — What a trigger is">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Module 01</span>
+          <h2 class="ns-slide__title">What a trigger actually is</h2>
+          <p class="ns-slide__lede">Ten minutes. One idea, and then we look at real code.</p>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Apex fundamentals</span>
+          <span class="ns-slide__num" data-deck-slide-num>04 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Pause here. Two seconds of silence does more for a transition than any animation.</p>
+    </section>
+
+    <!-- 05 · THE ONE IDEA ═══════════════════════════════════════════════
+         center. One sentence, poster size, nothing else on the slide. This
+         is the slide people photograph. If a session has more than two of
+         these, none of them is the one idea. -->
+    <section class="ns-slide ns-slide--center ns-slide--sunken" data-title="The one idea">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">The whole module in one line</span>
+          <h2 class="ns-slide__title">A trigger is not an event handler. It is a batch handler that usually gets a batch of one.</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 01</span>
+          <span class="ns-slide__num" data-deck-slide-num>05 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Let it sit. Ask: "who has written a trigger that worked in the UI and broke on an import?" — most hands go up.</p>
+    </section>
+
+    <!-- 06 · TEACHING POINTS ════════════════════════════════════════════
+         stack + fragments. THE WORKHOUSE SLIDE — most of a deck is this.
+         Each point reveals on the next press, so the room hears the one you
+         are on instead of reading the one you are not. Four to six; a slide
+         with nine is two slides. -->
+    <section class="ns-slide" data-title="Three things that follow">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Consequences</span>
+          <h2 class="ns-slide__title">Three things that follow from that</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__body">
+          <ul class="ns-slide__points">
+            <li class="ns-slide__point" data-fragment>
+              <span class="ns-slide__point-index">01</span>
+              <span><b class="ns-slide__point-title">Never query inside a loop</b><span class="ns-slide__point-note">200 records × one SOQL each is 200 queries against a limit of 100. The org stops you, mid-import, in front of the customer.</span></span>
+            </li>
+            <li class="ns-slide__point" data-fragment>
+              <span class="ns-slide__point-index">02</span>
+              <span><b class="ns-slide__point-title">Trigger.new is a list, always</b><span class="ns-slide__point-note">Even when a user saved one record. Code that reads <code class="ns-code-inline">Trigger.new[0]</code> is code that works until someone uploads a CSV.</span></span>
+            </li>
+            <li class="ns-slide__point" data-fragment>
+              <span class="ns-slide__point-index">03</span>
+              <span><b class="ns-slide__point-title">One trigger per object</b><span class="ns-slide__point-note">Two triggers on Account run in an order the platform does not promise. That is not a style preference; it is a correctness one.</span></span>
+            </li>
+          </ul>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 01</span>
+          <span class="ns-slide__num" data-deck-slide-num>06 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Reveal one at a time. Point 03 is the one they will argue with — let them.</p>
+    </section>
+
+    <!-- 07 · EXPLAIN, THEN SHOW ═════════════════════════════════════════
+         split-figure. The claim on the left, the code that proves it on the
+         right. This is the shape most technical teaching wants and the one
+         most decks skip, putting the code on its own slide where nobody can
+         see what it was supposed to demonstrate. -->
+    <section class="ns-slide ns-slide--split ns-slide--split-figure" data-title="Bulkify: the pattern">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">The pattern</span>
+          <h2 class="ns-slide__title">Collect the ids, query once, map, then act</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__col">
+            <ul class="ns-slide__points ns-slide__points--tight">
+              <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span class="ns-slide__point-title">Walk the batch, collect the ids</span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span class="ns-slide__point-title">One SOQL, outside the loop</span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span class="ns-slide__point-title">Index it into a Map</span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">04</span><span class="ns-slide__point-title">Walk the batch again and decide</span></li>
+            </ul>
+          </div>
+          <div class="ns-slide__col ns-slide__col--fill">
+            <figure class="ns-code ns-code--dark" data-lang="apex">
+              <figcaption class="ns-code__bar">
+                <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>CaseRouter.cls</span></span>
+                <span class="ns-code__actions">
+                  <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+                </span>
+              </figcaption>
+              <div class="ns-code__body">
+                <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</pre>
+                <!-- The .ns-code__line spans run together with NO newline
+                     between them: each one is already a block, so a newline
+                     inside the <pre> would render a second empty row between
+                     every line and throw the gutter out of alignment. Same
+                     rule the highlighter in components/core/highlight.js
+                     follows — it joins with nothing, deliberately. -->
+                <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-type">Set</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">Id</span><span class="ns-tok-punct">&gt;</span> ids <span class="ns-tok-punct">=</span> <span class="ns-tok-kw">new</span> <span class="ns-tok-type">Set</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">Id</span><span class="ns-tok-punct">&gt;();</span></span><span class="ns-code__line"><span class="ns-tok-kw">for</span> <span class="ns-tok-punct">(</span><span class="ns-tok-type">Case</span> c <span class="ns-tok-punct">:</span> <span class="ns-tok-type">Trigger</span><span class="ns-tok-punct">.</span>new<span class="ns-tok-punct">)</span> ids<span class="ns-tok-punct">.</span><span class="ns-tok-fn">add</span><span class="ns-tok-punct">(</span>c<span class="ns-tok-punct">.</span>AccountId<span class="ns-tok-punct">);</span></span><span class="ns-code__line">&#8203;</span><span class="ns-code__line"><span class="ns-tok-com">// one query, outside the loop</span></span><span class="ns-code__line"><span class="ns-tok-type">Map</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">Id</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Account</span><span class="ns-tok-punct">&gt;</span> byId <span class="ns-tok-punct">=</span> <span class="ns-tok-kw">new</span> <span class="ns-tok-type">Map</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">Id</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Account</span><span class="ns-tok-punct">&gt;(</span></span><span class="ns-code__line">  <span class="ns-tok-punct">[</span><span class="ns-tok-kw">SELECT</span> Id<span class="ns-tok-punct">,</span> Tier__c <span class="ns-tok-kw">FROM</span> Account <span class="ns-tok-kw">WHERE</span> Id <span class="ns-tok-kw">IN</span> <span class="ns-tok-punct">:</span>ids<span class="ns-tok-punct">]);</span></span></code></pre>
+              </div>
+            </figure>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 03 · bulkification</span>
+          <span class="ns-slide__num" data-deck-slide-num>07 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Read line 5 out loud. "One query" is the whole module.</p>
+    </section>
+
+    <!-- 08 · THE CODE SLIDE ═════════════════════════════════════════════
+         full. The file gets the whole slide, the heading becomes a label
+         over it. Reach for this when the code IS the point — a walkthrough,
+         a diff, a config file. Six to twelve lines: a slide of forty is a
+         screenshot of an editor, and nobody at the back can read it. -->
+    <section class="ns-slide ns-slide--full" data-title="The finished trigger">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">The whole thing, 9 lines</span>
+        </div>
+        <div class="ns-slide__body">
+          <figure class="ns-code ns-code--vscode" data-lang="apex" style="block-size:100%">
+            <div class="ns-code__tabs" role="tablist" aria-label="Files">
+              <button type="button" role="tab" class="ns-code__tab" aria-selected="true" tabindex="0" aria-controls="deck-p1" id="deck-t1"><i class="ph ph-code" aria-hidden="true"></i>CaseTrigger.trigger</button>
+              <button type="button" role="tab" class="ns-code__tab" aria-selected="false" tabindex="-1" aria-controls="deck-p2" id="deck-t2"><i class="ph ph-code" aria-hidden="true"></i>CaseRouterTest.cls</button>
+            </div>
+            <div role="tabpanel" id="deck-p1" aria-labelledby="deck-t1">
+              <div class="ns-code__body">
+                <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</pre>
+                <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-kw">trigger</span> <span class="ns-tok-type">CaseTrigger</span> <span class="ns-tok-kw">on</span> <span class="ns-tok-type">Case</span> <span class="ns-tok-punct">(</span><span class="ns-tok-kw">before insert</span><span class="ns-tok-punct">,</span> <span class="ns-tok-kw">before update</span><span class="ns-tok-punct">)</span> <span class="ns-tok-punct">{</span></span><span class="ns-code__line">  <span class="ns-tok-com">// The trigger holds no logic. It routes. That is the entire job.</span></span><span class="ns-code__line">  <span class="ns-tok-kw">if</span> <span class="ns-tok-punct">(</span><span class="ns-tok-type">Trigger</span><span class="ns-tok-punct">.</span>isBefore<span class="ns-tok-punct">)</span> <span class="ns-tok-punct">{</span></span><span class="ns-code__line">    <span class="ns-tok-type">CaseRouter</span><span class="ns-tok-punct">.</span><span class="ns-tok-fn">route</span><span class="ns-tok-punct">(</span><span class="ns-tok-type">Trigger</span><span class="ns-tok-punct">.</span>new<span class="ns-tok-punct">);</span></span><span class="ns-code__line">  <span class="ns-tok-punct">}</span></span><span class="ns-code__line"><span class="ns-tok-punct">}</span></span></code></pre>
+              </div>
+            </div>
+            <div role="tabpanel" id="deck-p2" aria-labelledby="deck-t2" hidden>
+              <div class="ns-code__body">
+                <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-com">// 200 records, because 1 record proves nothing.</span></span><span class="ns-code__line"><span class="ns-tok-kw">insert</span> <span class="ns-tok-type">TestData</span><span class="ns-tok-punct">.</span><span class="ns-tok-fn">cases</span><span class="ns-tok-punct">(</span><span class="ns-tok-num">200</span><span class="ns-tok-punct">);</span></span></code></pre>
+              </div>
+            </div>
+          </figure>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 03</span>
+          <span class="ns-slide__num" data-deck-slide-num>08 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Click the second tab. The test is the punchline: 200, not 1.</p>
+    </section>
+
+    <!-- 09 · THIS OR THAT ═══════════════════════════════════════════════
+         stack + .ns-compare. The decision slide. --verdict marks the side
+         you are recommending, because a comparison with no recommendation
+         is homework you handed the room. -->
+    <section class="ns-slide" data-title="Flow or Apex">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">The question you will be asked</span>
+          <h2 class="ns-slide__title">Flow or Apex?</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-compare">
+            <div class="ns-compare__side">
+              <p class="ns-compare__title">Flow</p>
+              <ul>
+                <li>No deployment for small changes</li>
+                <li>An admin can maintain it next year</li>
+                <li>Harder to unit test, harder to review</li>
+              </ul>
+            </div>
+            <div class="ns-compare__side ns-compare__side--verdict">
+              <p class="ns-compare__title">Apex — when it is genuinely logic</p>
+              <ul>
+                <li>Real tests, real version control</li>
+                <li>Handles bulk without thinking about it</li>
+                <li>Needs a developer, forever</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 01</span>
+          <span class="ns-slide__num" data-deck-slide-num>09 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Say the honest version: most orgs pick Apex because the developer was in the room, not because it was right.</p>
+    </section>
+
+    <!-- 10 · THE NUMBER ═════════════════════════════════════════════════
+         center + brand. One fact at poster size, with its source under it.
+         An unsourced number on a slide is an opinion in a large font. -->
+    <section class="ns-slide ns-slide--center ns-slide--brand ns-slide--grid" data-title="The number">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">The limit that shapes everything</span>
+          <span class="ns-slide__figure-value">100</span>
+          <p class="ns-slide__lede">SOQL queries per synchronous transaction. Every design decision in this module exists because of this one number.</p>
+          <span class="ns-slide__caption">Apex Developer Guide · Execution Governors</span>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 03</span>
+          <span class="ns-slide__num" data-deck-slide-num>10 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Ask what happens at 101. Someone will say "error"; the real answer is "your import stops half-done".</p>
+    </section>
+
+    <!-- 11 · THE NUMBERS ════════════════════════════════════════════════
+         stack + grid[3] + .ns-statblock. Three facts, not fifteen. A stat
+         wall is a slide the room skims and remembers none of. -->
+    <section class="ns-slide" data-title="The governor limits that matter">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Know these three</span>
+          <h2 class="ns-slide__title">The limits you will actually hit</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__grid" data-cols="3">
+            <figure class="ns-statblock ns-statblock--stack" data-fragment data-fragment-group="limits">
+              <span class="ns-statblock__figure">100</span>
+              <div class="ns-statblock__body">
+                <span class="ns-statblock__label">SOQL queries, synchronous.</span>
+                <cite class="ns-statblock__source">Execution Governors</cite>
+              </div>
+            </figure>
+            <figure class="ns-statblock ns-statblock--stack" data-fragment data-fragment-group="limits">
+              <span class="ns-statblock__figure">150</span>
+              <div class="ns-statblock__body">
+                <span class="ns-statblock__label">DML statements per transaction.</span>
+                <cite class="ns-statblock__source">Execution Governors</cite>
+              </div>
+            </figure>
+            <figure class="ns-statblock ns-statblock--stack" data-fragment data-fragment-group="limits">
+              <span class="ns-statblock__figure">6MB</span>
+              <div class="ns-statblock__body">
+                <span class="ns-statblock__label">Heap, synchronous.</span>
+                <cite class="ns-statblock__source">Execution Governors</cite>
+              </div>
+            </figure>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 03</span>
+          <span class="ns-slide__num" data-deck-slide-num>11 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">All three land together — they are one idea, not three. That is what data-fragment-group is for.</p>
+    </section>
+
+    <!-- 12 · THE ARCHITECTURE ═══════════════════════════════════════════
+         stack + flow. Boxes and arrows as TEXT, not a PNG: it restyles with
+         the theme, a screen reader reads it, and next year you can edit it.
+         aria-current marks the box you are talking about. The POC slide. -->
+    <section class="ns-slide" data-title="Order of execution">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Where your code runs</span>
+          <h2 class="ns-slide__title">The order of execution, abridged</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__flow">
+            <div class="ns-slide__node">
+              <span class="ns-slide__node-label">01 · load</span>
+              <span class="ns-slide__node-title">Record loaded</span>
+              <span class="ns-slide__node-note">From the DB, or initialised for an insert.</span>
+            </div>
+            <i class="ph ph-arrow-right ns-slide__arrow" aria-hidden="true"></i>
+            <div class="ns-slide__node" aria-current="true">
+              <span class="ns-slide__node-label">02 · before</span>
+              <span class="ns-slide__node-title">Before triggers</span>
+              <span class="ns-slide__node-note">You are here. No DML needed to change the record.</span>
+            </div>
+            <i class="ph ph-arrow-right ns-slide__arrow" aria-hidden="true"></i>
+            <div class="ns-slide__node">
+              <span class="ns-slide__node-label">03 · rules</span>
+              <span class="ns-slide__node-title">Validation rules</span>
+              <span class="ns-slide__node-note">Which is why a before trigger can fix data a rule would reject.</span>
+            </div>
+            <i class="ph ph-arrow-right ns-slide__arrow" aria-hidden="true"></i>
+            <div class="ns-slide__node">
+              <span class="ns-slide__node-label">04 · after</span>
+              <span class="ns-slide__node-title">After triggers</span>
+              <span class="ns-slide__node-note">The record has an Id. Related records go here.</span>
+            </div>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 02</span>
+          <span class="ns-slide__num" data-deck-slide-num>12 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">The whole module is step 02 vs step 04. Everything else is context.</p>
+    </section>
+
+    <!-- 13 · THE RUNNING EXAMPLE ════════════════════════════════════════
+         aside. A wide teaching column and a narrow rail that STAYS while
+         the explanation changes — the org you are building in, the scenario,
+         where we are in a long workshop. Duplicate this slide and change
+         only the left column. -->
+    <section class="ns-slide ns-slide--aside" data-title="The scenario">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Working example</span>
+          <h2 class="ns-slide__title">Route every case to the right queue, at save time</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__col">
+            <ul class="ns-slide__points">
+              <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span><b class="ns-slide__point-title">A case arrives from email, web or a phone call</b><span class="ns-slide__point-note">Three origins, three teams, one object.</span></span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span><b class="ns-slide__point-title">The queue depends on the account's tier</b><span class="ns-slide__point-note">Which lives on a different object — hence the SOQL.</span></span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span><b class="ns-slide__point-title">It has to survive a 200-row import</b><span class="ns-slide__point-note">Because on Monday someone will do exactly that.</span></span></li>
+            </ul>
+          </div>
+          <aside class="ns-slide__aside">
+            <span class="ns-slide__caption">The org</span>
+            <span class="ns-chip">Dev org · trial</span>
+            <span class="ns-chip">Case, Account</span>
+            <span class="ns-chip">3 queues</span>
+            <span class="ns-slide__caption">Where we are</span>
+            <progress class="ns-progress" value="40" max="100" aria-label="Session progress">40%</progress>
+            <span class="ns-slide__caption">40% · module 03 of 06</span>
+          </aside>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Working example</span>
+          <span class="ns-slide__num" data-deck-slide-num>13 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Keep this rail identical on every slide in the module. It is the anchor.</p>
+    </section>
+
+    <!-- 14 · THE SCREENSHOT ═════════════════════════════════════════════
+         full + figure. object-fit is contain, never cover — a cropped
+         screenshot is a screenshot with the part you were pointing at cut
+         off. The caption says what to LOOK at, not what it is. -->
+    <section class="ns-slide ns-slide--full" data-title="Setup: where the trigger lives">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Setup → Object Manager → Case → Triggers</span>
+        </div>
+        <div class="ns-slide__body">
+          <figure class="ns-slide__figure">
+            <!-- Slot: the screenshot. Alt text describes what the slide is
+                 pointing at, because the handout is read by people who are
+                 not in the room. -->
+            <img src="../assets/logo/favicon.svg" alt="The Triggers section of the Case object in Setup, with the New button highlighted">
+          </figure>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Look at the New button, top right</span>
+          <span class="ns-slide__num" data-deck-slide-num>14 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Don't narrate the whole screen. Name the one control they need.</p>
+    </section>
+
+    <!-- 15 · THE DEMO CUE ═══════════════════════════════════════════════
+         center + dark + badge. The slide you leave up while you switch to
+         a browser. It exists so the wall says something useful during the
+         twenty seconds you spend finding the right tab — and so the handout
+         records that a demo happened here. -->
+    <section class="ns-slide ns-slide--center ns-slide--dark ns-slide--grid" data-title="Live demo">
+      <span class="ns-slide__badge"><i class="ph ph-play" aria-hidden="true"></i> Live demo</span>
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Switching to the org</span>
+          <h2 class="ns-slide__title">Watch it break at 201 records</h2>
+          <p class="ns-slide__lede">Developer Console → Execute Anonymous → the naive version, then the bulkified one.</p>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Demo · about 6 minutes</span>
+          <span class="ns-slide__num" data-deck-slide-num>15 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Have the two scripts already open in tabs. Never type live — you will typo, and the room will watch you debug instead of learn.</p>
+    </section>
+
+    <!-- 16 · HANDS ON ═══════════════════════════════════════════════════
+         split + timer. The exercise, and a countdown THE ROOM can see, so
+         it ends because time ran out rather than because you got bored.
+         Click the timer to start it; click again to reset. -->
+    <section class="ns-slide ns-slide--split" data-title="Hands on: build it">
+      <span class="ns-slide__badge"><i class="ph ph-barbell" aria-hidden="true"></i> Hands on</span>
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Your turn</span>
+          <h2 class="ns-slide__title">Build the router in your own org</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__col">
+            <ol class="ns-slide__points ns-slide__points--tight">
+              <li class="ns-slide__point"><span class="ns-slide__point-index">01</span><span class="ns-slide__point-title">Create <code class="ns-code-inline">CaseRouter.cls</code> from the snippet</span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">02</span><span class="ns-slide__point-title">Wire it to a before-insert trigger</span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">03</span><span class="ns-slide__point-title">Insert 200 cases from Execute Anonymous</span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index">04</span><span class="ns-slide__point-title">Check the debug log for query count</span></li>
+            </ol>
+            <!-- The action goes straight into the column: the deck grid
+                 already owns the spacing, and a <p> wrapper adds a second,
+                 different one that pushes the button into the running foot. -->
+            <a class="ns-btn ns-btn--primary ns-btn--sm ns-slide__action" href="#exercise">Open the exercise <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+          </div>
+          <div class="ns-slide__col">
+            <p class="ns-slide__caption">Time remaining — click to start</p>
+            <!-- 25 minutes. deck.js counts it down and keeps going past zero:
+                 an exercise that ran four minutes over is a fact worth
+                 seeing, and a timer frozen at 00:00 hides it. -->
+            <button type="button" class="ns-slide__timer" data-deck-timer="1500" data-state="idle" aria-label="Exercise timer, 25 minutes. Press to start.">
+              <span data-deck-timer-value>25:00</span>
+              <span class="ns-slide__timer-unit">min</span>
+            </button>
+            <p class="ns-slide__caption">Stuck? The finished class is in the course files.</p>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 04 · hands on</span>
+          <span class="ns-slide__num" data-deck-slide-num>16 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Walk the room. Do not answer from the front — go to the person.</p>
+    </section>
+
+    <!-- 17 · CHECK THE ROOM ═════════════════════════════════════════════
+         stack + options. A question with LABELLED answers, because a room
+         answering out loud needs a handle and "the third one" is not one.
+         The answer is a <details>: you open it, and the handout has it
+         without a second slide. -->
+    <section class="ns-slide" data-title="Quick check">
+      <span class="ns-slide__badge"><i class="ph ph-question" aria-hidden="true"></i> Quick check</span>
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Everyone answer</span>
+          <h2 class="ns-slide__title">A user imports 500 cases. How many times does your trigger run?</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__options">
+            <div class="ns-slide__option"><span class="ns-slide__option-key">A</span><span>Once — one import, one transaction</span></div>
+            <div class="ns-slide__option" data-state="correct"><span class="ns-slide__option-key">B</span><span>Three times — 200, 200, 100</span></div>
+            <div class="ns-slide__option"><span class="ns-slide__option-key">C</span><span>500 times — once per record</span></div>
+          </div>
+          <details class="ns-slide__answer">
+            <summary><i class="ph ph-caret-right" aria-hidden="true"></i> Show the answer</summary>
+            <p><b>B.</b> The platform chunks a bulk load into batches of 200, and each batch is its own transaction with its own governor limits. This is why <i>per-transaction</i> limits are the ones that matter, and why "it worked on my one test record" proves nothing.</p>
+          </details>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Check</span>
+          <span class="ns-slide__num" data-deck-slide-num>17 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Count hands for each before revealing. If B is under half, do the demo again.</p>
+    </section>
+
+    <!-- 18 · THE CHECKLIST ══════════════════════════════════════════════
+         stack + .ns-checklist. What "done" means, in items that can be
+         ticked. This is the slide people screenshot and use at work — write
+         it as if it will be read six months from now with no audio. -->
+    <section class="ns-slide" data-title="Before you deploy">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Definition of done</span>
+          <h2 class="ns-slide__title">Before this goes to production</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__body">
+          <ul class="ns-checklist">
+            <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">One trigger on the object, logic in a handler class</span></li>
+            <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">No SOQL or DML inside a loop — read it again and check</span></li>
+            <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A test that inserts 200 records, not one</span></li>
+            <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A test that asserts something — coverage is not a test</span></li>
+            <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A rollback plan written down before the deploy, not during it</span></li>
+          </ul>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 05</span>
+          <span class="ns-slide__num" data-deck-slide-num>18 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Item 4 is the one that gets skipped. Say the number: 75% coverage with no assertions is 0% tested.</p>
+    </section>
+
+    <!-- 19 · THE ROADMAP ════════════════════════════════════════════════
+         stack + .ns-timeline. A course plan, a project plan, a POC's next
+         phases. Dates or nothing — a roadmap with no dates is a wish list. -->
+    <section class="ns-slide" data-title="Where this goes next">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">The rest of the course</span>
+          <h2 class="ns-slide__title">What we build from here</h2>
+        </div>
+        <div class="ns-slide__body">
+          <ol class="ns-timeline">
+            <li class="ns-timeline__item">
+              <span class="ns-timeline__dot" aria-hidden="true"></span>
+              <span class="ns-timeline__time">Week 2</span>
+              <div class="ns-timeline__text">
+                <span class="ns-timeline__title">Async: Queueable and Batch</span>
+                When one transaction is not enough room.
+              </div>
+            </li>
+            <li class="ns-timeline__item">
+              <span class="ns-timeline__dot" aria-hidden="true"></span>
+              <span class="ns-timeline__time">Week 3</span>
+              <div class="ns-timeline__text">
+                <span class="ns-timeline__title">Testing properly</span>
+                Test data factories, assertions, and why 75% is a floor.
+              </div>
+            </li>
+            <li class="ns-timeline__item">
+              <span class="ns-timeline__dot" aria-hidden="true"></span>
+              <span class="ns-timeline__time">Week 4</span>
+              <div class="ns-timeline__text">
+                <span class="ns-timeline__title">Integration</span>
+                Callouts, named credentials, and failing safely.
+              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Course plan</span>
+          <span class="ns-slide__num" data-deck-slide-num>19 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">This is also the sales slide. Don't sell it — just say what happens next.</p>
+    </section>
+
+    <!-- 20 · THE CARD GRID ══════════════════════════════════════════════
+         stack + grid[3] + .ns-card. Three peers: modules, features, POC
+         workstreams, tools compared. Three or four, never six — a six-card
+         slide is a slide with three cards nobody reads twice. -->
+    <section class="ns-slide ns-slide--sunken" data-title="Three ways to automate">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Pick the right tool</span>
+          <h2 class="ns-slide__title">Three ways to automate a save</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__grid" data-cols="3">
+            <article class="ns-card">
+              <div class="ns-card__body">
+                <span class="ns-card__kicker">// declarative</span>
+                <span class="ns-card__title">Record-triggered flow</span>
+                <p class="ns-card__text">Before-save updates are fast and need no code. The default answer for field updates.</p>
+              </div>
+            </article>
+            <article class="ns-card">
+              <div class="ns-card__body">
+                <span class="ns-card__kicker">// code</span>
+                <span class="ns-card__title">Apex trigger</span>
+                <p class="ns-card__text">For logic a flow cannot express, or that has to be unit tested and reviewed.</p>
+              </div>
+            </article>
+            <article class="ns-card">
+              <div class="ns-card__body">
+                <span class="ns-card__kicker">// async</span>
+                <span class="ns-card__title">Queueable</span>
+                <p class="ns-card__text">When the work does not have to finish before the user's save returns.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 01</span>
+          <span class="ns-slide__num" data-deck-slide-num>20 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Ask which one they reach for first. The honest answer is "the one I know", and that is the actual lesson.</p>
+    </section>
+
+    <!-- 21 · THE QUOTE ══════════════════════════════════════════════════
+         center + .ns-quote. Someone else's words, attributed. One per deck.
+         A deck of quotes is a deck with no argument of its own. -->
+    <section class="ns-slide ns-slide--center" data-title="Quote">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <figure class="ns-quote">
+            <blockquote>Bulkify everything. The platform will hand you two hundred records on a day you are not watching.</blockquote>
+            <figcaption>Apex Developer Guide · Best Practices</figcaption>
+          </figure>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Module 03</span>
+          <span class="ns-slide__num" data-deck-slide-num>21 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Optional slide. Cut it first if you are running long.</p>
+    </section>
+
+    <!-- 22 · THE TAKEAWAY ═══════════════════════════════════════════════
+         center + .ns-takeaway. The one sentence to leave with. Same
+         component the lessons use, so the slide and the written lesson say
+         the takeaway in the same voice and the same shape. -->
+    <section class="ns-slide ns-slide--center ns-slide--sunken" data-title="In short">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">If you remember one thing</span>
+          <aside class="ns-takeaway">
+            <span class="ns-takeaway__label">In short</span>
+            <p class="ns-takeaway__text">Write every trigger as if two hundred records just arrived, because one day two hundred records will just arrive — and the version that assumed one will fail in front of a customer rather than in front of you.</p>
+          </aside>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Recap</span>
+          <span class="ns-slide__num" data-deck-slide-num>22 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Slow down. This is the sentence you want quoted back to you next week.</p>
+    </section>
+
+    <!-- 23 · THE RECAP ══════════════════════════════════════════════════
+         stack + points--current. The agenda again, at the end, with what is
+         done dimmed and what is next at full contrast. Cheap to make (copy
+         slide 03), and it is the slide that makes a session feel finished
+         rather than stopped. -->
+    <section class="ns-slide" data-title="Recap">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Ninety minutes later</span>
+          <h2 class="ns-slide__title">What we covered</h2>
+          <span class="ns-slide__rule"></span>
+        </div>
+        <div class="ns-slide__body">
+          <ol class="ns-slide__points ns-slide__points--tight ns-slide__points--split ns-slide__points--current">
+            <li class="ns-slide__point" data-state="done"><span class="ns-slide__point-index">01</span><span class="ns-slide__point-title">What a trigger actually is</span></li>
+            <li class="ns-slide__point" data-state="done"><span class="ns-slide__point-index">02</span><span class="ns-slide__point-title">The order of execution</span></li>
+            <li class="ns-slide__point" data-state="done"><span class="ns-slide__point-index">03</span><span class="ns-slide__point-title">Bulkification</span></li>
+            <li class="ns-slide__point" data-state="done"><span class="ns-slide__point-index">04</span><span class="ns-slide__point-title">You built one</span></li>
+            <li class="ns-slide__point" aria-current="true"><span class="ns-slide__point-index">05</span><span><b class="ns-slide__point-title">Tests, and why 75% is a floor</b><span class="ns-slide__point-note">Next session, same time.</span></span></li>
+            <li class="ns-slide__point"><span class="ns-slide__point-index">06</span><span class="ns-slide__point-title">Where to go next</span></li>
+          </ol>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Recap</span>
+          <span class="ns-slide__num" data-deck-slide-num>23 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Name what is NOT covered too. "We did not touch async" saves you three questions.</p>
+    </section>
+
+    <!-- 24 · TAKE IT WITH YOU ═══════════════════════════════════════════
+         stack + grid[2]. Real links, typed out, because someone will read
+         this from a photograph on a phone. No QR code as the ONLY route —
+         a QR code in a photograph of a screen rarely scans. -->
+    <section class="ns-slide" data-title="Resources">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">Take it with you</span>
+          <h2 class="ns-slide__title">Everything from today</h2>
+        </div>
+        <div class="ns-slide__body">
+          <div class="ns-slide__grid" data-cols="2">
+            <ul class="ns-slide__points ns-slide__points--tight">
+              <li class="ns-slide__point"><span class="ns-slide__point-index"><i class="ph ph-code" aria-hidden="true"></i></span><span><b class="ns-slide__point-title">The finished code</b><span class="ns-slide__point-note">github.com/imswarnil/apex-fundamentals</span></span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index"><i class="ph ph-projector-screen" aria-hidden="true"></i></span><span><b class="ns-slide__point-title">These slides</b><span class="ns-slide__point-note">namastesalesforce.com/decks/apex-01</span></span></li>
+            </ul>
+            <ul class="ns-slide__points ns-slide__points--tight">
+              <li class="ns-slide__point"><span class="ns-slide__point-index"><i class="ph ph-book-open-text" aria-hidden="true"></i></span><span><b class="ns-slide__point-title">The written lesson</b><span class="ns-slide__point-note">Same material, at your own pace.</span></span></li>
+              <li class="ns-slide__point"><span class="ns-slide__point-index"><i class="ph ph-chats-circle" aria-hidden="true"></i></span><span><b class="ns-slide__point-title">Ask a question</b><span class="ns-slide__point-note">The course discussion — answered within a day.</span></span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Resources</span>
+          <span class="ns-slide__num" data-deck-slide-num>24 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Leave this slide up during questions. It is the most useful thing the wall can be doing.</p>
+    </section>
+
+    <!-- 25 · THE CLOSE ══════════════════════════════════════════════════
+         lead + dark + grid. Questions, and ONE next action. A closing slide
+         with four buttons has no closing action; a "thank you" with nothing
+         to do is a wasted wall. -->
+    <section class="ns-slide ns-slide--lead ns-slide--dark ns-slide--grid" data-title="Questions">
+      <div class="ns-slide__inner">
+        <div class="ns-slide__head">
+          <span class="ns-kicker">That is module 01</span>
+          <h2 class="ns-slide__title">Questions</h2>
+          <span class="ns-slide__rule"></span>
+          <p class="ns-slide__lede">Next session: tests, and why 75% coverage is a floor rather than a target.</p>
+          <a class="ns-btn ns-btn--white ns-slide__action" href="#enrol">Continue the course <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="ns-slide__foot">
+          <span class="ns-slide__where">Swarnil Singhai · namastesalesforce.com</span>
+          <span class="ns-slide__num" data-deck-slide-num>25 / 25</span>
+        </div>
+      </div>
+      <p class="ns-slide__note">Do not end on "any questions?" into silence. Ask the first one yourself.</p>
+    </section>
+
+  </div>
+
+  <!-- The progress hairline. 2px across the foot of the deck, the same
+       control the course bar uses for a course — here for a talk. -->
+  <div class="ns-deck__rail" data-deck-rail aria-hidden="true"><span></span></div>
+
+  <!-- ═══ THE PRESENTER BAR ═════════════════════════════════════════════
+       All of the chrome lives OUTSIDE the slides, so none of it appears in
+       a printed handout, a PDF export or an overview thumbnail. -->
+  <div class="ns-deck__bar">
+    <span class="ns-deck__deckname"><i class="ph ph-presentation-chart" aria-hidden="true"></i> Apex fundamentals · module 01</span>
+    <span class="ns-deck__count" data-deck-count><b>01</b> / 25</span>
+    <div class="ns-deck__tools">
+      <button type="button" class="ns-navicon" data-deck-prev aria-label="Previous slide"><i class="ph ph-arrow-left" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" data-deck-next aria-label="Next slide"><i class="ph ph-arrow-right" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" data-deck-toggle="overview" aria-expanded="false" aria-label="All slides"><i class="ph ph-squares-four" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" data-deck-toggle="notes" aria-expanded="false" aria-label="Speaker notes"><i class="ph ph-note" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" data-deck-toggle="mode" aria-pressed="false" aria-label="Switch between presenting and the handout"><i class="ph ph-rows" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" data-deck-toggle="fullscreen" aria-label="Full screen"><i class="ph ph-projector-screen" aria-hidden="true"></i></button>
+      <button type="button" class="ns-navicon" data-deck-toggle="help" aria-expanded="false" aria-label="Keyboard shortcuts"><i class="ph ph-question" aria-hidden="true"></i></button>
+      <!-- Light by default, because a projector in a lit room is a light
+           surface. The switch is the system's own — a deck is not a place
+           for a second theme control. -->
+      <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
+        <span class="ns-themeswitch__mark" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ THE OVERVIEW (G) ══════════════════════════════════════════════
+       deck.js clones every slide in here at thumbnail size the first time it
+       is opened. Live slides, not screenshots: a slide sizes itself from its
+       container, so a copy in a 15rem box simply IS the slide. -->
+  <div class="ns-deck__overview" data-deck-overview hidden>
+    <div class="ns-deck__overview-head">
+      <span>All slides</span>
+      <span class="ns-deck__tools">
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm" data-deck-toggle="overview"><i class="ph ph-x" aria-hidden="true"></i> Close</button>
+      </span>
+    </div>
+    <div class="ns-deck__thumbs" data-deck-thumbs></div>
+  </div>
+
+  <!-- ═══ SPEAKER NOTES (N) ═════════════════════════════════════════════
+       The current slide's .ns-slide__note, plus the NAME of the next slide —
+       the single most useful line on any presenter display. -->
+  <aside class="ns-deck__notes" data-deck-notes hidden aria-label="Speaker notes">
+    <div class="ns-deck__notes-head">
+      <span><i class="ph ph-note" aria-hidden="true"></i> Notes</span>
+      <span class="ns-deck__tools">
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm" data-deck-toggle="notes"><i class="ph ph-x" aria-hidden="true"></i> Close</button>
+      </span>
+    </div>
+    <div class="ns-deck__notes-body" data-deck-notes-body></div>
+    <div class="ns-deck__notes-next" data-deck-notes-next></div>
+  </aside>
+
+  <!-- ═══ SHORTCUTS (?) ═════════════════════════════════════════════════ -->
+  <div class="ns-deck__help" data-deck-help hidden>
+    <div class="ns-deck__help-card">
+      <div class="ns-deck__overview-head" style="padding:0;border:0"><span>Keyboard</span></div>
+      <div class="ns-deck__help-row"><span>Next, or reveal the next point</span><span class="ns-kbd-seq"><kbd class="ns-kbd">→</kbd><span class="ns-kbd-seq__sep">or</span><kbd class="ns-kbd">Space</kbd></span></div>
+      <div class="ns-deck__help-row"><span>Back</span><span class="ns-kbd-seq"><kbd class="ns-kbd">←</kbd></span></div>
+      <div class="ns-deck__help-row"><span>First / last slide</span><span class="ns-kbd-seq"><kbd class="ns-kbd">Home</kbd><span class="ns-kbd-seq__sep">/</span><kbd class="ns-kbd">End</kbd></span></div>
+      <div class="ns-deck__help-row"><span>Go to slide 12</span><span class="ns-kbd-seq"><kbd class="ns-kbd">1</kbd><kbd class="ns-kbd">2</kbd></span></div>
+      <div class="ns-deck__help-row"><span>All slides</span><span class="ns-kbd-seq"><kbd class="ns-kbd">G</kbd></span></div>
+      <div class="ns-deck__help-row"><span>Speaker notes</span><span class="ns-kbd-seq"><kbd class="ns-kbd">N</kbd></span></div>
+      <div class="ns-deck__help-row"><span>Full screen</span><span class="ns-kbd-seq"><kbd class="ns-kbd">F</kbd></span></div>
+      <div class="ns-deck__help-row"><span>Blackout — look at me, not the wall</span><span class="ns-kbd-seq"><kbd class="ns-kbd">B</kbd></span></div>
+      <div class="ns-deck__help-row"><span>Close anything</span><span class="ns-kbd-seq"><kbd class="ns-kbd">Esc</kbd></span></div>
+      <p style="margin-block-start:var(--space-2)"><button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-deck-toggle="help">Close</button></p>
+    </div>
+  </div>
+</div>

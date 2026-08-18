@@ -1,0 +1,1031 @@
+/* NS Design System — deck: slides for teaching.
+   =========================================================================
+   A presentation is not a new product. It is the same course, the same POC,
+   the same lesson, projected — so this layer is deliberately THIN. It gives
+   a slide three things and nothing else:
+
+     1. A FRAME  — a 16:9 box that fits whatever it is put in (a projector,
+                   a laptop, a phone, a page in a printed handout, an iframe
+                   embedded in a lesson).
+     2. A SCALE  — type and padding sized in container units, so a slide at
+                   1920px and the same slide in a 320px thumbnail are the same
+                   design rather than the same design with the text too big.
+     3. A GRAMMAR — six geometries (lead / stack / split / aside / full /
+                   center) and four tones (light / sunken / dark / brand).
+
+   Everything INSIDE a slide is a component that already exists: .ns-code for
+   the code, .ns-statblock for the number, .ns-compare for the two columns,
+   .ns-checklist for the checklist, .ns-timeline for the roadmap, .ns-card for
+   the card grid, .ns-btn for the action. That is the entire point — a deck
+   built out of the same parts as the product cannot say something the product
+   contradicts, and a slide is not a place to invent a second button.
+
+   So the rule for adding here: if a piece of a slide would also make sense on
+   a web page, it does NOT belong in this file. Only what is genuinely
+   projector-specific lives here — the frame, the running foot, the fragment
+   reveal, the presenter chrome.
+
+   THEME. Light is the default because a projector in a lit room is a light
+   surface; dark mode is the same deck under [data-theme="dark"], and every
+   colour here is a token, so it flips with the rest of the system. The
+   .ns-slide--dark tone is the OTHER thing: a navy console slide that stays
+   navy in both themes, exactly like .ns-band--dark, for section dividers and
+   demo cues where the room should notice a gear change.
+
+   Runtime: assets/js/deck.js — keyboard, fragments, overview, notes, timer,
+   deep links. With no JS the deck is a scrolling stack of readable slides,
+   which is the correct failure mode: a handout. */
+@layer ns-components {
+
+  /* ======================================================= the deck ====
+     Two modes, one markup.
+
+       data-mode="present"  one slide at a time, locked to the viewport, the
+                            presenter bar docked at the foot. What you project.
+       data-mode="scroll"   every slide stacked down the page as 16:9 cards.
+                            The handout, the embed inside a lesson, and what a
+                            deck degrades to with JS off.
+
+     The mode is an attribute rather than a class because deck.js flips it at
+     runtime (and print forces scroll), and a state that is drawn from an
+     attribute cannot drift from the state the script thinks it is in. */
+  .ns-deck {
+    --slide-w: 16;
+    --slide-h: 9;
+    position: relative;
+    color: var(--color-ink);
+    background: var(--color-surface-sunken);
+  }
+  /* 4:3 exists for one reason: some training rooms still have a 4:3 projector,
+     and a 16:9 deck on one is a deck with the bottom sixth cropped. */
+  .ns-deck--4-3 { --slide-w: 4; --slide-h: 3; }
+
+  .ns-deck[data-mode="present"] {
+    block-size: 100dvh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+  }
+  /* Present mode is ONE viewport, so the document behind it must not scroll
+     too — the same contract templates/course-player.html states for the fixed
+     player. deck.js stamps this on <html> while a deck is presenting and takes
+     it off the moment the mode flips to the handout, because a lock written
+     into the page's own markup is a lock nothing can undo. */
+  html[data-ns-deck-fixed] { overflow: hidden; }
+
+  /* The stage. In present mode it is a SIZE container, which is what lets a
+     slide be "as wide as it can be without becoming taller than the room" in
+     CSS alone — no resize listener, no scale transform, no layout thrash on
+     a projector's mid-talk resolution change. */
+  .ns-deck__stage { position: relative; }
+  .ns-deck[data-mode="present"] .ns-deck__stage {
+    container-type: size;
+    display: grid;
+    place-items: center;
+    min-block-size: 0;
+    padding: var(--space-3);
+  }
+  .ns-deck[data-mode="scroll"] .ns-deck__stage {
+    display: grid;
+    gap: var(--gap-grid);
+    max-inline-size: var(--container-wide);
+    margin-inline: auto;
+    padding: var(--space-8) var(--gutter);
+  }
+
+  /* Present mode shows exactly one slide. `hidden` is not used for this:
+     deck.js marks the current slide with aria-current, and the CSS hides the
+     rest — so the state a screen reader hears and the state the room sees are
+     the same attribute. With JS off nothing carries aria-current, the mode is
+     never switched to present, and every slide stays on the page. */
+  .ns-deck[data-mode="present"] .ns-slide { display: none; }
+  .ns-deck[data-mode="present"] .ns-slide[aria-current="true"] { display: block; }
+
+  /* ====================================================== the slide ====
+     The frame, the scale, and the tones.
+
+     Sizing: min(all the width there is, all the height there is × the ratio).
+     The slide is its own inline-size container, so everything inside is sized
+     against the SLIDE, not the window — which is why the same markup is
+     legible at 1920px, correct in a 240px overview thumbnail, and readable on
+     a phone in scroll mode. */
+  .ns-slide {
+    container-type: inline-size;
+    position: relative;
+    inline-size: 100%;
+    aspect-ratio: var(--slide-w) / var(--slide-h);
+    overflow: hidden;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    /* The brand's leading edge — the same 3px device the note aside and the
+       urgent ticket use. It is on every slide on purpose: it makes a deck
+       recognisably from this system from the back of the room, which is the
+       job a logo stamped on all 40 slides is usually hired to do badly. */
+    border-inline-start: 3px solid var(--color-brand-500);
+  }
+  .ns-deck[data-mode="present"] .ns-slide {
+    inline-size: min(100cqi, 100cqb * var(--slide-w) / var(--slide-h));
+    max-block-size: 100cqb;
+  }
+
+  /* The type scale, in container units and NOTHING ELSE — no rem, no clamp
+     against the page tokens, no floor.
+
+     A floor is the tempting mistake here. It reads as safety ("text can never
+     be smaller than 13px") and it destroys the two cases this scale exists
+     for: at 2560px a clamped slide keeps rendering 17px body copy that nobody
+     past row three can read, and in a 240px overview thumbnail a floored
+     slide renders 13px text over a miniature layout and overflows every box.
+
+     Pure proportion is what makes one slide correct on a projector, in a
+     thumbnail and in a printed handout. The page-scale tokens come back in
+     the small-screen block at the bottom of this file, where slides stop
+     being 16:9 frames and become ordinary cards.
+
+     Everything is expressed against the SLIDE, because .ns-slide is the
+     container these units resolve to — which is also why the padding lives on
+     .ns-slide__inner and not on .ns-slide itself. */
+  .ns-slide {
+    --slide-pad: 6.5cqi;
+    --slide-gap: 2.4cqi;
+    --slide-label: 1.05cqi;
+    --slide-text: 1.7cqi;
+    --slide-lede: 2.3cqi;
+    --slide-title: 4.2cqi;
+    --slide-big: 6.5cqi;
+    --slide-figure: 11cqi;
+  }
+
+  /* --- Tones ---------------------------------------------------------------
+     --sunken and the default flip with [data-theme]. --dark and --brand do
+     NOT: they are the brand's own surfaces, identical in both themes, and
+     they exist to mark a gear change in the talk (a new module, a live demo,
+     the closing ask). A deck where every third slide is dark has no gear
+     changes left. */
+  .ns-slide--sunken { background: var(--color-surface-sunken); }
+  .ns-slide--dark {
+    background: var(--color-brand-900);
+    color: var(--color-on-dark);
+    border-color: var(--color-brand-900);
+    /* The leading edge survives the dark tone — brand blue on navy is where
+       it reads best. On the solid brand fill it cannot, so there it becomes
+       the on-dark hairline rather than disappearing into the ground. */
+    border-inline-start-color: var(--color-brand-500);
+  }
+  .ns-slide--brand {
+    background: var(--color-brand-500);
+    color: var(--color-on-brand);
+    border-color: var(--color-brand-500);
+    border-inline-start-color: var(--color-on-dark-border);
+  }
+  .ns-slide--dark .ns-kicker,
+  .ns-slide--dark .ns-slide__foot { color: var(--color-on-dark-border-hover); }
+  .ns-slide--brand .ns-kicker,
+  .ns-slide--brand .ns-slide__foot { color: var(--color-on-brand); opacity: 0.75; /* lint-ok: on-brand muted is the on-brand ink dimmed, not a second token */ }
+  .ns-slide--dark .ns-slide__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: same on-dark dimming the section bands use */ }
+  .ns-slide--brand .ns-slide__lede { color: var(--color-on-brand); opacity: 0.85; /* lint-ok: as above, on the solid brand fill */ }
+  .ns-slide--dark .ns-slide__rule { background: var(--color-on-dark-border); }
+  .ns-slide--brand .ns-slide__rule { background: var(--color-on-dark-border); }
+
+  /* The hairline grid, dissolving under a radial mask — the one decorative
+     background the system allows, borrowed from .ns-band--grid so a slide and
+     a hero band are visibly the same material. */
+  .ns-slide--grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: var(--space-10) var(--space-10);
+    mask-image: radial-gradient(120% 100% at 100% 0%, var(--color-ink) 0%, transparent 70%); /* lint-ok: mask alpha ramp, any opaque color works; ink keeps it token-fed */
+  }
+  .ns-slide--dark.ns-slide--grid::before,
+  .ns-slide--brand.ns-slide--grid::before {
+    background-image:
+      linear-gradient(var(--color-on-dark-wash) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-on-dark-wash) 1px, transparent 1px);
+  }
+
+  /* --- The canvas ----------------------------------------------------------
+     Every slide is the same three-row grid: head / body / foot. A layout
+     modifier changes what the BODY does, never where the head and the foot
+     sit — which is what makes a 40-slide deck feel like one document instead
+     of 40 posters. */
+  .ns-slide__inner {
+    position: relative;
+    z-index: var(--z-raised);
+    block-size: 100%;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: var(--slide-gap);
+    padding: var(--slide-pad);
+  }
+
+  /* --- Head ---------------------------------------------------------------- */
+  .ns-slide__head { display: grid; gap: calc(var(--slide-gap) * 0.4); }
+  .ns-slide .ns-kicker { font-size: var(--slide-label); margin-block-end: 0; }
+  .ns-slide__title {
+    font-size: var(--slide-title);
+    font-weight: var(--weight-heading);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: balance;
+  }
+  .ns-slide__lede {
+    font-size: var(--slide-lede);
+    line-height: var(--leading-body);
+    color: var(--color-muted);
+    text-wrap: pretty;
+    max-inline-size: var(--measure-prose);
+  }
+  /* The rule under a head. 2px, brand, and short — an underline, not a
+     divider: it says "this heading owns what follows", where a full-width
+     hairline would say "this section has ended". */
+  .ns-slide__rule {
+    inline-size: 4cqi;
+    block-size: 2px;
+    background: var(--color-brand-500);
+    margin-block-start: calc(var(--slide-gap) * 0.3);
+  }
+
+  /* --- Body ---------------------------------------------------------------- */
+  .ns-slide__body {
+    min-block-size: 0;
+    font-size: var(--slide-text);
+    line-height: var(--leading-body);
+    align-content: start;
+    display: grid;
+    gap: var(--slide-gap);
+  }
+  /* A body that overflows its frame is a slide with too much on it, and the
+     honest response is to let the presenter SEE that rather than to silently
+     clip the last bullet. Auto-scroll in present mode, visible in a thumbnail. */
+  .ns-slide__body--scroll { overflow: auto; align-content: start; }
+
+  /* --- Foot ----------------------------------------------------------------
+     The running footer, and the only chrome that is ON the slide: where we
+     are, what this is, and the number. It survives export to PDF, which the
+     presenter bar does not — so the number a room asks about ("go back to
+     slide 12") has to live here. */
+  .ns-slide__foot {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--slide-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+    border-block-start: 1px solid var(--color-border);
+    padding-block-start: calc(var(--slide-gap) * 0.5);
+  }
+  .ns-slide--dark .ns-slide__foot,
+  .ns-slide--brand .ns-slide__foot { border-block-start-color: var(--color-on-dark-border); }
+  .ns-slide__where { color: inherit; }
+  .ns-slide__num { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+
+  /* The corner label: "live demo", "hands-on", "10 min". One per slide, and
+     it is a STATE of the slide, not a heading — which is why it sits in the
+     corner in mono and not at the top in the title's place. */
+  .ns-slide__badge {
+    position: absolute;
+    inset-block-start: var(--slide-pad);
+    inset-inline-end: var(--slide-pad);
+    z-index: var(--z-raised);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1-5);
+    padding: var(--space-1) var(--space-2-5);
+    border: 1px solid var(--color-brand-500);
+    border-radius: var(--radius-pill);
+    font-family: var(--font-mono);
+    font-size: var(--slide-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-brand-600);
+    background: var(--color-surface);
+  }
+  .ns-slide--dark .ns-slide__badge,
+  .ns-slide--brand .ns-slide__badge {
+    color: var(--color-on-dark);
+    background: var(--color-on-dark-wash);
+    border-color: var(--color-on-dark-border);
+  }
+
+  /* ================================================== the geometries ====
+     Six, and six is the budget. Every deck slide anyone has ever needed is
+     one of these plus existing components — and a seventh layout is almost
+     always someone wanting a different SIZE, which the scale already gives. */
+
+  /* 1. lead — the opener, the divider, the closer. Head centred on the block
+        axis, aligned to the leading edge, no body. The title runs large
+        because it is the only thing on the slide. */
+  .ns-slide--lead .ns-slide__inner { grid-template-rows: 1fr auto; align-content: center; }
+  .ns-slide--lead .ns-slide__head { align-content: center; gap: var(--slide-gap); }
+  .ns-slide--lead .ns-slide__title { font-size: var(--slide-big); max-inline-size: 20ch; }
+
+  /* 2. center — everything centred on both axes. The one-sentence slide, the
+        question slide, the thank-you. Used sparingly: centred text is hard to
+        read in quantity, which is exactly why it is right for one line. */
+  .ns-slide--center .ns-slide__inner { grid-template-rows: 1fr auto; }
+  .ns-slide--center .ns-slide__head { justify-items: center; text-align: center; align-content: center; }
+  .ns-slide--center .ns-slide__title { font-size: var(--slide-big); max-inline-size: 22ch; }
+  .ns-slide--center .ns-slide__lede { margin-inline: auto; }
+  .ns-slide--center .ns-slide__rule { margin-inline: auto; }
+  .ns-slide--center .ns-slide__body { justify-items: center; text-align: center; }
+
+  /* 3. stack — THE DEFAULT, and the one most of a deck should be. Head at the
+        top, body under it, full width. Bullets, a card grid, a table, a
+        checklist, a timeline: all of them are this. */
+
+  /* 4. split — body in two columns. Text and the thing the text is about.
+        --split-figure gives the second column the room (a screenshot, a
+        diagram); --split-even is for two peers (before/after, flow/apex). */
+  .ns-slide--split .ns-slide__body {
+    grid-template-columns: 1fr 1fr;
+    gap: calc(var(--slide-gap) * 1.4);
+    align-content: stretch;
+    align-items: stretch;
+  }
+  .ns-slide--split-figure .ns-slide__body { grid-template-columns: 5fr 7fr; }
+  .ns-slide--split-text .ns-slide__body { grid-template-columns: 7fr 5fr; }
+  /* min-*-size: 0 on both axes is load-bearing, not defensive. A grid item's
+     automatic minimum is its CONTENT size, so a column holding a twelve-line
+     code block silently grows the row past the slide's 16:9 frame and the
+     last lines render over the running foot. */
+  .ns-slide__col { display: grid; gap: var(--slide-gap); align-content: start; min-inline-size: 0; min-block-size: 0; }
+  .ns-slide__col--fill { align-content: stretch; overflow: hidden; }
+
+  /* 5. aside — a wide content column and a narrow standing rail. For the
+        running example that stays on screen while the explanation changes,
+        and for the "you are here" list in a long workshop. */
+  .ns-slide--aside .ns-slide__body { grid-template-columns: minmax(0, 1fr) 26cqi; gap: calc(var(--slide-gap) * 1.4); }
+  .ns-slide__aside {
+    display: grid;
+    gap: calc(var(--slide-gap) * 0.35);
+    align-content: start;
+    padding-inline-start: calc(var(--slide-gap) * 0.8);
+    border-inline-start: 1px solid var(--color-border);
+    font-size: var(--slide-label);
+  }
+  .ns-slide--dark .ns-slide__aside,
+  .ns-slide--brand .ns-slide__aside { border-inline-start-color: var(--color-on-dark-border); }
+
+  /* 6. full — the body goes edge to edge and the padding falls away. A
+        screenshot, a diagram, an architecture picture, a code file that
+        genuinely needs the whole slide. The head, if there is one, sits over
+        it as a label rather than above it as a heading. */
+  .ns-slide--full .ns-slide__inner { padding: 0; gap: 0; grid-template-rows: minmax(0, 1fr); }
+  .ns-slide--full .ns-slide__head,
+  .ns-slide--full .ns-slide__foot {
+    position: absolute;
+    inset-inline: 0;
+    z-index: var(--z-raised);
+    padding: calc(var(--slide-pad) * 0.5) var(--slide-pad);
+  }
+  .ns-slide--full .ns-slide__head { inset-block-start: 0; }
+  .ns-slide--full .ns-slide__foot { inset-block-end: 0; border-block-start: 0; }
+  .ns-slide--full .ns-slide__body { block-size: 100%; align-content: stretch; }
+
+  /* =================================================== slide content ====
+     The handful of pieces that are genuinely projector-specific. Everything
+     else on a slide is an existing component. */
+
+  /* --- Points --------------------------------------------------------------
+     The teaching list. A mono index, a line, and an optional second line that
+     says what the first one MEANS — because a bullet the presenter has to
+     explain out loud is a bullet the handout loses.
+
+     Four to six. A slide with nine points is a slide the room reads instead
+     of listening, and the fix is two slides, not a smaller type size. */
+  .ns-slide__points { display: grid; gap: var(--slide-gap); align-content: start; }
+  .ns-slide__point {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: calc(var(--slide-gap) * 0.5);
+    align-items: start;
+  }
+  .ns-slide__point-index {
+    font-family: var(--font-mono);
+    font-size: var(--slide-lede);
+    font-weight: var(--weight-semibold);
+    color: var(--color-brand-500);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--leading-heading);
+  }
+  .ns-slide--dark .ns-slide__point-index { color: var(--color-brand-300); }
+  .ns-slide--brand .ns-slide__point-index { color: var(--color-on-brand); }
+  .ns-slide__point-index i { font-size: 1em; }
+  .ns-slide__point-title {
+    display: block;
+    font-size: var(--slide-lede);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-heading);
+    text-wrap: pretty;
+  }
+  .ns-slide__point-note {
+    display: block;
+    color: var(--color-muted);
+    margin-block-start: calc(var(--slide-gap) * 0.2);
+    text-wrap: pretty;
+  }
+  .ns-slide--dark .ns-slide__point-note { color: var(--color-on-dark); opacity: 0.7; /* lint-ok: on-dark muted is the on-dark ink dimmed */ }
+  .ns-slide--brand .ns-slide__point-note { color: var(--color-on-brand); opacity: 0.8; /* lint-ok: as above, on the solid brand fill */ }
+  /* Compact: the agenda and the recap, where the point IS the whole line. */
+  .ns-slide__points--tight { gap: calc(var(--slide-gap) * 0.55); }
+  /* Two columns for a ten-item agenda, which is the one list that legitimately
+     runs long — it is a contents page, not an argument. */
+  .ns-slide__points--split { grid-template-columns: 1fr 1fr; column-gap: calc(var(--slide-gap) * 1.4); }
+  /* The one being covered right now. Same aria-current the nav and the lesson
+     row use, so "current" is one idea across the system.
+
+     On the AGENDA slide the deck comes back to between modules, --current
+     dims what is done and what is still ahead so the one being started is the
+     only thing at full contrast. Everywhere else, leave it off: a list where
+     five of six items are dimmed is a list nobody reads. */
+  .ns-slide__points--current .ns-slide__point { opacity: var(--opacity-press); }
+  .ns-slide__points--current .ns-slide__point[data-state="done"] { opacity: var(--opacity-disabled); }
+  .ns-slide__points--current .ns-slide__point[aria-current="true"] { opacity: 1; }
+  .ns-slide__point[aria-current="true"] .ns-slide__point-title { color: var(--color-brand-600); }
+  .ns-slide--dark .ns-slide__point[aria-current="true"] .ns-slide__point-title { color: var(--color-brand-300); }
+  .ns-slide__point[data-state="done"] .ns-slide__point-index { color: var(--color-success-ink); }
+
+  /* --- The big number / the big word ---------------------------------------
+     One fact, at poster size. This is the slide that survives a photograph
+     taken from the back row, and the only one allowed to use --size-mega. */
+  .ns-slide__figure-value {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--slide-figure);
+    font-weight: var(--weight-heading);
+    line-height: var(--leading-mega);
+    letter-spacing: var(--tracking-mega);
+    color: var(--color-brand-500);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-slide--dark .ns-slide__figure-value { color: var(--color-brand-300); }
+  .ns-slide--brand .ns-slide__figure-value { color: var(--color-on-brand); }
+
+  /* --- A grid of anything --------------------------------------------------
+     Cards, statblocks, logos, screenshots. data-cols is the only knob; below
+     the tablet breakpoint every one of them becomes a single column, because
+     a four-up grid rendered 90px wide on a phone is four unreadable columns. */
+  .ns-slide__grid { display: grid; gap: calc(var(--slide-gap) * 0.9); align-content: start; }
+  .ns-slide__grid[data-cols="2"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ns-slide__grid[data-cols="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ns-slide__grid[data-cols="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .ns-slide__grid--fill { align-content: stretch; block-size: 100%; }
+
+  /* --- A framed thing ------------------------------------------------------
+     A screenshot, an embedded demo, a chart. The frame is a hairline and a
+     sunken ground: the picture is the content, so the container must not
+     compete with it. object-fit: contain, never cover — a cropped screenshot
+     is a screenshot with the part you were pointing at cut off. */
+  .ns-slide__figure {
+    display: grid;
+    place-items: center;
+    min-block-size: 0;
+    block-size: 100%;
+    overflow: hidden;
+    background: var(--color-surface-sunken);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+  .ns-slide--dark .ns-slide__figure,
+  .ns-slide--brand .ns-slide__figure {
+    background: var(--color-on-dark-wash);
+    border-color: var(--color-on-dark-border);
+  }
+  .ns-slide__figure > img,
+  .ns-slide__figure > video,
+  .ns-slide__figure > svg {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: contain;
+  }
+  /* --bleed is the full-slide picture: no frame, and the image DOES fill. */
+  .ns-slide__figure--bleed { border: 0; border-radius: 0; background: var(--color-brand-900); }
+  .ns-slide__figure--bleed > img { object-fit: cover; }
+  .ns-slide__caption {
+    font-family: var(--font-mono);
+    font-size: var(--slide-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+
+  /* --- A drawn flow --------------------------------------------------------
+     Three to five boxes and the arrows between them: the architecture slide,
+     the "request goes here then here" slide, the POC diagram. Boxes, not a
+     picture, so it is text a screen reader reads and a translator translates —
+     and so it restyles with the theme instead of being a PNG of last year's
+     colours. */
+  .ns-slide__flow {
+    display: flex;
+    align-items: stretch;
+    gap: calc(var(--slide-gap) * 0.5);
+    flex-wrap: wrap;
+    /* A row of four boxes is short, and the body stacks from the top, so
+       without this the diagram sits under the heading with half a slide of
+       nothing beneath it. Auto margins centre it in whatever room is left. */
+    margin-block: auto;
+  }
+  .ns-slide__node {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    display: grid;
+    gap: var(--space-1-5);
+    align-content: start;
+    padding: calc(var(--slide-gap) * 0.55);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+  .ns-slide--dark .ns-slide__node,
+  .ns-slide--brand .ns-slide__node {
+    background: var(--color-on-dark-wash);
+    border-color: var(--color-on-dark-border);
+  }
+  /* The node the slide is about. The border brightens to brand — elevation is
+     a border, never a lift (Principle 1). */
+  .ns-slide__node[aria-current="true"] { border-color: var(--color-brand-500); box-shadow: var(--shadow-brand); }
+  .ns-slide__node-label {
+    font-family: var(--font-mono);
+    font-size: var(--slide-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-slide--dark .ns-slide__node-label,
+  .ns-slide--brand .ns-slide__node-label { color: var(--color-on-dark-border-hover); }
+  .ns-slide__node-title { font-weight: var(--weight-semibold); line-height: var(--leading-heading); }
+  .ns-slide__node-note { color: var(--color-muted); font-size: var(--slide-label); }
+  .ns-slide--dark .ns-slide__node-note { color: var(--color-on-dark); opacity: 0.7; /* lint-ok: on-dark muted */ }
+  /* The arrow between two nodes. aria-hidden in the markup — it is drawn
+     punctuation, and "right arrow right arrow" read aloud is noise. */
+  .ns-slide__arrow {
+    flex: 0 0 auto;
+    align-self: center;
+    color: var(--color-border);
+    font-size: var(--slide-lede);
+  }
+  .ns-slide--dark .ns-slide__arrow,
+  .ns-slide--brand .ns-slide__arrow { color: var(--color-on-dark-border-hover); }
+  .ns-slide__flow--stack { flex-direction: column; }
+  .ns-slide__flow--stack .ns-slide__arrow { transform: rotate(90deg); }
+
+  /* --- The hands-on timer --------------------------------------------------
+     "Try this for 10 minutes." A countdown the ROOM can see, so the exercise
+     ends because time ran out rather than because the presenter got bored.
+     deck.js drives it; with no JS it renders the starting duration, which is
+     still the information the slide is making. */
+  .ns-slide__timer {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--slide-big);
+    font-weight: var(--weight-heading);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
+  }
+  .ns-slide__timer[data-state="running"] { color: var(--color-brand-500); }
+  .ns-slide__timer[data-state="over"] { color: var(--color-error-ink); }
+  .ns-slide__timer-unit { font-size: var(--slide-label); color: var(--color-label); }
+
+  /* --- A question to the room ----------------------------------------------
+     A poll, a quick check, a quiz. The options are LABELLED (A/B/C), because
+     a room answering out loud needs a handle, and "the third one" is not one.
+     The answer is a <details>: the presenter opens it, and the handout has it
+     without a second slide. */
+  .ns-slide__options { display: grid; gap: calc(var(--slide-gap) * 0.35); }
+  .ns-slide__option {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: calc(var(--slide-gap) * 0.4);
+    align-items: center;
+    padding: calc(var(--slide-gap) * 0.35) calc(var(--slide-gap) * 0.5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-btn);
+    text-align: start;
+  }
+  .ns-slide--dark .ns-slide__option { border-color: var(--color-on-dark-border); }
+  .ns-slide__option-key {
+    display: grid;
+    place-items: center;
+    inline-size: 2.2em;
+    block-size: 2.2em;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: var(--slide-label);
+    font-weight: var(--weight-label);
+    color: var(--color-label);
+  }
+  .ns-slide--dark .ns-slide__option-key { border-color: var(--color-on-dark-border); color: var(--color-on-dark); }
+  .ns-slide__option[data-state="correct"] { border-color: var(--color-success); }
+  .ns-slide__option[data-state="correct"] .ns-slide__option-key { border-color: var(--color-success); color: var(--color-success-ink); }
+  .ns-slide__answer { font-size: var(--slide-text); }
+  .ns-slide__answer > summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--slide-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-brand-600);
+  }
+  .ns-slide__answer > summary::-webkit-details-marker { display: none; }
+  .ns-slide__answer > summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-slide--dark .ns-slide__answer > summary { color: var(--color-brand-300); }
+  .ns-slide__answer[open] > summary { margin-block-end: var(--space-2); }
+
+  /* --- The presenter note --------------------------------------------------
+     What to SAY, kept with the slide it belongs to rather than in a separate
+     document that goes stale by the second rehearsal. Never rendered on the
+     slide; deck.js collects these into the notes drawer, and the handout can
+     print them under each slide. */
+  .ns-slide__note { display: none; }
+  .ns-deck[data-notes="print"] .ns-slide__note { display: block; }
+
+  /* ======================================= borrowed components ====
+     A slide is mostly OTHER components — that is the design. But those
+     components are sized for a page, in rem, and a slide is sized in
+     container units. Left alone, .ns-code on a 4K projector renders at
+     exactly 13px, and the same block in a 15rem overview thumbnail renders at
+     exactly 13px too — enormous, and legible in neither place.
+
+     So the deck re-tunes the type scale of what it borrows, and nothing else:
+     no colour, no border, no spacing, no behaviour. The component is still
+     the component; it has been told how big the room is.
+
+     Anything not listed here inherits --slide-text from .ns-slide__body,
+     which is the correct default for the rest. */
+  /* Code sits a notch under the slide's body size. Mono at the same size as
+     the prose around it always reads larger — and a slide's code lines are
+     the thing most likely to run off the right edge, so the notch buys back
+     about eight characters of line length. */
+  .ns-slide .ns-code { --code-size: calc(var(--slide-text) * 0.82); min-block-size: 0; max-block-size: 100%; }
+  /* A code block given the column's full height has to give that height to
+     its body, or the frame is the right size and the code inside it is not.
+     It scrolls rather than clips: a slide quietly hiding its last two lines
+     is worse than one that admits it has too much code on it. */
+  .ns-slide .ns-code__body { flex: 1; min-block-size: 0; }
+  .ns-slide .ns-code__pre { overflow: auto; }
+  .ns-slide .ns-quote blockquote { font-size: var(--slide-lede); }
+  .ns-slide .ns-quote figcaption { font-size: var(--slide-label); }
+  .ns-slide .ns-statblock__figure { font-size: var(--slide-figure); }
+  .ns-slide .ns-statblock__label { font-size: var(--slide-text); }
+  .ns-slide .ns-statblock__source { font-size: var(--slide-label); }
+  .ns-slide .ns-card__title { font-size: var(--slide-text); }
+  .ns-slide .ns-card__text,
+  .ns-slide .ns-compare__side ul,
+  .ns-slide .ns-checklist,
+  .ns-slide .ns-timeline__title,
+  .ns-slide .ns-timeline__text { font-size: var(--slide-text); }
+  .ns-slide .ns-takeaway__text { font-size: var(--slide-lede); }
+  .ns-slide .ns-checklist li { font-size: var(--slide-text); }
+  .ns-slide .ns-card__kicker,
+  .ns-slide .ns-compare__title,
+  .ns-slide .ns-takeaway__label,
+  .ns-slide .ns-timeline__time,
+  .ns-slide .ns-chip,
+  .ns-slide .ns-tag,
+  .ns-slide .ns-badge { font-size: var(--slide-label); }
+  /* A code block's own chrome — the filename, the tabs, the copy button —
+     is set in rem like the rest of the component, which leaves a legible
+     tab strip sitting over illegible code in a thumbnail. The glyphs go to
+     1em so they follow whatever the label just became. */
+  .ns-slide .ns-code__file,
+  .ns-slide .ns-code__tab,
+  .ns-slide .ns-code__btn,
+  .ns-slide .ns-code__lang,
+  .ns-slide .ns-code__meta,
+  .ns-slide .ns-code__status { font-size: var(--slide-label); }
+  .ns-slide .ns-code__file i,
+  .ns-slide .ns-code__tab i,
+  .ns-slide .ns-code__btn i { font-size: 1em; }
+  /* A button on a slide is almost never pressed — it is a picture of the
+     action the room should take next. It still has to be a real button (the
+     handout is a web page and the link must work), so only its type scales. */
+  .ns-slide .ns-btn { font-size: var(--slide-label); }
+  /* The slide's one action. justify-self keeps it the width of its label
+     rather than the width of the column, and the auto top margin drops it to
+     the foot of whatever it is in — so "Continue the course" sits at the
+     bottom of the closing slide instead of tucked under the lede. */
+  .ns-slide__action { justify-self: start; margin-block-start: auto; }
+
+  /* ==================================================== the fragments ====
+     Progressive reveal. A slide with six bullets is a slide the room finished
+     reading before the first sentence; revealing them in order is the single
+     biggest thing a deck runtime does for teaching.
+
+     Contract: [data-fragment] starts hidden-but-laid-out — dimmed, not
+     display:none — so nothing MOVES when it appears. A reveal that reflows the
+     slide is a reveal that makes everyone find their place again. */
+  .ns-slide [data-fragment] {
+    opacity: 0;
+    transition: opacity var(--duration-base) var(--ease-out);
+  }
+  .ns-slide [data-fragment][data-shown] { opacity: 1; }
+  /* Outside present mode — the handout, the overview, print — every fragment
+     is simply there. A handout with half its content invisible is not a
+     handout. */
+  .ns-deck:not([data-mode="present"]) .ns-slide [data-fragment] { opacity: 1; }
+
+  /* ======================================================== the chrome ====
+     Presenter controls. All of it lives OUTSIDE the slide: it must not appear
+     in an export, a thumbnail or a printed handout, and a control drawn on the
+     slide would. */
+  .ns-deck__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-surface);
+    border-block-start: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deck[data-mode="scroll"] .ns-deck__bar { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
+  .ns-deck__deckname {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .ns-deck__count { font-variant-numeric: tabular-nums; color: var(--color-ink); }
+  .ns-deck__count b { font-weight: var(--weight-semibold); }
+  .ns-deck__tools { display: flex; align-items: center; gap: var(--space-2); margin-inline-start: auto; }
+  /* The progress hairline. 2px across the foot of the deck, driven by --p —
+     the same control the course bar uses for a course, here for a talk. */
+  .ns-deck__rail {
+    position: relative;
+    block-size: 2px;
+    inline-size: 100%;
+    background: var(--color-border);
+    overflow: hidden;
+  }
+  .ns-deck__rail > span {
+    display: block;
+    block-size: 100%;
+    inline-size: var(--p, 0%);
+    background: var(--color-brand-500);
+    transition: inline-size var(--duration-base) var(--ease-out);
+  }
+
+  /* --- The overview --------------------------------------------------------
+     Press G. Every slide as a live thumbnail — real slides at 1/6 scale, not
+     screenshots, because the container-unit scale means they simply work —
+     so "jump to the architecture one" is a glance rather than forty presses
+     of the right arrow. */
+  .ns-deck__overview {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-overlay);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    background: var(--color-surface);
+  }
+  .ns-deck__overview[hidden] { display: none; }
+  .ns-deck__overview-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-block-end: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deck__thumbs {
+    overflow: auto;
+    padding: var(--space-5);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--gap-grid);
+  }
+  .ns-deck__thumb {
+    display: grid;
+    gap: var(--space-2);
+    text-align: start;
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+    color: inherit;
+  }
+  .ns-deck__thumb-frame {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-deck__thumb[aria-current="true"] .ns-deck__thumb-frame { border-color: var(--color-brand-500); box-shadow: var(--shadow-brand); }
+  .ns-deck__thumb:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-deck__thumb:hover .ns-deck__thumb-frame { border-color: var(--color-brand-400); }
+  /* The cloned slide has no aria-current — it is a copy, not the current
+     slide — so the present-mode rule three hundred lines up would hide every
+     thumbnail. It has to be re-shown HERE, and sized to the frame rather than
+     to the stage: the clone is not on the stage and 100cqb means nothing to
+     it. This is the whole reason the type scale is container-relative; the
+     thumbnail is the same slide, six times smaller, for free.
+
+     Its contents are decoration for the label beneath it: a miniature slide
+     is not something anyone clicks inside. */
+  .ns-deck[data-mode="present"] .ns-deck__thumb-frame .ns-slide,
+  .ns-deck__thumb-frame .ns-slide {
+    display: block;
+    inline-size: 100%;
+    max-block-size: none;
+    border: 0; border-radius: 0;
+    pointer-events: none;
+  }
+  .ns-deck__thumb-meta {
+    display: flex;
+    gap: var(--space-2);
+    align-items: baseline;
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deck__thumb-title {
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--size-small);
+    letter-spacing: normal;
+    text-transform: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* --- The notes drawer ----------------------------------------------------
+     Press N. What to say for the current slide, plus what is coming next —
+     "next: the governor limits slide" is the single most useful thing a
+     presenter display shows, and the reason speaker notes exist at all. */
+  .ns-deck__notes {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-end: 0;
+    inline-size: min(26rem, 100%);
+    z-index: var(--z-dropdown);
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    background: var(--color-surface-raised);
+    border-inline-start: 1px solid var(--color-border);
+  }
+  .ns-deck__notes[hidden] { display: none; }
+  .ns-deck__notes-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deck__notes-body { overflow: auto; padding: var(--space-4); display: grid; gap: var(--space-4); font-size: var(--size-body); line-height: var(--leading-body); }
+  .ns-deck__notes-next {
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: var(--size-small);
+  }
+  .ns-deck__notes-next b { display: block; font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); font-weight: var(--weight-label); }
+
+  /* --- The shortcut card ---------------------------------------------------
+     Press ?. Every runtime that has shortcuts and does not say what they are
+     has no shortcuts. */
+  .ns-deck__help {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-overlay);
+    display: grid;
+    place-items: center;
+    padding: var(--space-6);
+    background: var(--color-scrim);
+  }
+  .ns-deck__help[hidden] { display: none; }
+  .ns-deck__help-card {
+    inline-size: min(28rem, 100%);
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+  }
+  .ns-deck__help-row { display: flex; align-items: center; gap: var(--space-3); justify-content: space-between; font-size: var(--size-small); }
+
+  /* =================================================== small screens ====
+     A phone is not a projector. Present mode on one is a 16:9 letterbox with
+     eight lines of 9px text, so below the tablet breakpoint the deck stops
+     pretending: it becomes the scrolling handout, which is what a person who
+     opened your deck link on a phone actually wants. */
+  @media (max-width: 47.999rem) {
+    .ns-deck[data-mode="present"] { block-size: auto; overflow: visible; }
+    .ns-deck[data-mode="present"] .ns-deck__stage {
+      container-type: normal;
+      display: grid;
+      gap: var(--gap-grid);
+      padding: var(--space-5) var(--gutter);
+    }
+    .ns-deck[data-mode="present"] .ns-slide { display: block; inline-size: 100%; max-block-size: none; }
+    .ns-deck[data-mode="present"] .ns-slide [data-fragment] { opacity: 1; }
+    /* Slides stop being 16:9 frames here, so the container-unit scale stops
+       being right: 4.2cqi of a 360px phone is a 15px heading. Below md the
+       deck simply uses the page's own type tokens, like every other card in
+       the system. */
+    .ns-slide {
+      aspect-ratio: auto;
+      min-block-size: 60vh;
+      --slide-pad: var(--space-6);
+      --slide-gap: var(--space-5);
+      --slide-label: var(--size-label);
+      --slide-text: var(--size-body);
+      --slide-lede: var(--size-body-lg);
+      --slide-title: var(--size-h3);
+      --slide-big: var(--size-h2);
+      --slide-figure: var(--size-display);
+    }
+    .ns-slide__rule { inline-size: var(--space-8); }
+    .ns-slide__aside { inline-size: auto; }
+    .ns-slide--split .ns-slide__body,
+    .ns-slide--aside .ns-slide__body,
+    .ns-slide__points--split { grid-template-columns: minmax(0, 1fr); }
+    .ns-slide__grid[data-cols="2"],
+    .ns-slide__grid[data-cols="3"],
+    .ns-slide__grid[data-cols="4"] { grid-template-columns: minmax(0, 1fr); }
+    .ns-slide__flow { flex-direction: column; }
+    .ns-slide__flow .ns-slide__arrow { transform: rotate(90deg); }
+    .ns-slide__aside { padding-inline-start: 0; border-inline-start: 0; padding-block-start: var(--space-4); border-block-start: 1px solid var(--color-border); }
+    .ns-deck__notes { inset-block-start: auto; inline-size: 100%; max-block-size: 60dvh; border-inline-start: 0; border-block-start: 1px solid var(--color-border); }
+  }
+
+  /* ========================================================== print ====
+     One slide per landscape page, borders and tones preserved. This is the
+     handout and the PDF export — the two things a deck is actually shared as
+     once the talk is over, and the reason none of the presenter chrome is
+     drawn on the slide. */
+  @media print {
+    .ns-deck__bar,
+    .ns-deck__rail,
+    .ns-deck__overview,
+    .ns-deck__notes,
+    .ns-deck__help { display: none; }
+    .ns-deck,
+    .ns-deck[data-mode="present"] { block-size: auto; overflow: visible; display: block; background: none; }
+    .ns-deck[data-mode="present"] .ns-deck__stage { container-type: normal; display: block; padding: 0; }
+    .ns-deck[data-mode="present"] .ns-slide,
+    .ns-deck[data-mode="present"] .ns-slide[aria-current="true"] { display: block; }
+    .ns-slide {
+      inline-size: 100%;
+      max-block-size: none;
+      break-after: page;
+      border-radius: 0;
+      box-shadow: none;
+      border: 0;
+    }
+    .ns-slide [data-fragment] { opacity: 1; }
+  }
+
+  /* =============================================== reduced motion ====
+     The fragment reveal is the only motion here, and its final state is the
+     correct rendering — so flattening it leaves a complete slide rather than
+     an empty one. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-slide [data-fragment],
+    .ns-deck__rail > span { transition: none; }
+  }
+}

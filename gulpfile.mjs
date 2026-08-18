@@ -47,6 +47,10 @@ export const check = gulp.series(
      so it runs before build-css and cannot pass on a stale dist/. */
   run("check-cascade.mjs"),
   run("check-components.mjs"),
+  /* The icon subset. It does not fail the build yet — see the header in
+     scripts/check-icons.mjs — but a missing glyph is an INVISIBLE control, and
+     the only way that gets noticed is if the build says so every time. */
+  run("check-icons.mjs"),
   run("check-palette.mjs"),
   run("build-css.mjs", "--check"),
 );

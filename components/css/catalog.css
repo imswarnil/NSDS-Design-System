@@ -184,6 +184,57 @@
   .ns-outcomes--plain i { color: var(--color-label); }
   .ns-outcomes--single { grid-template-columns: minmax(0, 1fr); }
 
+  /* --- Cards: the shape for the top of a course page ----------------------
+     The tick list above is right INSIDE a page — under a heading, among
+     prose, where it reads as a list because that is what it is. It is wrong
+     as the first thing a visitor meets: "what will I be able to do" is the
+     question they arrived with, and four lines of body text with identical
+     ticks is the least answerable-looking way to put four answers on a screen.
+
+     So the same content gets boxed, spaced and given the glyph at a size you
+     can actually see. Each promise takes the icon of the THING it produces —
+     a trigger, an error, a query, a deploy — because four distinct glyphs can
+     be scanned and four identical ticks have to be read.
+
+     Still one <ul> of <li>s: the shape changed, the semantics did not. */
+  .ns-outcomes--cards {
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--gap-grid, var(--space-4));
+  }
+  .ns-outcomes--cards li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    font-size: var(--size-small); line-height: var(--leading-body);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-outcomes--cards li:hover { border-color: var(--color-brand-300); }
+  /* The glyph gets a plate rather than floating loose in the corner: at this
+     size a bare icon on a white card reads as a stray mark, and the plate is
+     what makes it deliberate. Brand-tinted, not filled — Principle 3 keeps
+     solid blue for the one action, and this is not an action. */
+  .ns-outcomes--cards i {
+    display: grid; place-items: center;
+    inline-size: var(--space-10); block-size: var(--space-10);
+    margin-block-start: 0;
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-brand-500) 10%, transparent);
+    color: var(--color-brand-600); font-size: var(--size-h3);
+  }
+  [data-theme="dark"] .ns-outcomes--cards i {
+    background: color-mix(in srgb, var(--color-brand-300) 14%, transparent);
+    color: var(--color-brand-300);
+  }
+  /* The first line of each card, when a promise has a short name and a longer
+     explanation. Without it the card is one paragraph, which is fine — this
+     is the opt-in, not the requirement. */
+  .ns-outcomes__title {
+    display: block; font-size: var(--size-body); font-weight: var(--weight-semibold);
+    color: var(--color-ink); margin-block-end: var(--space-1);
+  }
+
   /* --- Prerequisites ------------------------------------------------------
      The other half of "what you will learn", and the half that gets left out:
      what you need BEFORE this course. Written as a checklist the reader can

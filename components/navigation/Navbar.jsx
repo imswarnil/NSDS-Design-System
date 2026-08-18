@@ -533,9 +533,9 @@ export function NavStat({ icon, value, children }) {
  *  Unlike the blog's reading line, `percent` is labelled and announced —
  *  this is a number the learner acts on, not decoration. */
 export function CourseNav({
-  backHref = "#", backLabel, kicker, title,
+  backHref = "#", backLabel, title,
   percent = 0, position, dark,
-  onPrev, onNext, nextLabel = "Complete & next",
+  onPrev, searchHref,
   actions, children,
 }) {
   return (
@@ -547,13 +547,14 @@ export function CourseNav({
 
       <span className="ns-topnav__divider" aria-hidden="true" />
 
+      {/* The LESSON, and only the lesson: the back button and the divider to
+          its left already say the course, so the bar reads "Course | Lesson"
+          across the two. */}
       <span className="ns-coursenav__id">
-        {kicker && <span className="ns-coursenav__kicker">{kicker}</span>}
         <span className="ns-coursenav__title">{title}</span>
       </span>
 
       <div className="ns-coursenav__progress">
-        <span className="ns-coursenav__pct">{percent}%</span>
         <div
           className="ns-coursenav__bar"
           role="progressbar"
@@ -572,11 +573,17 @@ export function CourseNav({
         {onPrev && <NavIcon label="Previous lesson" onClick={onPrev} icon={<i className="ph ph-caret-left" aria-hidden="true" />} />}
         {actions}
         {children}
-        {onNext && (
-          <button type="button" className="ns-btn ns-btn--primary ns-btn--sm" onClick={onNext}>
-            <i className="ph ph-check" aria-hidden="true" />
-            <span className="ns-coursenav__next-label">{nextLabel}</span>
-          </button>
+        {/* NO primary action. "Complete & next" used to live here, which put
+            the same action in two places — the docked prev/next at the foot of
+            the lesson is where you finish one, and a second solid blue button
+            in the chrome competes for the single click the screen is allowed.
+            searchHref renders a LINK, not a dialog trigger: search here is a
+            way out to the rest of the site, and middle-click should work. */}
+        {searchHref && (
+          <a className="ns-navicon ns-tooltip-host" href={searchHref} aria-label="Search the site">
+            <i className="ph ph-magnifying-glass" aria-hidden="true" />
+            <span className="ns-tooltip ns-tooltip--below">Search</span>
+          </a>
         )}
       </div>
     </nav>

@@ -599,43 +599,107 @@
 
      The visible track is 1.5rem tall; the BUTTON is --target-comfy, so the
      hit area is a full control even though the switch reads as small. */
+  /* --- The theme control --------------------------------------------------
+     ONE button, and the sun MORPHS into the moon in place.
+
+     It used to be a track with a knob sliding along it, carrying a glyph. Two
+     problems, and the second is the one that matters. The glyphs were ph-sun
+     and ph-moon, neither of which is in the icon subset, so the knob was empty
+     in both states — a switch with no indicator at all. And a sliding track is
+     the wrong metaphor here anyway: it says "setting with two positions", when
+     what the reader wants to know is which mode they are in and how to leave
+     it. A sun that becomes a moon says both in one shape.
+
+     Drawn, not set: one disc; a second disc the colour of the surface slides
+     across it to bite a crescent; the rays are four box-shadows that retract
+     as it goes. ONE element animating three properties, so the change is a
+     single continuous movement rather than two things fading past each other —
+     and it needs no font at all. */
   .ns-themeswitch {
     position: relative; flex: none;
-    inline-size: var(--space-10); block-size: var(--target-comfy);
-    padding: 0; border: 0; background: transparent; cursor: pointer;
-  }
-  .ns-themeswitch::before {
-    content: ""; position: absolute; inset-inline: 0;
-    inset-block: calc((var(--target-comfy) - var(--space-6)) / 2);
-    border-radius: var(--radius-pill);
-    background: var(--color-surface-sunken); border: 1px solid var(--color-border);
-    transition: background-color var(--duration-base) var(--ease-out),
-                border-color var(--duration-fast) var(--ease-out);
-  }
-  .ns-themeswitch:hover::before { border-color: var(--color-brand-300); }
-  .ns-themeswitch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); border-radius: var(--radius-pill); }
-  .ns-themeswitch__knob {
-    position: absolute;
-    inset-block-start: calc((var(--target-comfy) - var(--space-5)) / 2);
-    inset-inline-start: var(--space-0-5);
-    inline-size: var(--space-5); block-size: var(--space-5);
+    inline-size: var(--target-comfy); block-size: var(--target-comfy);
     display: inline-flex; align-items: center; justify-content: center;
+    padding: 0; border: 1px solid transparent; border-radius: var(--radius-btn);
+    background: transparent; color: var(--color-muted); cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-themeswitch:hover { border-color: var(--color-border); background: var(--color-surface-sunken); }
+  .ns-themeswitch:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Sized so the WHOLE sun — disc plus rays — is about half the button. The
+     disc alone used to be --space-3, which put the ray ring at 1.8rem inside a
+     2.5rem target: a sun crowding its own edges rather than sitting in them.
+     The disc drives everything below (the rays are a percentage of it), so
+     this one value is the sun's size. */
+  .ns-themeswitch__mark {
+    position: relative; display: block;
+    inline-size: var(--space-2-5); block-size: var(--space-2-5);
     border-radius: var(--radius-pill);
-    background: var(--color-surface); border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-card);
-    transition: translate var(--duration-base) var(--ease-out);
+    background: var(--color-brand-500);
+    transition: background-color var(--duration-base) var(--ease-out),
+                rotate var(--duration-base) var(--ease-out),
+                scale var(--duration-base) var(--ease-out);
   }
-  [data-theme="dark"] .ns-themeswitch__knob { translate: var(--space-4) 0; }
-  .ns-themeswitch__knob i {
-    position: absolute; font-size: var(--size-label); line-height: 1;
-    color: var(--color-brand-600);
-    transition: opacity var(--duration-base) var(--ease-out), rotate var(--duration-base) var(--ease-out);
+  /* EIGHT REAL RAYS. They were four box-shadows, which are round dots — a sun
+     drawn with dots reads as a loading spinner. A repeating conic gradient
+     masked to an annulus gives eight tapered wedges radiating from the disc,
+     which is what a sun actually looks like, and it is still one element with
+     no extra DOM. The `from` angle offsets them so a ray points straight up.
+     They rotate as they retract, so the change is a turn rather than a fade. */
+  .ns-themeswitch__mark::before {
+    content: ""; position: absolute; inset: -60%;
+    border-radius: var(--radius-pill);
+    background: repeating-conic-gradient(
+      from -3.5deg,
+      var(--color-brand-500) 0deg 7deg,
+      transparent 7deg 45deg);
+    /* The inner cut leaves a hairline of clear space between the disc and the
+       rays — without it they fuse into a cog. */
+    mask: radial-gradient(circle, transparent 0 56%, #000 57%); /* lint-ok: a mask alpha channel, not a themed colour */
+    transition: opacity var(--duration-base) var(--ease-out),
+                rotate var(--duration-base) var(--ease-out),
+                scale var(--duration-base) var(--ease-out);
   }
-  .ns-themeswitch .ph-moon { opacity: 0; rotate: -90deg; }
-  [data-theme="dark"] .ns-themeswitch .ph-sun { opacity: 0; rotate: 90deg; }
-  [data-theme="dark"] .ns-themeswitch .ph-moon { opacity: 1; rotate: 0deg; color: var(--color-brand-300); }
-  .ns-topnav--dark .ns-themeswitch::before, .ns-topnav--transparent .ns-themeswitch::before {
-    background: var(--color-on-dark-wash); border-color: var(--color-on-dark-border);
+  /* The biter: parked off-disc in light mode, slid over it in dark. Its colour
+     has to match whatever is BEHIND the mark, which is why it is a surface
+     token and why the dark bar overrides it below. */
+  .ns-themeswitch__mark::after {
+    content: ""; position: absolute; inset: 0;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    translate: -100% -40%;
+    transition: translate var(--duration-base) var(--ease-out),
+                background-color var(--duration-base) var(--ease-out);
+  }
+  .ns-themeswitch:hover .ns-themeswitch__mark::after { background: var(--color-surface-sunken); }
+
+  /* Dark: the rays retract and turn, the disc grows a little and tips, and the
+     crescent closes. One movement. */
+  [data-theme="dark"] .ns-themeswitch__mark {
+    background: var(--color-brand-300);
+    rotate: -20deg; scale: 1.05;
+  }
+  [data-theme="dark"] .ns-themeswitch__mark::before { opacity: 0; scale: 0.5; rotate: 45deg; }
+  [data-theme="dark"] .ns-themeswitch__mark::after { translate: 34% -32%; }
+
+  .ns-topnav--dark .ns-themeswitch, .ns-topnav--transparent .ns-themeswitch,
+  .ns-coursenav--dark .ns-themeswitch { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-themeswitch:hover, .ns-topnav--transparent .ns-themeswitch:hover,
+  .ns-coursenav--dark .ns-themeswitch:hover { background: var(--color-on-dark-wash); border-color: var(--color-on-dark-border); }
+  .ns-topnav--dark .ns-themeswitch__mark::after, .ns-topnav--transparent .ns-themeswitch__mark::after,
+  .ns-coursenav--dark .ns-themeswitch__mark::after { background: var(--color-brand-900); }
+  .ns-topnav--dark .ns-themeswitch:hover .ns-themeswitch__mark::after,
+  .ns-topnav--transparent .ns-themeswitch:hover .ns-themeswitch__mark::after,
+  .ns-coursenav--dark .ns-themeswitch:hover .ns-themeswitch__mark::after { background: var(--color-brand-800); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ns-themeswitch__mark,
+    .ns-themeswitch__mark::before,
+    .ns-themeswitch__mark::after { transition: none; }
   }
 
   /* The icon form: one button, sun and moon stacked in the same box so the
@@ -651,14 +715,13 @@
   }
   .ns-themetoggle-icon:hover { color: var(--color-ink); border-color: var(--color-brand-300); }
   .ns-themetoggle-icon:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
-  .ns-themetoggle-icon > i {
-    position: absolute; display: inline-flex;
-    transition: opacity var(--duration-base) var(--ease-out), rotate var(--duration-base) var(--ease-out);
-  }
-  .ns-themetoggle-icon .ph-sun { opacity: 1; rotate: 0deg; }
-  .ns-themetoggle-icon .ph-moon { opacity: 0; rotate: -90deg; }
-  [data-theme="dark"] .ns-themetoggle-icon .ph-sun { opacity: 0; rotate: 90deg; }
-  [data-theme="dark"] .ns-themetoggle-icon .ph-moon { opacity: 1; rotate: 0deg; }
+  /* Same drawn mark as the switch, for the same reason: the icon subset has
+     neither a sun nor a moon, so the crossfading glyph pair this used to be
+     was two empty elements fading past each other. One mark, one morph, and
+     the two theme controls are now visibly the same idea at two sizes. */
+  .ns-themetoggle-icon .ns-themeswitch__mark { background: currentColor; }
+  .ns-themetoggle-icon .ns-themeswitch__mark::after { background: var(--color-surface); }
+  [data-theme="dark"] .ns-themetoggle-icon .ns-themeswitch__mark { background: var(--color-brand-300); }
   .ns-topnav--dark .ns-themetoggle-icon, .ns-topnav--transparent .ns-themetoggle-icon {
     border-color: var(--color-on-dark-border); color: var(--color-on-dark);
   }
@@ -677,6 +740,8 @@
      Same shell as .ns-topnav (sticky, one hairline, --navbar-h) so the two
      bars are visibly the same object with a different payload. */
   .ns-coursenav {
+    /* position:relative comes free with sticky, and the full-width progress
+       line below is absolutely positioned against it. */
     position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
     display: flex; align-items: center; gap: var(--space-4);
     block-size: var(--navbar-h); padding-inline: var(--space-4);
@@ -695,29 +760,37 @@
   .ns-coursenav__back:hover { color: var(--color-ink); background: var(--color-surface-sunken); }
   .ns-coursenav__back:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
 
-  /* Identity: mono position line above, lesson title below. The position is
-     mono because it is data — "07 / 24" is a coordinate, not a sentence. */
-  .ns-coursenav__id { min-inline-size: 0; display: flex; flex-direction: column; justify-content: center; }
-  .ns-coursenav__kicker {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label); white-space: nowrap;
-  }
+  /* Identity: the LESSON, and only the lesson. The course name is already the
+     back button an inch to the left with a divider between them, so the bar
+     reads "Apex fundamentals | SOQL joins: relationships" across the two — and
+     the mono "Lesson 07 / 24" line that used to sit above it was a third
+     coordinate on a bar that already had the progress meter and the rail. */
+  /* Capped, so the progress beside it gets the slack rather than the title
+     growing to fill the bar and pushing the meter into the actions. */
+  .ns-coursenav__id { min-inline-size: 0; flex: 0 1 auto; max-inline-size: 24rem; display: flex; align-items: center; }
   .ns-coursenav__title {
     font-size: var(--size-small); font-weight: var(--weight-medium); color: var(--color-ink);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
 
-  /* Course completion, inline. A 2px rule and a mono percentage — the same
-     measure device as the reading-progress line, but here it is information
-     the learner acts on, so it is labelled and announced. */
+  /* --- Course completion --------------------------------------------------
+     FULL WIDTH, along the bar's own bottom edge, where the blog bar puts its
+     reading line — so "how far through am I" is one device across the whole
+     product rather than a different widget per surface.
+
+     It used to be a 22rem meter floating in the middle of the bar, which cost
+     a third of the width to say what three pixels say, and it was repeated at
+     the foot of the rail besides. Along the edge it costs NO width at all: the
+     bar is already there. The fraction stays, as text, beside the avatar.
+
+     It is a real progressbar rather than a decoration, because unlike the
+     blog's reading line this is a number the learner acts on. */
   .ns-coursenav__progress {
-    flex: 1; min-inline-size: 0;
+    flex: 1 1 auto; min-inline-size: var(--space-16);
     display: flex; align-items: center; gap: var(--space-3);
-    max-inline-size: 22rem; margin-inline: auto;
   }
   .ns-coursenav__bar {
-    flex: 1; min-inline-size: 0; block-size: 2px;
+    flex: 1; min-inline-size: 0; block-size: 4px;
     background: var(--color-border); border-radius: var(--radius-pill); overflow: hidden;
   }
   .ns-coursenav__bar > span {
@@ -726,13 +799,17 @@
     transition: inline-size var(--duration-base) var(--ease-out);
   }
   .ns-coursenav__pct {
-    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label); color: var(--color-label);
+    flex: none; font-size: var(--size-label); font-weight: var(--weight-medium);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
   }
-  .ns-coursenav__actions { flex: none; margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-2); }
+  .ns-coursenav__actions { flex: none; display: flex; align-items: center; gap: var(--space-2); }
+  /* The rail toggle is NOT here. It belongs to the rail, and it lives in the
+     rail's own head (.ns-player__side-head) — a control for a panel should be
+     attached to the panel rather than parked at the far end of the chrome.
+     The bar's job is where-am-I and what-next; the panel manages itself. */
   .ns-coursenav--dark { background: var(--color-brand-900); border-block-end-color: color-mix(in srgb, var(--color-on-dark) 15%, transparent); }
   .ns-coursenav--dark .ns-coursenav__title { color: var(--color-on-brand); }
-  .ns-coursenav--dark .ns-coursenav__back, .ns-coursenav--dark .ns-coursenav__kicker,
+  .ns-coursenav--dark .ns-coursenav__back,
   .ns-coursenav--dark .ns-coursenav__pct { color: var(--color-on-dark); }
   .ns-coursenav--dark .ns-coursenav__back:hover { background: var(--color-on-dark-wash); color: var(--color-on-brand); }
   .ns-coursenav--dark .ns-coursenav__bar { background: var(--color-on-dark-border); }
@@ -877,16 +954,17 @@
      inline progress meter (it is repeated above the curriculum rail), then
      the mono position line. The lesson title and Next never go. */
   @media (max-width: 47.999rem) {
-    .ns-coursenav__back span, .ns-coursenav__progress { display: none; }
-    .ns-coursenav__next-label { display: none; }
+    /* The meter is the first thing out: below 48rem there is not enough width
+       for a bar that means anything, and the fraction says the same thing in
+       four characters. The back button's word goes with it. */
+    .ns-coursenav__back span, .ns-coursenav__bar { display: none; }
   }
 
   /* Motion: the panels and the burger all animate. Honour the OS setting —
      Principle 5 says motion is instant, and for some users it is zero. */
   @media (prefers-reduced-motion: reduce) {
     .ns-navmenu, .ns-megamenu, .ns-usermenu__panel, .ns-burger__bar,
-    .ns-themetoggle::before, .ns-themetoggle-icon > i,
-    .ns-themeswitch__knob, .ns-themeswitch__knob i,
+    .ns-themetoggle::before, .ns-themeswitch__mark, .ns-themeswitch__mark::after,
     .ns-topnav__progress, .ns-coursenav__bar > span {
       transition-duration: 1ms; /* lint-ok: the point of this block is to remove the duration, and 0 would cancel transitionend listeners */
     }

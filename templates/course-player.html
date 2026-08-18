@@ -10,59 +10,344 @@
               markup contract they implement.
     Static  → use directly.
 -->
-<!-- Two columns ≥ lg, stage-first single column below (player.css).
-     Slots: the media element in the stage, kicker/title/meta, prev/next
-     hrefs, and the rail's lesson rows (repeat .ns-lesson per lesson;
-     data-state="done|locked", aria-current="true" on the current one).
+<!-- THREE columns ≥ lg: curriculum | lesson | chapters. Course navigation on
+     the leading edge, page navigation on the trailing one — the same
+     arrangement templates/course-player-article.html uses, with timestamps in
+     the trailing rail where the written lesson puts headings.
 
-     --fixed locks the player to one viewport: the PAGE stops scrolling and
-     the two columns scroll independently inside it, so scrubbing never
-     pushes the stage off the top and a 40-lesson rail scrolls beside a
-     pinned frame. Set data-player="fixed" on <html> alongside it, or the
-     document scrolls behind the locked layout. Below lg it reverts to the
-     scrolling variant automatically — a viewport-locked two-pane layout on
-     a phone is a one-pane layout with the content amputated. -->
+     Slots: the video source on the .ns-vplayer (data-youtube / data-mux / a
+     <video src>), the breadcrumb, kicker/title/meta, the description, the tab
+     panels, the chapter list, prev/next hrefs, and the rail's lesson rows
+     (repeat .ns-lesson per lesson; data-state="done", data-access="members"
+     for locked, aria-current="true" on the current one).
+
+     The player locks to ONE viewport: the PAGE stops scrolling and the lesson
+     column scrolls inside it, so scrubbing never pushes the stage off the top
+     and a 40-lesson rail scrolls beside a pinned frame. Set data-player="fixed"
+     on <html> alongside it, or the document scrolls behind the locked layout.
+     It expects a bar of --navbar-h above it (templates/navbar-course.html).
+
+     BELOW lg it reverts to one scrolling column and sheds the rail entirely —
+     the lesson list lives in the panel at the foot, reachable from the panel
+     bar or from the course bar's curriculum toggle. A viewport-locked
+     three-pane layout on a phone is a one-pane layout with the content
+     amputated. -->
 <div class="ns-player" data-rail="open">
   <div class="ns-player__main">
-    <div class="ns-player__stage">
-      <!-- your <video> / <iframe> here. The poster below is the slot's
-           stand-in: aspect-ratio reserves the box before media loads, so the
-           page never jumps when metadata arrives. -->
-      <span class="ns-ph" aria-hidden="true"></span>
+    <!-- The way back to a collapsed rail. Hidden while the rail is open, so it
+         is never a second control competing with the one in the rail's head —
+         it is the other half of the same switch. -->
+    <button type="button" class="ns-navicon ns-player__railopen" aria-label="Show curriculum" aria-expanded="false" aria-controls="player-rail">
+      <i class="ph ph-sidebar" aria-hidden="true"></i>
+    </button>
+    <!-- Where this lesson sits. Two levels and the current page: a breadcrumb
+         that repeats the whole catalogue is a breadcrumb nobody reads. It is
+         inside the scrolling column rather than above the player, so it scrolls
+         away with the content — the standing way back is the arrow on the
+         course name in the rail, which never moves. -->
+    <nav class="ns-breadcrumb" aria-label="Breadcrumb">
+      <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/courses">Courses</a></span>
+      <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/courses/apex-fundamentals">Apex fundamentals</a></span>
+      <span class="ns-breadcrumb__item" aria-current="page">SOQL joins: relationships in queries</span>
+    </nav>
+
+    <!-- The lesson, and the list of places inside it — the same two-column
+         block the written lesson uses. There the trailing rail holds the
+         headings; here it holds the timestamps. Same shape, same edge, same
+         behaviour: a learner who moves from lesson 7 to lesson 8 should not
+         have to find the controls again.
+
+         The stage sits INSIDE this grid rather than spanning the whole
+         column, and that is what keeps the frame honest: a 16:9 box across a
+         full-width lesson column is 650px tall and pushes the title off the
+         screen. The page rail beside it is the constraint, so the video keeps
+         its exact ratio instead of being letterboxed into a height cap. -->
+    <div class="ns-player__reading">
+      <div>
+    <!-- The stage holds the system's own player rather than a bare iframe, so
+         the controls, the speed menu and the timestamps are the product's and
+         not three different vendors'. The source is one attribute:
+           data-youtube="ID"      an embed, driven through the IFrame API
+           data-mux="PLAYBACK_ID" an HLS stream (supply hls.js off Safari)
+           <video src="…">        a self-hosted file
+         data-chapters points at the chapter list further down the column —
+         the list is CONTENT, so it lives in the page where it can be read
+         without pressing play, and the player still drives it. -->
+    <div class="ns-player__stage ns-player__stage--player">
+      <div class="ns-vplayer" data-ns-video data-youtube="M7lc1UVf-VE"
+           data-title="SOQL joins: relationships in queries"
+           data-chapters="#lesson-chapters" data-state="paused">
+        <div class="ns-vplayer__stage">
+          <!-- The iframe is injected here by assets/js/video.js. A YouTube
+               embed cannot render without script, so for the no-JS case swap
+               data-youtube for a plain <video src> or ship the <noscript>
+               link to the lesson's own page; the chapter list below is
+               server-rendered either way and stays readable. -->
+          <button class="ns-vplayer__big" type="button" aria-label="Play the lesson"><i class="ph ph-play" aria-hidden="true"></i></button>
+        </div>
+        <!-- The bar is the product's, not the vendor's: one control surface
+             over a YouTube embed, a Mux stream or a self-hosted file. The
+             scrubber and the volume are real <input type="range">s, so
+             keyboard seeking, screen-reader announcement and touch behaviour
+             all come free — every custom div-based scrubber reimplements them
+             worse. -->
+        <div class="ns-vplayer__bar">
+          <button class="ns-vplayer__btn" type="button" data-ns-video-play aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
+          <span class="ns-vplayer__time" data-ns-video-current>0:00</span>
+          <!-- The chapter ticks are the same chapters as the list beside the
+               video, marked on the track they refer to. Decorative: the list
+               is the operable control, so these are aria-hidden and never the
+               only way to reach a chapter. --fx-at is the start time as a
+               percentage of the runtime. -->
+          <span class="ns-vplayer__scrub">
+            <input class="ns-vplayer__seek" type="range" min="0" max="100" value="0" aria-label="Seek">
+            <span class="ns-vplayer__ticks" aria-hidden="true">
+              <span class="ns-vplayer__tick" style="--fx-at:14%"></span>
+              <span class="ns-vplayer__tick" style="--fx-at:38%"></span>
+              <span class="ns-vplayer__tick" style="--fx-at:66%"></span>
+              <span class="ns-vplayer__tick" style="--fx-at:85%"></span>
+            </span>
+          </span>
+          <span class="ns-vplayer__time" data-ns-video-duration>21:15</span>
+          <!-- "CC" as TEXT, not a glyph: it is the one control whose label is already
+               universal, and the icon subset carries no captions glyph — a
+               button drawn with the wrong icon is worse than one drawn with the
+               right two letters. -->
+          <button class="ns-vplayer__btn ns-vplayer__btn--text" type="button" data-ns-video-cc aria-pressed="false" aria-label="Captions">CC</button>
+          <details class="ns-vplayer__menu">
+            <summary class="ns-vplayer__btn" aria-label="Playback speed"><i class="ph ph-gear-six" aria-hidden="true"></i></summary>
+            <div class="ns-vplayer__panel" role="group" aria-label="Playback speed">
+              <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="false" data-rate="0.75">0.75&times;</button>
+              <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="true" data-rate="1">Normal</button>
+              <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="false" data-rate="1.5">1.5&times;</button>
+              <button class="ns-vplayer__opt" type="button" role="radio" aria-checked="false" data-rate="2">2&times;</button>
+            </div>
+          </details>
+          <button class="ns-vplayer__btn" type="button" data-ns-video-fullscreen aria-label="Full screen"><i class="ph ph-arrow-up-right" aria-hidden="true"></i></button>
+        </div>
+      </div>
     </div>
     <header class="ns-player__head">
-      <p class="ns-player__kicker">
-        <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
-        lesson 07 of 12
-      </p>
       <h1 class="ns-player__title">SOQL joins: relationships in queries</h1>
-      <p class="ns-player__meta"><span>21:15</span><span>updated Jan 2026</span></p>
-      <!-- Per-lesson progress. Swap for --article (a hairline over the
-           reading column, data-target pointing at the article) or --quiz
-           (pips plus the score) when the lesson is not a video. -->
-      <div class="ns-lprogress ns-lprogress--video" style="--fx-progress:38%">
-        <span class="ns-lprogress__label">Video</span>
-        <span class="ns-lprogress__track">
-          <span class="ns-lprogress__fill"></span>
-          <span class="ns-lprogress__chapter" style="--fx-at:22%"></span>
-          <span class="ns-lprogress__chapter" style="--fx-at:55%"></span>
-        </span>
-        <span class="ns-lprogress__time">08:03 / 21:15</span>
-      </div>
+      <!-- THREE facts, not five. The row had grown to runtime, chapters,
+           level, transcript and updated — and three of those were already
+           somewhere else on the screen: the chapter count is the length of the
+           list in the rail, and "Transcript" is a tab two inches below. A meta
+           row that restates the page is a meta row people stop reading.
+
+           What is left is what you cannot get by looking: how long, how hard,
+           how fresh. Each is a glyph and a value, with the WORD deferred to
+           the tooltip — the same trick the lesson kinds use, and for the same
+           reason: the icon carries it at a glance and the word is there for
+           anyone the icon fails. -->
+      <p class="ns-player__meta">
+        <span class="ns-tooltip-host" tabindex="0"><i class="ph ph-clock" aria-hidden="true"></i> 21:15<span class="ns-tooltip ns-tooltip--below">Runtime</span></span>
+        <span class="ns-tooltip-host" tabindex="0"><i class="ph ph-gauge" aria-hidden="true"></i> Intermediate<span class="ns-tooltip ns-tooltip--below">Level</span></span>
+        <span class="ns-tooltip-host" tabindex="0"><i class="ph ph-arrows-clockwise" aria-hidden="true"></i> Jan 2026<span class="ns-tooltip ns-tooltip--below">Last updated</span></span>
+      </p>
     </header>
-    <!-- Prev/next by NAME. An arrow pair with no titles makes the learner
-         click to find out where they are going. -->
-    <nav class="ns-player__nav ns-lesson-nav ns-lesson-nav--split" aria-label="Lesson navigation">
+
+    <!-- What the lesson is about, before the tabs. A video page with no words
+         on it is a page a search engine cannot read and a learner cannot skim
+         — and "should I watch this?" is answered by two sentences far faster
+         than by pressing play. -->
+    <div class="ns-player__body">
+      <div class="ns-prose">
+        <p class="ns-lead">Two objects, one query. This lesson is the difference between walking <em>up</em> a relationship, which is free, and walking <em>down</em> it, which is not — and the rewrite that turns the second into the first.</p>
+      </div>
+      <aside class="ns-takeaway">
+          <span class="ns-takeaway__label">In short</span>
+          <p class="ns-takeaway__text">A child-to-parent join reads up the relationship and costs nothing extra; a parent-to-child subquery reads down it and counts against the row limit twice. Almost every slow SOQL query is the second one written where the first would do.</p>
+        </aside>
+    </div>
+
+    <!-- Everything the lesson carries besides the video, in one strip rather
+         than stacked down the column: the chapter list IS this lesson's table
+         of contents, and the transcript, the files and the discussion are the
+         three things a learner reaches for while the video is still playing.
+         Stacked, all four push the next-lesson control below three screens of
+         scroll; as tabs the column stays one screen deep.
+
+         Progressive: with JS off every panel is visible (assets/js/tabs.js
+         hides the inactive ones on init), so nothing is unreachable. -->
+    <div class="ns-player__body ns-player__body--wide">
+      <div class="ns-tabs" role="tablist" aria-label="Lesson details">
+        <button class="ns-tab" type="button" role="tab" id="lt-transcript" aria-controls="lp-transcript" aria-selected="true">
+          <i class="ph ph-article ns-tab__icon" aria-hidden="true"></i> Transcript
+        </button>
+        <button class="ns-tab" type="button" role="tab" id="lt-resources" aria-controls="lp-resources" aria-selected="false">
+          <i class="ph ph-folder-open ns-tab__icon" aria-hidden="true"></i> Resources <span class="ns-tab__count">3</span>
+        </button>
+        <button class="ns-tab" type="button" role="tab" id="lt-notes" aria-controls="lp-notes" aria-selected="false">
+          <i class="ph ph-note ns-tab__icon" aria-hidden="true"></i> Notes
+        </button>
+        <button class="ns-tab" type="button" role="tab" id="lt-qa" aria-controls="lp-qa" aria-selected="false">
+          <i class="ph ph-chats-circle ns-tab__icon" aria-hidden="true"></i> Q&amp;A <span class="ns-tab__count">12</span>
+        </button>
+      </div>
+
+      <!-- TRANSCRIPT — a definition list of time → speech. Server-rendered
+           text, so it is searchable in the page with Ctrl+F and indexable,
+           which is most of the reason to have one at all. -->
+      <div class="ns-tabpanel" role="tabpanel" id="lp-transcript" aria-labelledby="lt-transcript" tabindex="0">
+        <dl class="ns-deflist">
+          <dt>00:12</dt>
+          <dd>A lookup field does not store the record. It stores an id, and the platform knows what that id points at — which is why you can walk it in a query instead of running a second one.</dd>
+          <dt>03:02</dt>
+          <dd>Dot notation goes up. <code>Contact.Account.Name</code> is one query, not two, and it is five levels deep before the platform stops you.</dd>
+          <dt>08:03</dt>
+          <dd>Going down is a subquery, and it is a different shape: you get the parent rows back with a list of children hanging off each one.</dd>
+          <dt>14:05</dt>
+          <dd>Here is the part that bites. The child rows count against the same 50,000, and they count whether or not you look at them.</dd>
+          <dt>18:10</dt>
+          <dd>So we take the query from the top of the lesson and turn it inside out — same answer, a tenth of the rows.</dd>
+        </dl>
+      </div>
+
+      <!-- RESOURCES — the files, named by what they are and what they cost to
+           open. A resource list that says "Attachment 1" is a filing cabinet. -->
+      <div class="ns-tabpanel" role="tabpanel" id="lp-resources" aria-labelledby="lt-resources" tabindex="0">
+        <a class="ns-resource" href="#soql-cheatsheet">
+          <span class="ns-resource__icon"><i class="ph ph-file-text" aria-hidden="true"></i></span>
+          <span class="ns-resource__body">
+            <span class="ns-resource__title">Relationship queries cheat sheet</span>
+            <span class="ns-resource__type">PDF · 2 pages</span>
+          </span>
+          <i class="ph ph-arrow-down ns-resource__cue" aria-hidden="true"></i>
+        </a>
+        <a class="ns-resource" href="#lesson-source">
+          <span class="ns-resource__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span class="ns-resource__body">
+            <span class="ns-resource__title">The queries from this lesson</span>
+            <span class="ns-resource__type">Apex · 42 lines</span>
+          </span>
+          <i class="ph ph-arrow-down ns-resource__cue" aria-hidden="true"></i>
+        </a>
+        <a class="ns-resource" href="#soql-docs">
+          <span class="ns-resource__icon"><i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+          <span class="ns-resource__body">
+            <span class="ns-resource__title">SOQL relationship queries — Salesforce docs</span>
+            <span class="ns-resource__type">Link · developer.salesforce.com</span>
+          </span>
+          <i class="ph ph-arrow-up-right ns-resource__cue" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <!-- NOTES — one field, timestamped by the product on save. -->
+      <div class="ns-tabpanel" role="tabpanel" id="lp-notes" aria-labelledby="lt-notes" tabindex="0">
+        <div class="ns-field">
+          <label class="ns-field__label" for="lesson-note">Your note at 08:03</label>
+          <textarea class="ns-textarea" id="lesson-note" rows="4" placeholder="What you want to remember from this chapter…"></textarea>
+          <span class="ns-field__help">Notes are private, and they carry the timestamp so the note takes you back to the moment.</span>
+        </div>
+      </div>
+
+      <!-- Q&A — the empty state is the common one, and it should still say
+           what to do next rather than only that there is nothing here. -->
+      <div class="ns-tabpanel" role="tabpanel" id="lp-qa" aria-labelledby="lt-qa" tabindex="0">
+        <div class="ns-empty">
+          <i class="ph ph-chats-circle ns-empty__icon" aria-hidden="true"></i>
+          <p class="ns-empty__title">No questions on this chapter yet</p>
+          <p class="ns-empty__text">Twelve on the lesson as a whole. Ask about the chapter you are in and it lands beside the timestamp.</p>
+          <a class="ns-btn ns-btn--outline ns-btn--sm ns-empty__action" href="#ask"><i class="ph ph-chat-circle" aria-hidden="true"></i> Ask a question</a>
+        </div>
+      </div>
+    </div>
+
+      </div>
+
+      <!-- THE PAGE RAIL. On a written lesson this column holds the headings;
+           on a video lesson it holds the TIMESTAMPS, which are the same thing:
+           the list of places inside this lesson. It is beside the frame rather
+           than under it, so a learner can see where the video goes while it is
+           playing — a chapter list you have to scroll away from the video to
+           read is a chapter list used once.
+
+           The list is server-rendered content, readable and indexable without
+           pressing play; assets/js/video.js seeks the player from data-start
+           and marks the row the playhead is in. -->
+      <aside class="ns-player__toc">
+        <!-- Deliberately NOT wrapped in .ns-toc, even though it is this
+             column's version of the outline: below lg the stylesheet hides
+             `.ns-player__toc > .ns-toc`, because a written lesson's headings
+             move to the horizontal strip above the text. Chapters have no such
+             strip — there is nowhere else for them to go — so they stay a bare
+             list and simply follow the video on a phone. -->
+        <span class="ns-toc__title">Chapters</span>
+        <ol class="ns-vchapters" id="lesson-chapters">
+          <li class="ns-vchapters__item" data-start="0" data-state="done">
+            <button type="button" class="ns-vchapters__btn">
+              <span class="ns-vchapters__title">What a relationship field actually stores</span>
+              <span class="ns-vchapters__time">00:00</span>
+            </button>
+          </li>
+          <li class="ns-vchapters__item" data-start="182" data-state="done">
+            <button type="button" class="ns-vchapters__btn">
+              <span class="ns-vchapters__title">Dot notation: querying up to the parent</span>
+              <span class="ns-vchapters__time">03:02</span>
+            </button>
+          </li>
+          <li class="ns-vchapters__item" data-start="483" aria-current="true">
+            <button type="button" class="ns-vchapters__btn">
+              <span class="ns-vchapters__title">Subqueries: querying down to the children</span>
+              <span class="ns-vchapters__time">08:03</span>
+            </button>
+          </li>
+          <li class="ns-vchapters__item" data-start="845">
+            <button type="button" class="ns-vchapters__btn">
+              <span class="ns-vchapters__title">Where the two count against the limits</span>
+              <span class="ns-vchapters__time">14:05</span>
+            </button>
+          </li>
+          <li class="ns-vchapters__item" data-start="1090">
+            <button type="button" class="ns-vchapters__btn">
+              <span class="ns-vchapters__title">Rewriting a slow query, live</span>
+              <span class="ns-vchapters__time">18:10</span>
+            </button>
+          </li>
+        </ol>
+
+        <!-- Sponsors, under the list and sticky with it. --square is the rail
+             shape: the description is dropped rather than clamped, because the
+             tagline already exists to be the short version. -->
+        <a class="ns-sponsor ns-sponsor--square" href="#sponsor">
+          <span class="ns-sponsor__label">Sponsor</span>
+          <img class="ns-sponsor__logo" src="/assets/logo/favicon.svg" alt="Orgforce">
+          <span class="ns-sponsor__body">
+            <span class="ns-sponsor__name">Orgforce</span>
+            <span class="ns-sponsor__tagline">Deploy without the change set</span>
+            <span class="ns-sponsor__text">CI for Salesforce orgs: a scratch org per pull request, a deploy per merge.</span>
+          </span>
+          <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+        </a>
+      </aside>
+    </div>
+
+    <!-- The same docked bar the written lesson uses: two controls, their
+         stills, their NUMBERS, and nothing between them.
+
+         The centre used to carry "Lesson 07 / 12" and an "all lessons" link.
+         Both are gone: the number now rides on each control, where it says
+         something useful ("06 SELECT and WHERE" is where you are going, not
+         where you are), and the whole curriculum is a rail three inches to the
+         left rather than a link. A docked bar with a third block in the middle
+         is a toolbar. -->
+    <nav class="ns-player__nav ns-lesson-nav ns-lesson-nav--thumbs" aria-label="Lesson navigation">
       <a class="ns-lesson-nav__btn" href="#prev">
         <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+        <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
+        <span class="ns-lesson-nav__index" aria-hidden="true">06</span>
         <span class="ns-lesson-nav__dir">Previous</span>
         <span class="ns-lesson-nav__name">SELECT and WHERE</span>
+        <span class="ns-tooltip">Previous lesson</span>
       </a>
-      <a class="ns-lesson-nav__up" href="#curriculum"><i class="ph ph-list" aria-hidden="true"></i> All 12 lessons</a>
       <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#next">
         <span class="ns-lesson-nav__dir">Next</span>
         <span class="ns-lesson-nav__name">Aggregate queries</span>
+        <span class="ns-lesson-nav__index" aria-hidden="true">08</span>
+        <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-article"></i></span>
         <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
+        <span class="ns-tooltip">Next lesson</span>
       </a>
     </nav>
   </div>
@@ -70,7 +355,28 @@
        templates/navbar-course.html points aria-controls at it. Rename one and
        you must rename both, or the button announces a relationship to nothing. -->
   <nav class="ns-player__side" id="player-rail" aria-label="Curriculum">
-    <div class="ns-player__side-head"><strong>Apex fundamentals</strong><span>6/12 done</span></div>
+    <!-- The rail's own chrome, in one row: the filter, and the control that
+         collapses the rail. The "Lessons" heading that used to sit above them
+         said nothing a curriculum of lesson rows does not already say, and it
+         cost a row of a panel whose whole job is to fit as many lessons on
+         screen as it can.
+
+         The filter is at the HEAD of the thing it filters — where you look
+         before you start scrolling, rather than after you have given up.
+         assets/js/lms.js hides the rows that do not match, so with the script
+         blocked the rail is exactly as usable as it was. -->
+    <div class="ns-player__side-search">
+      <label class="ns-visually-hidden" for="lesson-search">Search lessons</label>
+      <span class="ns-input-wrap">
+        <i class="ph ph-magnifying-glass ns-input-wrap__icon" aria-hidden="true"></i>
+        <input class="ns-input ns-input--has-icon" id="lesson-search" type="search" placeholder="Find a lesson" autocomplete="off">
+      </span>
+      <button type="button" class="ns-navicon" aria-label="Collapse curriculum" aria-expanded="true" aria-controls="player-rail">
+        <i class="ph ph-sidebar" aria-hidden="true"></i>
+      </button>
+    </div>
+
+
 
     <!-- A COURSE IS A FLAT LIST OF LESSONS. No section headings here: a course
          is one arc of eight to fourteen lessons, and a single "Section 1"
@@ -80,60 +386,133 @@
          The kind is an ICON, and the word arrives on hover or keyboard focus
          from the shared tooltip — forty rows that each say VIDEO is forty
          repeats of what the glyph already said. -->
-    <div class="ns-player__list">
+    <!-- --timeline draws a hairline down the index column with each lesson
+         number as a node on it: a course is a PATH, and a flat list of rows
+         implies that without ever drawing it. It is OPT-IN and self-contained
+         — delete the modifier and the rail is exactly what it was, with
+         nothing else to undo. -->
+    <div class="ns-player__list ns-player__list--timeline">
       <a class="ns-lesson" href="#l6" data-state="done">
-        <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+        <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
         <span class="ns-lesson__title">SELECT and WHERE<span class="ns-visually-hidden"> (completed)</span></span>
+        <!-- --below on the FIRST row only: the list is its own scroll region,
+             so a tooltip opening upward from row one is drawn outside the box
+             and clipped. Every row after this one has somewhere to go. -->
         <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
-          <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
-        <span class="ns-lesson__time">14:02</span></a>
+          <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip ns-tooltip--below">Video</span></span>
+        <span class="ns-lesson__time">14:02</span>
+        <span class="ns-tooltip">SELECT and WHERE</span></a>
       <a class="ns-lesson" href="#l7" aria-current="true">
         <span class="ns-lesson__index" aria-hidden="true">07</span>
         <span class="ns-lesson__title">SOQL joins: relationships</span>
         <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
           <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
-        <span class="ns-lesson__time">21:15</span></a>
+        <span class="ns-lesson__time">21:15</span>
+        <span class="ns-tooltip">SOQL joins: relationships</span></a>
       <a class="ns-lesson" href="#l8">
         <span class="ns-lesson__index" aria-hidden="true">08</span>
         <span class="ns-lesson__title">Aggregate queries</span>
         <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
           <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
-        <span class="ns-lesson__time">18:40</span></a>
+        <span class="ns-lesson__time">18:40</span>
+        <span class="ns-tooltip">Aggregate queries</span></a>
       <a class="ns-lesson" href="#l9">
         <span class="ns-lesson__index" aria-hidden="true">09</span>
         <span class="ns-lesson__title">Check yourself</span>
         <span class="ns-ltype ns-ltype--icon ns-ltype--quiz ns-tooltip-host" tabindex="0">
           <i class="ph ph-exam" aria-hidden="true"></i><span class="ns-tooltip">Quiz</span></span>
-        <span class="ns-lesson__time">05:00</span></a>
+        <span class="ns-lesson__time">05:00</span>
+        <span class="ns-tooltip">Check yourself</span></a>
       <a class="ns-lesson" href="#l10">
         <span class="ns-lesson__index" aria-hidden="true">10</span>
         <span class="ns-lesson__title">Build a selective query</span>
         <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0">
           <i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Lab</span></span>
-        <span class="ns-lesson__time">22:10</span></a>
+        <span class="ns-lesson__time">22:10</span>
+        <span class="ns-tooltip">Build a selective query</span></a>
       <a class="ns-lesson" href="#upgrade" data-access="members">
         <span class="ns-lesson__index" aria-hidden="true">11</span>
         <span class="ns-lesson__title">Bulk-safe triggers<span class="ns-visually-hidden"> (locked — members only)</span></span>
         <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
           <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
-        <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span></a>
+        <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span>
+        <span class="ns-tooltip">Bulk-safe triggers</span></a>
     </div>
 
-    <!-- The rail's standing action. Pinned to the foot, never scrolls away,
-         and on a phone it moves ABOVE the list (player.css) so nobody has to
-         scroll past 40 lessons to reach it. -->
-    <div class="ns-player__side-cta">
-      <span class="ns-player__side-cta-meta">Your progress <b>6 / 12</b></span>
-      <progress class="ns-progress" value="6" max="12" aria-label="6 of 12 lessons complete"></progress>
-      <a class="ns-btn ns-btn--primary ns-btn--block ns-btn--sm" href="#l7"><i class="ph ph-play" aria-hidden="true"></i> Resume lesson 07</a>
-      <span class="ns-player__side-cta-meta">Certificate at 100%</span>
+    <!-- What you do WITH a lesson rather than where you go next: pass it on,
+         or get help with it. Both are secondary by definition — the primary
+         action on this screen is "next lesson", docked at the foot of the
+         content — so both are quiet and neither is ever the solid blue.
+
+         The AI panel opens with the question already written and editable. The
+         rows below it are ordinary <a target="_blank" rel="noopener"> links:
+         no key, no proxy, no request from us, and the prompt is visible in the
+         field before anyone clicks. assets/js/lms.js composes each href from
+         that field, so the sentence exists once rather than in three hrefs
+         that drift apart, and it appends the video's current timestamp when
+         there is one. -->
+    <div class="ns-player__side-foot">
+      <!-- Four targets and no heading. Copy the link is first because it is
+           the one people actually use; the three networks are the ones this
+           audience is on. The word "Share" came out so the row fits on one
+           line with Ask AI — four recognisable logos in a rail do not need a
+           label, and each is a tooltip host so the glyph still gets a name on
+           hover, as well as in the aria-label for assistive tech. -->
+      <div class="ns-share">
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" aria-label="Copy link to this lesson">
+          <i class="ph ph-link-simple" aria-hidden="true"></i><span class="ns-tooltip">Copy link</span>
+        </button>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="https://www.linkedin.com/sharing/share-offsite/" target="_blank" rel="noopener" aria-label="Share this lesson on LinkedIn">
+          <i class="ph ph-linkedin-logo" aria-hidden="true"></i><span class="ns-tooltip">LinkedIn</span>
+        </a>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="https://x.com/intent/post" target="_blank" rel="noopener" aria-label="Share this lesson on X">
+          <i class="ph ph-x-logo" aria-hidden="true"></i><span class="ns-tooltip">X</span>
+        </a>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="https://www.facebook.com/sharer/sharer.php" target="_blank" rel="noopener" aria-label="Share this lesson on Facebook">
+          <i class="ph ph-facebook-logo" aria-hidden="true"></i><span class="ns-tooltip">Facebook</span>
+        </a>
+      </div>
+
+      <div class="ns-usermenu" data-ns-ask-prompt="%s">
+        <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-ns-menu aria-expanded="false" aria-controls="ask-ai-menu">
+          <i class="ph ph-sparkle" aria-hidden="true"></i> Ask AI
+        </button>
+        <div class="ns-usermenu__panel ns-askai" id="ask-ai-menu">
+          <label class="ns-visually-hidden" for="ask-ai-q">Your question about this lesson</label>
+          <textarea class="ns-textarea ns-askai__field" id="ask-ai-q" rows="3" data-ns-ask-input></textarea>
+          <span class="ns-menu__label">Open this page in</span>
+          <a class="ns-menu__item" href="https://claude.ai/new" target="_blank" rel="noopener" data-ns-ask="https://claude.ai/new?q=">
+            <i class="ph ph-sparkle" aria-hidden="true"></i> Claude <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i>
+          </a>
+          <a class="ns-menu__item" href="https://chatgpt.com/" target="_blank" rel="noopener" data-ns-ask="https://chatgpt.com/?q=">
+            <i class="ph ph-chat-circle-text" aria-hidden="true"></i> ChatGPT <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i>
+          </a>
+          <a class="ns-menu__item" href="https://www.perplexity.ai/" target="_blank" rel="noopener" data-ns-ask="https://www.perplexity.ai/search?q=">
+            <i class="ph ph-magnifying-glass" aria-hidden="true"></i> Perplexity <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i>
+          </a>
+          <hr class="ns-menu__sep">
+          <button type="button" class="ns-menu__item" data-ns-ask-copy>
+            <i class="ph ph-file-text" aria-hidden="true"></i> Copy the prompt
+          </button>
+        </div>
+      </div>
     </div>
+
+    <!-- Whose course this is, and the quietest thing on the screen. The course
+         bar above says the COURSE; three lessons deep nothing says the
+         publisher. It is a link because the one thing a reader of this line
+         wants is the rest of the catalogue. -->
+    <a class="ns-player__side-brand" href="/">
+      <img src="/assets/logo/favicon.svg" alt="">
+      <span>A course by <b>Namaste Salesforce</b></span>
+    </a>
   </nav>
 </div>
 
-<!-- Below lg the rail becomes this bar plus a drawer: where you are, how
-     far in (the hairline along its own top edge costs no extra height), and
-     one control that opens the full list. -->
+<!-- Below lg the rail becomes this bar plus the panel below: where you are,
+     how far in (the hairline along its own top edge costs no extra height),
+     and one control that opens the full list. Above lg it is display:none —
+     the rail is already on screen. -->
 <div class="ns-panelbar ns-panelbar--fixed">
   <span class="ns-panelbar__line" style="--fx-progress:50%"></span>
   <span class="ns-panelbar__now">
@@ -143,4 +522,65 @@
   <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" popovertarget="lesson-drawer">
     <i class="ph ph-list" aria-hidden="true"></i> Lessons
   </button>
+</div>
+
+<!-- The panel the bar opens. A popover rather than a scripted dialog, so the
+     template needs no JavaScript at all: the platform gives it the top layer,
+     light dismiss and Esc. Below 40rem it becomes a bottom sheet with a grab
+     handle (overlay.css) — a centred box on a phone is a centred box with a
+     keyboard-sized margin round it. The rows are the same .ns-lesson as the
+     rail, because they are the same list. -->
+<div class="ns-lessonmodal" id="lesson-drawer" popover>
+  <div class="ns-lessonmodal__head">
+    <span class="ns-lessonmodal__title">Apex fundamentals</span>
+    <span class="ns-lessonmodal__count">6 / 12 done</span>
+    <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" type="button" popovertarget="lesson-drawer" popovertargetaction="hide" aria-label="Close"><i class="ph ph-x" aria-hidden="true"></i></button>
+  </div>
+  <!-- The panel is the ONLY lesson list below lg, so it carries the search
+       too — a forty-lesson course does not get easier to scan because the
+       viewport got smaller. assets/js/lms.js drives this and the rail's copy
+       through one implementation. -->
+  <div class="ns-player__side-search">
+    <label class="ns-visually-hidden" for="panel-search">Search lessons</label>
+    <span class="ns-input-wrap">
+      <i class="ph ph-magnifying-glass ns-input-wrap__icon" aria-hidden="true"></i>
+      <input class="ns-input ns-input--has-icon" id="panel-search" type="search" placeholder="Find a lesson" autocomplete="off">
+    </span>
+  </div>
+  <div class="ns-lessonmodal__list">
+    <a class="ns-lesson" href="#l6" data-state="done">
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check-circle"></i></span>
+      <span class="ns-lesson__title">SELECT and WHERE<span class="ns-visually-hidden"> (completed)</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+      <span class="ns-lesson__time">14:02</span></a>
+    <a class="ns-lesson" href="#l7" aria-current="true">
+      <span class="ns-lesson__index" aria-hidden="true">07</span>
+      <span class="ns-lesson__title">SOQL joins: relationships</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+      <span class="ns-lesson__time">21:15</span></a>
+    <a class="ns-lesson" href="#l8">
+      <span class="ns-lesson__index" aria-hidden="true">08</span>
+      <span class="ns-lesson__title">Aggregate queries</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0"><i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
+      <span class="ns-lesson__time">18:40</span></a>
+    <a class="ns-lesson" href="#l9">
+      <span class="ns-lesson__index" aria-hidden="true">09</span>
+      <span class="ns-lesson__title">Check yourself</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--quiz ns-tooltip-host" tabindex="0"><i class="ph ph-exam" aria-hidden="true"></i><span class="ns-tooltip">Quiz</span></span>
+      <span class="ns-lesson__time">05:00</span></a>
+    <a class="ns-lesson" href="#l10">
+      <span class="ns-lesson__index" aria-hidden="true">10</span>
+      <span class="ns-lesson__title">Build a selective query</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0"><i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Lab</span></span>
+      <span class="ns-lesson__time">22:10</span></a>
+    <a class="ns-lesson" href="#upgrade" data-access="members">
+      <span class="ns-lesson__index" aria-hidden="true">11</span>
+      <span class="ns-lesson__title">Bulk-safe triggers<span class="ns-visually-hidden"> (locked — members only)</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+      <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span></a>
+  </div>
+  <div class="ns-lessonmodal__foot">
+    <progress class="ns-progress" value="6" max="12" aria-label="6 of 12 lessons complete"></progress>
+    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#l7"><i class="ph ph-play" aria-hidden="true"></i> Resume</a>
+  </div>
 </div>

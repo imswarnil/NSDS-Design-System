@@ -1,4 +1,6 @@
 import React from "react";
+import { LessonType, LessonAccess } from "./LessonType.jsx";
+
 /** A course's sections and their lessons. Renders .ns-curriculum from
  *  components/css/lms.css — the same anatomy the Ghost theme renders from
  *  templates/course-detail.html.
@@ -8,15 +10,16 @@ import React from "react";
  *  Sections default to open, because a curriculum that starts collapsed hides
  *  the one thing a prospective learner is trying to evaluate.
  *
+ *  THE KIND IS AN ICON, not a word (see LessonType). This list used to spell
+ *  out VIDEO on every row, which is what made a curriculum read as a
+ *  spreadsheet; the word now arrives on hover or keyboard focus. That frees
+ *  the row's second line to carry what the glyph CANNOT say: whether the row
+ *  is open to you, and whether it is a free preview.
+ *
  *  A completed lesson carries its state in visually-hidden text as well as the
  *  tick — data-state paints it, but "(completed)" is what a screen reader
- *  actually hears. */
-const TYPES = {
-  video: ["ph-video", "Video"],
-  article: ["ph-article", "Article"],
-  quiz: ["ph-exam", "Quiz"],
-  exercise: ["ph-barbell", "Exercise"],
-};
+ *  actually hears. The same goes for a locked one: data-access dims it, and
+ *  the row still says so out loud. */
 
 export function CurriculumList({ sections = [], totals, className = "", ...rest }) {
   return (
@@ -38,26 +41,44 @@ export function CurriculumList({ sections = [], totals, className = "", ...rest 
             </span>
           </summary>
           {(section.lessons || []).map((it, i) => {
-            const [icon, label] = TYPES[it.type] || TYPES.article;
+            const locked = it.access === "members" || it.access === "soon";
+            /* A locked row stays a LINK — to the upgrade page where there is
+               one. A dead row explains nothing, and the titles of the locked
+               rows are most of the argument for buying the course. */
+            const href = locked && it.upgradeHref ? it.upgradeHref : (it.href || "#");
+            const sub = it.access || it.badge;
             return (
-              <a className="ns-lesson" key={i} href={it.href || "#"}
+              <a className="ns-lesson" key={i} href={href}
                  data-state={it.done ? "done" : undefined}
+                 data-access={it.access}
                  aria-current={it.current ? "true" : undefined}>
                 <span className="ns-lesson__index" aria-hidden="true">
-                  {it.done ? <i className="ph ph-check" /> : String(i + 1).padStart(2, "0")}
+                  {it.done ? <i className="ph ph-check-circle" /> : String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="ns-lesson__body">
                   <span className="ns-lesson__title">
                     {it.title}
                     {it.done && <span className="ns-visually-hidden"> (completed)</span>}
+                    {it.access === "members" && <span className="ns-visually-hidden"> (locked — members only)</span>}
+                    {it.access === "soon" && <span className="ns-visually-hidden"> (not released yet)</span>}
                   </span>
-                  <span className="ns-lesson__sub">
-                    <span className={`ns-ltype ns-ltype--${it.type || "article"}`}>
-                      <i className={`ph ${icon}`} aria-hidden="true" />{label}
+                  {/* Rendered only when there is something to say. An empty
+                      second line still costs the row its height. */}
+                  {sub && (
+                    <span className="ns-lesson__sub">
+                      <LessonAccess access={it.access} label={it.accessLabel} />
+                      {it.badge && (
+                        <span className={`ns-lesson__badge${it.badge === "Preview" ? "" : " ns-lesson__badge--quiet"}`}>
+                          {it.badge}
+                        </span>
+                      )}
                     </span>
-                  </span>
+                  )}
                 </span>
-                {it.duration && <span className="ns-lesson__time">{it.duration}</span>}
+                <LessonType kind={it.type} />
+                <span className="ns-lesson__time">
+                  {locked ? <i className="ph ph-lock" aria-hidden="true" /> : it.duration}
+                </span>
               </a>
             );
           })}

@@ -251,6 +251,14 @@
   .ns-laccess--free { color: var(--color-success-ink); }
   .ns-laccess--members { color: var(--color-label); }
   .ns-laccess--soon { color: var(--color-warning-ink); }
+  /* PRO — the training subscription, and deliberately not the same grey as
+     --members. The two say different things: "members" is the course product's
+     own paywall and reads as neutral because on a course page almost every row
+     is locked, so colouring them all is noise. Training is mostly open, and
+     Pro is the exception — so it earns the featured ink, which is a "this is
+     the good stuff" amber rather than the warning orange. The tier NAME still
+     has to be in the text; a colour is not a price. */
+  .ns-laccess--pro { color: var(--color-featured-ink); }
 
   /* ================================================ Certification badge ====
      The heptagon-with-a-folded-ribbon badge every Salesforce certification
@@ -279,13 +287,24 @@
     text-align: center;
     color: var(--color-on-dark);
   }
-  /* The body. A seven-sided plate with the bottom edge left for the ribbon. */
+  /* The body. An eight-sided plate with the bottom edge left for the ribbon.
+     Two of them, actually: the shape below is the RIM, and ::after insets the
+     same polygon to draw the face inside it. The badge was a flat navy
+     octagon with three lines of type sitting on top, which is why it read as
+     unfinished — a real badge has an edge, and the edge is what makes the
+     face look pressed into something rather than printed on it. */
   .ns-certbadge__plate {
     position: absolute; inset: 0 0 18% 0;
+    background: linear-gradient(150deg, var(--color-brand-500), var(--color-brand-800) 62%);
+    clip-path: polygon(50% 0%, 90% 12%, 100% 48%, 88% 84%, 50% 100%, 12% 84%, 0% 48%, 10% 12%);
+  }
+  .ns-certbadge__plate::after {
+    content: ""; position: absolute; inset: 6%;
     background: var(--color-brand-800);
     clip-path: polygon(50% 0%, 90% 12%, 100% 48%, 88% 84%, 50% 100%, 12% 84%, 0% 48%, 10% 12%);
   }
-  [data-theme="dark"] .ns-certbadge__plate { background: var(--color-brand-900); }
+  [data-theme="dark"] .ns-certbadge__plate { background: linear-gradient(150deg, var(--color-brand-400), var(--color-brand-700) 62%); }
+  [data-theme="dark"] .ns-certbadge__plate::after { background: var(--color-brand-900); }
   /* The folded ribbon under it — the only gradient in the system, and it is
      doing what a gradient is actually for: describing a fold. */
   .ns-certbadge__ribbon {
@@ -294,6 +313,12 @@
     background: linear-gradient(100deg, var(--color-brand-300), var(--color-accent-500));
     clip-path: polygon(0% 0%, 100% 0%, 100% 62%, 50% 100%, 0% 62%);
     border-end-start-radius: var(--radius-sm); border-end-end-radius: var(--radius-sm);
+  }
+  /* The hairline that separates the mark from the wording. Small, and it is
+     what turns a stack of three elements into a composition. */
+  .ns-certbadge__rule {
+    inline-size: 40%; block-size: 1px;
+    background: color-mix(in srgb, var(--color-brand-300) 45%, transparent);
   }
   .ns-certbadge__inner {
     /* ONE number sizes the whole badge. 11% of the badge's own width, with
@@ -306,17 +331,28 @@
     padding-block-end: 22%;
     inline-size: 74%;
   }
-  /* The mark. Any glyph from the icon set, or the product's own sprite. */
-  .ns-certbadge__mark { font-size: 2.6em; color: var(--color-brand-400); line-height: 1; } /* lint-ok: em scale inside the badge */
+  /* The mark, on its own hairline disc — the thing that stops the three lines
+     of type reading as a paragraph in a shape. */
+  .ns-certbadge__mark {
+    display: grid; place-items: center;
+    inline-size: 2.5em; block-size: 2.5em; /* lint-ok: em scale inside the badge */
+    border-radius: var(--radius-pill);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-brand-300) 45%, transparent);
+    font-size: 1.5em; color: var(--color-brand-300); line-height: 1; /* lint-ok: em scale inside the badge */
+  }
+  /* "CERTIFIED" is the LABEL, not the headline — the credential's name is.
+     It used to be the biggest thing on the badge, which is how every badge on
+     the wall ended up looking identical from three feet away. */
   .ns-certbadge__word {
-    font-family: var(--font-heading); font-weight: var(--weight-heading);
-    font-size: 1.05em; letter-spacing: var(--tracking-wide); /* lint-ok: em scale inside the badge */
+    font-size: 0.62em; letter-spacing: var(--tracking-label); /* lint-ok: em scale inside the badge */
+    font-weight: var(--weight-label);
     text-transform: uppercase; line-height: var(--leading-tight);
+    color: color-mix(in srgb, var(--color-on-dark) 65%, transparent);
   }
   .ns-certbadge__name {
-    font-family: var(--font-heading); font-weight: var(--weight-semibold);
-    font-size: 0.82em; line-height: var(--leading-tight); /* lint-ok: em scale inside the badge */
-    color: color-mix(in srgb, var(--color-on-dark) 88%, transparent);
+    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    font-size: 0.95em; line-height: var(--leading-tight); /* lint-ok: em scale inside the badge */
+    color: var(--color-on-dark);
     text-wrap: balance;
   }
   /* Levels. The ribbon is the only thing that changes, because the ribbon is
@@ -584,8 +620,69 @@
     display: grid; place-items: center; color: var(--color-label);
   }
   .ns-lesson-nav--cards .ns-lesson-nav__btn--next .ns-lesson-nav__thumb { grid-column: 2; }
-  /* Outside --cards the still is simply not drawn: the name is the control. */
-  .ns-lesson-nav:not(.ns-lesson-nav--cards) .ns-lesson-nav__thumb { display: none; }
+  /* Outside the two shapes that place it, the still is simply not drawn: the
+     name is the control. */
+  .ns-lesson-nav:not(.ns-lesson-nav--cards):not(.ns-lesson-nav--thumbs) .ns-lesson-nav__thumb { display: none; }
+
+  /* --- Thumbs: the compact pagination ------------------------------------
+     One line, a still, and NOTHING between the two controls. For the foot of
+     a lesson that already has the curriculum beside it: the counter and the
+     "all lessons" link are in the rail two inches away, and repeating them in
+     the one row whose entire job is to be short is how a docked bar grows
+     back into a toolbar.
+
+     The still earns its place where the direction labels do not — "Previous"
+     is a word the arrow already said, while the thumbnail says WHICH lesson
+     without spending a second line on it.
+
+     The two sit on the OUTER edges of the bar — back at the start of the text,
+     forward at the end of it — which is where the eye already is when it
+     reaches the foot of a reading column. The slack goes between them, not
+     around them. */
+  .ns-lesson-nav--thumbs { justify-content: space-between; gap: var(--space-4); padding-block: var(--space-2); }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn {
+    grid-template-columns: auto auto auto minmax(0, 1fr);
+    align-items: center; max-inline-size: 18rem;
+  }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn--next { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+  /* The direction word is HIDDEN, not dropped. The arrow says it to a sighted
+     reader and this says it to everyone else; display:none would take it out
+     of the accessibility tree as well, leaving two links that announce a
+     lesson title and no direction at all. */
+  .ns-lesson-nav--thumbs .ns-lesson-nav__dir {
+    position: absolute; inline-size: 1px; block-size: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+  /* ...and it comes BACK on hover, as the shared tooltip. The arrow is the only
+     thing saying "previous" to a sighted reader, and an arrow beside a lesson
+     title is ambiguous the first time you meet it: is that the lesson before
+     this one, or the one this one links to? One hover answers it, and after
+     that nobody needs it again — which is exactly what a tooltip is for.
+     Anchored to the button, so it opens above the control rather than above
+     whichever word the pointer happened to be over. */
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn { position: relative; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn > .ns-tooltip { inset-inline-start: var(--space-6); }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn--next > .ns-tooltip { inset-inline-start: auto; inset-inline-end: var(--space-6); translate: 0 0; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__arrow { grid-row: 1; grid-column: 1; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn--next .ns-lesson-nav__arrow { grid-column: 4; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__thumb { grid-row: 1; grid-column: 2; inline-size: 2.75rem; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn--next .ns-lesson-nav__thumb { grid-column: 3; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__index { grid-row: 1; grid-column: 3; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn--next .ns-lesson-nav__index { grid-column: 2; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__name { grid-row: 1; grid-column: 4; }
+  .ns-lesson-nav--thumbs .ns-lesson-nav__btn--next .ns-lesson-nav__name { grid-column: 1; }
+
+  /* The lesson NUMBER, beside the name it belongs to. It is the same mono
+     index the rail and the curriculum use, so "07" here and "07" three inches
+     to the left are recognisably the same fact — which is the whole reason the
+     counter could come out of the middle of the bar. Placed only in --thumbs,
+     because the other shapes have no column for it. */
+  .ns-lesson-nav__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-lesson-nav:not(.ns-lesson-nav--thumbs) .ns-lesson-nav__index { display: none; }
 
   .ns-lesson-nav--sticky { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
 
@@ -623,6 +720,12 @@
     transition: inline-size var(--duration-base) var(--ease-out);
   }
   .ns-panelbar { position: relative; }
+  /* --fixed is the course PLAYER's bar, and the player only sheds its rail
+     below lg. Above that the curriculum is already on screen in full, so a
+     second "where you are, open the list" bar docked to the viewport is a
+     duplicate of the pane sitting next to it — and it was showing at every
+     width, covering the bottom of the lesson column on a desktop. */
+  @media (min-width: 64rem) { .ns-panelbar--fixed { display: none; } }
 
   /* ==================================================== Page layouts ====
      Content + sticky rail ≥ lg; single column below, rail content flowing
@@ -776,13 +879,54 @@
      that credibility comes from precision, and a certificate is exactly where
      that argument is easiest to lose. The ring is the brand hairline at 2px,
      which is the same accent weight used everywhere else. */
+  /* --- The seal -----------------------------------------------------------
+     A real embossed seal, not a circle with an icon in it. Three concentric
+     rings and a scalloped edge, all drawn in CSS — the last version was a 2px
+     outline that read as an avatar placeholder, which on the one artefact a
+     learner prints and frames is the difference between a credential and a
+     receipt.
+
+     The scallop is a repeating-conic mask on the outer ring: the classic
+     notary edge, and the only honest way to get it without shipping an SVG
+     that then has to be recoloured for every theme. */
   .ns-certificate__seal {
-    inline-size: clamp(3rem, 13cqi, 5rem); aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
+    position: relative; flex: none;
+    inline-size: clamp(3.5rem, 15cqi, 6rem); aspect-ratio: 1;
+    display: grid; place-items: center;
     border-radius: var(--radius-pill);
-    border: 2px solid var(--color-brand-400);
     color: var(--color-brand-300);
-    font-size: clamp(1.25rem, 6cqi, 2.25rem);
+    font-size: clamp(1.1rem, 5cqi, 1.9rem);
+    /* The disc itself: a soft radial so the seal reads as pressed rather than
+       printed. */
+    background: radial-gradient(circle at 38% 32%,
+      color-mix(in srgb, var(--color-brand-400) 32%, transparent),
+      color-mix(in srgb, var(--color-brand-700) 55%, transparent));
+    /* The two inner rings — the ring nearest the glyph is the tight one. */
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--color-brand-300) 55%, transparent),
+      inset 0 0 0 4px transparent,
+      inset 0 0 0 5px color-mix(in srgb, var(--color-brand-300) 30%, transparent);
+  }
+  /* The scalloped outer rim. Conic stops rather than a border, so the notches
+     are even at any size and follow the seal when it scales with the page. */
+  .ns-certificate__seal::before {
+    content: ""; position: absolute; inset: -9%;
+    border-radius: var(--radius-pill);
+    background: repeating-conic-gradient(
+      from 0deg,
+      color-mix(in srgb, var(--color-brand-400) 60%, transparent) 0deg 9deg,
+      transparent 9deg 18deg);
+    /* Keeps only the rim: the disc above sits in the hole. */
+    mask: radial-gradient(circle, transparent 0 63%, #000 64%); /* lint-ok: a mask alpha channel, not a themed colour */
+  }
+  /* The ribbon tail, so the seal is attached to the paper rather than resting
+     on it. Two tapered legs under the disc. */
+  .ns-certificate__seal::after {
+    content: ""; position: absolute; inset-block-start: 88%; inset-inline: 22%;
+    block-size: 55%; z-index: -1; /* lint-ok: behind its own parent, which is below every layer in the scale — the scale starts at 0 */
+    background: linear-gradient(100deg, var(--color-brand-400), var(--color-accent-500));
+    clip-path: polygon(0 0, 100% 0, 82% 100%, 50% 72%, 18% 100%);
+    opacity: 0.85;
   }
   .ns-certificate__verify {
     font-family: var(--font-mono); font-size: clamp(0.45rem, 1.5cqi, var(--size-label));
@@ -843,9 +987,88 @@
     .ns-certificate__verify, .ns-certificate__tag { color: var(--color-label); }
     .ns-certificate__course, .ns-certificate__field b, .ns-certificate__sign b { color: var(--color-ink); opacity: 1; }
     .ns-certificate__foot { border-block-start-color: var(--color-border); }
-    .ns-certificate__seal { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+    /* On paper the seal is ink on white: the disc loses its glow, the rings
+       and the scallop take the brand at full strength, and the glyph goes
+       dark enough to survive a laser printer. */
+    .ns-certificate__seal {
+      color: var(--color-brand-700);
+      background: radial-gradient(circle at 38% 32%,
+        color-mix(in srgb, var(--color-brand-500) 14%, transparent),
+        color-mix(in srgb, var(--color-brand-500) 26%, transparent));
+      box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--color-brand-600) 70%, transparent),
+        inset 0 0 0 4px transparent,
+        inset 0 0 0 5px color-mix(in srgb, var(--color-brand-600) 40%, transparent);
+    }
+    .ns-certificate__seal::before {
+      background: repeating-conic-gradient(
+        from 0deg,
+        color-mix(in srgb, var(--color-brand-600) 75%, transparent) 0deg 9deg,
+        transparent 9deg 18deg);
+    }
     .ns-certificate__tag { box-shadow: inset 0 0 0 1px var(--color-border); }
     .ns-certificate__sign::before { background: var(--color-border); }
   }
 
+
+  /* ================================================ External resource ====
+     A card that leaves the site: a Trailhead module, a Salesforce doc page, a
+     vendor's own tutorial. It is NOT .ns-resource — that is a FILE you take
+     with you (a PDF, a repo), and the two want different promises. This one
+     has to answer "where does this go, and what will it cost me" before the
+     click, because the answer to both is "somewhere else".
+
+     So it names its SOURCE first. A row of these on a lesson page is a row of
+     departures, and the destination is the thing being chosen between; the
+     title is what it is called once you get there.
+
+     The out-arrow is not decoration: a link that leaves should say so before
+     it is clicked, not after. Pair it with target="_blank" rel="noopener". */
+  .ns-extcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-3); }
+  .ns-extcard {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: start; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: var(--color-ink); text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-extcard:hover { border-color: var(--color-brand-300); }
+  .ns-extcard:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset);
+  }
+  /* The destination's mark, on the same tinted plate the outcome cards use —
+     one device for "this is the subject of the card". */
+  .ns-extcard__icon {
+    display: grid; place-items: center; flex: none;
+    inline-size: var(--space-9); block-size: var(--space-9);
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-brand-500) 10%, transparent);
+    color: var(--color-brand-600); font-size: var(--size-body-lg);
+  }
+  [data-theme="dark"] .ns-extcard__icon {
+    background: color-mix(in srgb, var(--color-brand-300) 14%, transparent);
+    color: var(--color-brand-300);
+  }
+  .ns-extcard__body { min-inline-size: 0; display: grid; gap: var(--space-1); }
+  /* WHERE it goes, above what it is called. */
+  .ns-extcard__source { font-size: var(--size-label); font-weight: var(--weight-medium); color: var(--color-muted); }
+  .ns-extcard__title { font-size: var(--size-small); font-weight: var(--weight-semibold); line-height: var(--leading-heading); }
+  /* What it costs: kind, time, and whatever the destination counts in. Mono
+     here is earned — these are quantities, and a column of cards is scanned
+     down them. */
+  .ns-extcard__meta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-extcard__meta > * { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .ns-extcard__cue { flex: none; color: var(--color-label); transition: translate var(--duration-fast) var(--ease-out); }
+  .ns-extcard:hover .ns-extcard__cue { color: var(--color-brand-600); translate: 2px -2px; }
+  [data-theme="dark"] .ns-extcard:hover .ns-extcard__cue { color: var(--color-brand-300); }
+  @media (prefers-reduced-motion: reduce) { .ns-extcard__cue { transition: none; } }
+  /* --row: the in-article shape, full width and no grid of siblings. */
+  .ns-extcard--row { grid-template-columns: auto minmax(0, 1fr) auto; }
 }

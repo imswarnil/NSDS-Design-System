@@ -119,7 +119,13 @@
       ticking = true;
       window.requestAnimationFrame(function () { mark(); ticking = false; });
     }
-    window.addEventListener("scroll", onScroll, { passive: true });
+    /* Capture on the document, not a listener on window: `scroll` does not
+       bubble, so on any surface whose text scrolls inside its own pane rather
+       than with the page — the course player's lesson column — a window
+       listener never fires and the outline marks nothing for the whole
+       lesson. mark() is viewport-relative already, so catching the event from
+       whichever element scrolled is the entire fix. */
+    document.addEventListener("scroll", onScroll, { passive: true, capture: true });
     window.addEventListener("resize", onScroll, { passive: true });
     mark();
   }

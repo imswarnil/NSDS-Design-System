@@ -1,0 +1,527 @@
+/* NS Design System — table.
+   =========================================================================
+   The table is the one component in this system that is asked to do real
+   work: a gradebook, a storage report, an admin list of two hundred rows, a
+   completion matrix. It is also the component where design systems most
+   often ship a single unstyled `<table>` and let every product invent its
+   own headers, its own red-for-bad, its own idea of a dense row.
+
+   So this file is deliberately large. The base is still the base — hairlines,
+   mono headers, tabular numerals — and everything else is an opt-in modifier
+   that a product reaches for on purpose:
+
+     density    --compact / --roomy
+     rules      --bordered / --open / wrapper --flush
+     header     --head-filled / --head-plain / --head-strong / --head-brand
+     pinning    --sticky (row) / --stickycol (column)
+     rows       [data-state] on the <tr>, --rowlink, --zebra
+     cells      [data-tone], [data-heat], .ns-table__delta, .ns-table__bar
+     furniture  __toolbar / __footer / tfoot totals / __empty / __actions
+     small      --stacked (each row becomes a card below 48rem)
+
+   Two rules hold the whole thing together:
+
+   1. STATE IS DATA, NOT A CLASS. A conditionally-formatted row carries
+      data-state; a conditionally-formatted cell carries data-tone or
+      data-heat. Both are attributes a server can print from a value, which
+      means the Handlebars theme and the React app produce the same markup
+      from the same number without either of them owning a mapping table.
+
+   2. COLOR IS NEVER THE ONLY SIGNAL (Principle 3). Every tone here is a wash
+      PLUS a leading edge or a glyph, every delta is an arrow AND a sign, and
+      the heat scale is documented as needing a legend or a printed value in
+      the cell. A table read in grayscale, in forced-colors, or by someone
+      with deuteranopia has to survive, and a bare pastel fill does not.
+
+   On zebra striping. The base explicitly does not stripe: striping is a
+   second structuring device competing with the hairline (Principle 1), and
+   with mono numerals the rows already read as rows. `--zebra` exists anyway,
+   as an opt-in, for the one case the principle does not cover — a wide table
+   that scrolls horizontally, where the reader's eye has to travel a long way
+   from the row label to the cell and the hairline is not enough to hold the
+   line. If the table fits on screen without scrolling, the answer is no. */
+@layer ns-components {
+
+  /* --- Wrapper ------------------------------------------------------------
+     A table must always be wrapped in .ns-table-wrap — the wrapper is what
+     makes a wide table scroll inside itself instead of pushing the whole page
+     sideways on mobile. tabindex="0" on the wrapper makes that scroll region
+     reachable by keyboard, which is required once it scrolls. */
+  .ns-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-card); }
+  .ns-table-wrap:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+
+  /* Flush: drops the box and keeps the scroll behaviour. For a table inside
+     prose or inside a card that is already a box — a boxed table inside a
+     boxed card is two frames around one thing. */
+  .ns-table-wrap--flush { border: 0; border-radius: 0; }
+
+  /* --- Base ---------------------------------------------------------------
+     Hairlines only. Numeric columns are tabular and end-aligned so digits
+     stack into a column the eye can scan, which is the one thing a table of
+     figures has to get right. */
+  .ns-table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
+  .ns-table th {
+    text-align: start; padding: var(--space-3) var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface);
+    white-space: nowrap;
+  }
+  .ns-table td { padding: var(--space-3) var(--space-4); border-block-end: 1px solid var(--color-border); }
+  .ns-table tbody tr:last-child td { border-block-end: 0; }
+  .ns-table tbody tr:hover { background: var(--color-surface-sunken); }
+
+  .ns-table caption {
+    caption-side: top; text-align: start;
+    padding: var(--space-3) var(--space-4);
+    color: var(--color-muted); font-size: var(--size-small);
+  }
+
+  /* --- Cell alignment and typography --------------------------------------
+     __num is the important one and the only one most tables need: figures are
+     mono, tabular and end-aligned. The header of a numeric column takes the
+     same class so the label sits over its own digits. */
+  .ns-table__num { text-align: end; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .ns-table__center { text-align: center; }
+  /* The header cell has to be re-specified: `.ns-table th` sets text-align on
+     an element+class selector, which outranks a bare class, so a numeric
+     header would otherwise sit at the start of a column of end-aligned
+     digits — the exact misalignment these classes exist to prevent. */
+  .ns-table th.ns-table__num { text-align: end; }
+  .ns-table th.ns-table__center { text-align: center; }
+  /* A <code> inside a header cell is a LITERAL — a class name, a key, a token
+     — and the header's uppercase would print it as a string that does not
+     exist. The one place the header voice has to yield. */
+  .ns-table th code { text-transform: none; }
+  /* Mono without the end-alignment: IDs, versions, SKUs — data that is a
+     string of characters rather than a magnitude. */
+  .ns-table__code { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); }
+  .ns-table__strong { font-weight: var(--weight-medium); color: var(--color-ink); }
+  .ns-table__quiet { color: var(--color-muted); }
+  /* Truncation is opt-in per column and needs a max-inline-size from the
+     product, because only the product knows what the column is worth. */
+  .ns-table__trunc { max-inline-size: 18rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* A cell that holds a stack of two lines — a title and its subtitle — which
+     is what an entity column almost always wants instead of two columns. */
+  .ns-table__stack { display: flex; flex-direction: column; gap: var(--space-0-5); }
+  .ns-table__sub { font-size: var(--size-label); color: var(--color-muted); }
+  /* A cell holding an avatar/icon beside its label. */
+  .ns-table__lede { display: flex; align-items: center; gap: var(--space-2-5); min-inline-size: 0; }
+
+  /* --- Density ------------------------------------------------------------
+     Three steps. Compact is for an admin list where the reader is scanning
+     for one row; roomy is for a short table that is the main content of the
+     screen and should breathe like a card. */
+  .ns-table--compact th, .ns-table--compact td { padding-block: var(--space-1-5); }
+  .ns-table--roomy th, .ns-table--roomy td { padding-block: var(--space-4); padding-inline: var(--space-5); }
+
+  /* --- Rules --------------------------------------------------------------
+     bordered adds the vertical hairline, for a grid where the COLUMN is a
+     real unit (a matrix, a comparison). open removes the horizontal one, for
+     a table short enough that the header rule alone holds it. */
+  .ns-table--bordered th, .ns-table--bordered td { border-inline-end: 1px solid var(--color-border); }
+  .ns-table--bordered th:last-child, .ns-table--bordered td:last-child { border-inline-end: 0; }
+  .ns-table--open tbody td { border-block-end: 0; }
+
+  /* Fixed layout: columns stop resizing as content changes, which is what a
+     table that paginates or filters live needs — otherwise every page turn
+     shifts the columns and the reader loses their place. */
+  .ns-table--fixed { table-layout: fixed; }
+
+  /* --- Key / value --------------------------------------------------------
+     A two-column spec table where the first column is the label. Related to
+     Definition list; use this one when the rest of the page is tabular. */
+  .ns-table--keyvalue td:first-child, .ns-table--keyvalue th:first-child {
+    inline-size: 12rem; font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* --- Header treatments --------------------------------------------------
+     The default header — mono, uppercase, label ink, on the surface — is the
+     right answer for almost every table in the product, and the variants
+     below exist for specific contexts rather than for taste.
+
+     filled   the header sits on the sunken surface. For a table with no
+              wrapper border, or one long enough that a scrolled-away header
+              needs to re-announce itself as a header.
+     strong   a 2px rule instead of the hairline. For a table with a tfoot
+              total, where the head and foot rules bracket the data.
+     plain    sentence case, ink, prose font. For a table inside an ARTICLE,
+              where a mono uppercase header reads as product chrome dropped
+              into the writing.
+     brand    the report header: brand wash and brand ink. One per screen at
+              most — it is a filled band, and two of them compete. */
+  .ns-table--head-filled thead th { background: var(--color-surface-sunken); }
+  .ns-table--head-strong thead th { border-block-end: 2px solid var(--color-ink); }
+  .ns-table--head-plain thead th {
+    font-family: var(--font-sans); font-size: var(--size-small);
+    font-weight: var(--weight-semibold); letter-spacing: normal;
+    text-transform: none; color: var(--color-ink);
+  }
+  .ns-table--head-brand thead th {
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--color-surface));
+    /* --color-info-ink, not a brand step: the brand ramp is deliberately the
+       same in both themes, so brand-700 on the navy surface is a hole. This
+       token is brand-600 in light and brand-300 in dark. */
+    color: var(--color-info-ink);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-brand-500) 30%, transparent);
+  }
+
+  /* A grouped header — a <tr> of spanning labels above the real column row.
+     The span cell is centered and hairlined off from its neighbours, because
+     without the vertical rule a spanning label is ambiguous about how far it
+     spans, which defeats the point of grouping. */
+  .ns-table__group {
+    text-align: center;
+    border-inline: 1px solid var(--color-border);
+    color: var(--color-muted);
+  }
+
+  /* --- Pinning ------------------------------------------------------------
+     Both need the wrapper to be the scroll container, which .ns-table-wrap
+     already is. */
+  .ns-table--sticky thead th { position: sticky; inset-block-start: 0; z-index: var(--z-raised); }
+
+  /* Sticky first column, for a wide matrix where the row label has to stay
+     visible while the reader scrolls sideways. The pinned cell needs its own
+     opaque background — a transparent sticky cell smears the columns passing
+     underneath it — and a hairline on the trailing edge so the pin is legible
+     as a pin and not as a rendering bug. */
+  .ns-table--stickycol th:first-child,
+  .ns-table--stickycol td:first-child {
+    position: sticky; inset-inline-start: 0; z-index: var(--z-raised);
+    background: var(--color-surface);
+    border-inline-end: 1px solid var(--color-border);
+  }
+  /* The corner cell is pinned in both axes and must outrank both. */
+  .ns-table--stickycol.ns-table--sticky thead th:first-child { z-index: var(--z-sticky); }
+  /* Hover must repaint the pinned cell too, or the row lights up everywhere
+     except the one column the reader is actually pointing at. */
+  .ns-table--stickycol tbody tr:hover > :first-child { background: var(--color-surface-sunken); }
+
+  /* --- Sortable header ----------------------------------------------------
+     A sortable header is a real <button> inside the <th>, so it is keyboard
+     reachable; the <th> carries aria-sort, which is what gets announced. */
+  .ns-table__sort {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    border: 0; background: none; padding: 0; cursor: pointer;
+    font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit;
+  }
+  .ns-table__sort:hover { color: var(--color-brand-600); }
+  .ns-table__sort::after { content: "\e136"; font-family: var(--font-icon); opacity: 0.3; }
+  [aria-sort="ascending"] .ns-table__sort::after { opacity: 1; rotate: 180deg; }
+  [aria-sort="descending"] .ns-table__sort::after { opacity: 1; }
+  /* The sorted column is tinted for its whole height, not just at the header.
+     Sorting is a property of the COLUMN, and a reader three hundred rows down
+     has no header on screen to tell them which one it was. */
+  .ns-table th[aria-sort]:not([aria-sort="none"]) { color: var(--color-ink); }
+
+  /* --- Row state ----------------------------------------------------------
+     data-state on the <tr>. Every state is a leading edge PLUS a wash, so it
+     survives grayscale and forced-colors; the edge is drawn on the first cell
+     rather than the row because a <tr> cannot take a border under
+     border-collapse in every engine.
+
+     current   the row the reader is on (the playing lesson, today)
+     selected  chosen by the reader — pair with aria-selected on the row
+     success / warning / danger  the conditional-formatting three
+     muted     archived, disabled, superseded — present but not live */
+  .ns-table tbody tr[data-state] > :first-child { border-inline-start: 3px solid transparent; }
+
+  .ns-table tbody tr[data-state="current"] > :first-child { border-inline-start-color: var(--color-brand-500); }
+  .ns-table tbody tr[data-state="current"] { background: color-mix(in srgb, var(--color-brand-500) 6%, transparent); }
+
+  .ns-table tbody tr[data-state="selected"],
+  .ns-table tbody tr[aria-selected="true"] { background: color-mix(in srgb, var(--color-brand-500) 8%, transparent); }
+  .ns-table tbody tr[data-state="selected"] > :first-child,
+  .ns-table tbody tr[aria-selected="true"] > :first-child { border-inline-start-color: var(--color-brand-600); }
+
+  .ns-table tbody tr[data-state="success"] { background: color-mix(in srgb, var(--color-success) 7%, transparent); }
+  .ns-table tbody tr[data-state="success"] > :first-child { border-inline-start-color: var(--color-success); }
+  .ns-table tbody tr[data-state="warning"] { background: color-mix(in srgb, var(--color-warning) 9%, transparent); }
+  .ns-table tbody tr[data-state="warning"] > :first-child { border-inline-start-color: var(--color-warning); }
+  .ns-table tbody tr[data-state="danger"] { background: color-mix(in srgb, var(--color-error) 7%, transparent); }
+  .ns-table tbody tr[data-state="danger"] > :first-child { border-inline-start-color: var(--color-error); }
+
+  .ns-table tbody tr[data-state="muted"] { color: var(--color-muted); }
+  .ns-table tbody tr[data-state="muted"] > :first-child { border-inline-start-color: var(--color-border); }
+
+  /* --- Zebra (opt-in) -----------------------------------------------------
+     See the file header. For wide, horizontally-scrolling tables only. The
+     stripe is deliberately weaker than the hover so hover still reads as the
+     stronger, live signal on top of it. */
+  .ns-table--zebra tbody tr:nth-child(even) { background: color-mix(in srgb, var(--color-surface-sunken) 55%, transparent); }
+  .ns-table--zebra tbody tr:hover { background: var(--color-surface-sunken); }
+
+  /* --- Row as a link ------------------------------------------------------
+     The row is clickable, so it says so: a pointer, and a caret that appears
+     in the last cell on hover. The clickable thing is still a real <a> in the
+     first cell — a row-level click handler is invisible to the keyboard and
+     to a screen reader, and cannot be opened in a new tab. */
+  .ns-table--rowlink tbody tr { cursor: pointer; }
+  .ns-table--rowlink tbody tr td:last-child { position: relative; padding-inline-end: var(--space-8); }
+  .ns-table--rowlink tbody tr td:last-child::after {
+    content: "\e13a"; font-family: var(--font-icon);
+    position: absolute; inset-inline-end: var(--space-4); inset-block-start: 50%;
+    translate: 0 -50%;
+    color: var(--color-muted); opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-table--rowlink tbody tr:hover td:last-child::after,
+  .ns-table--rowlink tbody tr:focus-within td:last-child::after { opacity: 1; }
+  .ns-table__link { color: inherit; text-decoration: none; }
+  .ns-table__link:hover { color: var(--color-brand-600); }
+  /* The whole row becomes the hit area without a click handler: the anchor
+     stretches over its row. Keyboard focus still lands on the real link. */
+  .ns-table__link--stretch::before { content: ""; position: absolute; inset: 0; }
+  .ns-table--rowlink tbody td:first-child { position: relative; }
+
+  /* --- Cell tone — conditional formatting ---------------------------------
+     data-tone on a <td>. This is the cell-level counterpart to data-state:
+     use it when ONE value in the row is the story (a failed grade in an
+     otherwise fine row), and use data-state when the whole row is.
+
+     The wash is intentionally weak and the ink carries the signal, because a
+     saturated fill behind body text is a contrast failure waiting for the
+     first long value. Put a word or a glyph in the cell as well — a tinted
+     cell with only a number in it says nothing in grayscale. */
+  .ns-table td[data-tone] { font-variant-numeric: tabular-nums; }
+  .ns-table td[data-tone="success"] { background: color-mix(in srgb, var(--color-success) 8%, transparent); color: var(--color-success-ink); }
+  .ns-table td[data-tone="warning"] { background: color-mix(in srgb, var(--color-warning) 12%, transparent); color: var(--color-warning-ink); }
+  .ns-table td[data-tone="danger"]  { background: color-mix(in srgb, var(--color-error) 8%, transparent); color: var(--color-error-ink); }
+  .ns-table td[data-tone="info"]    { background: color-mix(in srgb, var(--color-brand-500) 8%, transparent); color: var(--color-info-ink); }
+  .ns-table td[data-tone="neutral"] { background: var(--color-surface-sunken); color: var(--color-muted); }
+
+  /* --- Delta --------------------------------------------------------------
+     A change, with its direction. Caret AND sign AND colour — three signals,
+     because this is the single most common place a design system ships
+     colour-only meaning. The caret is a glyph in the pseudo-element, so the
+     text content stays a plain number that copies and translates cleanly.
+
+     It is the same caret the sort indicator uses, rotated — the icon subset
+     carries caret-down and not caret-up, and inventing a second arrow family
+     for a two-pixel difference is how an icon set stops being a set. Flat is
+     an en dash in the text font: no direction, so no arrow. */
+  .ns-table__delta {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-size: var(--size-label); color: var(--color-muted);
+  }
+  .ns-table__delta::before { content: "\2013"; }
+  .ns-table__delta[data-dir="up"], .ns-table__delta[data-dir="down"] { color: var(--color-success-ink); }
+  .ns-table__delta[data-dir="up"]::before,
+  .ns-table__delta[data-dir="down"]::before { font-family: var(--font-icon); content: "\e136"; }
+  .ns-table__delta[data-dir="up"]::before { rotate: 180deg; }
+  .ns-table__delta[data-dir="down"] { color: var(--color-error-ink); }
+  /* An "up is bad" metric — churn, error rate, time-to-first-byte. The
+     product decides polarity; the component must not assume up is good. */
+  .ns-table__delta[data-polarity="inverse"][data-dir="up"] { color: var(--color-error-ink); }
+  .ns-table__delta[data-polarity="inverse"][data-dir="down"] { color: var(--color-success-ink); }
+
+  /* --- Data bar -----------------------------------------------------------
+     The in-cell proportional bar — conditional formatting's most useful
+     shape, because it encodes magnitude in LENGTH, which reads pre-attentively
+     and survives every colour condition there is.
+
+     The percentage comes in as a custom property on the element, which is the
+     one inline style this system allows: it is a datum, not a style choice.
+       <span class="ns-table__bar" style="--ns-bar:62%">62%</span>
+     The printed number stays in the cell. A bar with no number is a chart,
+     and a chart in a table cell is a table that should have been a chart. */
+  .ns-table__bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-size: var(--size-label); color: var(--color-muted);
+  }
+  .ns-table__bar::before {
+    content: ""; order: -1; flex: 1 1 auto;
+    min-inline-size: 2.5rem; block-size: 0.375rem;
+    border-radius: var(--radius-pill);
+    background:
+      linear-gradient(to right,
+        var(--ns-bar-color, var(--color-brand-500)) var(--ns-bar, 0%),
+        var(--color-surface-sunken) var(--ns-bar, 0%));
+  }
+  .ns-table__bar[data-tone="success"] { --ns-bar-color: var(--color-success); }
+  .ns-table__bar[data-tone="warning"] { --ns-bar-color: var(--color-warning); }
+  .ns-table__bar[data-tone="danger"]  { --ns-bar-color: var(--color-error); }
+
+  /* --- Heat ---------------------------------------------------------------
+     data-heat="1".."4" on a <td>, mapped to the sequential dataviz ramp, for
+     a matrix where the SHAPE of the data is the point: activity by week,
+     coverage by module, scores across a cohort.
+
+     Four steps because that is the honest resolution of the ramp (see
+     tokens/dataviz.css). The wash is capped low enough that the cell's own
+     text stays readable on both themes, which means heat is an ACCENT on a
+     printed value, never a replacement for it — a heatmap of empty cells is
+     unreadable to anyone who cannot see the hue, and unprintable for
+     everyone. Pair the table with a legend. */
+  .ns-table td[data-heat] { text-align: center; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .ns-table td[data-heat="0"] { background: var(--color-surface-sunken); color: var(--color-muted); }
+  .ns-table td[data-heat="1"] { background: color-mix(in srgb, var(--chart-seq-1) 18%, transparent); }
+  .ns-table td[data-heat="2"] { background: color-mix(in srgb, var(--chart-seq-2) 18%, transparent); }
+  .ns-table td[data-heat="3"] { background: color-mix(in srgb, var(--chart-seq-3) 24%, transparent); }
+  .ns-table td[data-heat="4"] { background: color-mix(in srgb, var(--chart-seq-4) 30%, transparent); }
+
+  /* Dark mode reverses which END of the ramp the steps are drawn from, and it
+     is not a nicety. The sequential ramp is authored for a MARK — a bar, a
+     line — where on navy magnitude runs bright→dim, so seq-4 is the dim step.
+     A wash is the opposite situation: a dim wash on a dark page is a wash you
+     cannot see, so mapping heat 4 to seq-4 would print the biggest number as
+     the faintest cell and invert the whole matrix. Same four tokens, read
+     from the other end, so "more ink means more" survives the theme flip. */
+  [data-theme="dark"] .ns-table td[data-heat="1"] { background: color-mix(in srgb, var(--chart-seq-4) 26%, transparent); }
+  [data-theme="dark"] .ns-table td[data-heat="2"] { background: color-mix(in srgb, var(--chart-seq-3) 24%, transparent); }
+  [data-theme="dark"] .ns-table td[data-heat="3"] { background: color-mix(in srgb, var(--chart-seq-2) 24%, transparent); }
+  [data-theme="dark"] .ns-table td[data-heat="4"] { background: color-mix(in srgb, var(--chart-seq-1) 28%, transparent); }
+
+  /* The matrix layout the heat scale usually lives in: tight square-ish
+     cells, centered, with the row label pinned. */
+  .ns-table--matrix th, .ns-table--matrix td { padding: var(--space-2); text-align: center; }
+  .ns-table--matrix th:first-child, .ns-table--matrix td:first-child { text-align: start; white-space: nowrap; }
+
+  /* --- Selection column ---------------------------------------------------
+     A checkbox column is a real column with a real header cell, and the
+     header cell needs an accessible name even though it renders a checkbox —
+     a blank <th> is announced as nothing at all. */
+  .ns-table__select { inline-size: 1px; white-space: nowrap; padding-inline-end: var(--space-2); }
+  .ns-table tbody tr:has(.ns-table__select input:checked) { background: color-mix(in srgb, var(--color-brand-500) 8%, transparent); }
+
+  /* --- Row actions --------------------------------------------------------
+     The actions column reveals on hover and on focus-within, and NEVER on
+     focus alone — a set of actions that only appears on hover is invisible to
+     a keyboard, and one that is always visible turns every row into a
+     toolbar. Reserved width, so revealing them does not reflow the table.
+
+     On touch, where there is no hover, they are simply always visible. */
+  .ns-table__actions { text-align: end; white-space: nowrap; inline-size: 1px; }
+  .ns-table__actions > * {
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-table tbody tr:hover .ns-table__actions > *,
+  .ns-table tbody tr:focus-within .ns-table__actions > * { opacity: 1; }
+  @media (hover: none) {
+    .ns-table__actions > * { opacity: 1; }
+  }
+
+  /* --- Totals -------------------------------------------------------------
+     A tfoot is a summary of the column above it, so it is bracketed off with
+     a rule and set in the header's own mono voice — it is the same KIND of
+     thing as a header: metadata about the column, not another data row. */
+  .ns-table tfoot td, .ns-table tfoot th {
+    border-block-start: 1px solid var(--color-ink);
+    border-block-end: 0;
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+    font-weight: var(--weight-medium); color: var(--color-ink);
+    text-transform: none; letter-spacing: normal;
+  }
+  .ns-table--sticky tfoot td, .ns-table--sticky tfoot th { position: sticky; inset-block-end: 0; z-index: var(--z-raised); }
+
+  /* --- Furniture ----------------------------------------------------------
+     The toolbar and footer live INSIDE the wrapper, so the box frames the
+     whole apparatus — search, table and pagination as one object — rather
+     than leaving three loose elements stacked on the page. */
+  .ns-table__toolbar {
+    display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;
+    padding: var(--space-3) var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-table__toolbar-title { font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-table__toolbar-end { margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-2); }
+
+  .ns-table__footer {
+    display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap;
+    padding: var(--space-3) var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-table__count {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Empty --------------------------------------------------------------
+     An empty table keeps its header — the columns are information about what
+     WOULD be here, and a table that collapses to a bare sentence has thrown
+     that away. The message is a full-width cell inside the tbody, so the
+     table's own structure holds it. */
+  .ns-table__empty {
+    padding-block: var(--space-8);
+    text-align: center; color: var(--color-muted);
+  }
+  .ns-table__empty-title { display: block; color: var(--color-ink); font-weight: var(--weight-medium); margin-block-end: var(--space-1); }
+
+  /* --- Stacked on small screens -------------------------------------------
+     The default answer for a wide table on a phone is the scrolling wrapper.
+     This is the other answer: below 48rem each row becomes a small card and
+     each cell prints its own column label from data-label.
+
+     It is right when a row is an ENTITY the reader acts on (an order, a
+     learner) and wrong when the table is a grid of figures being compared
+     down the column — stacking destroys the column, which was the comparison.
+     The header is hidden visually but stays in the DOM, so the table is still
+     a table to a screen reader. */
+  @media (max-width: 47.999rem) {
+    .ns-table--stacked thead {
+      position: absolute; inline-size: 1px; block-size: 1px;
+      overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+    }
+    .ns-table--stacked, .ns-table--stacked tbody, .ns-table--stacked tr, .ns-table--stacked td { display: block; inline-size: 100%; }
+    .ns-table--stacked tbody tr {
+      padding: var(--space-2) 0;
+      border-block-end: 1px solid var(--color-border);
+    }
+    .ns-table--stacked tbody tr:last-child { border-block-end: 0; }
+    .ns-table--stacked td {
+      display: flex; align-items: baseline; gap: var(--space-4);
+      border-block-end: 0;
+      padding-block: var(--space-1);
+      text-align: start;
+    }
+    .ns-table--stacked td::before {
+      content: attr(data-label);
+      flex: none; inline-size: 8rem;
+      font-family: var(--font-mono); font-size: var(--size-label);
+      font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+      text-transform: uppercase; color: var(--color-label);
+    }
+    /* The leading-edge state marker would be a 3px stub on a single cell once
+       the row is a block, so it moves to the row itself. */
+    .ns-table--stacked tbody tr[data-state] > :first-child { border-inline-start: 0; }
+    .ns-table--stacked tbody tr[data-state] { border-inline-start: 3px solid transparent; padding-inline-start: var(--space-3); }
+    .ns-table--stacked tbody tr[data-state="current"] { border-inline-start-color: var(--color-brand-500); }
+    .ns-table--stacked tbody tr[data-state="success"] { border-inline-start-color: var(--color-success); }
+    .ns-table--stacked tbody tr[data-state="warning"] { border-inline-start-color: var(--color-warning); }
+    .ns-table--stacked tbody tr[data-state="danger"] { border-inline-start-color: var(--color-error); }
+  }
+
+  /* --- Print --------------------------------------------------------------
+     A gradebook gets printed. Washes and hover states are screen devices;
+     on paper the hairline does the whole job, and a heat wash prints as an
+     indistinguishable grey that actively obscures the value in the cell. */
+  @media print {
+    .ns-table-wrap { overflow: visible; border-color: currentColor; }
+    .ns-table td[data-heat], .ns-table td[data-tone],
+    .ns-table tbody tr[data-state], .ns-table--zebra tbody tr:nth-child(even) { background: none; }
+    .ns-table__actions { display: none; }
+    .ns-table thead { display: table-header-group; }
+  }
+
+  /* --- Forced colors ------------------------------------------------------
+     Every wash in this file disappears under forced-colors, which is exactly
+     why each of them is paired with an edge or a glyph. The edges are
+     re-asserted here in system colors so the pairing survives. */
+  @media (forced-colors: active) {
+    .ns-table tbody tr[data-state] > :first-child { border-inline-start-color: currentColor; }
+    .ns-table td[data-heat] { border: 1px solid currentColor; }
+  }
+
+}

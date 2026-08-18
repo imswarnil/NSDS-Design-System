@@ -6,12 +6,15 @@
    each side (the Ghost lesson template and the Next.js player route must be
    the same room).
 
-   Layout contract:
-     ≥ lg   two columns — stage+content | curriculum rail (--player-side-w),
-            the rail scrolling independently under the sticky navbar.
-     < lg   one column — stage first, then the lesson header, then the
-            curriculum as a plain section. The video is never displaced by
-            the lesson list on a phone: watching is the primary act.
+   Layout contract, and it is the SAME for a video lesson and a written one:
+     ≥ lg   three columns — curriculum rail | the lesson | its page rail.
+            Course navigation on the leading edge, page navigation (the
+            chapter list, the outline) on the trailing one. Only the lesson
+            column scrolls.
+     < lg   one column — the lesson first, then the curriculum as a plain
+            section, with the page rail's list becoming a horizontal strip.
+            The video is never displaced by the lesson list on a phone:
+            watching is the primary act.
 
    The stage sits on brand-900 in BOTH themes: video looks wrong on white
    letterboxing, and a consistent stage means switching themes mid-lesson
@@ -20,7 +23,35 @@
 
   .ns-player {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) var(--player-side-w);
+    /* THE CURRICULUM IS ON THE LEFT, on both kinds of lesson.
+       It used to be on the right, and the article layout moved it left while
+       the video layout kept it where it was — which meant the same course
+       rearranged itself as you moved between lesson 7 and lesson 8. Two
+       arrangements of one screen is one arrangement too many.
+
+       Left is the right one for both: COURSE navigation on the leading edge,
+       PAGE navigation (the outline, the chapter list) on the trailing edge,
+       which is the split every documentation site converged on because it
+       matches how the two are used — one to leave this page, one to move
+       within it.
+
+       Explicit placement rather than `order`, because `order` moves the paint
+       order and leaves the TAB order following the DOM: the reader would tab
+       out of the lesson into a rail that is drawn behind them. */
+    grid-template-columns: var(--ns-rail-w) minmax(0, 1fr);
+    /* Narrower than --player-side-w, which was sized when the rail was the
+       screen's second subject on the trailing edge. On the leading edge it
+       holds a title, a glyph and a duration, and every rem it does not need is
+       a rem the lesson gets. */
+    --ns-rail-w: 17rem;
+    /* The page rail is fluid: it is a list of headings or of timestamps, and
+       its useful width is a function of the screen rather than a number
+       chosen once. */
+    --ns-toc-w: clamp(10rem, 15vw, 15rem);
+    /* One inline padding for the whole lesson column — the header, the content
+       grid and the docked nav all take it, so nothing has to be re-aligned by
+       hand when the column's width changes. */
+    --ns-read-pad: var(--space-8);
     /* ONE viewport, and only the content column scrolls. This used to be
        opt-in behind --fixed, and the default was a page-scrolling layout that
        produced the thing every learner reports: two scrollbars on one screen,
@@ -37,6 +68,7 @@
   [data-player="fixed"] { overflow: hidden; }
 
   .ns-player__main {
+    grid-column: 2; grid-row: 1;
     min-inline-size: 0; display: flex; flex-direction: column;
     overflow-y: auto; overscroll-behavior: contain;
   }
@@ -73,28 +105,101 @@
   .ns-player--fixed { block-size: calc(100dvh - var(--navbar-h)); overflow: hidden; }
 
   /* --- Article layout -----------------------------------------------------
-     A lesson that is mostly reading: no 16:9 stage at all, the column set to
-     the reading measure and centred, the title a step larger because it is
-     now the top of the page rather than a caption under a video. The rail is
-     untouched — which is the point of one player with two layouts rather
-     than two players. */
+     A lesson that is mostly reading: no 16:9 stage at all, and the title a
+     step larger because it is now the top of the page rather than a caption
+     under a video. Everything else — the rail, the content grid, the page
+     rail beside it, the docked nav — is shared, which is the point of one
+     player with two layouts rather than two players. */
   .ns-player--article .ns-player__stage { display: none; }
-  .ns-player--article .ns-player__head,
-  .ns-player--article .ns-player__body,
-  .ns-player--article .ns-player__nav {
-    max-inline-size: var(--container-prose); margin-inline: auto; inline-size: 100%;
+
+  /* --- The content column and its page rail ------------------------------
+     Used by BOTH lesson kinds, because they have the same problem: the lesson
+     itself, and a list of the places inside it. On a video lesson that list is
+     the chapters; on a written one it is the headings. Same shape, same edge,
+     same behaviour — the only thing that changes is what is in it.
+
+     The content fills the column it is given. It used to be capped at the
+     measure and centred, which left a third of the screen empty on each side;
+     with the curriculum on one edge and the outline on the other, the column
+     between them IS the measure, set by the two rails rather than by a
+     max-width fighting them. */
+  .ns-player__reading {
+    display: grid; grid-template-columns: minmax(0, 1fr) var(--ns-toc-w);
+    gap: var(--space-8); align-items: start;
+    padding-inline: var(--ns-read-pad, var(--pad-card));
   }
-  .ns-player--article .ns-player__head { padding-block-start: var(--space-10); }
+  .ns-player__head,
+  .ns-player__nav { padding-inline: var(--ns-read-pad); }
+  /* The breadcrumb rides the same inline padding as everything else in the
+     column, and takes the top air the header used to carry on its own — the
+     two together were an inch of nothing above a lesson title. */
+  .ns-player__main > .ns-breadcrumb {
+    padding: var(--space-4) var(--ns-read-pad) var(--space-5);
+  }
+  /* On a video lesson the next thing is the FRAME, and a breadcrumb resting on
+     the top edge of a black 16:9 box reads as part of it. The block-end
+     padding above is what separates them; the header, which is text meeting
+     text, needs less. */
+  .ns-player__main > .ns-breadcrumb + .ns-player__head { padding-block-start: 0; }
+  /* Inside the grid, neither the body nor the header carries the inline
+     padding — the grid does — or they would be inset twice and stop agreeing
+     with everything outside it. (A written lesson puts its header ABOVE the
+     grid, so it keeps the padding from the rule above; a video lesson puts it
+     INSIDE, under the frame, so it loses it here. Same result either way,
+     which is the point of routing both through one property.) */
+  .ns-player__reading .ns-player__body,
+  .ns-player__reading .ns-player__head { max-inline-size: none; padding-inline: 0; }
+  /* The lesson's prose fills that column rather than re-capping itself at the
+     measure. The blocks that FOLLOW it — the summary, the glossary, the
+     in-lesson sponsor — sit outside .ns-prose deliberately: prose styles bare
+     ul/dt/dd, and it would put square markers down the checklist and a rule
+     down the glossary. */
+  .ns-player__reading .ns-player__body > .ns-prose { max-inline-size: none; }
+  /* Those blocks space themselves, so a lesson carrying only some of them does
+     not leave a gap where the others would have been. */
+  .ns-player__reading .ns-player__body > * + * { margin-block-start: var(--stack-xl); }
+  /* The right-hand column is a STACK, not just the outline: the outline, and
+     under it whatever else belongs to the page rather than to the course — a
+     sponsor slot, a related link. Sticky as a whole, so both travel with the
+     reader instead of the ad scrolling away the moment the article starts. */
+  .ns-player__toc {
+    position: sticky; inset-block-start: var(--space-6);
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  /* A gap sized for the space BETWEEN blocks put the same space between a
+     block's own heading and its list, which is why the chapter list looked
+     like it had come adrift from its title. The stack is tight by default and
+     the separation is declared where it belongs: before the next block. */
+  .ns-player__toc > * + .ns-toc,
+  .ns-player__toc > * + .ns-sponsor,
+  .ns-player__toc > * + .ns-adslot { margin-block-start: var(--space-6); }
+  .ns-player__toc > .ns-toc__title { padding-block-end: var(--space-1); }
+  /* The horizontal outline strip, for the width where the rail has nowhere to
+     stick. Hidden on the desktop layout, which already has the rail. */
+  .ns-player__toc--inline { display: none; }
+  /* The article header used to carry --space-10 of its own top air, because it
+     was the first thing in the column. It is not any more — the breadcrumb is
+     — and the two together were an inch of nothing above a lesson title. The
+     rule above handles both kinds now. */
   .ns-player--article .ns-player__title { font-size: var(--size-h2); }
+  /* The docked bar is two controls and no chrome: short, and pushed to the
+     OUTER edges — prev under the start of the content, next under the end of
+     it, so each control sits where the eye already is. See
+     .ns-lesson-nav--thumbs in lms.css for why the counter and the "all
+     lessons" link are not in it. */
+  .ns-player__nav { padding-block: var(--space-2); justify-content: space-between; gap: var(--space-4); }
 
   /* --- Rail collapse ------------------------------------------------------
      data-rail="collapsed" on the player. The rail folds to nothing rather
      than to an icon strip: a curriculum reduced to glyphs is a list of
      untitled lessons, and there is no glyph for "the one about governor
      limits". The toggle lives in the lesson header, so it is still reachable
-     once the rail is gone. */
-  .ns-player[data-rail="collapsed"] { grid-template-columns: minmax(0, 1fr) 0; }
-  .ns-player[data-rail="collapsed"] .ns-player__side { overflow: hidden; border-inline-start-color: transparent; }
+     once the rail is gone.
+
+     The rail is the FIRST column, so that is the one that collapses and the
+     border that disappears is the inline-end one. */
+  .ns-player[data-rail="collapsed"] { grid-template-columns: 0 minmax(0, 1fr); }
+  .ns-player[data-rail="collapsed"] .ns-player__side { overflow: hidden; border-inline-end-color: transparent; }
 
   /* --- Stage --------------------------------------------------------------
      aspect-ratio reserves the box before the video loads, so the page never
@@ -117,6 +222,33 @@
     object-fit: cover;
   }
 
+  /* --- The stage, wired ---------------------------------------------------
+     The bare stage above is a 16:9 slot you drop a <video>/<iframe> into and
+     leave the browser's own controls on. --player is the slot holding the
+     system's OWN player (.ns-vplayer): the 16:9 box moves DOWN to
+     .ns-vplayer__stage and this element becomes a plain container, because a
+     control bar nailed inside a box that is already exactly 16:9 either
+     covers the last inch of the picture or overflows the stage.
+
+     The height cap moves down with it: the whole point of the sticky stage is
+     that the lesson title stays on screen, and it cannot if the frame plus the
+     bar is taller than the viewport. */
+  .ns-player__stage--player {
+    aspect-ratio: auto; max-block-size: none;
+    background: none; border-block-end: 0;
+  }
+  .ns-player__stage--player > .ns-vplayer {
+    border: 0; border-radius: 0;
+    border-block-end: 1px solid var(--color-border);
+  }
+  /* NO height cap on the frame. It used to be capped at 56dvh, which on a wide
+     column letterboxed the picture — a 16:9 video in a box that is not 16:9,
+     which is the one thing a video player must never do. The frame keeps its
+     ratio and the COLUMN keeps it in bounds instead: the stage sits inside the
+     content grid, so the page rail beside it is what stops the video growing
+     to the full width of the screen. */
+  .ns-player__stage--player .ns-vplayer__stage { max-block-size: none; }
+
   /* --- Lesson header ------------------------------------------------------
      Kicker (mono index + section), title, meta row. The prev/next controls
      live HERE, next to the content they change — not floating over the
@@ -130,16 +262,27 @@
   }
   .ns-player__kicker {
     display: flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
+    font-size: var(--size-label); font-weight: var(--weight-medium);
+    color: var(--color-label);
   }
   .ns-player__title { font-size: var(--size-h3); line-height: var(--leading-heading); }
+  /* The meta row is three facts, and it is set in the READING face. It used
+     to be mono, which in this system means data — a timestamp, an index, a
+     count — and "Intermediate" is none of those. Weight and colour carry it
+     instead, with tabular figures kept only for the numbers.
+
+     Each item is its own flex line so the glyph sits ON the text's centre
+     rather than on its baseline: an icon and a label that do not share a
+     centre line read as two things that happen to be near each other. */
   .ns-player__meta {
-    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4);
-    font-family: var(--font-mono); font-size: var(--size-label);
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-5);
+    font-size: var(--size-label); font-weight: var(--weight-medium);
     color: var(--color-muted); font-variant-numeric: tabular-nums;
   }
+  .ns-player__meta > * {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+  }
+  .ns-player__meta i { font-size: var(--size-small); color: var(--color-label); }
 
   /* --- The player's own navigation ---------------------------------------
      DOCKED, not parked at the end of the article. Previously prev/next lived
@@ -164,25 +307,29 @@
   }
   /* The counter sits between the two controls and takes the slack, so prev
      and next stay pinned to the edges whatever the lesson titles do. */
-  .ns-player__nav .ns-progress-row { flex: 1; justify-content: center; margin-inline: var(--space-4); }
   .ns-player__nav .ns-lesson-nav { border-block-start: 0; padding-block: 0; inline-size: 100%; }
 
-  /* A lesson counter that is not a progress bar: at twelve lessons the bar is
-     twelve pixels of information and the fraction is all of it. */
-  .ns-player__count {
-    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
-    color: var(--color-label); font-variant-numeric: tabular-nums;
-  }
+  /* The counter that used to live between prev and next is gone: the number
+     now rides on each control (.ns-lesson-nav__index), where it says where you
+     are GOING rather than where you already are — and the whole curriculum is
+     a rail three inches away rather than a link. */
   @media (max-width: 47.999rem) {
     .ns-player__nav { padding-inline: var(--gutter-md); }
-    .ns-player__count { display: none; }
   }
 
   /* Body content under the header (tabs: notes / transcript / resources
      reuse .ns-tabs; prose respects the reading measure even though the
      column is wider). */
   .ns-player__body { padding: 0 var(--pad-card) var(--pad-card); max-inline-size: var(--container-prose); }
+  /* Tabs are UI, not prose, so the panel strip takes the column's whole
+     width — a chapter list or a resource grid squeezed to the reading measure
+     wastes the half of the column the video already established. Prose inside
+     a panel still gets its measure from .ns-prose. */
+  .ns-player__body--wide { max-inline-size: none; }
+  .ns-player__body--wide .ns-prose { max-inline-size: var(--container-prose); }
+  /* The panels hold lists and grids of their own, so the tab strip owns the
+     rhythm between itself and them rather than each panel restating it. */
+  .ns-player__body--wide .ns-tabpanel > * + * { margin-block-start: var(--space-5); }
 
   /* --- Per-type lesson progress -------------------------------------------
      "How far through this lesson am I" has three different honest answers,
@@ -252,24 +399,33 @@
      Its own scroll region so a 40-lesson course scrolls beside a pinned
      video, not under it. */
   .ns-player__side {
-    border-inline-start: 1px solid var(--color-border);
+    /* Column ONE — see the placement note on .ns-player. The hairline is
+       therefore on the trailing edge, between the rail and the lesson. */
+    grid-column: 1; grid-row: 1;
+    border-inline-end: 1px solid var(--color-border);
     background: var(--color-surface);
     /* head / scrolling list / CTA foot — three rows, and only the middle one
        moves. The rail is FIXED: it is part of the locked grid rather than a
        sticky block inside a scrolling page, so the curriculum and the CTA at
        its foot are on screen for the whole lesson. */
     display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
-    min-block-size: 0; overflow: hidden;
+    /* NO overflow:hidden. It was belt-and-braces — the list has its own
+       overflow-y and the grid row already caps it — and it cost the foot's
+       Ask AI panel half its width: a dropdown 20rem wide in a 17rem rail was
+       being sliced down the middle by its own container. The panel is supposed
+       to sit OVER the lesson column, which is what a dropdown does. */
+    min-block-size: 0;
   }
   .ns-player--scroll .ns-player__side {
     position: sticky; inset-block-start: var(--navbar-h);
     max-block-size: calc(100dvh - var(--navbar-h));
   }
 
-  /* The rail's standing action. It sits at the FOOT and never scrolls away,
-     because it is the one thing on this screen that is not navigation: enrol,
-     resume, download the certificate. Kept to one primary and one line of
-     mono fine print — a rail that ends in three buttons is an upsell. */
+  /* The rail's standing action, for the surfaces that still have one — enrol,
+     or download the certificate. The lesson player does NOT: its progress is
+     the line across the course bar and its next action is the docked bar, so
+     the foot of its rail is the search field instead. Kept to one primary and
+     one line of fine print — a rail that ends in three buttons is an upsell. */
   .ns-player__side-cta {
     display: flex; flex-direction: column; gap: var(--space-2);
     padding: var(--pad-card);
@@ -279,23 +435,242 @@
   .ns-player__side-cta .ns-progress { inline-size: 100%; }
   .ns-player__side-cta-meta {
     display: flex; align-items: baseline; justify-content: space-between;
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    font-size: var(--size-label); font-weight: var(--weight-medium);
     color: var(--color-label);
   }
   .ns-player__side-cta-meta b { color: var(--color-ink); font-weight: var(--weight-label); font-variant-numeric: tabular-nums; }
+  /* The rail's head is also the way OUT: the course name is a link back to the
+     course, with the arrow that says so. A learner three lessons deep should
+     not have to find the breadcrumb to leave. */
+  /* The head is a LABEL and the rail's own collapse control. The course name
+     and its back arrow live on the course bar directly above, and the same
+     link twice in two inches is the kind of duplication that makes a screen
+     feel unconsidered.
+
+     The collapse button lives HERE rather than in the bar, because a control
+     for a panel should be attached to the panel — a toggle at the far end of
+     the chrome is a toggle people hunt for. Reopening is the obvious problem
+     with that (the button goes away with the panel it is in), and
+     .ns-player__railopen below is the answer. */
   .ns-player__side-head {
-    display: flex; align-items: baseline; gap: var(--space-2);
-    padding: var(--pad-card);
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3) var(--space-2) var(--pad-card);
+    border-block-end: 1px solid var(--color-border);
+    font-size: var(--size-label); font-weight: var(--weight-medium);
+    color: var(--color-label);
+  }
+  .ns-player__side-head span { margin-inline-start: auto; }
+  .ns-player__side-head .ns-navicon { flex: none; margin-inline-start: 0; }
+
+  /* --- Reopening a collapsed rail -----------------------------------------
+     A rail whose only toggle is inside it is a rail you can close once. This
+     is the way back: a single icon button pinned at the leading edge of the
+     lesson column, present ONLY while the rail is collapsed. It is the same
+     glyph as the control that closed it, in nearly the same place, so it reads
+     as the other half of one switch rather than as a new button. */
+  .ns-player__railopen {
+    position: absolute; inset-block-start: var(--space-3); inset-inline-start: var(--space-2);
+    z-index: var(--z-raised); display: none;
+  }
+  .ns-player[data-rail="collapsed"] .ns-player__railopen { display: inline-flex; }
+  .ns-player[data-rail="collapsed"] .ns-player__main { position: relative; }
+  /* The column's own content steps aside for it, so the button never lands on
+     the breadcrumb. */
+  .ns-player[data-rail="collapsed"] .ns-player__main > .ns-breadcrumb { padding-inline-start: calc(var(--ns-read-pad) + var(--space-8)); }
+
+  /* --- The rail's foot ----------------------------------------------------
+     What you do WITH a lesson, rather than where you go next: pass it on, or
+     get help with it. Both are secondary by definition — the primary action on
+     this screen is "next lesson" and it is docked at the foot of the content —
+     so both are quiet controls on the sunken surface, and neither is ever the
+     solid blue. */
+  /* ONE row: the share targets, then Ask AI at the end. It fits because the
+     word "Share" came out — four recognisable logos in a rail do not need a
+     heading, and the tooltips name them for anyone the logos fail. Ask AI is
+     the one thing here about the lesson's CONTENT rather than its URL, so it
+     takes the slack and sits at the trailing end. */
+  .ns-player__side-foot {
+    display: flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  .ns-player__side-foot .ns-share { gap: 0; min-inline-size: 0; }
+  .ns-player__side-foot .ns-share__label { display: none; }
+  .ns-player__side-foot .ns-usermenu { margin-inline-start: auto; flex: none; }
+  /* Trimmed to fit beside four icons in a 17rem rail. */
+  .ns-player__side-foot .ns-usermenu > .ns-btn { padding-inline: var(--space-2); gap: var(--space-1-5); }
+
+  /* --- Whose course this is ----------------------------------------------
+     The last row of the rail, and the quietest thing on the screen. A learner
+     three lessons deep has forgotten which site they are on — the course bar
+     says the COURSE, not the publisher — and this is the one place a byline
+     can sit without competing with anything: below the actions, at label size,
+     in the muted ink.
+
+     It is a link, because the one thing someone reading it wants is the rest
+     of the catalogue. */
+  .ns-player__side-brand {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2-5) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-size: var(--size-label); color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-player__side-brand:hover { color: var(--color-ink); }
+  .ns-player__side-brand:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: calc(-1 * var(--focus-ring-width));
+  }
+  .ns-player__side-brand img { inline-size: var(--space-5); block-size: var(--space-5); flex: none; }
+  .ns-player__side-brand b { font-weight: var(--weight-semibold); color: var(--color-ink); }
+  /* The rail is search / list / actions / byline. */
+  .ns-player__side:has(> .ns-player__side-brand) { grid-template-rows: auto minmax(0, 1fr) auto auto; }
+  .ns-player__side-head strong { font-size: var(--size-small); font-weight: var(--weight-semibold); }
+  .ns-player__side-back {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    min-inline-size: 0; color: var(--color-ink); text-decoration: none;
+    font-size: var(--size-small); font-weight: var(--weight-semibold);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-player__side-back > i { flex: none; color: var(--color-label); font-size: var(--size-body); transition: translate var(--duration-fast) var(--ease-out); }
+  .ns-player__side-back:hover { color: var(--color-brand-600); }
+  .ns-player__side-back:hover > i { color: currentColor; translate: -2px 0; }
+  [data-theme="dark"] .ns-player__side-back:hover { color: var(--color-brand-300); }
+  .ns-player__side-back:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm);
+  }
+  @media (prefers-reduced-motion: reduce) { .ns-player__side-back > i { transition: none; } }
+  .ns-player__side-head span {
+    margin-inline-start: auto; flex: none;
+    font-size: var(--size-label); color: var(--color-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  /* --- Find a lesson ------------------------------------------------------
+     At the TOP, under the head: a filter belongs at the head of the thing it
+     filters, where you look before you start scrolling rather than after you
+     have given up. It stays in the RAIL rather than in the page chrome,
+     because it filters this list and nothing else — a search box whose scope
+     is not obvious from where it sits is one people try once and never again.
+     It is the answer to the forty-lesson course, where scrolling to find "the
+     one about governor limits" is the whole problem the rail has. */
+  .ns-player__side-search {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
     border-block-end: 1px solid var(--color-border);
   }
-  .ns-player__side-head strong { font-size: var(--size-small); font-weight: var(--weight-semibold); }
-  .ns-player__side-head span {
-    margin-inline-start: auto;
-    font-family: var(--font-mono); font-size: var(--size-label);
-    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  .ns-player__side-search .ns-input-wrap { flex: 1; min-inline-size: 0; }
+  /* The collapse control sits beside the filter, at the rail's top edge —
+     the two are the rail's own chrome and they share one row rather than
+     spending two. The "Lessons" heading that used to be above them said
+     nothing a curriculum of lesson rows does not already say. */
+  .ns-player__side-search .ns-navicon { flex: none; }
+  /* Shorter than a form field in a form: this is chrome on a dense rail, and
+     the default height would eat a lesson row's worth of the list. */
+  .ns-player__side-search .ns-input {
+    min-block-size: var(--space-8); padding-block: 0;
+    font-size: var(--size-small);
   }
-  .ns-player__list { overflow-y: auto; flex: 1; padding-block: var(--space-2); }
+
+  /* No top padding: the filter above it already provides the separation, and
+     a padded list under a bordered field reads as a gap nobody put there on
+     purpose. The tail keeps a little, so the last row is not flush with the
+     foot. */
+  .ns-player__list { overflow-y: auto; flex: 1; padding-block: 0 var(--space-2); }
+  /* Nothing matched the filter. Keeps the rail from going blank, which reads
+     as broken rather than as empty. */
+  .ns-player__list .ns-empty { padding: var(--pad-card); }
+
+  /* --- The rail as a TIMELINE --------------------------------------------
+     OPT-IN, on the list: `class="ns-player__list ns-player__list--timeline"`.
+     Take the modifier off and everything below stops applying — nothing else
+     in the rail changes, so this is one word to try and one word to undo.
+
+     What it adds is a hairline running down the index column with each lesson
+     number sitting on it as a small node. The claim it makes is that a course
+     is a PATH — lesson 7 comes after 6 and before 8 — which a flat list of
+     rows implies but never draws. It is the same device the curriculum's
+     --timeline uses on the course page, so a learner who saw the syllabus
+     already knows how to read the rail.
+
+     The line's x-position is derived from the row's own tokens rather than
+     guessed: the leading border, plus the row's inline padding, plus half the
+     index cell. Change any of those and the line follows.
+
+     It stops half-way at both ends, so the path has a beginning and an end
+     rather than running off the top and bottom of the panel. */
+  .ns-player__list--timeline .ns-lesson { position: relative; }
+  .ns-player__list--timeline .ns-lesson::before {
+    content: ""; position: absolute; z-index: var(--z-base);
+    inset-block: 0;
+    inset-inline-start: calc(2px + var(--pad-card) + var(--space-6) / 2);
+    inline-size: 1px; background: var(--color-border);
+  }
+  .ns-player__list--timeline .ns-lesson:first-child::before { inset-block-start: 50%; }
+  .ns-player__list--timeline .ns-lesson:last-child::before { inset-block-end: 50%; }
+
+  /* The number becomes the node. It keeps the index cell's EXISTING width —
+     the first grid column is `auto`, so shrinking the element shrinks the
+     column, and the line drawn at half of --space-6 then no longer passes
+     through the middle of anything. Same width, square, circular. */
+  .ns-player__list--timeline .ns-lesson__index {
+    position: relative; z-index: var(--z-raised);
+    display: grid; place-items: center;
+    inline-size: var(--space-6); block-size: var(--space-6);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    font-size: var(--size-label);
+  }
+  /* ONLY the current node is filled. An earlier version put every finished
+     lesson in a green disc and ran the line green behind it, which meant a
+     learner nine lessons in got a column of green coins and one blue one — the
+     thing you are looking for was the quietest mark on the rail. Completion is
+     already said by the check that replaced the number and by the muted title;
+     the fill is reserved for WHERE YOU ARE, because that is the one thing the
+     rail exists to answer. */
+  .ns-player__list--timeline .ns-lesson[aria-current="true"] .ns-lesson__index {
+    background: var(--color-brand-500); border-color: var(--color-brand-500);
+    color: var(--color-on-brand);
+  }
+  /* A locked row's node goes dashed — the path continues, but it is not yours
+     yet. */
+  .ns-player__list--timeline .ns-lesson[data-access="members"] .ns-lesson__index {
+    border-style: dashed; color: var(--color-muted);
+  }
+
+  /* --- The full title, on hover ------------------------------------------
+     Rail titles are one line with an ellipsis: a 17rem column cannot hold
+     "SOQL joins: relationships in queries" beside an index, a kind glyph and a
+     duration, and shortening the titles themselves would break the syllabus
+     they came from. So the whole row is a tooltip host and the untruncated
+     title arrives on hover or keyboard focus.
+
+     NOT .ns-tooltip-host — that class sets display:inline-flex, which would
+     collapse the row's grid. The row already has position:relative from the
+     timeline block above; this only adds the trigger.
+
+     It sits ON ITS OWN ROW, not above it. Opening upward is the tooltip's
+     default and it was wrong here: in a list, the space above a row is the
+     row before it, so hovering lesson 8 covered lesson 7 — you lost a
+     neighbour to read a title. Anchored inside its own row instead, starting
+     where the title starts and vertically centred, it can only ever cover the
+     kind glyph and the duration of the row you are already pointing at. It is
+     also small: this is one line of text a reader already half-sees, not a
+     panel. */
+  .ns-player__list .ns-lesson { position: relative; }
+  .ns-player__list .ns-lesson > .ns-tooltip {
+    inset-block-start: 50%; inset-block-end: auto;
+    inset-inline-start: calc(2px + var(--pad-card) + var(--space-6) + var(--space-3));
+    translate: 0 -50%;
+    padding: var(--space-1) var(--space-2);
+    inline-size: max-content; max-inline-size: 12rem;
+  }
+  .ns-player__list .ns-lesson:hover > .ns-tooltip,
+  .ns-player__list .ns-lesson:focus-visible > .ns-tooltip { opacity: 1; visibility: visible; }
 
   /* Section divider inside the list — the mono kicker again. */
   .ns-player__section {
@@ -415,22 +790,42 @@
     .ns-player__stage, .ns-player--fixed .ns-player__stage { position: static; max-block-size: none; }
     .ns-player__stage > video, .ns-player__stage > iframe, .ns-player__stage > img { object-fit: cover; }
     .ns-player[data-rail="collapsed"] { grid-template-columns: 1fr; }
-    .ns-player__side {
-      display: flex; flex-direction: column;
-      position: static; max-block-size: 24rem;
-      border-inline-start: 0; border-block-start: 1px solid var(--color-border);
-    }
-    .ns-player__list { overflow-y: auto; }
-    /* The CTA is the reason the rail exists on a phone — it goes FIRST, above
-       the lesson list, because a learner who has scrolled past 40 lessons to
-       reach the enrol button has been made to work for it. */
-    .ns-player__side-cta { order: -1; border-block-start: 0; border-block-end: 1px solid var(--color-border); }
+    /* The explicit placement has to come off with the second column, or
+       grid-column:2 conjures an implicit one and the rail lands in a column
+       that is not there. Back to DOM order, which puts the lesson first — on a
+       phone the lesson is the page and the curriculum is a detour. */
+    .ns-player__main, .ns-player__side { grid-column: 1; grid-row: auto; }
+    /* THE RAIL IS GONE BELOW lg, not shrunk. It used to become a 24rem block
+       under the lesson — which meant a tablet carried the curriculum THREE
+       times: that block, the panel bar, and the panel the bar opens. One list
+       is enough, and the panel is the one that does not cost a screen of
+       scroll to get past.
+
+       The way in is the panel bar at the foot, and the course bar's curriculum
+       toggle, which opens the same panel at this width (assets/js/lms.js). */
+    .ns-player__side { display: none; }
     .ns-player__nav { margin-block-start: 0; }
-    .ns-player__nav .ns-progress-row { display: none; } /* the rail header shows the count */
+    /* The outline rail has nowhere to stick in one column, so it becomes the
+       horizontal strip above the text — the same links, scanned sideways,
+       costing one row instead of a disclosure the reader has to decide to
+       open. */
+    .ns-player__reading { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    /* The COLUMN survives, the outline inside it does not: the headings move
+       to the horizontal strip above the text, and whatever else was stacked
+       under them — the sponsor slot — follows the article instead of
+       disappearing with the layout it happened to be sitting in. */
+    .ns-player__toc { position: static; }
+    .ns-player__toc > .ns-toc { display: none; }
+    .ns-player__toc--inline { display: flex; }
+    /* One padding step less: on a phone the gutter is the padding. */
+    .ns-player { --ns-read-pad: var(--gutter-md); }
   }
   @media (max-width: 39.999rem) {
-    .ns-player__head, .ns-player__body { padding-inline: var(--gutter); }
-    .ns-player__nav { padding-inline: var(--gutter); }
+    .ns-player__body { padding-inline: 0; }
+    /* The lesson column takes its padding from one custom property, so it is
+       retuned here by setting that rather than by restating the header, grid
+       and nav rules, which would each have to out-specify the ones above. */
+    .ns-player { --ns-read-pad: var(--gutter); }
   }
 
   /* --- Video player -------------------------------------------------------
@@ -466,6 +861,12 @@
   /* The big centre play target, for the state before playback starts. It is a
      real button so it is reachable by keyboard and announced. */
   .ns-vplayer__big {
+    /* Above the frame. With a self-hosted <video> the markup order settles it,
+       but the YouTube adapter APPENDS its iframe to the stage — so without a
+       layer the big play target ends up underneath the very frame it starts,
+       and on a controls=0 embed there is then nothing on the page that plays
+       the video. */
+    z-index: var(--z-raised);
     position: absolute; inset-block-start: 50%; inset-inline-start: 50%;
     translate: -50% -50%;
     inline-size: 3.5rem; block-size: 3.5rem;
@@ -492,6 +893,16 @@
     transition: background var(--duration-fast) var(--ease-out);
   }
   .ns-vplayer__btn:hover { background: var(--color-on-dark-wash); }
+  /* The one control that is lettering rather than a glyph. "CC" is universal
+     and the icon subset has no captions glyph — the right two letters beat the
+     wrong picture. Sized to sit on the same optical weight as the glyphs
+     beside it. */
+  .ns-vplayer__btn--text {
+    inline-size: auto; padding-inline: var(--space-2);
+    font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label);
+  }
+  .ns-vplayer__btn--text[aria-pressed="true"] { background: var(--color-on-dark-wash); color: var(--color-brand-300); }
   .ns-vplayer__btn:focus-visible {
     outline: var(--focus-ring-width) solid var(--color-brand-300);
     outline-offset: calc(-1 * var(--focus-ring-width));
@@ -527,6 +938,55 @@
     flex: none; font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); color: var(--color-on-dark-border-hover);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Chapter ticks on the scrubber --------------------------------------
+     The same chapters as the list beside the video, marked on the track they
+     refer to. Without them the scrubber is 900 undifferentiated pixels and the
+     list is the only way to navigate; with them the two are visibly the same
+     information and a learner can scrub TO a chapter rather than hunting for
+     it. Purely decorative — the list is the operable control — so the ticks
+     are aria-hidden and never the only way to reach a chapter.
+
+     Drawn on a wrapper rather than on the input, because a range input's track
+     is a shadow pseudo-element and nothing can be positioned against it. */
+  .ns-vplayer__scrub { position: relative; flex: 1; min-inline-size: 0; display: flex; }
+  .ns-vplayer__scrub .ns-vplayer__seek { flex: 1; }
+  .ns-vplayer__ticks {
+    position: absolute; inset-inline: 0; inset-block-start: 50%;
+    block-size: 3px; translate: 0 -50%; pointer-events: none;
+  }
+  .ns-vplayer__tick {
+    position: absolute; inset-block: 0; inline-size: 2px;
+    inset-inline-start: var(--fx-at, 0%);
+    background: var(--color-brand-900); opacity: 0.85;
+  }
+
+  /* --- Volume -------------------------------------------------------------
+     A real range again, and it COLLAPSES: at rest it is the mute button
+     alone, and the slider grows out of it on hover or focus. A volume slider
+     parked open costs 5rem of a bar that also has to hold the time, the
+     scrubber and four buttons — and it is the control people touch least. */
+  .ns-vplayer__vol { flex: none; display: flex; align-items: center; }
+  .ns-vplayer__vol .ns-vplayer__seek {
+    inline-size: 0; opacity: 0; flex: none;
+    transition: inline-size var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-vplayer__vol:hover .ns-vplayer__seek,
+  .ns-vplayer__vol:focus-within .ns-vplayer__seek { inline-size: 4.5rem; opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .ns-vplayer__vol .ns-vplayer__seek { transition: none; }
+  }
+
+  /* --- The bar, narrow ----------------------------------------------------
+     It sheds in a fixed order, and the order is the argument: the total
+     duration goes first (the elapsed time still says where you are), then the
+     volume (the device has hardware keys), then captions and speed (both live
+     in the settings menu too). Play, scrub, elapsed and fullscreen never go —
+     those four are the player. */
+  @media (max-width: 47.999rem) {
+    .ns-vplayer__bar { gap: var(--space-1); padding-inline: var(--space-2); }
+    .ns-vplayer__time[data-ns-video-duration] { display: none; }
   }
 
   /* Settings: speed and quality, as a native <details> so Esc and click-away
@@ -572,8 +1032,8 @@
   .ns-vchapters__item + .ns-vchapters__item { border-block-start: 1px solid var(--color-border); }
   .ns-vchapters__btn {
     display: grid; grid-template-columns: minmax(0, 1fr) auto;
-    align-items: baseline; gap: var(--space-1) var(--space-3); inline-size: 100%;
-    padding: var(--space-2-5) var(--space-3);
+    align-items: baseline; gap: 0 var(--space-3); inline-size: 100%;
+    padding: var(--space-2) var(--space-3);
     border: 0; background: none; cursor: pointer; text-align: start;
     font-size: var(--size-small); color: var(--color-ink);
     border-inline-start: 2px solid transparent;
@@ -582,19 +1042,27 @@
   }
   .ns-vchapters__btn:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-300); }
   .ns-vchapters__btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
-  .ns-vchapters__title { min-inline-size: 0; font-weight: var(--weight-medium); }
+  .ns-vchapters__title { min-inline-size: 0; font-weight: var(--weight-medium); line-height: var(--leading-heading); }
   /* Time is metadata now: mono, dim, on its own line under the title, with
      the duration of the chapter beside its start so "is this the long one?"
      is answerable without arithmetic. */
+  /* The start time stays mono: it is a timestamp, it is the one genuinely
+     tabular thing in the row, and a column of them has to line up. */
   .ns-vchapters__time {
     grid-column: 2; grid-row: 1;
     flex: none; font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
-  .ns-vchapters__meta {
-    grid-column: 1 / -1;
-    font-family: var(--font-mono); font-size: var(--size-label);
-    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  /* The second line is GONE by default. It carried "4 min · watched", and both
+     halves were already said elsewhere: the row's own state draws watched, and
+     a per-chapter duration in a list whose whole point is scanning titles is a
+     second column of numbers to read past. Two lines per chapter also doubled
+     the height of a list that sits beside the video and has to fit. Keep the
+     element for the cases that genuinely need a note; it opts IN. */
+  .ns-vchapters__meta { display: none; }
+  .ns-vchapters--notes .ns-vchapters__meta {
+    display: block; grid-column: 1 / -1;
+    font-size: var(--size-label); color: var(--color-muted);
   }
   /* Watched, playing, ahead — the leading edge, plus ink weight. */
   .ns-vchapters__item[data-state="done"] .ns-vchapters__title { color: var(--color-muted); font-weight: var(--weight-body); }

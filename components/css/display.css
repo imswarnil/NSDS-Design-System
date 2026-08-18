@@ -390,19 +390,6 @@
   a.ns-marquee__item:hover .ns-marquee__logo { opacity: 1; }
 
 
-  /* --- Table: variations --------------------------------------------------
-     No zebra striping anywhere, in any variant. Striping is a second
-     structuring device competing with the hairline (Principle 1), and with
-     mono numerals the rows already read as rows. */
-  .ns-table--compact th, .ns-table--compact td { padding-block: var(--space-1-5); }
-  .ns-table--bordered th, .ns-table--bordered td { border-inline-end: 1px solid var(--color-border); }
-  .ns-table--bordered th:last-child, .ns-table--bordered td:last-child { border-inline-end: 0; }
-  /* Key/value: a two-column spec table where the first column is the label.
-     Related to Definition list; use this one when it belongs in a table
-     because the rest of the page is tabular. */
-  .ns-table--keyvalue td:first-child, .ns-table--keyvalue th:first-child {
-    inline-size: 12rem; font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
-  }
+  /* The Table variations that used to live here are in table.css. */
 
 }

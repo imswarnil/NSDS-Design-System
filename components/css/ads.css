@@ -1,0 +1,486 @@
+/* NS Design System — ad slots (AdSense and any other third-party network).
+   =========================================================================
+   This is NOT the Sponsor card. The sponsor in monetization.css is a native
+   placement WE design and control: our type, our hairline, our words. An ad
+   slot is the opposite — a third-party iframe of a size we do not choose,
+   carrying a creative we have never seen, arriving some unknown number of
+   milliseconds after the page does.
+
+   So the component here is not the ad. It is everything AROUND the ad, and it
+   has exactly four jobs:
+
+     1. RESERVE THE SPACE, EXACTLY, BEFORE THE AD ARRIVES. This is the whole
+        reason the file exists. An unreserved slot is the single largest
+        source of Cumulative Layout Shift on any ad-funded page in the world:
+        the reader starts a sentence, a 250px creative lands above it, and the
+        sentence jumps. Every format below declares its height at every
+        breakpoint, and the frame holds that height whether or not anything
+        ever fills it.
+
+     2. SAY IT IS AN AD. .ns-ad__label is not optional and not decorative. An
+        ad that is indistinguishable from the article is a lie to the reader
+        and, in most jurisdictions we ship to, a disclosure failure. Same rule
+        as the sponsor label, for the same reason.
+
+     3. HOLD A SKELETON WHILE IT LOADS AND A HONEST STATE WHEN IT DOESN'T.
+        data-state on the slot: loading → filled → empty | blocked. Empty is
+        the one people forget: a slot with no fill must collapse or show a
+        house creative, never sit as a grey rectangle for the rest of the
+        session.
+
+     4. NEVER STEAL A CLICK. The anchor unit is dismissible, the interstitial
+        is a real <dialog> with a real close button, and neither one is
+        allowed to sit over the primary action.
+
+   WHY THE SIZES ARE IN PIXELS, in a system where everything else is rem.
+   Because the creative is in pixels. A 728x90 leaderboard is 728 CSS pixels
+   in the ad server's slot definition, and if our frame is 45.5rem it stops
+   being 728px the moment a reader raises their browser's base font size —
+   which yields a frame that no longer matches its creative, letterboxing or
+   clipping at exactly the zoom level where the reader most needs the page to
+   behave. The frame matches the ad server. Everything around it — the label,
+   the gaps, the surrounding rhythm — is tokens, as usual.
+
+   THE FORMAT LADDER. Each format is ONE class that changes size by
+   breakpoint, so a page has one slot in one place in the markup rather than
+   three slots with two of them display:none — which is how a page ends up
+   requesting three ads and rendering one. Written mobile-first with
+   min-width, unlike most of this system, because a size ladder that goes
+   small→large is the one place min-width reads more clearly than max-width.
+
+     --leaderboard   320x100 → 728x90 → 970x90     the horizontal strip
+     --billboard     300x250 → 728x90 → 970x250    the big top-of-page unit
+     --rectangle     300x250                       the workhorse; in-content
+     --rectangle-lg  336x280                       rectangle, rail-width rail
+     --square        250x250 → 300x250             compact grid unit
+     --halfpage      300x600                       the tall rail unit
+     --skyscraper    160x600                       narrow rail
+     --skyscraper-sm 120x600                       narrow rail, tight layouts
+     --banner        320x50                        phone only, minimal
+     --banner-lg     320x100                       phone only, taller
+     --fluid         100% x aspect                 responsive/auto units
+     --article       fluid, in the reading flow
+     --feed          fluid, matching a card row
+     --multiplex     a grid of native recommendations
+     --parallax      a fixed creative the page scrolls over
+     --anchor        the floating bottom strip
+     --interstitial  inside a real <dialog>
+
+   Nothing here loads, requests or renders an ad. The product does that; this
+   is the box it lands in. */
+@layer ns-components {
+
+  /* --- The slot -----------------------------------------------------------
+     A grid of label-over-frame, centered, because a creative narrower than
+     its column looks like a mistake when it is flush left.
+
+     The two custom properties are the contract: every format sets them, and
+     everything else in this file reads them. A product needing a size the
+     ladder does not carry sets them inline rather than inventing a class —
+     `style="--ns-ad-w:468px;--ns-ad-h:60px"` is a datum, not a style choice,
+     the same argument the table's data bar makes. */
+  .ns-ad {
+    --ns-ad-w: 300px;
+    --ns-ad-h: 250px;
+    display: grid; justify-items: center; gap: var(--space-1-5);
+    margin-inline: auto;
+    /* An explicit minmax(0, 1fr) track rather than the implicit auto one. An
+       auto track sizes to max-content, so a 970px frame would make the track
+       970px wide and burst out of a 900px column — and the frame's own
+       max-inline-size:100% would then resolve against the 970px track and
+       clamp nothing. Pinning the track to the container is what makes the
+       clamp below actually clamp. */
+    grid-template-columns: minmax(0, 1fr);
+    max-inline-size: 100%;
+  }
+
+  /* Rule 2. Sentence case at label size, quiet — the disclosure has to be
+     legible, not shouted. It sits ABOVE the frame, never over it: a label
+     overlaying the creative is a label the network's own iframe can and does
+     cover. */
+  .ns-ad__label {
+    justify-self: start;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-size: var(--size-label); font-weight: var(--weight-medium);
+    color: var(--color-label);
+  }
+  .ns-ad__label::before {
+    content: ""; flex: none;
+    inline-size: var(--space-1-5); block-size: var(--space-1-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-label);
+  }
+
+  /* Rule 1. The frame IS the reservation. Fixed block-size, never min-height:
+     a creative that arrives taller than its slot must be clipped rather than
+     allowed to push the article down — the reader's place on the page is
+     worth more than the bottom 12 pixels of an ad.
+
+     max-inline-size keeps a 970px unit from forcing a horizontal scrollbar on
+     a laptop that is only 960 wide, which is the other half of the same
+     promise. */
+  .ns-ad__frame {
+    position: relative;
+    inline-size: var(--ns-ad-w);
+    block-size: var(--ns-ad-h);
+    max-inline-size: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+  /* The network's own iframe / ins element fills the frame completely. */
+  .ns-ad__frame > iframe,
+  .ns-ad__frame > ins,
+  .ns-ad__frame > img {
+    display: block; inline-size: 100%; block-size: 100%; border: 0;
+    object-fit: contain;
+  }
+
+  /* --- States -------------------------------------------------------------
+     data-state, not a class, so the product can print it from the network's
+     own callback and both renderers agree.
+
+     loading   the space is held and shimmering. The default.
+     filled    an ad rendered. All chrome disappears — a border around a live
+               creative is the design system decorating someone else's
+               artwork, and it makes a display ad look like a native one.
+     empty     no fill came back. Collapse it: see the note below.
+     blocked   a blocker removed it. Say so plainly ONCE, and never nag. */
+  .ns-ad[data-state="loading"] .ns-ad__frame,
+  .ns-ad[data-state="blocked"] .ns-ad__frame {
+    background: var(--color-surface-sunken);
+  }
+  .ns-ad[data-state="empty"] .ns-ad__frame {
+    border: 1px dashed var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  /* Collapse. An unsold slot that keeps its reserved height is a grey hole in
+     the page for the rest of the session — the reservation exists to stop a
+     shift while the ad is in flight, and once the answer is "there is no ad"
+     the honest thing is to give the space back. The label goes too: there is
+     nothing to disclose. */
+  .ns-ad[data-state="empty"][data-collapse] { display: none; }
+
+  .ns-ad[data-state="filled"] .ns-ad__skeleton { display: none; }
+
+  /* --- Skeleton -----------------------------------------------------------
+     The same shimmer as the rest of the system (.ns-skeleton in feedback.css)
+     stretched to the frame, plus a mono size stamp. The stamp is the useful
+     part in development and harmless in production: a slot that never fills
+     is invisible in a screenshot unless it says what it was waiting for. */
+  .ns-ad__skeleton {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-ad[data-state="filled"] .ns-ad__frame > .ns-ad__skeleton { display: none; }
+
+  /* --- Empty / blocked message --------------------------------------------
+     Centred, quiet, and never a call to action. "Please disable your ad
+     blocker" is a demand; a house creative or a line about membership is an
+     offer, and only one of those has ever worked. */
+  .ns-ad__note {
+    position: absolute; inset: 0;
+    display: grid; place-items: center; align-content: center;
+    gap: var(--space-1); padding: var(--pad-card);
+    text-align: center;
+    font-size: var(--size-small); color: var(--color-muted);
+  }
+  .ns-ad__note-title { font-weight: var(--weight-medium); color: var(--color-ink); }
+
+  /* --- Dummy creative -----------------------------------------------------
+     A fake ad, for the styleguide and for local development where no network
+     is wired up. It deliberately does NOT look like a real ad: diagonal
+     hatching and a mono size stamp, so nobody screenshots a page for a client
+     and ships a placeholder believing it was a live unit.
+
+     The hatch is drawn from the border token, so it flips with the theme. */
+  .ns-ad__dummy {
+    position: absolute; inset: 0;
+    display: grid; place-items: center; align-content: center; gap: var(--space-1);
+    text-align: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-surface-sunken);
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0 6px,
+      color-mix(in srgb, var(--color-border) 45%, transparent) 6px 7px);
+  }
+  .ns-ad__dummy-size {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-ad__dummy-name {
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    color: var(--color-ink);
+  }
+
+  /* --- Fixed-size formats -------------------------------------------------
+     The ladder. Mobile value first, then the steps up. */
+
+  /* Leaderboard: the horizontal strip. Note that the phone step is NOT a
+     scaled-down 728 — it is the 320x100 mobile leaderboard, a different unit
+     the networks sell separately, because a 728px creative squeezed into a
+     phone is unreadable and a phone showing nothing is unsold inventory. */
+  .ns-ad--leaderboard { --ns-ad-w: 320px; --ns-ad-h: 100px; }
+  /* Billboard: the big one, top of page. Falls all the way back to a
+     rectangle on a phone — 970x250 has no phone equivalent worth showing. */
+  .ns-ad--billboard { --ns-ad-w: 300px; --ns-ad-h: 250px; }
+
+  .ns-ad--rectangle { --ns-ad-w: 300px; --ns-ad-h: 250px; }
+  .ns-ad--rectangle-lg { --ns-ad-w: 336px; --ns-ad-h: 280px; }
+  .ns-ad--square { --ns-ad-w: 250px; --ns-ad-h: 250px; }
+  .ns-ad--halfpage { --ns-ad-w: 300px; --ns-ad-h: 600px; }
+  .ns-ad--skyscraper { --ns-ad-w: 160px; --ns-ad-h: 600px; }
+  .ns-ad--skyscraper-sm { --ns-ad-w: 120px; --ns-ad-h: 600px; }
+  .ns-ad--banner { --ns-ad-w: 320px; --ns-ad-h: 50px; }
+  .ns-ad--banner-lg { --ns-ad-w: 320px; --ns-ad-h: 100px; }
+
+  /* Tablet and small laptop. 728x90 is the size that actually fits a 768px
+     viewport with the page's own gutters still intact. */
+  @media (min-width: 48rem) {
+    .ns-ad--leaderboard { --ns-ad-w: 728px; --ns-ad-h: 90px; }
+    .ns-ad--billboard { --ns-ad-w: 728px; --ns-ad-h: 90px; }
+    .ns-ad--square { --ns-ad-w: 300px; --ns-ad-h: 250px; }
+  }
+  /* Laptop and desktop. */
+  @media (min-width: 64rem) {
+    .ns-ad--leaderboard { --ns-ad-w: 970px; --ns-ad-h: 90px; }
+    .ns-ad--billboard { --ns-ad-w: 970px; --ns-ad-h: 250px; }
+  }
+
+  /* The phone-only units say so: shown below 48rem and gone above it, because
+     a 320x50 banner on a desktop is not a small ad, it is a broken one. */
+  @media (min-width: 48rem) {
+    .ns-ad--banner, .ns-ad--banner-lg { display: none; }
+  }
+
+  /* --- Fluid / responsive-auto --------------------------------------------
+     AdSense's responsive unit sizes itself to its container, which means the
+     height is unknown until it renders — the exact thing rule 1 exists to
+     prevent. The compromise the whole industry landed on: reserve a MINIMUM
+     that matches the smallest creative the unit can serve, and let it grow
+     downward from there only. Growing down still shifts the page, so a fluid
+     unit belongs below the fold or at the end of the content, never above
+     the reader's current line. */
+  .ns-ad--fluid { --ns-ad-w: 100%; inline-size: 100%; }
+  .ns-ad--fluid .ns-ad__frame { block-size: auto; min-block-size: var(--ns-ad-h); }
+
+  /* --- In-article ---------------------------------------------------------
+     The native unit that sits IN the prose. Set at the reading measure so it
+     lives inside the text block rather than spanning past it, and separated
+     by rules above and below — the same "this is an aside" device the article
+     sponsor uses, so a reader who has learned one has learned both.
+
+     This is the placement with the highest revenue and the highest risk: an
+     in-article unit that is not clearly labelled reads as a paragraph the
+     writer wrote, which is the exact failure the label exists to prevent. */
+  .ns-ad--article {
+    --ns-ad-w: 100%;
+    --ns-ad-h: 250px;
+    inline-size: 100%;
+    max-inline-size: var(--container-prose);
+    padding-block: var(--space-5);
+    border-block: 1px solid var(--color-border);
+    justify-items: stretch;
+  }
+  .ns-ad--article .ns-ad__frame { block-size: auto; min-block-size: var(--ns-ad-h); inline-size: 100%; }
+
+  /* --- In-feed ------------------------------------------------------------
+     The native unit that sits BETWEEN cards in a listing, and therefore has
+     to be the shape of a card without being mistakable for one. It takes the
+     grid cell, keeps the card's radius, and keeps the dashed edge even when
+     filled — in a grid of eight real courses, the one that is an ad has to be
+     findable at a glance. */
+  .ns-ad--feed {
+    --ns-ad-w: 100%;
+    --ns-ad-h: 250px;
+    inline-size: 100%;
+    justify-items: stretch;
+  }
+  .ns-ad--feed .ns-ad__frame {
+    inline-size: 100%; block-size: auto; min-block-size: var(--ns-ad-h);
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-card);
+  }
+
+  /* --- Multiplex ----------------------------------------------------------
+     A grid of native recommendations — the "you might also like" unit. It is
+     several ads, so it is labelled once, at the top, for the whole block. */
+  .ns-ad--multiplex { --ns-ad-w: 100%; --ns-ad-h: auto; inline-size: 100%; justify-items: stretch; }
+  .ns-ad--multiplex .ns-ad__frame { inline-size: 100%; block-size: auto; }
+  .ns-ad__grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  }
+  .ns-ad__tile {
+    display: grid; gap: var(--space-2);
+    padding: var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    text-decoration: none; color: inherit;
+  }
+  a.ns-ad__tile:hover { border-color: var(--color-brand-300); }
+  .ns-ad__tile-thumb {
+    aspect-ratio: 16 / 9; inline-size: 100%;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    object-fit: cover;
+  }
+  .ns-ad__tile-title {
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    line-height: var(--leading-heading); color: var(--color-ink);
+  }
+  .ns-ad__tile-src { font-size: var(--size-label); color: var(--color-muted); }
+
+  /* --- Parallax -----------------------------------------------------------
+     A creative held still while the page scrolls over it, seen through a
+     window in the content. Done with `background-attachment: fixed` on a
+     clipped frame rather than a scroll listener, so it costs no JavaScript
+     and cannot jank.
+
+     Two hard limits. iOS Safari does not honour background-attachment:fixed
+     and falls back to a normal scrolling background — that is a graceful
+     degradation, not a bug to work around with a transform hack that breaks
+     the moment the reader zooms. And the whole effect is motion tied to
+     scroll, which is exactly what prefers-reduced-motion is about, so it is
+     switched off there rather than slowed down. */
+  .ns-ad--parallax { --ns-ad-w: 100%; --ns-ad-h: 320px; inline-size: 100%; justify-items: stretch; }
+  .ns-ad--parallax .ns-ad__frame {
+    inline-size: 100%;
+    background-attachment: fixed;
+    background-position: center;
+    background-size: cover;
+    border-radius: var(--radius-card);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ns-ad--parallax .ns-ad__frame { background-attachment: scroll; }
+  }
+
+  /* --- Anchor (floating bottom) -------------------------------------------
+     The strip pinned to the bottom of the viewport. The most intrusive format
+     that is still defensible, and only because of the rules attached to it:
+
+       - It is DISMISSIBLE, with a real button at a real touch target. An
+         anchor unit with no close control is a permanent 100px reduction in
+         everyone's screen.
+       - The page compensates. Add .ns-ad-anchored to the page shell so the
+         last paragraph and any bottom-docked product UI clear it — otherwise
+         the ad covers the thing the reader scrolled all that way to reach.
+       - It sits BELOW the app's own docked UI in the stack (--z-sticky, not
+         --z-overlay), so a player bar or a save bar is never covered by it.
+       - Safe-area inset on the bottom padding, or on a notched phone it sits
+         under the home indicator. */
+  .ns-ad--anchor {
+    /* The anchor carries its own ladder, and it is a SHORT one on purpose.
+       Inheriting the 300x250 default would put a quarter of the phone's
+       screen permanently over the article, which is the failure this format
+       is most often shipped with. 320x100 on a phone, 728x90 above that —
+       the two sizes the networks actually sell as anchor inventory. */
+    --ns-ad-w: 320px; --ns-ad-h: 100px;
+    position: fixed; inset-inline: 0; inset-block-end: 0;
+    z-index: var(--z-sticky);
+    justify-items: center;
+    gap: var(--space-1);
+    padding: var(--space-2);
+    padding-block-end: max(var(--space-2), env(safe-area-inset-bottom));
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-ad--anchor .ns-ad__label { justify-self: center; }
+  .ns-ad__dismiss {
+    position: absolute; inset-block-start: 0; inset-inline-end: 0;
+    translate: 0 -100%;
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--target-min); block-size: var(--target-min);
+    border: 1px solid var(--color-border); border-block-end: 0;
+    border-start-start-radius: var(--radius-sm);
+    background: var(--color-surface); color: var(--color-muted);
+    cursor: pointer;
+  }
+  .ns-ad__dismiss:hover { color: var(--color-ink); }
+  .ns-ad__dismiss:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset);
+  }
+  @media (min-width: 48rem) {
+    .ns-ad--anchor { --ns-ad-w: 728px; --ns-ad-h: 90px; }
+  }
+
+  /* The compensation class, on the page shell rather than on body — a
+     component layer that reaches up and restyles body is a component that
+     fights every consuming app that also has an opinion about body.
+
+     --ns-ad-anchor-h is the WHOLE STRIP — creative plus label plus padding —
+     not the creative height, which is the mistake worth naming because it
+     leaves the clearance a few pixels short and the last line of the article
+     tucked under the ad where nobody notices it in review. 128px is the
+     measured height of the default anchor at both steps of its ladder; a
+     product running a taller creative overrides this one value and nothing
+     else has to move. It is a pixel value for the same reason the slots are:
+     it is derived from a creative size, not from the spacing scale. */
+  .ns-ad-anchored {
+    --ns-ad-anchor-h: 128px;
+    padding-block-end: calc(var(--ns-ad-anchor-h) + var(--space-4));
+  }
+
+  /* --- Interstitial -------------------------------------------------------
+     A full-screen ad, inside the system's real <dialog> (.ns-modal in
+     overlay.css) rather than a hand-rolled overlay — so focus trapping, Esc
+     to close, inertness of the page behind and the backdrop all come from the
+     platform instead of from a script that gets it 80% right.
+
+     The close button is a real button, present from the first frame, at full
+     touch size. An interstitial whose close control is a 12px grey × in the
+     corner after a three-second delay is a dark pattern, and it is also a
+     policy violation on every network that sells the format. */
+  .ns-ad-modal { padding: var(--pad-card); overflow: auto; }
+  .ns-ad-modal .ns-ad { --ns-ad-w: 336px; --ns-ad-h: 280px; }
+  .ns-ad-modal__close { align-self: flex-end; }
+
+  /* The tall interstitial is gated on viewport HEIGHT, not width, and that is
+     the whole subtlety of this format. .ns-modal caps itself at
+     100dvh - --space-16 so a dialog can never be taller than the screen, so a
+     300x600 creative on a wide-but-short laptop does not get a bigger modal —
+     it gets a clipped ad and a scrollbar. 52rem of height is where 600px of
+     creative plus the label, the padding and the close button still fit
+     inside that cap with room to spare. */
+  @media (min-width: 48rem) and (min-height: 52rem) {
+    .ns-ad-modal .ns-ad { --ns-ad-w: 300px; --ns-ad-h: 600px; }
+  }
+
+  /* --- Rail ---------------------------------------------------------------
+     Marks a unit as RAIL FURNITURE, which is two behaviours and both of them
+     matter.
+
+     Sticky, so a 600px creative follows the reader down a 4000px article
+     instead of scrolling away in the first screen. Sticky and not fixed: it
+     stops at the end of its own column rather than floating over the footer.
+     Harmless if the surrounding rail is itself sticky — it simply sticks
+     within it.
+
+     And GONE below 64rem, which is the part that gets forgotten. Every rail
+     in this system collapses into the content column on a narrow screen; it
+     does not disappear, it stacks. A 160x600 that stacks is 600 pixels of ad
+     between the reader and the first paragraph — the single worst thing a
+     phone layout can do, and it happens silently, because the desktop view
+     that everyone reviews looks completely correct. If a placement is only
+     right in a rail, it has to leave when the rail does. */
+  .ns-ad-rail { position: sticky; inset-block-start: var(--space-6); }
+  @media (max-width: 63.999rem) {
+    .ns-ad-rail { display: none; }
+  }
+
+  /* --- Print --------------------------------------------------------------
+     No ad has ever been useful on paper, and a reserved empty frame prints as
+     a blank box in the middle of the article. */
+  @media print {
+    .ns-ad, .ns-ad--anchor, .ns-ad-modal { display: none; }
+    .ns-ad-anchored { padding-block-end: 0; }
+  }
+
+}

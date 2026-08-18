@@ -6,24 +6,42 @@
   components implement this contract; Static → use directly.
 
   The page in order, and the order is the argument:
-    1. Hero        what it is, and whether it is any good (the meta strip)
-    2. Outcomes    what you will be able to do afterwards
-    3. Curriculum  collapsible; the section holding lesson 01 ships open
-    4. Instructor  who is teaching it, and their credential
-    5. Testimonials what people who finished it say
-    6. Requirements a collapsible band — secondary, so it may fold
-    7. Related     a scroll-snapped strip of compact cards
+    1. Breadcrumb   where this sits in the catalog
+    2. Hero         what it is, and whether it is any good (the meta strip)
+    3. Stat band    the four numbers, before any prose asks for trust
+    4. Outcomes     what you will be able to do afterwards
+    5. TABS         overview · curriculum · instructor · reviews · faq
+    6. CTA band     the closer
   The enrol card rides all of it in a sticky rail, and becomes a fixed
-  bottom bar below 64rem. Swap ns-chero--split for --cover / --video /
-  --minimal / --console; every version carries the same parts.
+  bottom bar below 64rem.
+
+  WHY TABS, and not eight stacked bands. A course page carries five separate
+  arguments — what it teaches, what is in it, who teaches it, what finishers
+  say, and the objections — and stacked they make a page nobody reaches the
+  bottom of, with the curriculum (the thing people actually came to read)
+  buried three screens down. As tabs, every argument is one click from the
+  price. Progressive: with JS off every panel is visible, so the stacked page
+  is still the fallback rather than the default (assets/js/tabs.js hides the
+  inactive panels on init).
+
+  Swap ns-chero--split for --cover / --video / --minimal / --console /
+  --cert; every version carries the same parts.
 -->
-<section class="ns-chero">
+<nav class="ns-breadcrumb" aria-label="Breadcrumb" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-4) var(--gutter) 0">
+  <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/">Home</a></span>
+  <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/courses">Courses</a></span>
+  <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/courses/developer">Developer track</a></span>
+  <span class="ns-breadcrumb__item" aria-current="page">Apex, from zero to first deploy</span>
+</nav>
+
+<section class="ns-chero ns-chero--split">
   <div class="ns-chero__inner">
     <div class="ns-chero__grid">
       <div class="ns-chero__body">
         <div class="ns-chero__badges">
           <span class="ns-tag">Bestseller</span>
           <span class="ns-tag">Updated Aug 2026</span>
+          <span class="ns-tag ns-tag--pill">Exam-aligned</span>
         </div>
         <span class="ns-chero__kicker">// Course · Developer track</span>
         <h1 class="ns-chero__title">Apex, from zero to first deploy</h1>
@@ -64,97 +82,383 @@
   </div>
 </section>
 
+<!-- Four concrete numbers, before any prose asks for trust. -->
+<section class="ns-band ns-band--tight ns-band--sunken">
+  <div class="ns-band__inner">
+    <dl class="ns-statband">
+      <div class="ns-statband__cell"><dd class="ns-statband__value">24</dd><dt class="ns-statband__label">Lessons</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">5</dd><dt class="ns-statband__label">Hands-on labs</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">6h 20m</dd><dt class="ns-statband__label">Total runtime</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">74%</dd><dt class="ns-statband__label">Finish it</dt></div>
+    </dl>
+  </div>
+</section>
+
 <div class="ns-course-detail" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-10) var(--gutter) var(--space-16)">
   <main>
+    <!-- Outcomes sit ABOVE the tabs, not inside one. "What will I be able to
+         do" is the question every visitor arrives with, and it is the answer
+         that decides whether they read anything else — so it is never behind
+         a tab they have to choose.
+
+         Each promise gets the icon of the THING it produces rather than five
+         identical ticks: a trigger, an error, a query, a deploy, a test. Five
+         ticks is a list that has to be read; five glyphs is a list that can be
+         scanned, which is what a reader does here. -->
     <section>
       <p class="ns-kicker">What you'll learn</p>
-      <ul class="ns-outcomes">
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load.</span></li>
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>Read a governor-limit error and know which line caused it.</span></li>
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>Query selectively, and know when an index is being used.</span></li>
-        <li><i class="ph ph-check" aria-hidden="true"></i><span>Deploy with SFDX, with 75%+ coverage that means something.</span></li>
+      <ul class="ns-outcomes ns-outcomes--cards" style="margin-block-start:var(--space-4)">
+        <li><i class="ph ph-lightning" aria-hidden="true"></i><span><span class="ns-outcomes__title">Bulk-safe triggers</span>Write a trigger that survives a 200-record data load, and know why the naive one does not.</span></li>
+        <li><i class="ph ph-warning-circle" aria-hidden="true"></i><span><span class="ns-outcomes__title">Read a limit error</span>Take a governor-limit exception and find the line that caused it, first time.</span></li>
+        <li><i class="ph ph-magnifying-glass" aria-hidden="true"></i><span><span class="ns-outcomes__title">Query selectively</span>Filter on something the platform can serve from an index, and prove it did.</span></li>
+        <li><i class="ph ph-rocket-launch" aria-hidden="true"></i><span><span class="ns-outcomes__title">Deploy with SFDX</span>Scratch org to production, with 75%+ coverage that means something.</span></li>
+        <li><i class="ph ph-flask" aria-hidden="true"></i><span><span class="ns-outcomes__title">Tests that fail first</span>Write the assertion before the fix, so the test proves the behaviour rather than the coverage.</span></li>
+        <li><i class="ph ph-shield-check" aria-hidden="true"></i><span><span class="ns-outcomes__title">Respect sharing</span>Honour field-level security and record access from Apex, by default rather than by review.</span></li>
       </ul>
     </section>
 
-    <section class="ns-prose" style="margin-block-start:var(--space-10)">
-      <h2>About this course</h2>
-      <p>Salesforce is a platform before it is a product, and Apex is how you extend it. This course starts where every other one should: the data model, the security model, and what actually happens when a record is saved.</p>
-      <p>Every lesson has the same shape — a plain-English concept, one concrete example you build yourself, and a bridge to the next step.</p>
-    </section>
+    <!-- The five arguments, one click apart. -->
+    <div class="ns-tabs" role="tablist" aria-label="Course details" style="margin-block-start:var(--space-10)">
+      <button class="ns-tab" type="button" role="tab" id="cd-t-overview" aria-controls="cd-p-overview" aria-selected="true">
+        <i class="ph ph-info ns-tab__icon" aria-hidden="true"></i> Overview
+      </button>
+      <button class="ns-tab" type="button" role="tab" id="cd-t-curriculum" aria-controls="cd-p-curriculum" aria-selected="false">
+        <i class="ph ph-list ns-tab__icon" aria-hidden="true"></i> Curriculum <span class="ns-tab__count">24</span>
+      </button>
+      <button class="ns-tab" type="button" role="tab" id="cd-t-instructor" aria-controls="cd-p-instructor" aria-selected="false">
+        <i class="ph ph-graduation-cap ns-tab__icon" aria-hidden="true"></i> Instructors
+      </button>
+      <button class="ns-tab" type="button" role="tab" id="cd-t-reviews" aria-controls="cd-p-reviews" aria-selected="false">
+        <i class="ph ph-star ns-tab__icon" aria-hidden="true"></i> Reviews <span class="ns-tab__count">1,240</span>
+      </button>
+      <button class="ns-tab" type="button" role="tab" id="cd-t-faq" aria-controls="cd-p-faq" aria-selected="false">
+        <i class="ph ph-question ns-tab__icon" aria-hidden="true"></i> FAQ
+      </button>
+    </div>
 
-    <section id="curriculum" style="margin-block-start:var(--space-10)">
-      <p class="ns-kicker">Curriculum</p>
-      <div class="ns-curriculum" style="margin-block-start:var(--space-4)">
-        <div class="ns-curriculum__bar">
-          <span class="ns-curriculum__totals">5 sections · 24 lessons · 6h 20m</span>
-          <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" data-curriculum-toggle aria-expanded="false">
-            <span data-curriculum-label>Expand all</span>
-          </button>
+    <!-- ============================================= OVERVIEW ============ -->
+    <div class="ns-tabpanel" role="tabpanel" id="cd-p-overview" aria-labelledby="cd-t-overview" tabindex="0">
+      <section class="ns-prose">
+        <h2>About this course</h2>
+        <p>Salesforce is a platform before it is a product, and Apex is how you extend it. This course starts where every other one should: the data model, the security model, and what actually happens when a record is saved.</p>
+        <p>Every lesson has the same shape — a plain-English concept, one concrete example you build yourself, and a bridge to the next step.</p>
+      </section>
+
+      <aside class="ns-takeaway" style="margin-block-start:var(--space-6)">
+        <span class="ns-takeaway__label">In short</span>
+        <p class="ns-takeaway__text">If you can write an <code>if</code> statement and you have a browser, you can finish this. What you will not have at the end is a certificate you cannot defend — every lab runs in your own org, and the code is yours.</p>
+      </aside>
+
+      <!-- What the course is FOR, as three claims with the bespoke icons. -->
+      <section style="margin-block-start:var(--space-10)">
+        <p class="ns-kicker">How it is built</p>
+        <div class="ns-features" style="margin-block-start:var(--space-4)">
+          <article class="ns-feature">
+            <div class="ns-feature__top">
+              <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+              <span class="ns-feature__num">01</span>
+            </div>
+            <h3 class="ns-feature__name">In dependency order</h3>
+            <p class="ns-feature__text">Nothing is used before it is taught. The data model comes before the trigger that fires on it, and the test comes before the deploy that needs it.</p>
+          </article>
+          <article class="ns-feature">
+            <div class="ns-feature__top">
+              <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-lesson-lab"/></svg>
+              <span class="ns-feature__num">02</span>
+            </div>
+            <h3 class="ns-feature__name">Five labs in your own org</h3>
+            <p class="ns-feature__text">Create the object, load 200 records, watch the trigger fall over, fix it. Watching someone build a trigger is not the same as building one.</p>
+          </article>
+          <article class="ns-feature">
+            <div class="ns-feature__top">
+              <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-certificate"/></svg>
+              <span class="ns-feature__num">03</span>
+            </div>
+            <h3 class="ns-feature__name">Mapped to the exam</h3>
+            <p class="ns-feature__text">Every lesson names the Platform Developer I objective it covers, so studying here counts twice.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Prerequisites: the other half of "what you will learn", and the half
+           that gets left out. Each row says what to do if the answer is no —
+           a prerequisite with no route to meeting it is a wall, not a
+           warning. -->
+      <section style="margin-block-start:var(--space-10)">
+        <p class="ns-kicker">Before you start</p>
+        <div class="ns-prereq" style="margin-block-start:var(--space-4)">
+          <div class="ns-prereq__item" data-met="true">
+            <i class="ph ph-check-circle ns-prereq__icon" aria-hidden="true"></i>
+            <span>
+              <span class="ns-prereq__title">A free Developer Edition org</span>
+              <span class="ns-prereq__note">Lesson 01 creates one with you. It never expires and it costs nothing.</span>
+            </span>
+            <a class="ns-prereq__fix" href="#l1">Lesson 01</a>
+          </div>
+          <div class="ns-prereq__item" data-met="false">
+            <i class="ph ph-circle ns-prereq__icon" aria-hidden="true"></i>
+            <span>
+              <span class="ns-prereq__title">You can read a loop in any language</span>
+              <span class="ns-prereq__note">No prior Apex. If you have written JavaScript, Python or Java, you have enough.</span>
+            </span>
+            <a class="ns-prereq__fix" href="/courses/admin-basics">Take the primer</a>
+          </div>
+          <div class="ns-prereq__item">
+            <i class="ph ph-circle ns-prereq__icon" aria-hidden="true"></i>
+            <span>
+              <span class="ns-prereq__title">Comfortable clicking around Setup</span>
+              <span class="ns-prereq__note">Objects, fields and page layouts. Not required, but the labs assume you can find things.</span>
+            </span>
+            <a class="ns-prereq__fix" href="/courses/admin-basics">Admin basics</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Where this course sits, and the honest alternative to it. A course
+           page that never names the other option is a course page nobody
+           believes. -->
+      <section style="margin-block-start:var(--space-10)">
+        <p class="ns-kicker">Is this the right one?</p>
+        <div class="ns-compare" style="margin-block-start:var(--space-4)">
+          <div class="ns-compare__side">
+            <p class="ns-compare__title">Admin basics</p>
+            <ul>
+              <li>Clicks, not code</li>
+              <li>Flow, validation rules, reports</li>
+              <li>Start here if Setup is unfamiliar</li>
+            </ul>
+          </div>
+          <div class="ns-compare__side ns-compare__side--verdict">
+            <p class="ns-compare__title">Apex, from zero to first deploy</p>
+            <ul>
+              <li>Code, tests and a real deploy</li>
+              <li>Assumes you can read a loop</li>
+              <li>The one you want if you are going to build</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- The arc, as milestones rather than a second copy of the
+           curriculum. -->
+      <section style="margin-block-start:var(--space-10)">
+        <p class="ns-kicker">The arc</p>
+        <ol class="ns-timeline ns-timeline--icons" style="margin-block-start:var(--space-4)">
+          <li class="ns-timeline__item" data-state="done">
+            <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-database"></i></span>
+            <span class="ns-timeline__time">Week 1</span>
+            <div class="ns-timeline__title">The data model, and what a save actually does</div>
+            <p class="ns-timeline__text">Objects, relationships, and the order of operations you will spend the rest of the course respecting.</p>
+          </li>
+          <li class="ns-timeline__item" data-state="current">
+            <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-code"></i></span>
+            <span class="ns-timeline__time">Week 2</span>
+            <div class="ns-timeline__title">Apex, in bulk from the first line</div>
+            <p class="ns-timeline__text">Classes, collections and triggers written for 200 records because that is what production sends.</p>
+          </li>
+          <li class="ns-timeline__item">
+            <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-flask"></i></span>
+            <span class="ns-timeline__time">Week 3</span>
+            <div class="ns-timeline__title">Tests that mean something</div>
+            <p class="ns-timeline__text">Coverage is a side effect. The point is a test that fails when the behaviour changes.</p>
+          </li>
+          <li class="ns-timeline__item">
+            <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-rocket-launch"></i></span>
+            <span class="ns-timeline__time">Week 4</span>
+            <div class="ns-timeline__title">The first deploy</div>
+            <p class="ns-timeline__text">SFDX, a scratch org, and the change set you will never have to make again.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- What you leave with, as a list you can tick rather than a
+           paragraph. -->
+      <section style="margin-block-start:var(--space-10)">
+        <p class="ns-kicker">You finish with</p>
+        <ul class="ns-checklist" style="margin-block-start:var(--space-4)">
+          <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A working org with five things you built in it</span></li>
+          <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A repository of the course code, yours to keep</span></li>
+          <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A certificate, at 100% completion</span></li>
+          <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">The Platform Developer I outline, three quarters covered</span></li>
+        </ul>
+      </section>
+
+      <!-- The vocabulary the course assumes by the end. -->
+      <aside class="ns-terms" style="margin-block-start:var(--space-10)">
+        <span class="ns-terms__label">Terms you will own by lesson 10</span>
+        <dl>
+          <dt>Governor limit</dt><dd>The per-transaction ceiling the platform enforces — queries, rows, CPU time.</dd>
+          <dt>Bulkification</dt><dd>Writing for a list rather than a record, so 200 rows cost one query and not 200.</dd>
+          <dt>Selective query</dt><dd>A filter the platform can serve from an index rather than by reading every row.</dd>
+        </dl>
+      </aside>
+
+      <!-- Secondary, so it may fold. The band that answers "what is this"
+           never folds — a collapsed section is one a reader has to decide to
+           open, and most will not. -->
+      <details class="ns-band ns-band--tight ns-band--collapsible" style="padding-block:var(--space-8) 0">
+        <div class="ns-band__inner" style="padding-inline:0">
+          <summary class="ns-band__toggle">
+            <h2 class="ns-band__title">Refunds, access and updates</h2>
+            <span class="ns-band__toggle-hint">
+              <span class="ns-band__toggle-open">Show</span><span class="ns-band__toggle-close">Hide</span>
+              <i class="ph ph-caret-down" aria-hidden="true"></i>
+            </span>
+          </summary>
+          <div class="ns-band__panel">
+            <dl class="ns-deflist">
+              <dt>Refund</dt><dd>30 days, no questions asked, whatever you have watched.</dd>
+              <dt>Access</dt><dd>Lifetime, including every future update to this course.</dd>
+              <dt>Updates</dt><dd>Re-recorded each Salesforce release when the release changes the answer.</dd>
+            </dl>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- ============================================ CURRICULUM ========== -->
+    <div class="ns-tabpanel" role="tabpanel" id="cd-p-curriculum" aria-labelledby="cd-t-curriculum" tabindex="0">
+      <section id="curriculum">
+        <div class="ns-curriculum">
+          <div class="ns-curriculum__bar">
+            <span class="ns-curriculum__totals">5 sections · 24 lessons · 6h 20m</span>
+            <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" data-curriculum-toggle aria-expanded="false">
+              <span data-curriculum-label>Expand all</span>
+            </button>
+          </div>
+
+          <!-- THE KIND IS AN ICON, not a word.
+               Twenty-four rows that each spell out VIDEO are twenty-four
+               repeats of what the glyph already said, and they turn a
+               curriculum into a spreadsheet. The word is not deleted — it
+               stays in the DOM for assistive tech and returns as a tooltip on
+               hover or keyboard focus. The __sub line is then free to carry
+               the thing the glyph CANNOT say: whether this row is open to you.
+
+               The section holding the first (or current) lesson ships `open`. -->
+          <details class="ns-curriculum__section" open>
+            <summary class="ns-curriculum__head">
+              <span class="ns-curriculum__index">01</span>
+              <h3 class="ns-curriculum__title">Getting oriented</h3>
+              <span class="ns-curriculum__meta">
+                <span>3 lessons</span><span>32m</span>
+                <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+              </span>
+            </summary>
+            <a class="ns-lesson" href="/lesson/what-is-an-org" data-access="free">
+              <span class="ns-lesson__index" aria-hidden="true">01</span>
+              <span class="ns-lesson__body">
+                <span class="ns-lesson__title">What is an org?</span>
+                <span class="ns-lesson__sub">
+                  <span class="ns-laccess ns-laccess--free"><i class="ph ph-lock-simple-open" aria-hidden="true"></i>Free</span>
+                  <span class="ns-lesson__badge">Preview</span>
+                </span>
+              </span>
+              <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+              <span class="ns-lesson__time">08:12</span>
+            </a>
+            <a class="ns-lesson" href="/lesson/objects-and-fields" data-access="free">
+              <span class="ns-lesson__index" aria-hidden="true">02</span>
+              <span class="ns-lesson__body">
+                <span class="ns-lesson__title">Objects &amp; fields</span>
+                <span class="ns-lesson__sub">
+                  <span class="ns-laccess ns-laccess--free"><i class="ph ph-lock-simple-open" aria-hidden="true"></i>Free</span>
+                  <span class="ns-lesson__badge ns-lesson__badge--quiet">12 min read</span>
+                </span>
+              </span>
+              <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0"><i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
+              <span class="ns-lesson__time">12:40</span>
+            </a>
+            <a class="ns-lesson" href="/join" data-access="members">
+              <span class="ns-lesson__index" aria-hidden="true">03</span>
+              <span class="ns-lesson__body">
+                <span class="ns-lesson__title">Navigation that sticks<span class="ns-visually-hidden"> (locked — members only)</span></span>
+                <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--members"><i class="ph ph-lock-simple" aria-hidden="true"></i>Members</span></span>
+              </span>
+              <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+              <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
+            </a>
+          </details>
+
+          <details class="ns-curriculum__section">
+            <summary class="ns-curriculum__head">
+              <span class="ns-curriculum__index">02</span>
+              <h3 class="ns-curriculum__title">Your first automation</h3>
+              <span class="ns-curriculum__meta">
+                <span>4 lessons</span><span>1h 02m</span>
+                <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+              </span>
+            </summary>
+            <a class="ns-lesson" href="/join" data-access="members">
+              <span class="ns-lesson__index" aria-hidden="true">04</span>
+              <span class="ns-lesson__body">
+                <span class="ns-lesson__title">Build it: an approval flow<span class="ns-visually-hidden"> (locked)</span></span>
+                <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--members"><i class="ph ph-lock-simple" aria-hidden="true"></i>Members</span></span>
+              </span>
+              <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0"><i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Hands-on lab</span></span>
+              <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
+            </a>
+            <a class="ns-lesson" href="/join" data-access="members">
+              <span class="ns-lesson__index" aria-hidden="true">05</span>
+              <span class="ns-lesson__body">
+                <span class="ns-lesson__title">Check yourself: the save order<span class="ns-visually-hidden"> (locked)</span></span>
+                <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--members"><i class="ph ph-lock-simple" aria-hidden="true"></i>Members</span></span>
+              </span>
+              <span class="ns-ltype ns-ltype--icon ns-ltype--quiz ns-tooltip-host" tabindex="0"><i class="ph ph-exam" aria-hidden="true"></i><span class="ns-tooltip">Quiz</span></span>
+              <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
+            </a>
+          </details>
+
+          <details class="ns-curriculum__section">
+            <summary class="ns-curriculum__head">
+              <span class="ns-curriculum__index">03</span>
+              <h3 class="ns-curriculum__title">Apex in bulk</h3>
+              <span class="ns-curriculum__meta">
+                <span>6 lessons</span><span>1h 48m</span>
+                <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+              </span>
+            </summary>
+            <a class="ns-lesson" href="/join" data-access="members">
+              <span class="ns-lesson__index" aria-hidden="true">08</span>
+              <span class="ns-lesson__body">
+                <span class="ns-lesson__title">Live: rewriting a trigger under load<span class="ns-visually-hidden"> (locked)</span></span>
+                <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--soon"><i class="ph ph-clock" aria-hidden="true"></i>Sept 12</span></span>
+              </span>
+              <span class="ns-ltype ns-ltype--icon ns-ltype--live ns-tooltip-host" tabindex="0"><i class="ph ph-video-camera" aria-hidden="true"></i><span class="ns-tooltip">Live session</span></span>
+              <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
+            </a>
+          </details>
         </div>
 
-        <!-- The section holding the first (or current) lesson ships `open`. -->
-        <details class="ns-curriculum__section" open>
-          <summary class="ns-curriculum__head">
-            <span class="ns-curriculum__index">01</span>
-            <h3 class="ns-curriculum__title">Getting oriented</h3>
-            <span class="ns-curriculum__meta">
-              <span>3 lessons</span><span>32m</span>
-              <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
-            </span>
-          </summary>
-          <a class="ns-lesson" href="/lesson/what-is-an-org">
-            <span class="ns-lesson__index" aria-hidden="true">01</span>
-            <span class="ns-lesson__body">
-              <span class="ns-lesson__title">What is an org?</span>
-              <span class="ns-lesson__sub">
-                <span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span>
-                <span class="ns-lesson__badge">Preview</span>
+        <!-- The files that come with it, listed here rather than promised in
+             the enrol card's bullet list. -->
+        <div style="margin-block-start:var(--space-8)">
+          <p class="ns-kicker">Downloads included</p>
+          <div style="margin-block-start:var(--space-4)">
+            <a class="ns-resource" href="#dl-source">
+              <span class="ns-resource__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+              <span class="ns-resource__body">
+                <span class="ns-resource__title">Every class and trigger from the course</span>
+                <span class="ns-resource__type">SFDX project · 1.2 MB</span>
               </span>
-            </span>
-            <span class="ns-lesson__time">08:12</span>
-          </a>
-          <a class="ns-lesson" href="/lesson/objects-and-fields">
-            <span class="ns-lesson__index" aria-hidden="true">02</span>
-            <span class="ns-lesson__body">
-              <span class="ns-lesson__title">Objects &amp; fields</span>
-              <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--article"><i class="ph ph-article" aria-hidden="true"></i>Article</span></span>
-            </span>
-            <span class="ns-lesson__time">12:40</span>
-          </a>
-          <a class="ns-lesson" href="/join" data-state="locked">
-            <span class="ns-lesson__index" aria-hidden="true">03</span>
-            <span class="ns-lesson__body">
-              <span class="ns-lesson__title">Navigation that sticks<span class="ns-visually-hidden"> (locked — members only)</span></span>
-              <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span></span>
-            </span>
-            <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
-          </a>
-        </details>
+              <i class="ph ph-arrow-down ns-resource__cue" aria-hidden="true"></i>
+            </a>
+            <a class="ns-resource" href="#dl-limits">
+              <span class="ns-resource__icon"><i class="ph ph-file-text" aria-hidden="true"></i></span>
+              <span class="ns-resource__body">
+                <span class="ns-resource__title">Governor limits cheat sheet</span>
+                <span class="ns-resource__type">PDF · 1 page</span>
+              </span>
+              <i class="ph ph-arrow-down ns-resource__cue" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
 
-        <details class="ns-curriculum__section">
-          <summary class="ns-curriculum__head">
-            <span class="ns-curriculum__index">02</span>
-            <h3 class="ns-curriculum__title">Your first automation</h3>
-            <span class="ns-curriculum__meta">
-              <span>4 lessons</span><span>1h 02m</span>
-              <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
-            </span>
-          </summary>
-          <a class="ns-lesson" href="/join" data-state="locked">
-            <span class="ns-lesson__index" aria-hidden="true">04</span>
-            <span class="ns-lesson__body">
-              <span class="ns-lesson__title">Build it: an approval flow<span class="ns-visually-hidden"> (locked)</span></span>
-              <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--lab"><i class="ph ph-flask" aria-hidden="true"></i>Hands-on lab</span></span>
-            </span>
-            <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span>
-          </a>
-        </details>
-      </div>
-    </section>
-
-    <section style="margin-block-start:var(--space-10)">
-      <p class="ns-kicker">Your instructors</p>
-      <div class="ns-instructors" style="margin-block-start:var(--space-4)">
+    <!-- ============================================ INSTRUCTORS ========= -->
+    <div class="ns-tabpanel" role="tabpanel" id="cd-p-instructor" aria-labelledby="cd-t-instructor" tabindex="0">
+      <div class="ns-instructors ns-instructors--pair">
         <div class="ns-instructor">
           <img class="ns-instructor__avatar" src="/assets/logo/favicon.svg" alt="">
           <div>
@@ -168,13 +472,49 @@
             <p class="ns-instructor__bio">Eleven years building on the platform, most of them cleaning up other people's triggers.</p>
           </div>
         </div>
+        <div class="ns-instructor">
+          <img class="ns-instructor__avatar" src="/assets/logo/favicon.svg" alt="">
+          <div>
+            <p class="ns-instructor__name">Priya Raman</p>
+            <p class="ns-instructor__role">Lead Developer · Platform Developer II</p>
+            <div class="ns-instructor__stats">
+              <span><i class="ph ph-star" aria-hidden="true"></i>4.9 rating</span>
+              <span><i class="ph ph-users-three" aria-hidden="true"></i>9,300 learners</span>
+              <span><i class="ph ph-books" aria-hidden="true"></i>4 courses</span>
+            </div>
+            <p class="ns-instructor__bio">Writes the labs. Believes a lesson you cannot break in your own org is a lesson you have not learned.</p>
+          </div>
+        </div>
       </div>
-    </section>
 
-    <section style="margin-block-start:var(--space-10)">
-      <p class="ns-kicker">What learners say</p>
-      <div class="ns-testimonials" style="margin-block-start:var(--space-4)">
-        <blockquote class="ns-testimonial">
+      <figure class="ns-quote" style="margin-block-start:var(--space-10)">
+        <blockquote>We teach the thing that goes wrong at 200 records, because that is the thing nobody teaches and everybody hits.</blockquote>
+        <figcaption>Swarnil Singhai · on why lesson 09 exists</figcaption>
+      </figure>
+
+      <section style="margin-block-start:var(--space-10)">
+        <p class="ns-kicker">Also from this pair</p>
+        <div class="ns-course-strip" style="margin-block-start:var(--space-4)">
+          <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">SOQL, properly</span></a><span class="ns-ccard__meta"><span>6 lessons</span><span>1h 05m</span></span></div></div>
+          <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">LWC from scratch</span></a><span class="ns-ccard__meta"><span>14 lessons</span><span>4h 10m</span></span></div></div>
+          <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Integration patterns</span></a><span class="ns-ccard__meta"><span>11 lessons</span><span>3h 30m</span></span></div></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============================================== REVIEWS =========== -->
+    <div class="ns-tabpanel" role="tabpanel" id="cd-p-reviews" aria-labelledby="cd-t-reviews" tabindex="0">
+      <!-- The distribution before the quotes. Five stars and a number is a
+           claim; the shape of the distribution is evidence. -->
+      <dl class="ns-deflist">
+        <dt>5 star</dt><dd><meter class="ns-meter" value="78" max="100" low="50" high="80" optimum="100" aria-label="78% of reviews are five star"></meter></dd>
+        <dt>4 star</dt><dd><meter class="ns-meter" value="15" max="100" low="50" high="80" optimum="100" aria-label="15% of reviews are four star"></meter></dd>
+        <dt>3 star</dt><dd><meter class="ns-meter" value="5" max="100" low="50" high="80" optimum="100" aria-label="5% of reviews are three star"></meter></dd>
+        <dt>2 star</dt><dd><meter class="ns-meter" value="2" max="100" low="50" high="80" optimum="100" aria-label="2% of reviews are two star"></meter></dd>
+      </dl>
+
+      <div class="ns-testimonials" style="margin-block-start:var(--space-8)">
+        <blockquote class="ns-testimonial ns-testimonial--featured">
           <span class="ns-rating" data-value="5" data-of="5">
             <span class="ns-rating__value">5.0</span>
             <span class="ns-rating__stars" aria-hidden="true">
@@ -183,36 +523,65 @@
             </span>
           </span>
           <p class="ns-testimonial__quote">The labs are the difference. Watching someone build a trigger is not the same as building one, and this course knows it.</p>
+          <span class="ns-testimonial__result">Passed PD1 six weeks later</span>
           <footer class="ns-testimonial__who">
             <img class="ns-testimonial__avatar" src="/assets/logo/favicon.svg" alt="">
             <span><span class="ns-testimonial__name">Marcus Ellery</span><span class="ns-testimonial__role">Admin → Developer</span></span>
           </footer>
         </blockquote>
+        <blockquote class="ns-testimonial ns-testimonial--compact">
+          <p class="ns-testimonial__quote">Lesson 09 alone paid for it. I had been writing triggers for a year and had never once thought about the second data load.</p>
+          <footer class="ns-testimonial__who">
+            <img class="ns-testimonial__avatar" src="/assets/logo/favicon.svg" alt="">
+            <span><span class="ns-testimonial__name">Dana Whitfield</span><span class="ns-testimonial__role">Salesforce Developer</span></span>
+          </footer>
+        </blockquote>
+        <blockquote class="ns-testimonial ns-testimonial--compact">
+          <p class="ns-testimonial__quote">Blunt, short lessons with no filler. I finished it in two weekends and shipped the deploy on the Monday.</p>
+          <footer class="ns-testimonial__who">
+            <img class="ns-testimonial__avatar" src="/assets/logo/favicon.svg" alt="">
+            <span><span class="ns-testimonial__name">Ije Okafor</span><span class="ns-testimonial__role">Consultant</span></span>
+          </footer>
+        </blockquote>
       </div>
-    </section>
+    </div>
 
-    <!-- Secondary, so it may fold. The band that answers "what is this"
-         never folds — a collapsed section is one a reader has to decide to
-         open, and most will not. -->
-    <details class="ns-band ns-band--tight ns-band--collapsible" style="padding-block:var(--space-8) 0">
-      <div class="ns-band__inner" style="padding-inline:0">
-        <summary class="ns-band__toggle">
-          <h2 class="ns-band__title">Requirements</h2>
-          <span class="ns-band__toggle-hint">
-            <span class="ns-band__toggle-open">Show</span><span class="ns-band__toggle-close">Hide</span>
-            <i class="ph ph-caret-down" aria-hidden="true"></i>
-          </span>
-        </summary>
-        <div class="ns-band__panel">
-          <ul class="ns-outcomes ns-outcomes--plain ns-outcomes--single">
-            <li><i class="ph ph-circle" aria-hidden="true"></i><span>A free Developer org — we set one up in lesson 01.</span></li>
-            <li><i class="ph ph-circle" aria-hidden="true"></i><span>No prior Apex. Experience with any programming language helps.</span></li>
-          </ul>
+    <!-- ================================================== FAQ =========== -->
+    <div class="ns-tabpanel" role="tabpanel" id="cd-p-faq" aria-labelledby="cd-t-faq" tabindex="0">
+      <div class="ns-faq">
+        <details class="ns-faq__item" open>
+          <summary>Do I need a paid Salesforce license?</summary>
+          <div class="ns-faq__body"><p>No. Every lab runs in a free Developer Edition org, and lesson 01 walks you through creating one.</p></div>
+        </details>
+        <details class="ns-faq__item">
+          <summary>How long does it take?</summary>
+          <div class="ns-faq__body"><p>6h 20m of video, and roughly the same again in the labs. Most people finish in two to four weeks at an hour a day.</p></div>
+        </details>
+        <details class="ns-faq__item">
+          <summary>Will this get me through Platform Developer I?</summary>
+          <div class="ns-faq__body"><p>It covers about three quarters of the outline. The remaining quarter — Lightning components, integration — is the next course in the track.</p></div>
+        </details>
+        <details class="ns-faq__item">
+          <summary>What if it is not for me?</summary>
+          <div class="ns-faq__body"><p>Thirty days, no questions asked, whatever you have watched. Mail us and it is refunded the same day.</p></div>
+        </details>
+      </div>
+
+      <div class="ns-alert ns-alert--info" style="margin-block-start:var(--space-8)">
+        <i class="ph ph-info ns-alert__icon" aria-hidden="true"></i>
+        <div class="ns-alert__body">
+          <p class="ns-alert__title">Still deciding?</p>
+          <p class="ns-alert__text">Two lessons are open with no account. Watch lesson 01, and if the pace is wrong you have lost eight minutes.</p>
+          <div class="ns-alert__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="/lesson/what-is-an-org">Watch lesson 01</a></div>
         </div>
       </div>
-    </details>
+    </div>
 
-    <section style="margin-block-start:var(--space-10)">
+    <hr class="ns-divider">
+
+    <!-- Related sits OUTSIDE the tabs: it is where you go if the answer to
+         this page is no, and that has to be reachable from every tab. -->
+    <section style="margin-block-start:var(--space-8)">
       <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
         <div><p class="ns-kicker">Related</p><h2 class="ns-band__title" style="font-size:var(--size-h3)">Learners also took</h2></div>
         <div class="ns-band__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="/courses">All courses <i class="ph ph-arrow-right ns-btn__arrow" aria-hidden="true"></i></a></div>
@@ -243,7 +612,7 @@
         <ul class="ns-buybox__list">
           <li><i class="ph ph-video" aria-hidden="true"></i>6h 20m of video</li>
           <li><i class="ph ph-flask" aria-hidden="true"></i>5 hands-on labs</li>
-          <li><i class="ph ph-download-simple" aria-hidden="true"></i>Downloadable source</li>
+          <li><i class="ph ph-arrow-down" aria-hidden="true"></i>Downloadable source</li>
           <li><i class="ph ph-infinity" aria-hidden="true"></i>Lifetime access</li>
           <li><i class="ph ph-medal" aria-hidden="true"></i>Certificate of completion</li>
         </ul>
@@ -256,8 +625,48 @@
       </div>
       <p class="ns-buybox__foot">142 enrolled in the last 30 days</p>
     </div>
+
+    <!-- What the course is FOR, at the size the argument deserves: the badge
+         it counts towards. -->
+    <div class="ns-card ns-card--sunken">
+      <div class="ns-card__body" style="display:grid;justify-items:center;gap:var(--space-3)">
+        <span class="ns-certbadge ns-certbadge--associate" style="inline-size:7rem">
+          <span class="ns-certbadge__plate" aria-hidden="true"></span>
+          <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+          <span class="ns-certbadge__inner">
+            <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+            <span class="ns-certbadge__rule" aria-hidden="true"></span>
+            <span class="ns-certbadge__word">Counts towards</span>
+            <span class="ns-certbadge__name">Platform Developer I</span>
+          </span>
+        </span>
+        <span class="ns-card__text">Three quarters of the exam outline, mapped lesson by lesson.</span>
+      </div>
+    </div>
+
+    <aside class="ns-related">
+      <span class="ns-related__label">If this is not the one</span>
+      <ul>
+        <li><a href="/courses/admin-basics"><span class="ns-related__kind">Course</span>Admin basics, no code</a></li>
+        <li><a href="/tracks/developer"><span class="ns-related__kind">Track</span>The whole developer path</a></li>
+      </ul>
+    </aside>
   </aside>
 </div>
+
+<!-- The closer — exactly one per page, at the end. -->
+<section class="ns-band ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <div class="ns-cta">
+      <h2 class="ns-band__title">Create your free org. Start lesson one.</h2>
+      <div class="ns-cta__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="/checkout">Enrol — $49</a>
+        <a class="ns-btn ns-btn--ghost ns-btn--lg" href="/lesson/what-is-an-org">Watch lesson 01 free</a>
+      </div>
+      <span class="ns-cta__fine">No card for the free lessons. 30-day refund on the rest.</span>
+    </div>
+  </div>
+</section>
 
 <!-- The phone counterpart of the enrol card. display:none above 64rem, so
      the two never appear together. -->

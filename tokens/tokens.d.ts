@@ -41,6 +41,8 @@ export type TokenName =
   | "colorWarningInk"
   | "colorErrorInk"
   | "colorInfoInk"
+  | "nsLevelIntermediateInk"
+  | "nsFeaturedInk"
   | "colorLevelIntermediateInk"
   | "colorFeaturedInk"
   | "nsSurface"

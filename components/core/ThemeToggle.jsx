@@ -78,14 +78,10 @@ export function ThemeToggle({ variant = "switch", className, label = "Dark mode"
           frame, server-rendered, before this component's effect has run. */}
       {variant === "icon" ? (
         <>
-          <i className="ph ph-sun" aria-hidden="true" />
-          <i className="ph ph-moon" aria-hidden="true" />
+          <span className="ns-themeswitch__mark" aria-hidden="true" />
         </>
       ) : (
-        <span className="ns-themeswitch__knob" aria-hidden="true">
-          <i className="ph ph-sun" />
-          <i className="ph ph-moon" />
-        </span>
+        <span className="ns-themeswitch__mark" aria-hidden="true" />
       )}
     </button>
   );

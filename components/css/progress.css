@@ -1,4 +1,4 @@
-/* NS Design System — progress, and the table primitive.
+/* NS Design System — progress.
    =========================================================================
    Progress is the LMS's single most important piece of feedback: "how far
    through this course am I" is the question the product exists to answer.
@@ -126,55 +126,8 @@
   .ns-meter:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--color-warning); }
   .ns-meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--color-error); }
 
-  /* --- Table --------------------------------------------------------------
-     Hairlines only, no zebra striping: striping is a second structuring
-     device competing with the border, and with mono numerals the rows already
-     read as rows. Numeric columns are tabular-nums and end-aligned so digits
-     line up in columns the eye can scan.
-
-     A table must always be wrapped in .ns-table-wrap — the wrapper is what
-     makes a wide table scroll inside itself instead of pushing the whole page
-     sideways on mobile. tabindex="0" on the wrapper makes that scroll region
-     reachable by keyboard, which is required once it scrolls. */
-  .ns-table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-card); }
-  .ns-table-wrap:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
-
-  .ns-table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
-  .ns-table th {
-    text-align: start; padding: var(--space-3) var(--space-4);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-    border-block-end: 1px solid var(--color-border);
-    background: var(--color-surface);
-    white-space: nowrap;
-  }
-  .ns-table td { padding: var(--space-3) var(--space-4); border-block-end: 1px solid var(--color-border); }
-  .ns-table tbody tr:last-child td { border-block-end: 0; }
-  .ns-table tbody tr:hover { background: var(--color-surface-sunken); }
-  .ns-table__num { text-align: end; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-
-  /* Sticky header for long tables. Needs the wrapper to be the scroll
-     container, which .ns-table-wrap already is. */
-  .ns-table--sticky th { position: sticky; inset-block-start: 0; z-index: var(--z-raised); }
-
-  /* A sortable header is a real <button> inside the <th>, so it is keyboard
-     reachable; the <th> carries aria-sort, which is what gets announced. */
-  .ns-table__sort {
-    display: inline-flex; align-items: center; gap: var(--space-1);
-    border: 0; background: none; padding: 0; cursor: pointer;
-    font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit;
-  }
-  .ns-table__sort:hover { color: var(--color-brand-600); }
-  .ns-table__sort::after { content: "\e136"; font-family: var(--font-icon); opacity: 0.3; }
-  [aria-sort="ascending"] .ns-table__sort::after { opacity: 1; rotate: 180deg; }
-  [aria-sort="descending"] .ns-table__sort::after { opacity: 1; }
-
-  .ns-table caption {
-    caption-side: top; text-align: start;
-    padding: var(--space-3) var(--space-4);
-    color: var(--color-muted); font-size: var(--size-small);
-  }
+  /* The Table primitive and every variant of it live in table.css — the
+     table grew large enough to be its own module. */
 
   /* --- Timeline -----------------------------------------------------------
      A vertical feed of things that happened: course activity, a changelog, a

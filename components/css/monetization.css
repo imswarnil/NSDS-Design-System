@@ -1,0 +1,187 @@
+/* NS Design System — monetization: the sponsor card and its shapes.
+   =========================================================================
+   The paid surfaces, gathered in one file so the decisions that matter about
+   them are made once and are countable.
+
+   IT READS AS A RECOMMENDATION, NOT AS AN AD. The first version of this was
+   built out of the system's mono label voice — uppercase, tracked out, the
+   same treatment as a lesson duration — and it looked exactly like the thing
+   readers have trained themselves to skip. Mono in this system means DATA: a
+   timestamp, an index, a count. A sponsor is none of those. It is a sentence
+   someone wrote about their product, so it is set in the reading face, and the
+   hierarchy is carried by weight and colour the way the rest of the prose is.
+
+   The one mono-ish survivor is the label, and even that is sentence case at
+   label size: it has to be noticeable, not shouted.
+
+   THE RULES, and they are not negotiable per placement:
+
+     1. IT SAYS SO. Every sponsor carries .ns-sponsor__label with its dot. A
+        paid block that looks like editorial is not a design choice, it is a
+        lie, and the first one costs the whole site's credibility.
+
+     2. IT NEVER TAKES THE PRIMARY. Solid brand blue is the one action on a
+        screen (Principle 3), and on a lesson page that action is "next
+        lesson", not "visit our sponsor". The CTA is a text link with an
+        arrow — the same shape a "read more" takes everywhere else.
+
+     3. IT IS A HAIRLINE OBJECT. Same border, same radius, same surface as the
+        rest of the system.
+
+   The four shapes are about WHERE it goes, not how loud it is:
+
+     --skyscraper   tall and narrow, for a content rail. The one shape with
+                    room for the whole pitch stacked.
+     --square       the compact rail/grid unit. The description is dropped
+                    rather than clamped — a sponsor with two words of a
+                    sentence visible is worse than one with none.
+     --leaderboard  a wide strip: mark and text on one line, action at the end.
+     --article      IN the reading flow, and therefore deliberately NOT a
+                    card: a leading hairline and nothing else. A boxed object
+                    in a column of prose reads as a pull-quote the reader is
+                    meant to trust; an edge rule reads as an aside, which is
+                    what it is.
+
+   The dashed .ns-adslot in catalog.css is the EMPTY state — the placeholder
+   before a sponsor is sold. These are what fills it. */
+@layer ns-components {
+
+  .ns-sponsor {
+    display: grid; gap: var(--space-2-5);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  /* The whole card is a link on the shapes that want it to be. Hover moves the
+     hairline, not the box: no lift, no shadow — Principle 5. */
+  a.ns-sponsor { text-decoration: none; color: inherit; display: grid; }
+  a.ns-sponsor:hover { border-color: var(--color-brand-300); }
+  a.ns-sponsor:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset);
+  }
+
+  /* Rule 1. Sentence case in the reading face, with a dot doing the flagging —
+     a small quiet marker reads as a disclosure, and SPONSORED in tracked-out
+     caps reads as a banner nobody looks at. */
+  .ns-sponsor__label {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-size: var(--size-label); font-weight: var(--weight-medium);
+    color: var(--color-label);
+  }
+  .ns-sponsor__label::before {
+    content: ""; flex: none;
+    inline-size: var(--space-1-5); block-size: var(--space-1-5);
+    border-radius: var(--radius-pill);
+    background: var(--color-label);
+  }
+  /* Where a caller passes the old megaphone glyph, it is redundant with the
+     dot and with the word — hidden rather than left to fight them. */
+  .ns-sponsor__label > i { display: none; }
+
+  /* The mark. Constrained by HEIGHT rather than width: sponsor logos arrive in
+     every aspect ratio there is, and a width cap turns a wordmark into a
+     thumbnail and a square icon into a billboard. */
+  .ns-sponsor__logo {
+    display: block; block-size: var(--space-7); inline-size: auto;
+    max-inline-size: 100%; object-fit: contain; object-position: left center;
+    border: 0; border-radius: var(--radius-sm);
+  }
+
+  .ns-sponsor__body { display: grid; gap: var(--space-1); min-inline-size: 0; }
+  /* The company. Small and quiet — it is the attribution, not the message. */
+  .ns-sponsor__name {
+    font-size: var(--size-label); font-weight: var(--weight-medium);
+    color: var(--color-muted);
+  }
+  /* THE HEADLINE, and the only thing set at reading size. The one line the
+     sponsor gets to make their case with — so it gets the weight, and the
+     name above it gets to be small. */
+  .ns-sponsor__tagline {
+    font-size: var(--size-body); font-weight: var(--weight-semibold);
+    line-height: var(--leading-heading); color: var(--color-ink);
+  }
+  .ns-sponsor__text {
+    font-size: var(--size-small); line-height: var(--leading-body);
+    color: var(--color-muted);
+  }
+  /* Rule 2: a text link with a travelling arrow, the same shape "read more"
+     takes everywhere else in the system. Not a button — a button here competes
+     with the one real action on the lesson page. */
+  .ns-sponsor__cta {
+    justify-self: start;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-sponsor__cta { color: var(--color-brand-300); }
+  .ns-sponsor__cta > i { transition: translate var(--duration-fast) var(--ease-out); }
+  a.ns-sponsor:hover .ns-sponsor__cta > i { translate: 2px 0; }
+  @media (prefers-reduced-motion: reduce) { .ns-sponsor__cta > i { transition: none; } }
+
+  /* --- Skyscraper ---------------------------------------------------------
+     The rail shape, and the only one with room for the label, the mark, the
+     headline, the description AND the action all stacked. */
+  .ns-sponsor--skyscraper { grid-template-columns: minmax(0, 1fr); align-content: start; }
+  .ns-sponsor--skyscraper .ns-sponsor__logo { block-size: var(--space-8); }
+
+  /* --- Square -------------------------------------------------------------
+     The compact rail or grid unit. The description is DROPPED rather than
+     clamped: two words of a sentence followed by an ellipsis is worse than no
+     sentence, and the headline already is the short version. */
+  .ns-sponsor--square { grid-template-columns: minmax(0, 1fr); align-content: start; }
+  .ns-sponsor--square .ns-sponsor__text { display: none; }
+  .ns-sponsor--square .ns-sponsor__tagline { font-size: var(--size-small); }
+
+  /* --- Leaderboard --------------------------------------------------------
+     One line: mark, text, action. For the full width of a content column. */
+  .ns-sponsor--leaderboard {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center; column-gap: var(--space-5);
+  }
+  .ns-sponsor--leaderboard .ns-sponsor__label { grid-column: 1 / -1; grid-row: 1; }
+  .ns-sponsor--leaderboard .ns-sponsor__logo { grid-row: 2; }
+  .ns-sponsor--leaderboard .ns-sponsor__body { grid-row: 2; }
+  .ns-sponsor--leaderboard .ns-sponsor__cta { grid-row: 2; justify-self: end; }
+  @media (max-width: 47.999rem) {
+    /* Stacked, because three cells in a phone's width is a logo, four words
+       and a truncated link. */
+    .ns-sponsor--leaderboard { grid-template-columns: minmax(0, 1fr); }
+    .ns-sponsor--leaderboard .ns-sponsor__logo,
+    .ns-sponsor--leaderboard .ns-sponsor__body,
+    .ns-sponsor--leaderboard .ns-sponsor__cta { grid-row: auto; justify-self: start; }
+  }
+
+  /* --- Article ------------------------------------------------------------
+     In the reading flow, and therefore deliberately NOT a card. A boxed object
+     in a column of prose reads as a pull-quote — something the writer endorsed
+     — and this is not that. A leading hairline is the system's own device for
+     "this is an aside", used by the blockquote and the callout, so the reader
+     already knows how to read it.
+
+     Set at the prose measure, so it sits inside the text block rather than
+     spanning past it and announcing itself as chrome. */
+  .ns-sponsor--article {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start; column-gap: var(--space-4);
+    max-inline-size: var(--container-prose);
+    padding: var(--space-1) 0 var(--space-1) var(--space-5);
+    border: 0; border-radius: 0;
+    border-inline-start: 2px solid var(--color-border);
+    background: none;
+  }
+  .ns-sponsor--article .ns-sponsor__label,
+  .ns-sponsor--article .ns-sponsor__body,
+  .ns-sponsor--article .ns-sponsor__cta { grid-column: 2; }
+  .ns-sponsor--article .ns-sponsor__logo { grid-row: 1 / span 2; grid-column: 1; block-size: var(--space-8); }
+  a.ns-sponsor--article:hover { border-color: var(--color-brand-300); }
+  @media (max-width: 39.999rem) {
+    .ns-sponsor--article { grid-template-columns: minmax(0, 1fr); }
+    .ns-sponsor--article .ns-sponsor__label,
+    .ns-sponsor--article .ns-sponsor__body,
+    .ns-sponsor--article .ns-sponsor__cta { grid-column: 1; }
+    .ns-sponsor--article .ns-sponsor__logo { grid-row: auto; grid-column: 1; }
+  }
+
+}

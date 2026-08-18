@@ -135,3 +135,42 @@
     .ns-anim-stagger--onview > * { animation-delay: 0s; }
   }
 }
+
+/* --- Between pages ------------------------------------------------------
+   A cross-document view transition, for the one navigation in the product
+   that is not really a navigation: moving from lesson 7 to lesson 8. The two
+   pages are the same room with different furniture, and a white flash between
+   them says otherwise.
+
+   The at-rule sits OUTSIDE the layer because @view-transition is a
+   document-level at-rule, not a style rule — it has no specificity to lose and
+   nothing to out-rank. The pseudo-element styling below is ordinary author CSS
+   and goes in the layer with everything else.
+
+   It is opt-in per document by BOTH sides: the browser only runs the
+   transition when the page being left and the page being entered declare it,
+   so a link out to a page that does not is a normal navigation with no
+   half-animation. Where it is unsupported the whole thing is dropped and
+   navigation is what it always was — no JS path, no fallback to maintain. */
+@view-transition { navigation: auto; }
+
+@layer ns-components {
+  /* Cross-fade only: no slide, no scale. A lesson page is an application
+     screen, and the parts that persist across the navigation — the rail, the
+     docked bar — should look like they never moved, because they did not. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: var(--duration-base);
+    animation-timing-function: var(--ease-out);
+  }
+
+  /* Principle 5. A reduced-motion reader gets the navigation with no
+     transition at all rather than a shorter one. Declared after the rule above
+     and in the same layer, so it wins on source order — no !important needed
+     to beat the UA's own cross-fade, because author beats UA already. */
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) { animation: none; }
+  }
+}

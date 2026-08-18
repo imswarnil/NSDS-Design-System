@@ -831,4 +831,43 @@
   .ns-aigate__list li { display: flex; gap: var(--space-2); align-items: baseline; }
   .ns-aigate__list i { color: var(--color-success); font-size: var(--size-label); }
   .ns-aigate__actions { display: flex; flex-direction: column; gap: var(--space-2); }
+
+  /* --- Ask AI -------------------------------------------------------------
+     The lesson's "open this in Claude / ChatGPT / Perplexity" panel, hung off
+     the shared menu panel so it inherits the dismiss behaviour, the elevation
+     and the row styling rather than reinventing them.
+
+     THE FIELD IS THE POINT. A menu of three logos sends whatever sentence the
+     page decided on and gives the reader no say in it; a field shows exactly
+     what is about to leave the site, lets them change it, and makes "ask about
+     the bit I did not follow" possible. It is prefilled, so the lazy path is
+     still one click.
+
+     Nothing here talks to a model. Each row is a plain link with
+     target="_blank" — the composing is done in assets/js/lms.js, which only
+     writes the field's text into the href. */
+  /* UPWARD. It hangs off a button at the foot of the rail, so a panel that
+     drops opens straight through the bottom of the viewport — the one place a
+     dropdown cannot go. transform-origin follows it, or the open animation
+     appears to grow from the wrong corner. */
+  .ns-askai {
+    /* Wider than the rail it hangs off, deliberately: the question needs room
+       to be read before it is sent. It opens over the lesson column, which is
+       what a dropdown is for — see the note on .ns-player__side about the
+       overflow that used to slice it in half. */
+    inline-size: min(22rem, 92vw); padding: var(--space-3);
+    inset-block-start: auto; inset-block-end: calc(100% + var(--space-2));
+    inset-inline-start: 0; inset-inline-end: auto;
+    transform-origin: bottom left;
+    translate: 0 var(--space-2);
+  }
+  .ns-usermenu:has(> [aria-expanded="true"]) > .ns-askai { translate: 0 0; }
+  .ns-askai__field {
+    inline-size: 100%; margin-block-end: var(--space-2);
+    font-size: var(--size-small); resize: vertical;
+  }
+  /* The out-arrow, pushed to the end of each row: these leave the site, and a
+     row that leaves should say so before it is clicked. */
+  .ns-askai__cue { margin-inline-start: auto; font-size: var(--size-label); color: var(--color-label); }
+  .ns-askai .ns-menu__item { display: flex; align-items: center; gap: var(--space-2); }
 }
