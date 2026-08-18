@@ -22,7 +22,7 @@
      document scrolls behind the locked layout. Below lg it reverts to the
      scrolling variant automatically — a viewport-locked two-pane layout on
      a phone is a one-pane layout with the content amputated. -->
-<div class="ns-player ns-player--fixed">
+<div class="ns-player" data-rail="open">
   <div class="ns-player__main">
     <div class="ns-player__stage">
       <!-- your <video> / <iframe> here. The poster below is the slot's
@@ -32,8 +32,8 @@
     </div>
     <header class="ns-player__head">
       <p class="ns-player__kicker">
-        <span class="ns-ltype ns-ltype--video"><i class="ph ph-video" aria-hidden="true"></i>Video</span>
-        section 2 · lesson 07
+        <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+        lesson 07 of 12
       </p>
       <h1 class="ns-player__title">SOQL joins: relationships in queries</h1>
       <p class="ns-player__meta"><span>21:15</span><span>updated Jan 2026</span></p>
@@ -52,20 +52,17 @@
     </header>
     <!-- Prev/next by NAME. An arrow pair with no titles makes the learner
          click to find out where they are going. -->
-    <nav class="ns-player__nav ns-lesson-nav" aria-label="Lesson navigation">
+    <nav class="ns-player__nav ns-lesson-nav ns-lesson-nav--split" aria-label="Lesson navigation">
       <a class="ns-lesson-nav__btn" href="#prev">
-        <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
-        <span class="ns-lesson-nav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+        <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+        <span class="ns-lesson-nav__dir">Previous</span>
         <span class="ns-lesson-nav__name">SELECT and WHERE</span>
       </a>
-      <div class="ns-progress-row">
-        <progress class="ns-progress" value="6" max="12" aria-label="Course progress: 6 of 12 lessons"></progress>
-        <span class="ns-progress-row__value">6/12</span>
-      </div>
+      <a class="ns-lesson-nav__up" href="#curriculum"><i class="ph ph-list" aria-hidden="true"></i> All 12 lessons</a>
       <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#next">
-        <span class="ns-lesson-nav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+        <span class="ns-lesson-nav__dir">Next</span>
         <span class="ns-lesson-nav__name">Aggregate queries</span>
-        <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
+        <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
       </a>
     </nav>
   </div>
@@ -74,34 +71,62 @@
        you must rename both, or the button announces a relationship to nothing. -->
   <nav class="ns-player__side" id="player-rail" aria-label="Curriculum">
     <div class="ns-player__side-head"><strong>Apex fundamentals</strong><span>6/12 done</span></div>
+
+    <!-- A COURSE IS A FLAT LIST OF LESSONS. No section headings here: a course
+         is one arc of eight to fourteen lessons, and a single "Section 1"
+         wrapper is a disclosure control that discloses everything. Modules and
+         their sections belong to training (templates/training-module.html).
+
+         The kind is an ICON, and the word arrives on hover or keyboard focus
+         from the shared tooltip — forty rows that each say VIDEO is forty
+         repeats of what the glyph already said. -->
     <div class="ns-player__list">
-      <p class="ns-player__section">2. Query the database</p>
       <a class="ns-lesson" href="#l6" data-state="done">
         <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
         <span class="ns-lesson__title">SELECT and WHERE<span class="ns-visually-hidden"> (completed)</span></span>
+        <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+          <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
         <span class="ns-lesson__time">14:02</span></a>
       <a class="ns-lesson" href="#l7" aria-current="true">
         <span class="ns-lesson__index" aria-hidden="true">07</span>
         <span class="ns-lesson__title">SOQL joins: relationships</span>
+        <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+          <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
         <span class="ns-lesson__time">21:15</span></a>
       <a class="ns-lesson" href="#l8">
         <span class="ns-lesson__index" aria-hidden="true">08</span>
-        <span class="ns-lesson__body">
-          <span class="ns-lesson__title">Aggregate queries</span>
-          <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--article"><i class="ph ph-article" aria-hidden="true"></i>Article</span></span>
-        </span>
+        <span class="ns-lesson__title">Aggregate queries</span>
+        <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
+          <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
         <span class="ns-lesson__time">18:40</span></a>
       <a class="ns-lesson" href="#l9">
         <span class="ns-lesson__index" aria-hidden="true">09</span>
-        <span class="ns-lesson__body">
-          <span class="ns-lesson__title">Check yourself</span>
-          <span class="ns-lesson__sub"><span class="ns-ltype ns-ltype--quiz"><i class="ph ph-question" aria-hidden="true"></i>Quiz</span><span>6 questions</span></span>
-        </span>
+        <span class="ns-lesson__title">Check yourself</span>
+        <span class="ns-ltype ns-ltype--icon ns-ltype--quiz ns-tooltip-host" tabindex="0">
+          <i class="ph ph-exam" aria-hidden="true"></i><span class="ns-tooltip">Quiz</span></span>
         <span class="ns-lesson__time">05:00</span></a>
-      <a class="ns-lesson" href="#upgrade" data-state="locked">
-        <span class="ns-lesson__index" aria-hidden="true">09</span>
+      <a class="ns-lesson" href="#l10">
+        <span class="ns-lesson__index" aria-hidden="true">10</span>
+        <span class="ns-lesson__title">Build a selective query</span>
+        <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0">
+          <i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Lab</span></span>
+        <span class="ns-lesson__time">22:10</span></a>
+      <a class="ns-lesson" href="#upgrade" data-access="members">
+        <span class="ns-lesson__index" aria-hidden="true">11</span>
         <span class="ns-lesson__title">Bulk-safe triggers<span class="ns-visually-hidden"> (locked — members only)</span></span>
-        <span class="ns-lesson__time"><i class="ph ph-lock" aria-hidden="true"></i></span></a>
+        <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+          <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+        <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span></a>
+    </div>
+
+    <!-- The rail's standing action. Pinned to the foot, never scrolls away,
+         and on a phone it moves ABOVE the list (player.css) so nobody has to
+         scroll past 40 lessons to reach it. -->
+    <div class="ns-player__side-cta">
+      <span class="ns-player__side-cta-meta">Your progress <b>6 / 12</b></span>
+      <progress class="ns-progress" value="6" max="12" aria-label="6 of 12 lessons complete"></progress>
+      <a class="ns-btn ns-btn--primary ns-btn--block ns-btn--sm" href="#l7"><i class="ph ph-play" aria-hidden="true"></i> Resume lesson 07</a>
+      <span class="ns-player__side-cta-meta">Certificate at 100%</span>
     </div>
   </nav>
 </div>

@@ -110,3 +110,120 @@
   inline-size: 2px;
   background-image: repeating-linear-gradient(to bottom, var(--ns-pattern-ink-2) 0 2px, transparent 2px 9px);
 }
+
+/* 10 circuit — right-angled traces with junction dots, the platform's own
+   "this is a system" texture. Reads as a board layout at a glance and as
+   nothing in particular up close, which is what a background should do. */
+.ns-pattern--circuit {
+  --ns-pattern-image:
+    linear-gradient(to right, var(--ns-pattern-ink-1) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ns-pattern-ink-1) 1px, transparent 1px),
+    radial-gradient(var(--ns-pattern-ink-2) 1.5px, transparent 1.5px);
+  --ns-pattern-size: 48px 48px, 48px 48px, 48px 48px;
+  --ns-pattern-position: 0 0, 0 0, 24px 24px;
+  --ns-pattern-mask: radial-gradient(ellipse 110% 90% at 50% 45%, #000 30%, transparent 80%);
+}
+
+/* 11 stagger — offset rows of short rules: a curriculum seen from very far
+   away. For band backgrounds behind course content. */
+.ns-pattern--stagger {
+  --ns-pattern-image:
+    repeating-linear-gradient(to right, var(--ns-pattern-ink-1) 0 18px, transparent 18px 34px),
+    repeating-linear-gradient(to right, var(--ns-pattern-ink-3) 0 18px, transparent 18px 34px);
+  --ns-pattern-size: 34px 5px, 34px 5px;
+  --ns-pattern-position: 0 0, 17px 14px;
+  --ns-pattern-mask: linear-gradient(to bottom, #000, transparent 85%);
+}
+
+/* 12 arc — quarter-circle rules radiating from the top-left corner. The one
+   pattern with a direction, for a hero whose content sits bottom-right. */
+.ns-pattern--arc {
+  --ns-pattern-image:
+    radial-gradient(circle at 0% 0%, transparent 0 118px, var(--ns-pattern-ink-1) 119px 120px, transparent 121px),
+    radial-gradient(circle at 0% 0%, transparent 0 198px, var(--ns-pattern-ink-1) 199px 200px, transparent 201px),
+    radial-gradient(circle at 0% 0%, transparent 0 278px, var(--ns-pattern-ink-3) 279px 280px, transparent 281px);
+  --ns-pattern-size: 100% 100%;
+}
+
+/* 13 mesh — a fine diagonal cross-hatch. The densest of the set; use it at
+   the size of a card, not a page. */
+.ns-pattern--mesh {
+  --ns-pattern-image:
+    repeating-linear-gradient(45deg, var(--ns-pattern-ink-1) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(-45deg, var(--ns-pattern-ink-1) 0 1px, transparent 1px 9px);
+  --ns-pattern-mask: radial-gradient(ellipse 90% 90% at 50% 50%, #000 10%, transparent 70%);
+}
+
+/* ============================================================ Shapes ====
+   The platform's own marks, as CSS rather than image files: a cloud, a
+   heptagon plate, a bolt, an orbit ring. They exist so a band, a card or an
+   empty state can carry a piece of the brand's geometry without commissioning
+   art, and so the same shape can be animated or blended rather than pasted.
+
+     <span class="ns-shape ns-shape--cloud"></span>
+
+   Sized by inline-size; everything scales from it. Colour comes from
+   background, so a shape inherits whatever the surface wants.
+
+   BLEND MODES are the point of the --blend modifier: dropped over a navy band
+   or a cover image, a shape tints what is under it instead of covering it,
+   which is how these stay decoration rather than becoming objects. Keep them
+   under 12% opacity on content surfaces — a shape you notice reading is a
+   shape that failed. */
+.ns-shape {
+  display: block; inline-size: 8rem; aspect-ratio: 1;
+  background: var(--color-brand-500);
+  flex: none;
+}
+.ns-shape--blend { mix-blend-mode: soft-light; opacity: 0.9; }
+.ns-shape--wash { opacity: 0.08; }
+
+/* The cloud: five overlapping circles in one mask, the same silhouette the
+   certification badge carries. */
+.ns-shape--cloud {
+  aspect-ratio: 1.55;
+  --ns-shape-mask:
+    radial-gradient(circle at 30% 62%, #000 22%, transparent 23%),
+    radial-gradient(circle at 50% 40%, #000 30%, transparent 31%),
+    radial-gradient(circle at 71% 58%, #000 25%, transparent 26%),
+    radial-gradient(circle at 45% 72%, #000 26%, transparent 27%),
+    radial-gradient(circle at 62% 74%, #000 21%, transparent 22%);
+  -webkit-mask-image: var(--ns-shape-mask);
+  mask-image: var(--ns-shape-mask);
+}
+
+/* The plate: the badge's heptagon, on its own, for a stat or an award. */
+.ns-shape--plate {
+  clip-path: polygon(50% 0%, 90% 12%, 100% 48%, 88% 84%, 50% 100%, 12% 84%, 0% 48%, 10% 12%);
+}
+
+/* The bolt: automation, in one polygon. */
+.ns-shape--bolt {
+  clip-path: polygon(58% 0%, 22% 54%, 46% 54%, 38% 100%, 78% 42%, 52% 42%);
+}
+
+/* The orbit: a ring with a satellite — integration, sync, the platform edge. */
+.ns-shape--orbit {
+  --ns-shape-mask:
+    radial-gradient(circle at 50% 50%, transparent 0 41%, #000 42% 46%, transparent 47%),
+    radial-gradient(circle at 86% 24%, #000 8%, transparent 9%);
+  -webkit-mask-image: var(--ns-shape-mask);
+  mask-image: var(--ns-shape-mask);
+}
+
+/* A slow drift, for a shape sitting behind a hero. Rotation only, and slow
+   enough to read as ambient rather than as something loading. */
+@media (prefers-reduced-motion: no-preference) {
+  .ns-shape--drift { animation: ns-shape-drift 24s linear infinite; }
+}
+@keyframes ns-shape-drift {
+  from { rotate: 0deg; }
+  to { rotate: 360deg; }
+}
+
+/* Positioned decoration: the shape leaves the flow and sits behind content,
+   which is the only way it is used on a band. */
+.ns-shape--behind {
+  position: absolute; z-index: 0; pointer-events: none;
+  inset-block-start: -10%; inset-inline-end: -6%;
+}

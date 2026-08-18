@@ -13,7 +13,7 @@
      styles.css + tokens/ + components/css/   the un-bundled source, shipped so
                          the site doubles as a readable reference
      assets/             icons, logo, theme-init, the runtime scripts
-     fonts/              Switzer + Sentient (latin-subset variable woff2)
+     fonts/              Switzer + Roboto Mono (latin-subset variable woff2)
                          and the Fontshare EULA that must travel with them
      * / *.card.html     every specimen, at its real path (iframe srcs)
 

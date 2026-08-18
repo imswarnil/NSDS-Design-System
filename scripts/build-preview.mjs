@@ -221,7 +221,7 @@ ${PROSE}
     <p class="sub">Everything else</p>
     <p class="variant-note">Chart colors live in the <a href="./chart-intro.html">Charts section</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
     ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
-  { id: "type", title: "Typography", lede: "Two self-hosted faces and one system stack. <strong>Switzer</strong> is the whole interface AND the reading layer \u2014 one grotesque separated by weight and size rather than a display/text pair; <strong>Sentient</strong> is the editorial voice that quotes; and <strong>mono</strong> is deliberately the platform\u2019s own console face, because a timestamp does not earn a download. Both shipped faces are Indian Type Foundry cuts from <a href=\"https://www.fontshare.com\">Fontshare</a>, latin-subset variable woff2 \u2014 <strong>69&thinsp;KB for the pair</strong>, licence in <code>fonts/FONTSHARE-EULA.txt</code>. Reading copy is <strong>14&nbsp;px</strong>: this is a product with an app inside it, and the compact scale is after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
+  { id: "type", title: "Typography", lede: "Two self-hosted faces. <strong>Switzer</strong> is the whole interface AND the reading layer \u2014 one grotesque separated by weight and size rather than a display/text pair, and it sets the quotations too; <strong>Roboto Mono</strong> is the data voice, and it is shipped rather than borrowed from the OS because it sets every index, duration, tag and status on every screen. Switzer is an Indian Type Foundry cut from <a href=\"https://www.fontshare.com\">Fontshare</a>, Roboto Mono is under the SIL OFL \u2014 <strong>67&thinsp;KB for the pair</strong>, licences in <code>fonts/</code>. Reading copy is <strong>14&nbsp;px</strong>: this is a product with an app inside it, and the compact scale is after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
     <p class="sub">The pairing</p>
     <div class="demo demo--stack" style="gap:var(--space-2)">
       <span class="ns-label">// Switzer 700 &middot; heading</span>
@@ -263,11 +263,11 @@ ${PROSE}
         <div style="font-family:var(--font-sans);font-size:var(--size-body);font-weight:400">400 — body copy, the reading default</div>
       </div>
       <div>
-        <span class="ns-label">Sentient &middot; wght 200&ndash;700 &middot; shipped, 40&thinsp;KB &middot; the editorial voice</span>
+        <span class="ns-label">quotations &middot; the platform serif &middot; NOT shipped</span>
         <blockquote class="ns-pullquote" style="margin-block-start:var(--space-2)">The hairline is the structure. Everything else is negotiable.</blockquote>
       </div>
       <div>
-        <span class="ns-label">mono &middot; system stack &middot; NOT shipped</span>
+        <span class="ns-label">Roboto Mono &middot; wght 100&ndash;700 &middot; shipped, 37&thinsp;KB &middot; the data voice</span>
         <div style="font-family:var(--font-mono);font-size:var(--size-mono);font-weight:400">400 — code blocks, inline code, timestamps</div>
         <div class="ns-label" style="font-size:var(--size-label)">700 — kickers &middot; indexes &middot; status labels</div>
       </div>
@@ -498,8 +498,14 @@ ${PROSE}
       });
     })();
     </script>` } },
-  { id: "patterns", title: "Patterns", lede: "Nine abstract, hairline-only background canvases — pure CSS gradients from <code>patterns/patterns.css</code>, for hero bands and collection thumbnails. Put <code>ns-pattern ns-pattern--&lt;name&gt;</code> on a container; add <code>ns-pattern--on-light</code> on light surfaces. Click a name to copy it.", body: () => {
-    const names = ["grid", "dots", "diagonal", "hex", "concentric", "chevron-grid", "blueprint", "topographic", "dashed-path"];
+  { id: "patterns", title: "Patterns", lede: "Thirteen abstract, hairline-only background canvases, plus the platform\u2019s own shapes — pure CSS gradients from <code>patterns/patterns.css</code>, for hero bands and collection thumbnails. Put <code>ns-pattern ns-pattern--&lt;name&gt;</code> on a container; add <code>ns-pattern--on-light</code> on light surfaces. Click a name to copy it.", body: () => {
+    const names = ["grid", "dots", "diagonal", "hex", "concentric", "chevron-grid", "blueprint", "topographic", "dashed-path", "circuit", "stagger", "arc", "mesh"];
+    const shapes = [
+      ["cloud", "the mark the certification badge carries"],
+      ["plate", "the badge's heptagon, on its own"],
+      ["bolt", "automation, in one polygon"],
+      ["orbit", "a ring and a satellite — integration, sync"],
+    ];
     const tile = (n, i, light) => `
       <div class="sw">
         <div class="ns-pattern ns-pattern--${n}${light ? " ns-pattern--on-light" : ""}" style="aspect-ratio:16/10;background:${light ? "#fff" : "var(--color-brand-900)"}"></div>
@@ -510,7 +516,29 @@ ${PROSE}
     <p class="sub">On dark bands — the default ink</p>
     <div class="sw-grid">${names.map((n, i) => tile(n, i, false)).join("")}</div>
     <p class="sub">On light surfaces</p>
-    <div class="sw-grid">${names.map((n, i) => tile(n, i, true)).join("")}</div>`;
+    <div class="sw-grid">${names.map((n, i) => tile(n, i, true)).join("")}</div>
+
+    <p class="sub">Shapes</p>
+    <p style="max-inline-size:46rem;margin-block-end:var(--space-4)">The platform's own marks as CSS rather than image files, so a band, a card or an empty state can carry a piece of the brand's geometry without commissioning art — and so the same shape can be animated or blended rather than pasted. Size with <code>inline-size</code>; colour comes from <code>background</code>, so a shape inherits whatever the surface wants.</p>
+    <div class="sw-grid">${shapes.map(([n, why]) => `
+      <div class="sw">
+        <div style="aspect-ratio:16/10;display:grid;place-items:center;background:var(--color-surface-sunken);border-radius:var(--radius-sm)">
+          <span class="ns-shape ns-shape--${n}" style="inline-size:4rem"></span>
+        </div>
+        <code class="sw__name">ns-shape--${n}</code>
+        <span class="sw__val">${why}</span>
+      </div>`).join("")}</div>
+
+    <p class="sub">Blended, behind content</p>
+    <p style="max-inline-size:46rem;margin-block-end:var(--space-4)">This is what the shapes are for. <code>--blend</code> puts a shape in <code>soft-light</code> over a band so it tints what is under it instead of covering it; <code>--wash</code> drops it to 8% for a light surface; <code>--behind</code> takes it out of the flow. Keep them under about 12% on content surfaces — a shape you notice while reading is a shape that failed. <code>--drift</code> adds a 24s rotation, and stops entirely under <code>prefers-reduced-motion</code>.</p>
+    <div class="ns-band ns-band--dark ns-pattern ns-pattern--circuit" style="position:relative;overflow:hidden;border-radius:var(--radius-card)">
+      <span class="ns-shape ns-shape--cloud ns-shape--blend ns-shape--behind ns-shape--drift" style="inline-size:18rem;background:var(--color-brand-300)"></span>
+      <div class="ns-band__inner">
+        <span class="ns-kicker ns-kicker--light">// Certification track</span>
+        <h3 class="ns-band__title">Platform Developer I</h3>
+        <p class="ns-band__lede">A circuit pattern, and one blended cloud drifting behind the copy. Neither is legible as an object, which is the test.</p>
+      </div>
+    </div>`;
   } },
   { id: "accessibility", title: "Accessibility", lede: "The contract every component ships with: focus is always visible, motion collapses under reduced-motion, status never relies on color alone, and every icon-only control has a name.", body: () => spec(["guidelines/accessibility.card.html"]) },
   { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
@@ -1292,6 +1320,7 @@ const JS = `
   document.querySelectorAll('iframe[data-theme-frame]').forEach(function (f) {
     f.addEventListener('load', function () { paintFrames(root.getAttribute('data-theme')); });
   });
+
 })();
 /* Click-to-copy on every token/class name — the styleguide's one job is
    getting names into code. */
@@ -1449,6 +1478,7 @@ ${sidebar(page.file)}
 <script src="../assets/js/tabs.js" defer></script>
 <script src="../assets/js/video.js" defer></script>
 <script src="../assets/js/toc.js" defer></script>
+<script src="../assets/js/ai.js" defer></script>
 </body>
 </html>
 `;
@@ -1546,7 +1576,7 @@ ${v.html}
    render unstyled. The docs links point here instead: the real template
    body, wrapped with the real stylesheet. */
 const DEMOS = [
-  { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "resize to see the < lg single-column collapse" },
+  { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "one viewport, one scrollbar — the rail is fixed and ends in the CTA", lock: true },
   { out: "demo-admin-dashboard.html", tpl: "admin-dashboard.html", title: "Admin dashboard — full screen demo", back: "c-admin-shell.html", note: "shell + nav + stats + drafts" },
   /* The two editor surfaces are the CONTENT of an admin screen — in product
      they render inside the shell's <main>, so the demo wraps them in one.
@@ -1570,6 +1600,14 @@ const DEMOS = [
   { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
   { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
   { out: "demo-course-listing.html", tpl: "course-listing.html", title: "Course listing — full page demo", back: "c-course-listing.html", note: "live filters — the tags actually filter the grid" },
+  /* The assistant. `lock` sets overflow:hidden on <html>: the shell is one
+     locked viewport and the document behind it must not scroll too, exactly
+     as the fixed course player does. The chat demo is interactive through
+     assets/js/ai.js — send a question and a canned answer comes back with
+     the real thinking, tool-chip, attachment and error states. */
+  { out: "demo-ai-chat.html", tpl: "ai-chat.html", title: "AI assistant — full screen demo", back: "c-ai-shell.html", note: "interactive — ask something; every third answer fails on purpose", lock: true },
+  { out: "demo-ai-signin.html", tpl: "ai-signin.html", title: "AI assistant, signed out — full screen demo", back: "c-ai-settings.html", note: "gate + empty state + disabled composer", lock: true },
+  { out: "demo-ai-settings.html", tpl: "ai-settings.html", title: "AI assistant settings — full page demo", back: "c-ai-settings.html", note: "how it teaches, what it reads, what it remembers" },
 ];
 /* Demo-only wiring for the admin editors. In product this behaviour lives in
    the React components (components/admin/); here it is vanilla JS over the
@@ -1766,7 +1804,7 @@ for (const d of DEMOS) {
   }
   if (d.interactive) body += `\n<script>${ADMIN_DEMO_JS}</script>`;
   writeFileSync(join(OUT, d.out), `<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light"${d.lock ? ' style="overflow:hidden"' : ""}>
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(d.title)}</title>
@@ -1786,6 +1824,7 @@ ${body}
 <script src="../assets/js/tabs.js" defer></script>
 <script src="../assets/js/video.js" defer></script>
 <script src="../assets/js/toc.js" defer></script>
+<script src="../assets/js/ai.js" defer></script>
 <script>document.documentElement.setAttribute('data-theme', (function(){try{return localStorage.getItem('ns-theme')}catch(e){return null}})() || 'light');</script>
 </body>
 </html>

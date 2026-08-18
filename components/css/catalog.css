@@ -184,6 +184,87 @@
   .ns-outcomes--plain i { color: var(--color-label); }
   .ns-outcomes--single { grid-template-columns: minmax(0, 1fr); }
 
+  /* --- Prerequisites ------------------------------------------------------
+     The other half of "what you will learn", and the half that gets left out:
+     what you need BEFORE this course. Written as a checklist the reader can
+     answer honestly, each row saying what to do if the answer is no — a
+     prerequisite with no route to meeting it is a wall, not a warning.
+
+     Deliberately NOT the outcomes list in another colour: outcomes are
+     promises (success ticks), prerequisites are conditions (neutral, with an
+     escape link), and rendering them alike is how a learner reads the entry
+     requirements as a feature list. */
+  .ns-prereq { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-prereq__item {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-3); align-items: baseline;
+    padding-block-end: var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-prereq__item:last-child { border-block-end: 0; padding-block-end: 0; }
+  .ns-prereq__icon { color: var(--color-label); font-size: var(--size-body); }
+  .ns-prereq__title { font-size: var(--size-small); font-weight: var(--weight-medium); }
+  .ns-prereq__note { font-size: var(--size-label); color: var(--color-muted); line-height: var(--leading-body); }
+  /* The route out. A prerequisite you do not meet should cost one click to
+     start meeting. */
+  .ns-prereq__fix {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-brand-600); text-decoration: none; white-space: nowrap;
+  }
+  .ns-prereq__fix:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+  [data-theme="dark"] .ns-prereq__fix { color: var(--color-brand-300); }
+  /* Met / not met, when the product knows — a signed-in learner who has
+     finished the earlier course should not be asked to check. */
+  .ns-prereq__item[data-met="true"] .ns-prereq__icon { color: var(--color-success); }
+  .ns-prereq__item[data-met="false"] .ns-prereq__icon { color: var(--color-warning-ink); }
+
+  /* --- Hero: split ---------------------------------------------------------
+     Copy on one side, the media on the other, both on the page surface. The
+     other heroes put the media BEHIND the copy, which is why they all need
+     on-dark ink; this one does not, so it is the hero to use when the cover
+     art matters as art rather than as a backdrop. */
+  .ns-chero--split .ns-chero__grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; gap: var(--space-10); }
+  .ns-chero--split .ns-chero__media { border-radius: var(--radius-card); overflow: hidden; border: 1px solid var(--color-border); }
+  @media (max-width: 63.999rem) {
+    .ns-chero--split .ns-chero__grid { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* --- Hero: certification -------------------------------------------------
+     For a course whose end state is an exam. The badge is the argument, so it
+     sits beside the title at display size rather than being mentioned in the
+     meta row. */
+  .ns-chero--cert .ns-chero__grid { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-10); }
+  .ns-chero--cert .ns-certbadge { inline-size: 9rem; }
+  @media (max-width: 47.999rem) {
+    .ns-chero--cert .ns-chero__grid { grid-template-columns: minmax(0, 1fr); }
+    .ns-chero--cert .ns-certbadge { inline-size: 6.5rem; }
+  }
+
+  /* --- Several authors ----------------------------------------------------
+     A course written by two people has two authors, and the answer is NOT a
+     smaller second block — that is an editorial claim the layout should not
+     be making. Three shapes, by how much room there is:
+
+       (rows)     each instructor gets the full .ns-instructor block
+       --pair     two side by side, equal weight
+       --byline   avatar stack + "Rahul, Sana and one more" for a card foot
+                  or a lesson header, where the names are attribution rather
+                  than biography                                            */
+  .ns-instructors--pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-8); }
+  .ns-instructors--pair .ns-instructor { align-items: start; }
+
+  /* The byline: the avatar stack the blog already uses, plus names that read
+     as a sentence. Overlapping avatars with a surface ring so faces stay
+     separable at 1.75rem. */
+  .ns-byline { display: inline-flex; align-items: center; gap: var(--space-2); min-inline-size: 0; }
+  .ns-byline__names {
+    min-inline-size: 0; font-size: var(--size-label); color: var(--color-muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-byline__names b { color: var(--color-ink); font-weight: var(--weight-medium); }
+  .ns-byline--stack { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
+
   /* ====================================================== Instructor ====
      One author or several. With several, each gets the same block — a course
      with two instructors has two instructors, and shrinking the second one
@@ -308,6 +389,31 @@
   /* The featured one is wider and larger — it is a pull-quote, and it uses
      the pull-quote's own device rather than inventing a second one. */
   .ns-testimonial--featured { grid-column: 1 / -1; }
+
+  /* --- Learner testimonial shapes ----------------------------------------
+     Four, and the difference between them is how much PROOF is attached:
+
+       (default)  quote + who
+       --result   a mono outcome line above the quote — "passed PD1 in 9
+                  weeks". The claim a learner is actually shopping for
+       --compact  one line, for a strip of three under a hero
+       --media    a photo-framed portrait beside the quote, for the one
+                  testimonial a page leads with                              */
+  .ns-testimonial__result {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-success-ink);
+    margin-block-end: var(--space-3);
+  }
+  .ns-testimonial--compact .ns-testimonial__quote { font-size: var(--size-small); font-family: var(--font-sans); }
+  .ns-testimonial--compact { padding: var(--pad-card); }
+  .ns-testimonial--media { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--pad-card-lg); align-items: center; }
+  .ns-testimonial--media .ns-pframe { inline-size: 9rem; flex: none; }
+  @media (max-width: 47.999rem) {
+    .ns-testimonial--media { grid-template-columns: minmax(0, 1fr); }
+    .ns-testimonial--media .ns-pframe { inline-size: 7rem; }
+  }
   .ns-testimonial--featured .ns-testimonial__quote {
     font-family: var(--font-heading); font-size: var(--size-h3);
     font-weight: var(--weight-medium); line-height: var(--leading-heading);

@@ -1,0 +1,362 @@
+<!--
+  NS Design System template — AI learning assistant, full screen
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into a page template, swap hrefs/titles for helpers
+              ({{@site.url}}, {{title}}, …); the transcript is rendered
+              client-side from your assistant endpoint.
+    Next.js → prefer the React components in components/ai/; this file is
+              the markup contract they implement.
+    Static  → use directly (assets/js/ai.js drives the demo behaviour).
+
+  The shell is one locked viewport: rail | thread + docked composer. The
+  page itself must not scroll, or the composer walks off the screen
+  mid-sentence — set overflow:hidden on <html> when this template owns the
+  route, exactly as the fixed course player does.
+
+  Every state a real assistant screen has is present below in order, so
+  this file doubles as the visual test: a finished answer with product
+  objects attached, a live streaming answer, a tool-call trace, a failed
+  turn, and a rate limit.
+-->
+<div class="ns-ai" data-collapsed="false" data-ai>
+
+  <!-- ============================================================ RAIL ==
+       Conversation history. Grouped by recency; the course a conversation
+       belongs to is the mono line above the question, because a student's
+       history is mostly "the one from the Apex module". -->
+  <aside class="ns-ai__side" id="ai-rail" aria-label="Conversations">
+    <div class="ns-aiside__head">
+      <span class="ns-aiside__brand"><i class="ph ph-sparkle" aria-hidden="true"></i>Namaste AI</span>
+      <button type="button" class="ns-btn ns-btn--outline ns-btn--sm ns-btn--block" data-ai-new>
+        <i class="ph ph-plus" aria-hidden="true"></i> New chat
+      </button>
+      <span class="ns-input-wrap">
+        <i class="ph ph-magnifying-glass ns-input-wrap__icon" aria-hidden="true"></i>
+        <input class="ns-input ns-input--has-icon" type="search" placeholder="Search chats" aria-label="Search conversations">
+      </span>
+    </div>
+
+    <div class="ns-aiside__list">
+      <div class="ns-aiside__group">
+        <p class="ns-aiside__label">Today</p>
+        <a class="ns-aiside__item" href="#0" aria-current="true">
+          <span>
+            <span class="ns-aiside__course">Apex basics</span>
+            <span class="ns-aiside__title">Why does my trigger hit governor limits?</span>
+          </span>
+          <span class="ns-aiside__when">09:12</span>
+        </a>
+        <a class="ns-aiside__item" href="#0">
+          <span>
+            <span class="ns-aiside__course">Career</span>
+            <span class="ns-aiside__title">Resume review for admin roles</span>
+          </span>
+          <span class="ns-aiside__when">08:40</span>
+        </a>
+      </div>
+
+      <div class="ns-aiside__group">
+        <p class="ns-aiside__label">Earlier this week</p>
+        <a class="ns-aiside__item" href="#0">
+          <span>
+            <span class="ns-aiside__course">Flows, end to end</span>
+            <span class="ns-aiside__title">Record-triggered vs scheduled flow</span>
+          </span>
+          <span class="ns-aiside__when">Tue</span>
+        </a>
+        <a class="ns-aiside__item" href="#0">
+          <span>
+            <span class="ns-aiside__course">LWC from scratch</span>
+            <span class="ns-aiside__title">Passing data between components</span>
+          </span>
+          <span class="ns-aiside__when">Mon</span>
+        </a>
+        <a class="ns-aiside__item" href="#0">
+          <span>
+            <span class="ns-aiside__course">Project ideas</span>
+            <span class="ns-aiside__title">Something to put on GitHub</span>
+          </span>
+          <span class="ns-aiside__when">Mon</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Quota as a meter, not a warning. It is information until it is
+         nearly gone; the upgrade link is a text link, not a solid button —
+         the primary action on this screen is still asking a question. -->
+    <div class="ns-aiside__foot">
+      <div class="ns-aiside__quota">
+        <span class="ns-aiside__quota-row">Questions today <b>12 / 30</b></span>
+        <progress class="ns-progress" value="12" max="30" aria-label="12 of 30 questions used today"></progress>
+        <a class="ns-link" href="#0">Go unlimited with Pro</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================== THREAD == -->
+  <div class="ns-ai__main">
+
+    <header class="ns-ai__bar">
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Toggle conversations"
+              aria-controls="ai-rail" aria-expanded="true" data-ai-toggle>
+        <i class="ph ph-sidebar" aria-hidden="true"></i>
+      </button>
+      <span class="ns-ai__bar-title">Why does my trigger hit governor limits?</span>
+      <span class="ns-ai__bar-meta">Apex basics · lesson 03</span>
+      <span class="ns-ai__bar-actions">
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share this chat"><i class="ph ph-share-network" aria-hidden="true"></i></button>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#0" aria-label="Assistant settings"><i class="ph ph-gear" aria-hidden="true"></i></a>
+      </span>
+    </header>
+
+    <div class="ns-ai__scroll" data-ai-scroll>
+      <div class="ns-ai__inner">
+
+        <!-- ---------------------------------------------- student turn -->
+        <article class="ns-aiturn ns-aiturn--user">
+          <header class="ns-aiturn__head">
+            <span class="ns-avatar ns-avatar--sm" aria-hidden="true">RS</span>
+            You
+            <time datetime="2026-03-04T09:12">09:12</time>
+          </header>
+          <div class="ns-aiturn__body">
+            <p>My trigger works on one record but fails when I data-load 200. I'm three lessons into Apex basics — explain what's happening, then give me a route to Platform Developer I.</p>
+          </div>
+        </article>
+
+        <!-- -------------------------------------------- assistant turn --
+             A finished answer: trace (collapsed), prose, code, sources,
+             then the product objects — course cards and a generated path. -->
+        <article class="ns-aiturn ns-aiturn--agent" data-state="done">
+          <header class="ns-aiturn__head">
+            <span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>
+            Assistant
+            <time datetime="2026-03-04T09:12">09:12</time>
+          </header>
+
+          <details class="ns-aitrace">
+            <summary><i class="ph ph-caret-right" aria-hidden="true"></i> How I answered this <span class="ns-aisource__num">3 steps</span></summary>
+            <div class="ns-aitrace__steps">
+              <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Read</b> your progress — Apex basics, lesson 03 of 12, no bulk lessons completed yet.</span></p>
+              <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Searched</b> the catalog for bulk-safe Apex material.</span></p>
+              <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Checked</b> the Platform Developer I exam outline against what you have finished.</span></p>
+            </div>
+          </details>
+
+          <p>
+            <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Searched catalog<span class="ns-aitool__count">6</span></span>
+            <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Read your progress</span>
+          </p>
+
+          <div class="ns-aiturn__body ns-prose">
+            <p>Your trigger is written for one record at a time. Salesforce hands a trigger up to 200 records in a single call, so anything you do <em>inside</em> the loop — a SOQL query, a DML statement — runs 200 times and blows the per-transaction limit (100 queries, 150 DML statements).</p>
+            <p>The fix is the same every time: query once before the loop into a Map, and collect changes into a List you insert once after it.</p>
+
+            <figure class="ns-code" data-lang="apex">
+              <figcaption class="ns-code__bar">
+                <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>AccountTrigger.cls</span></span>
+                <span class="ns-code__actions">
+                  <span class="ns-code__lang">apex</span>
+                  <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+                </span>
+              </figcaption>
+              <div class="ns-code__body">
+                <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4
+5</pre>
+                <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-com">// one query, outside the loop</span></span><span class="ns-code__line"><span class="ns-tok-type">Map</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">Id</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Account</span><span class="ns-tok-punct">&gt;</span> parents <span class="ns-tok-punct">=</span> <span class="ns-tok-kw">new</span> <span class="ns-tok-type">Map</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">Id</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Account</span><span class="ns-tok-punct">&gt;([</span><span class="ns-tok-kw">SELECT</span> <span class="ns-tok-type">Id</span><span class="ns-tok-punct">,</span> <span class="ns-tok-type">Rating</span> <span class="ns-tok-kw">FROM</span> <span class="ns-tok-type">Account</span><span class="ns-tok-punct">]);</span></span><span class="ns-code__line"><span class="ns-tok-kw">for</span> <span class="ns-tok-punct">(</span><span class="ns-tok-type">Contact</span> c <span class="ns-tok-punct">:</span> <span class="ns-tok-type">Trigger</span><span class="ns-tok-punct">.</span>new<span class="ns-tok-punct">)</span> <span class="ns-tok-punct">{</span></span><span class="ns-code__line">  c<span class="ns-tok-punct">.</span><span class="ns-tok-type">Description</span> <span class="ns-tok-punct">=</span> parents<span class="ns-tok-punct">.</span><span class="ns-tok-fn">get</span><span class="ns-tok-punct">(</span>c<span class="ns-tok-punct">.</span><span class="ns-tok-type">AccountId</span><span class="ns-tok-punct">).</span><span class="ns-tok-type">Rating</span><span class="ns-tok-punct">;</span></span><span class="ns-code__line"><span class="ns-tok-punct">}</span></span></code></pre>
+              </div>
+            </figure>
+
+            <p>Test it with 200 records, not one <span class="ns-aisource__num">[1]</span> — a test that inserts a single row proves nothing about the case that broke.</p>
+          </div>
+
+          <!-- Attribution. Numbered so the prose can reference [1] inline. -->
+          <div class="ns-aisource">
+            <span class="ns-aisource__label">Sources</span>
+            <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">1</span> Bulk-safe Apex patterns · lesson 04</a>
+            <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">2</span> Apex basics · lesson 09</a>
+            <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">3</span> Execution governors and limits <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
+          </div>
+
+          <!-- Product objects, in the assistant's answer. The same
+               .ns-card.ns-ccard the catalog page renders. -->
+          <div>
+            <p class="ns-aiattach__label">Covers this, in order</p>
+            <div class="ns-aiattach">
+              <div class="ns-card ns-ccard ns-ccard--compact">
+                <div class="ns-card__body">
+                  <span class="ns-card__kicker">// Course</span>
+                  <a class="ns-card__link" href="#0"><span class="ns-card__title">Bulk-safe Apex patterns</span></a>
+                  <p class="ns-card__text">Triggers that survive the 200-record data load.</p>
+                  <span class="ns-ccard__meta"><span>9 lessons</span><span>2h 10m</span></span>
+                </div>
+              </div>
+              <div class="ns-card ns-ccard ns-ccard--compact">
+                <div class="ns-card__body">
+                  <span class="ns-card__kicker">// Lesson</span>
+                  <a class="ns-card__link" href="#0"><span class="ns-card__title">Collections, maps and sets</span></a>
+                  <p class="ns-card__text">The data structure that makes one query enough.</p>
+                  <span class="ns-ccard__meta"><span>14:40</span><span>Beginner</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- The generated learning path: the assistant's most
+               product-specific output. Each step is a real course. -->
+          <div class="ns-aipath">
+            <div class="ns-aipath__head">
+              <span class="ns-aipath__title">Route to Platform Developer I</span>
+              <span class="ns-aipath__meta">6 weeks · 5 steps</span>
+            </div>
+            <div class="ns-aipath__steps">
+              <a class="ns-aipath__step" href="#0" data-state="done">
+                <span class="ns-aipath__index">01</span>
+                <span><span class="ns-aipath__name">Apex basics</span><span class="ns-aipath__sub">Lessons 01–03 · already done</span></span>
+                <span class="ns-aipath__when">done</span>
+              </a>
+              <a class="ns-aipath__step" href="#0">
+                <span class="ns-aipath__index">02</span>
+                <span><span class="ns-aipath__name">Collections, maps and sets</span><span class="ns-aipath__sub">Apex basics · lesson 09</span></span>
+                <span class="ns-aipath__when">this week</span>
+              </a>
+              <a class="ns-aipath__step" href="#0">
+                <span class="ns-aipath__index">03</span>
+                <span><span class="ns-aipath__name">Bulk-safe Apex patterns</span><span class="ns-aipath__sub">9 lessons · the fix above, properly</span></span>
+                <span class="ns-aipath__when">week 2</span>
+              </a>
+              <a class="ns-aipath__step" href="#0">
+                <span class="ns-aipath__index">04</span>
+                <span><span class="ns-aipath__name">SOQL, properly</span><span class="ns-aipath__sub">Relationships and selective queries</span></span>
+                <span class="ns-aipath__when">week 3</span>
+              </a>
+              <a class="ns-aipath__step" href="#0">
+                <span class="ns-aipath__index">05</span>
+                <span><span class="ns-aipath__name">Testing and deployment</span><span class="ns-aipath__sub">75%+ coverage, and what it is actually for</span></span>
+                <span class="ns-aipath__when">weeks 4–6</span>
+              </a>
+            </div>
+            <div class="ns-aipath__foot">
+              <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Save as my path</button>
+              <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm">Adjust pace</button>
+              <span class="ns-aipath__meta">~4h / week</span>
+            </div>
+          </div>
+
+          <footer class="ns-aiturn__actions">
+            <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy answer"><i class="ph ph-copy" aria-hidden="true"></i></button>
+            <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Regenerate answer"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i></button>
+            <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Helpful"><i class="ph ph-heart" aria-hidden="true"></i></button>
+          </footer>
+        </article>
+
+        <!-- ---------------------------------------------- student turn -->
+        <article class="ns-aiturn ns-aiturn--user">
+          <header class="ns-aiturn__head">
+            <span class="ns-avatar ns-avatar--sm" aria-hidden="true">RS</span>
+            You
+            <time datetime="2026-03-04T09:18">09:18</time>
+          </header>
+          <div class="ns-aiturn__body">
+            <p>Good. Any project I could build and put on my resume?</p>
+          </div>
+        </article>
+
+        <!-- ------------------------------------------ streaming answer --
+             Mid-response: the trace is open and live, tools are running,
+             and the text carries the caret. aria-live announces the wait. -->
+        <article class="ns-aiturn ns-aiturn--agent" data-state="streaming">
+          <header class="ns-aiturn__head">
+            <span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>
+            Assistant
+          </header>
+
+          <p class="ns-aithinking" role="status" aria-live="polite">
+            <span class="ns-aithinking__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            Drafting project ideas
+          </p>
+
+          <p>
+            <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Read your progress</span>
+            <span class="ns-aitool" data-state="running"><i class="ph ph-circle-notch" aria-hidden="true"></i>Searching projects</span>
+          </p>
+
+          <div class="ns-aiturn__body">
+            <p>Three that map to what you have already built, hardest last. Each one is a real org artefact you can screenshot and talk through in an interview<span class="ns-aistream" aria-hidden="true"></span></p>
+          </div>
+        </article>
+
+        <!-- ------------------------------------------------ failed turn --
+             The failure stays in the record, in the assistant's slot, in
+             the place the student is already looking. -->
+        <article class="ns-aiturn ns-aiturn--agent" data-state="error">
+          <header class="ns-aiturn__head">
+            <span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>
+            Assistant
+            <time datetime="2026-03-04T09:19">09:19</time>
+          </header>
+          <div class="ns-aierror" role="alert">
+            <p class="ns-aierror__head"><i class="ph ph-warning-circle" aria-hidden="true"></i> Could not reach the catalog</p>
+            <p class="ns-aierror__text">The answer above is written from what I already know about your progress; the project list needs the catalog and it did not respond. Nothing you typed was lost.</p>
+            <div class="ns-aierror__actions">
+              <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Try again</button>
+              <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#0">Report this</a>
+              <span class="ns-aierror__code">ERR_TOOL_TIMEOUT · 09:19:04</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+
+    <!-- ======================================================= COMPOSER == -->
+    <div class="ns-ai__foot">
+      <form class="ns-aicomposer" data-ai-composer>
+        <!-- What the assistant can currently see. Stated, removable, never
+             inferred silently. -->
+        <div class="ns-aifiles">
+          <span class="ns-aicontext">
+            <i class="ph ph-book-open-text" aria-hidden="true"></i> Apex basics · lesson 03
+            <button type="button" class="ns-aicontext__x" aria-label="Remove this lesson from context"><i class="ph ph-x" aria-hidden="true"></i></button>
+          </span>
+          <span class="ns-aifile">
+            <i class="ph ph-file-text" aria-hidden="true"></i>
+            <span class="ns-aifile__name">AccountTrigger.cls</span>
+            <span class="ns-aifile__size">4 KB</span>
+            <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--xs" aria-label="Remove AccountTrigger.cls"><i class="ph ph-x" aria-hidden="true"></i></button>
+          </span>
+          <span class="ns-aifile" data-state="uploading">
+            <i class="ph ph-circle-notch" aria-hidden="true"></i>
+            <span class="ns-aifile__name">error-log.txt</span>
+            <span class="ns-aifile__size">uploading</span>
+          </span>
+        </div>
+
+        <label class="ns-visually-hidden" for="ai-input">Ask the assistant</label>
+        <textarea class="ns-aicomposer__area" id="ai-input" rows="2"
+                  placeholder="Ask about this lesson, paste your Apex, or ask for a project…" data-ai-input></textarea>
+
+        <div class="ns-aicomposer__bar">
+          <button type="button" class="ns-aimode" aria-haspopup="true" aria-expanded="false">
+            <i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <i class="ph ph-caret-down" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-paperclip" aria-hidden="true"></i></button>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Dictate"><i class="ph ph-microphone" aria-hidden="true"></i></button>
+          <span class="ns-aicomposer__spacer"></span>
+          <span class="ns-aicomposer__count" data-state="ok" data-ai-count>0 / 4000</span>
+          <span class="ns-aicomposer__hint">Enter to send · Shift+Enter for a new line</span>
+          <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send message">
+            <i class="ph ph-paper-plane-tilt" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+
+      <p class="ns-ai__note">The assistant can be wrong. Check anything it says against the lesson it cites.</p>
+    </div>
+  </div>
+</div>

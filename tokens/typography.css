@@ -10,20 +10,24 @@
      --font-heading survives as a name so components do not all have to change
      and so a future display face is one token away. */
   --ns-font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* Not shipped — see the note in tokens/fonts.css for why. */
-  --ns-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  /* The fourth voice: the editorial register. Display speaks, Text explains,
-     Mono keeps the records — and Serif is the one that quotes. Pull-quotes,
-     drop caps and section quotations are the places a page stops arguing and
-     starts citing, and setting them in the same grotesque as the argument is
-     why they never quite read as a different voice.
+  /* THE LABEL VOICE, and the code voice — one face for both, because both are
+     "this is data, not prose". Shipped rather than borrowed from the OS: this
+     face sets every index, duration, kicker, tag and status in the product,
+     so it is seen more than any other and is not a thing to leave to chance.
+     See tokens/fonts.css for why Roboto Mono specifically. */
+  --ns-font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* The quoting register — pull-quotes, drop caps, section quotations: the
+     places a page stops arguing and starts citing. NOT SHIPPED. The system
+     ships two faces, Switzer and Roboto Mono, so this token resolves to the
+     platform's own serif: Georgia where it exists, Iowan/Times otherwise. The
+     register survives (a quotation still reads as a quotation) at zero bytes,
+     and the trade is that the face is the reader's rather than ours — which
+     matters far less for four blockquotes than it did for the mono voice that
+     sets every label on every screen.
 
-     Sentient (Indian Type Foundry, Fontshare) is shipped for it — 40 KB, and
-     it is the one place a second face genuinely earns its download, because
-     the whole point of the register is that it is NOT the interface face.
-     Georgia leads the fallbacks so the device still reads as a quotation
-     before Sentient arrives. */
-  --ns-font-serif: "Sentient", Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+     If quotations should be Switzer rather than a serif, point this at
+     var(--ns-font-sans) — one line, and no component changes. */
+  --ns-font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   /* The subsetted Phosphor icon font. Named as a token so a component that
      draws a glyph in a ::before does not hard-code the family — and so
      swapping the icon set is one edit rather than a grep. */

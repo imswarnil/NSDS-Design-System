@@ -74,8 +74,8 @@
 
   --font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --font-serif: "Sentient", Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
+  --font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
 
   /* text-label carries its tracking and weight so a kicker cannot be
      half-applied — Principle 2 depends on it always arriving whole. */

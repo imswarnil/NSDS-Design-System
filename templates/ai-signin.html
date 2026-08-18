@@ -1,0 +1,136 @@
+<!--
+  NS Design System template — AI assistant, signed out
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into a page template; data-members-* attributes are
+              Ghost Members hooks and work as-is.
+    Next.js → prefer the React components in components/ai/; this file is
+              the markup contract they implement.
+    Static  → use directly.
+
+  The signed-out assistant. Deliberately NOT a modal over a blurred fake
+  transcript: the gate sits in the thread's own place, the rail shows the
+  empty history it will fill, and the composer stays visible but disabled
+  with the reason on it. A visitor should be able to see exactly what they
+  are signing in TO before they hand over an email address.
+
+  The reason matters and is stated: the answers are built from this
+  student's own progress, which is not a thing an anonymous session has.
+-->
+<div class="ns-ai" data-collapsed="false">
+
+  <aside class="ns-ai__side" aria-label="Conversations">
+    <div class="ns-aiside__head">
+      <span class="ns-aiside__brand"><i class="ph ph-sparkle" aria-hidden="true"></i>Namaste AI</span>
+      <button type="button" class="ns-btn ns-btn--outline ns-btn--sm ns-btn--block" disabled>
+        <i class="ph ph-plus" aria-hidden="true"></i> New chat
+      </button>
+    </div>
+
+    <!-- The empty rail, told honestly: this is where your chats will be,
+         not a skeleton pretending to load. -->
+    <div class="ns-aiside__list">
+      <div class="ns-empty">
+        <i class="ph ph-chats-circle ns-empty__icon" aria-hidden="true"></i>
+        <p class="ns-empty__title">No conversations yet</p>
+        <p class="ns-empty__text">Your chats appear here once you sign in, grouped by the course they belong to.</p>
+      </div>
+    </div>
+
+    <div class="ns-aiside__foot">
+      <p class="ns-aiside__quota-row">Free plan <b>30 / day</b></p>
+    </div>
+  </aside>
+
+  <div class="ns-ai__main">
+    <header class="ns-ai__bar">
+      <span class="ns-ai__bar-title">Namaste AI</span>
+      <span class="ns-ai__bar-meta">signed out</span>
+      <span class="ns-ai__bar-actions">
+        <a class="ns-btn ns-btn--outline ns-btn--sm" href="#signin">Sign in</a>
+      </span>
+    </header>
+
+    <div class="ns-ai__scroll">
+      <div class="ns-ai__inner">
+
+        <!-- What it can do, before the ask. Same starter cards the signed-in
+             empty state uses, so the promise and the product match. -->
+        <div class="ns-aiwelcome">
+          <span class="ns-aiwelcome__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>
+          <div>
+            <h1 class="ns-aiwelcome__title">A tutor for the org you actually work in</h1>
+            <p class="ns-aiwelcome__lede">Ask about a lesson, paste an Apex class that will not deploy, or get a route to your next certification.</p>
+          </div>
+
+          <div class="ns-aisuggest">
+            <button type="button" class="ns-aisuggest__item" disabled>
+              <span class="ns-aisuggest__kicker"><i class="ph ph-book-open-text" aria-hidden="true"></i>Explain</span>
+              <span class="ns-aisuggest__text">What is the difference between a workflow rule and a record-triggered flow?</span>
+            </button>
+            <button type="button" class="ns-aisuggest__item" disabled>
+              <span class="ns-aisuggest__kicker"><i class="ph ph-code" aria-hidden="true"></i>Review</span>
+              <span class="ns-aisuggest__text">Here is my trigger — why does it fail on a 200-record load?</span>
+            </button>
+            <button type="button" class="ns-aisuggest__item" disabled>
+              <span class="ns-aisuggest__kicker"><i class="ph ph-flag-banner-fold" aria-hidden="true"></i>Plan</span>
+              <span class="ns-aisuggest__text">Give me a six-week route to Platform Developer I.</span>
+            </button>
+            <button type="button" class="ns-aisuggest__item" disabled>
+              <span class="ns-aisuggest__kicker"><i class="ph ph-briefcase" aria-hidden="true"></i>Career</span>
+              <span class="ns-aisuggest__text">What should a junior admin have on their resume?</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- The gate. A real form, not a wall — the reason is above the
+             field, and the three lines below it are what signing in buys. -->
+        <div class="ns-aigate" id="signin">
+          <div>
+            <h2 class="ns-aigate__title">Sign in to ask</h2>
+            <p class="ns-aigate__text">Answers are built from your own progress — which lessons you have finished, where you got stuck, what you are working towards. That needs an account.</p>
+          </div>
+
+          <ul class="ns-aigate__list">
+            <li><i class="ph ph-check" aria-hidden="true"></i> Answers that cite the lesson you are on</li>
+            <li><i class="ph ph-check" aria-hidden="true"></i> Learning paths saved to your dashboard</li>
+            <li><i class="ph ph-check" aria-hidden="true"></i> 30 questions a day on the free plan</li>
+          </ul>
+
+          <form class="ns-auth__form" data-members-form="signin" action="#">
+            <div class="ns-field">
+              <label class="ns-field__label" for="ai-signin-email">Email address</label>
+              <input id="ai-signin-email" class="ns-input" type="email" name="email"
+                     autocomplete="email" required data-members-email>
+            </div>
+            <div class="ns-aigate__actions">
+              <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Send sign-in link</button>
+              <a class="ns-btn ns-btn--quiet ns-btn--block" href="#0">Browse the courses instead</a>
+            </div>
+            <p class="ns-field__error" data-members-error role="alert" hidden>
+              We could not find an account for that address. <a href="#0">Create one instead</a>.</p>
+          </form>
+
+          <p class="ns-aigate__text">Free, no card. We do not train on your conversations.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Visible but disabled, with the reason on it rather than a silent
+         dead control. -->
+    <div class="ns-ai__foot">
+      <div class="ns-aicomposer" aria-disabled="true">
+        <label class="ns-visually-hidden" for="ai-input-locked">Ask the assistant</label>
+        <textarea class="ns-aicomposer__area" id="ai-input-locked" rows="2" disabled
+                  placeholder="Sign in to ask a question…"></textarea>
+        <div class="ns-aicomposer__bar">
+          <span class="ns-aicomposer__hint"><i class="ph ph-lock-simple" aria-hidden="true"></i> Sign in to send</span>
+          <span class="ns-aicomposer__spacer"></span>
+          <a class="ns-btn ns-btn--primary ns-btn--sm" href="#signin">Sign in</a>
+        </div>
+      </div>
+      <p class="ns-ai__note">The assistant can be wrong. Check anything it says against the lesson it cites.</p>
+    </div>
+  </div>
+</div>

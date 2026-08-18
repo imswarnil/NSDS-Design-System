@@ -208,9 +208,127 @@
   .ns-ltype--lab { color: var(--color-success-ink); }
   .ns-ltype--live { color: var(--color-error-ink); }
   [data-theme="dark"] .ns-ltype--video { color: var(--color-brand-300); }
-  /* Icon-only, for a dense row where the word does not fit. The accessible
-     name moves to the row's own label — it is never simply dropped. */
-  .ns-ltype--icon span { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  /* --- Icon only, with the word on hover ---------------------------------
+     THE DEFAULT in every dense surface: a rail, a curriculum row, a card's
+     lesson peek. Repeating the word VIDEO down forty rows is forty repeats of
+     information the glyph already gave, and it is what made the curriculum
+     read as a spreadsheet. The word is not deleted, it is deferred: it stays
+     in the DOM for assistive tech, and hover or keyboard focus brings it back
+     as a tooltip for anyone the glyph failed.
+
+     Markup is the shared tooltip host, so this inherits one implementation:
+       <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host">
+         <i class="ph ph-video" aria-hidden="true"></i>
+         <span class="ns-tooltip">Video</span>
+       </span>                                                              */
+  .ns-ltype--icon { gap: 0; }
+  .ns-ltype--icon > i { font-size: var(--size-body); }
+  /* The glyph gets a real target so the tooltip is reachable by pointer AND
+     by keyboard — a hover-only affordance is a mouse-only affordance. */
+  .ns-ltype--icon.ns-tooltip-host { min-inline-size: var(--space-5); justify-content: center; }
+  .ns-ltype--icon.ns-tooltip-host:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm);
+  }
+  /* Where there is no tooltip host, the word is still in the DOM and simply
+     hidden — the accessible name is never dropped. */
+  .ns-ltype--icon > span:not(.ns-tooltip) {
+    position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap;
+  }
+
+  /* --- Access ------------------------------------------------------------
+     Whether this row is open to you, which is a different question from what
+     kind of thing it is — so it is a different chip and it never replaces the
+     kind. Free is the one that earns colour: in a locked curriculum the free
+     rows are the whole argument for signing up. */
+  .ns-laccess {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-laccess--free { color: var(--color-success-ink); }
+  .ns-laccess--members { color: var(--color-label); }
+  .ns-laccess--soon { color: var(--color-warning-ink); }
+
+  /* ================================================ Certification badge ====
+     The heptagon-with-a-folded-ribbon badge every Salesforce certification
+     ships as, rebuilt as a component so a course, a profile or a certificate
+     can render one at any size without commissioning artwork per credential.
+
+     Built from OUR palette, not Salesforce's: the body is brand-800/900 (the
+     navy this system already uses for dark surfaces), the mark is brand-400,
+     and the ribbon runs brand-300 → accent. It is deliberately NOT a copy of
+     the official badge — that one is Salesforce's trademark and belongs to
+     the credential they issue. This is the shape family, in this brand's
+     colours, for this product's own tracks.
+
+     One element, no image: clip-path draws the heptagon, so it scales to any
+     width, prints, and flips with the theme. Set the size with inline-size —
+     everything inside is in em, so the whole badge scales from one number. */
+  .ns-certbadge {
+    --_pad: 0.11em;
+    position: relative; display: inline-grid; place-items: center;
+    inline-size: 8rem; aspect-ratio: 1 / 1.06;
+    /* The badge is the container; the type scale is set on __inner below.
+       It has to be that way round — an element cannot query ITSELF, so a cqi
+       font-size here would resolve against some ancestor container and blow
+       the badge up to the width of the page. */
+    container-type: inline-size;
+    text-align: center;
+    color: var(--color-on-dark);
+  }
+  /* The body. A seven-sided plate with the bottom edge left for the ribbon. */
+  .ns-certbadge__plate {
+    position: absolute; inset: 0 0 18% 0;
+    background: var(--color-brand-800);
+    clip-path: polygon(50% 0%, 90% 12%, 100% 48%, 88% 84%, 50% 100%, 12% 84%, 0% 48%, 10% 12%);
+  }
+  [data-theme="dark"] .ns-certbadge__plate { background: var(--color-brand-900); }
+  /* The folded ribbon under it — the only gradient in the system, and it is
+     doing what a gradient is actually for: describing a fold. */
+  .ns-certbadge__ribbon {
+    position: absolute; inset-block-end: 0; inset-inline: 8%;
+    block-size: 26%;
+    background: linear-gradient(100deg, var(--color-brand-300), var(--color-accent-500));
+    clip-path: polygon(0% 0%, 100% 0%, 100% 62%, 50% 100%, 0% 62%);
+    border-end-start-radius: var(--radius-sm); border-end-end-radius: var(--radius-sm);
+  }
+  .ns-certbadge__inner {
+    /* ONE number sizes the whole badge. 11% of the badge's own width, with
+       every child in em off it — set inline-size to 5rem or 14rem and the
+       wordmark, the mark and the name all follow, with no per-call-site
+       arithmetic and no "CERTIFIED" hanging over the edge of the small one. */
+    font-size: 11cqi; /* lint-ok: the badge's internal type scale, derived from its own width */
+    position: relative; z-index: var(--z-raised);
+    display: flex; flex-direction: column; align-items: center; gap: 0.25em; /* lint-ok: em rhythm inside a self-scaling badge */
+    padding-block-end: 22%;
+    inline-size: 74%;
+  }
+  /* The mark. Any glyph from the icon set, or the product's own sprite. */
+  .ns-certbadge__mark { font-size: 2.6em; color: var(--color-brand-400); line-height: 1; } /* lint-ok: em scale inside the badge */
+  .ns-certbadge__word {
+    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    font-size: 1.05em; letter-spacing: var(--tracking-wide); /* lint-ok: em scale inside the badge */
+    text-transform: uppercase; line-height: var(--leading-tight);
+  }
+  .ns-certbadge__name {
+    font-family: var(--font-heading); font-weight: var(--weight-semibold);
+    font-size: 0.82em; line-height: var(--leading-tight); /* lint-ok: em scale inside the badge */
+    color: color-mix(in srgb, var(--color-on-dark) 88%, transparent);
+    text-wrap: balance;
+  }
+  /* Levels. The ribbon is the only thing that changes, because the ribbon is
+     the only thing a wall of badges is scanned by. */
+  .ns-certbadge--associate .ns-certbadge__ribbon { background: linear-gradient(100deg, var(--color-brand-200), var(--color-brand-400)); }
+  .ns-certbadge--specialist .ns-certbadge__ribbon { background: linear-gradient(100deg, var(--color-brand-300), var(--color-accent-500)); }
+  .ns-certbadge--architect .ns-certbadge__ribbon { background: linear-gradient(100deg, var(--color-accent-400), var(--color-brand-500)); }
+  /* Not earned yet: the same badge, drained. Greyed rather than hidden, so a
+     track shows what is ahead of you. */
+  .ns-certbadge--locked { filter: grayscale(1); opacity: var(--opacity-disabled); }
+  /* A row of them. */
+  .ns-certbadges { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
 
   /* ====================================================== Curriculum ====
      The course's table of contents. Sections are native <details>, so
@@ -292,67 +410,194 @@
   .ns-curriculum--compact .ns-curriculum__head { padding-block: var(--space-2); }
   .ns-curriculum--compact .ns-lesson { padding-block: var(--space-1-5); min-block-size: 0; font-size: var(--size-fine); }
 
+  /* --- Flat: a course is a list of lessons -------------------------------
+     THE DEFAULT SHAPE FOR A COURSE. Courses in this product do not have
+     sections — a course is one arc of eight to fourteen lessons, and wrapping
+     that in a single collapsible "Section 1" is a disclosure control that
+     discloses everything, plus a row of chrome that says nothing.
+
+     Sections belong to TRAINING, where a module genuinely contains several
+     posts (see .ns-curriculum--modules below and the training family).
+
+     --flat is therefore not a variant of the section list; it is the list
+     with the section machinery removed. Same rows, same states, no <details>. */
+  .ns-curriculum--flat .ns-lesson + .ns-lesson { border-block-start: 1px solid var(--color-border); }
+
+  /* --- Locked rows -------------------------------------------------------
+     A curriculum a visitor cannot open yet still has to sell the course, so a
+     locked row is DIMMED, never hidden: the titles are the argument. The lock
+     is a glyph in the time cell (where the duration would be, because you
+     cannot have the duration either), and free rows keep full contrast so
+     they stand out of a dimmed list without needing a colour wash. */
+  .ns-lesson[data-access="members"] { color: var(--color-muted); }
+  .ns-lesson[data-access="members"] .ns-lesson__index,
+  .ns-lesson[data-access="members"] .ns-lesson__title { color: var(--color-muted); }
+  .ns-lesson[data-access="members"]:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-border); }
+  .ns-lesson[data-access="free"] .ns-lesson__title { color: var(--color-ink); }
+
+  /* --- Rich section: image + description ---------------------------------
+     The training module's header, and the one place a section earns more than
+     a title row: a still, a sentence saying what the module is for, and its
+     own progress. Used by .ns-curriculum--modules; a course never renders it. */
+  .ns-curriculum--modules .ns-curriculum__head { align-items: flex-start; padding: var(--pad-card); gap: var(--pad-card); }
+  .ns-curriculum__cover {
+    inline-size: 5.5rem; aspect-ratio: 16 / 10; flex: none;
+    object-fit: cover; border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+  }
+  .ns-curriculum__headbody { min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-1); flex: 1; }
+  .ns-curriculum__desc {
+    font-family: var(--font-sans); font-size: var(--size-small); font-weight: var(--weight-body);
+    letter-spacing: normal; text-transform: none; color: var(--color-muted);
+    line-height: var(--leading-body);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ns-curriculum--modules .ns-curriculum__meta { margin-inline-start: 0; }
+  @media (max-width: 39.999rem) {
+    .ns-curriculum__cover { display: none; }
+  }
+
   /* ===================================================== Lesson nav ====
-     Prev / next by NAME. An arrow pair with no titles makes the learner
-     click to find out where they are going, and on a phone the two arrows
-     are the whole navigation — so the name is the control and the arrow is
-     the decoration, not the other way round. */
+     Prev / next by NAME, and by as little else as possible.
+
+     This used to be two bordered cards, each carrying a direction label, a
+     title and a 16:9 thumbnail, with a progress row between them — five
+     competing objects at the end of a lesson, at the exact moment the reader
+     wants one thing: the next lesson. It read as a toolbar, not as a way out.
+
+     The default is now a plain hairline row: an arrow, the direction in mono,
+     the name. No box, no fill, no thumbnail — the only motion is the arrow
+     travelling two pixels in the direction it points, which is the same
+     device the buttons use.
+
+       (default)   two named links either side of the counter
+       --split     the next lesson is the solid action — the "continue" shape
+                   for the end of a video, where there is exactly one thing
+                   to do next
+       --minimal   one line, names only, no direction labels; for a rail or a
+                   dense player column
+       --cards     the old boxed pair WITH the still, kept for the end-of-
+                   course page where the next thing is a decision rather than
+                   a continuation
+       --sticky    pinned to the bottom of the reading column                */
   .ns-lesson-nav {
-    display: flex; align-items: center; gap: var(--space-3);
-    padding-block: var(--space-3);
+    display: flex; align-items: center; gap: var(--space-4);
+    padding-block: var(--space-4);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface);
   }
   .ns-lesson-nav .ns-progress-row { flex: 1; justify-content: center; }
-  .ns-lesson-nav--sticky { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
-  .ns-lesson-nav__up { font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
-                       text-transform: uppercase; color: var(--color-muted); text-decoration: none; }
+  .ns-lesson-nav__up {
+    font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-muted); text-decoration: none;
+  }
   .ns-lesson-nav__up:hover { color: var(--color-brand-600); }
 
-  /* The named prev/next control. A grid so the direction label, the title
-     and the thumb hold their columns whatever the title's length. */
+  /* The named control. Two rows — direction, then name — and nothing drawn
+     around them. */
   .ns-lesson-nav__btn {
     display: grid; grid-template-columns: auto minmax(0, 1fr);
-    align-items: center; gap: var(--space-2) var(--space-3);
-    max-inline-size: 18rem; min-inline-size: 0;
-    padding: var(--space-2) var(--space-3);
-    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
-    text-decoration: none; color: var(--color-ink); background: var(--color-surface);
-    transition: border-color var(--duration-fast) var(--ease-out);
+    align-items: center; column-gap: var(--space-2);
+    max-inline-size: 20rem; min-inline-size: 0;
+    padding: var(--space-1) 0;
+    text-decoration: none; color: var(--color-ink);
+    transition: color var(--duration-fast) var(--ease-out);
   }
-  .ns-lesson-nav__btn:hover { border-color: var(--color-brand-500); }
-  .ns-lesson-nav__btn--next { text-align: end; grid-template-columns: minmax(0, 1fr) auto; }
+  .ns-lesson-nav__btn:hover { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-lesson-nav__btn:hover { color: var(--color-brand-300); }
+  .ns-lesson-nav__btn:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500);
+    outline-offset: var(--focus-ring-offset); border-radius: var(--radius-sm);
+  }
+  .ns-lesson-nav__btn--next { grid-template-columns: minmax(0, 1fr) auto; text-align: end; }
+
+  /* The arrow: its own cell, spanning both rows, so the two lines hang off
+     one glyph rather than sitting beside two. */
+  .ns-lesson-nav__arrow {
+    grid-row: 1 / 3; color: var(--color-label); font-size: var(--size-body);
+    transition: translate var(--duration-fast) var(--ease-out);
+  }
+  .ns-lesson-nav__btn:hover .ns-lesson-nav__arrow { color: currentColor; }
+  .ns-lesson-nav__btn:hover .ns-lesson-nav__arrow { translate: -2px 0; }
+  .ns-lesson-nav__btn--next:hover .ns-lesson-nav__arrow { translate: 2px 0; }
+  .ns-lesson-nav__btn--next .ns-lesson-nav__arrow { grid-column: 2; }
+  @media (prefers-reduced-motion: reduce) { .ns-lesson-nav__arrow { transition: none; } }
+
   .ns-lesson-nav__dir {
-    grid-row: 1; font-family: var(--font-mono); font-size: var(--size-label);
+    grid-row: 1; grid-column: 2;
+    font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
   }
   .ns-lesson-nav__name {
-    grid-row: 2; grid-column: 2; min-inline-size: 0; font-size: var(--size-small); font-weight: var(--weight-medium);
+    grid-row: 2; grid-column: 2; min-inline-size: 0;
+    font-size: var(--size-small); font-weight: var(--weight-medium);
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .ns-lesson-nav__btn--next .ns-lesson-nav__dir { grid-column: 1; }
+  .ns-lesson-nav__btn--next .ns-lesson-nav__dir,
   .ns-lesson-nav__btn--next .ns-lesson-nav__name { grid-column: 1; }
+
+  /* A locked next lesson still navigates — to the upgrade page. A dead button
+     at the end of a lesson explains nothing. */
+  .ns-lesson-nav__btn[data-state="locked"] { color: var(--color-muted); }
+  .ns-lesson-nav__btn[data-state="locked"] .ns-lesson-nav__arrow { color: var(--color-warning-ink); }
+
+  /* --- Split: one obvious next action ------------------------------------
+     At the end of a video there is one thing to do, so it looks like one
+     thing to do: prev stays a quiet link, next becomes the solid control. */
+  .ns-lesson-nav--split .ns-lesson-nav__btn--next {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-btn);
+    background: var(--color-brand-500); color: var(--color-on-brand);
+  }
+  .ns-lesson-nav--split .ns-lesson-nav__btn--next:hover { color: var(--color-on-brand); opacity: var(--opacity-loading); }
+  .ns-lesson-nav--split .ns-lesson-nav__btn--next .ns-lesson-nav__dir,
+  .ns-lesson-nav--split .ns-lesson-nav__btn--next .ns-lesson-nav__arrow { color: var(--color-on-brand); }
+
+  /* --- Minimal: one line, names only -------------------------------------- */
+  .ns-lesson-nav--minimal .ns-lesson-nav__btn { grid-template-columns: auto minmax(0, 1fr); }
+  .ns-lesson-nav--minimal .ns-lesson-nav__dir { display: none; }
+  .ns-lesson-nav--minimal .ns-lesson-nav__name { grid-row: 1; }
+  .ns-lesson-nav--minimal .ns-lesson-nav__arrow { grid-row: 1; }
+  .ns-lesson-nav--minimal { padding-block: var(--space-2); }
+
+  /* --- Cards: the old boxed pair, now opt-in ------------------------------ */
+  .ns-lesson-nav--cards .ns-lesson-nav__btn {
+    grid-template-columns: auto auto minmax(0, 1fr);
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-lesson-nav--cards .ns-lesson-nav__btn:hover { border-color: var(--color-brand-500); }
+  .ns-lesson-nav--cards .ns-lesson-nav__btn--next { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .ns-lesson-nav--cards .ns-lesson-nav__dir { grid-column: 3; }
+  .ns-lesson-nav--cards .ns-lesson-nav__name { grid-column: 3; }
+  .ns-lesson-nav--cards .ns-lesson-nav__btn--next .ns-lesson-nav__dir,
+  .ns-lesson-nav--cards .ns-lesson-nav__btn--next .ns-lesson-nav__name { grid-column: 1; }
   /* A 16:9 still where there is one, the lesson-type glyph where there is
      not — never an empty box. */
   .ns-lesson-nav__thumb {
-    grid-row: 1 / 3; inline-size: 3.5rem; aspect-ratio: 16 / 9; flex: none;
+    grid-row: 1 / 3; grid-column: 2; inline-size: 3.5rem; aspect-ratio: 16 / 9; flex: none;
     object-fit: cover; border-radius: var(--radius-sm);
     background: var(--color-surface-sunken);
     display: grid; place-items: center; color: var(--color-label);
   }
-  .ns-lesson-nav__btn--next .ns-lesson-nav__thumb { grid-column: 2; }
-  /* A locked next lesson still navigates — to the upgrade page. A dead
-     button at the end of a lesson explains nothing. */
-  .ns-lesson-nav__btn[data-state="locked"] { color: var(--color-muted); }
-  .ns-lesson-nav__btn[data-state="locked"] .ns-lesson-nav__thumb { color: var(--color-warning-ink); }
+  .ns-lesson-nav--cards .ns-lesson-nav__btn--next .ns-lesson-nav__thumb { grid-column: 2; }
+  /* Outside --cards the still is simply not drawn: the name is the control. */
+  .ns-lesson-nav:not(.ns-lesson-nav--cards) .ns-lesson-nav__thumb { display: none; }
+
+  .ns-lesson-nav--sticky { position: sticky; inset-block-end: 0; z-index: var(--z-sticky); }
 
   @media (max-width: 47.999rem) {
-    /* The two named buttons are the navigation on a phone; the progress row
-       is already in the panel bar above. */
+    /* The two named links ARE the navigation on a phone; the counter is
+       already in the panel bar above, and the still is the first thing to go
+       when the name has to fit. */
     .ns-lesson-nav .ns-progress-row { display: none; }
     .ns-lesson-nav__btn { flex: 1; max-inline-size: none; }
     .ns-lesson-nav__thumb { display: none; }
   }
+
 
   /* =================================================== Mobile panel ====
      Below lg the curriculum rail becomes a bottom bar + drawer. The bar
@@ -389,6 +634,44 @@
   @media (max-width: 63.999rem) {
     .ns-course-detail { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
     .ns-course-detail__rail { position: static; max-block-size: none; overflow: visible; }
+  }
+
+  /* --- Five course-detail shapes -----------------------------------------
+     Same content, same components, five arrangements — because a $9 course, a
+     certification track and a free tutorial are not the same sale.
+
+       (default)      content + sticky buy rail. The workhorse.
+       --wide         rail on the LEFT: for a course whose curriculum is the
+                      product (a 40-lesson track), so the syllabus gets the
+                      wide column and the price follows it down
+       --stacked      no rail at all — the buy box sits after the outcomes,
+                      inside the reading column. For free courses, where a
+                      sticky price rail is an advert for nothing
+       --syllabus     curriculum first, description second: the shape for a
+                      returning learner who is choosing WHERE to resume
+       --compact      one column at the prose measure, no media. The
+                      "documentation page for a course" look                */
+  .ns-course-detail--wide { grid-template-columns: 20rem minmax(0, 1fr); }
+  .ns-course-detail--wide .ns-course-detail__rail { order: -1; }
+
+  .ns-course-detail--stacked { grid-template-columns: minmax(0, 1fr); }
+  .ns-course-detail--stacked .ns-course-detail__rail {
+    position: static; max-block-size: none; overflow: visible;
+    max-inline-size: var(--container-narrow);
+  }
+
+  .ns-course-detail--syllabus .ns-course-detail__main { display: flex; flex-direction: column; }
+  .ns-course-detail--syllabus .ns-course-detail__curriculum { order: -1; }
+
+  .ns-course-detail--compact {
+    grid-template-columns: minmax(0, 1fr);
+    max-inline-size: var(--container-prose); margin-inline: auto;
+  }
+  .ns-course-detail--compact .ns-course-detail__rail { position: static; max-block-size: none; overflow: visible; }
+
+  @media (max-width: 63.999rem) {
+    .ns-course-detail--wide { grid-template-columns: minmax(0, 1fr); }
+    .ns-course-detail--wide .ns-course-detail__rail { order: 0; }
   }
 
   /* Listing: filter rail + grid. The rail is a real sidebar ≥ lg and a

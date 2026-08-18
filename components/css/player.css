@@ -21,43 +21,80 @@
   .ns-player {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--player-side-w);
-    min-block-size: calc(100dvh - var(--navbar-h));
+    /* ONE viewport, and only the content column scrolls. This used to be
+       opt-in behind --fixed, and the default was a page-scrolling layout that
+       produced the thing every learner reports: two scrollbars on one screen,
+       an outer one that moves the video off the top and an inner one that
+       moves the curriculum, with no way to tell which you are about to use. A
+       lesson is an application screen, so the room stops moving and the parts
+       scroll inside it. --scroll below is the escape hatch. */
+    block-size: calc(100dvh - var(--navbar-h));
+    overflow: hidden;
+  }
+  /* The page behind the player must not scroll too, or a trackpad flick that
+     overshoots the rail moves the whole document. Set on <html> by the route
+     that renders a player. */
+  [data-player="fixed"] { overflow: hidden; }
+
+  .ns-player__main {
+    min-inline-size: 0; display: flex; flex-direction: column;
+    overflow-y: auto; overscroll-behavior: contain;
   }
 
-  .ns-player__main { min-inline-size: 0; display: flex; flex-direction: column; }
-
-  /* --- Fixed to the viewport ----------------------------------------------
-     The default player scrolls with the page, which is right for a lesson
-     that is mostly an article. --fixed is right for a lesson that is mostly
-     a video: the room stops moving. The player becomes exactly one viewport
-     tall, the PAGE stops scrolling, and the two columns scroll
-     independently inside it — so scrubbing the video never pushes the stage
-     off the top, and a 40-lesson rail scrolls beside a pinned frame.
-
-     The stage stays put inside the scrolling column via position:sticky
+  /* The stage stays put inside the scrolling column via position:sticky
      rather than position:fixed, so it still participates in the grid and
-     nothing has to be measured in JS. */
-  .ns-player--fixed { block-size: calc(100dvh - var(--navbar-h)); min-block-size: 0; overflow: hidden; }
-  .ns-player--fixed .ns-player__main { overflow-y: auto; overscroll-behavior: contain; }
-  .ns-player--fixed .ns-player__stage {
+     nothing has to be measured in JS. Capped by HEIGHT as well as by aspect:
+     on a wide column a 16:9 box is taller than the viewport, so the lesson
+     title lands below the fold in the one layout whose entire point is that
+     nothing moves. */
+  .ns-player__stage {
     position: sticky; inset-block-start: 0; z-index: var(--z-raised);
-    /* Capped by HEIGHT as well as by aspect. On a wide column a 16:9 box is
-       taller than the viewport, so the lesson title lands below the fold in
-       the one layout whose entire point is that nothing moves. The frame
-       keeps its width and letterboxes on the navy stage — which is what a
-       theatre mode does, and why the stage was navy in the first place. */
     max-block-size: 62dvh;
   }
-  .ns-player--fixed .ns-player__stage > video,
-  .ns-player--fixed .ns-player__stage > iframe,
-  .ns-player--fixed .ns-player__stage > img { object-fit: contain; }
-  /* The nav is pinned to the bottom of the column in the scrolling variant;
-     when the column itself scrolls it belongs at the end of the content. */
-  .ns-player--fixed .ns-player__nav { margin-block-start: var(--space-6); }
-  /* The page behind a fixed player must not scroll too, or a trackpad flick
-     that overshoots the rail moves the whole document. Set on <html> by the
-     route that renders the fixed player. */
-  [data-player="fixed"] { overflow: hidden; }
+  .ns-player__stage > video,
+  .ns-player__stage > iframe,
+  .ns-player__stage > img { object-fit: contain; }
+  .ns-player__nav { margin-block-start: var(--space-6); }
+
+  /* --- The page-scrolling variant ----------------------------------------
+     For a lesson that is mostly an article on a marketing-ish route, where
+     the document scroll is the right one and the rail is a sidebar rather
+     than a pane. This is the pre-3.1 behaviour, now explicit. */
+  .ns-player--scroll { block-size: auto; min-block-size: calc(100dvh - var(--navbar-h)); overflow: visible; }
+  .ns-player--scroll .ns-player__main { overflow: visible; }
+  .ns-player--scroll .ns-player__stage { position: relative; max-block-size: none; }
+  .ns-player--scroll .ns-player__stage > video,
+  .ns-player--scroll .ns-player__stage > iframe,
+  .ns-player--scroll .ns-player__stage > img { object-fit: cover; }
+
+  /* --fixed was this layout's name while it was opt-in. Kept so the templates
+     and Ghost partials that already say it keep working; it now selects the
+     default and adds nothing. */
+  .ns-player--fixed { block-size: calc(100dvh - var(--navbar-h)); overflow: hidden; }
+
+  /* --- Article layout -----------------------------------------------------
+     A lesson that is mostly reading: no 16:9 stage at all, the column set to
+     the reading measure and centred, the title a step larger because it is
+     now the top of the page rather than a caption under a video. The rail is
+     untouched — which is the point of one player with two layouts rather
+     than two players. */
+  .ns-player--article .ns-player__stage { display: none; }
+  .ns-player--article .ns-player__head,
+  .ns-player--article .ns-player__body,
+  .ns-player--article .ns-player__nav {
+    max-inline-size: var(--container-prose); margin-inline: auto; inline-size: 100%;
+  }
+  .ns-player--article .ns-player__head { padding-block-start: var(--space-10); }
+  .ns-player--article .ns-player__title { font-size: var(--size-h2); }
+
+  /* --- Rail collapse ------------------------------------------------------
+     data-rail="collapsed" on the player. The rail folds to nothing rather
+     than to an icon strip: a curriculum reduced to glyphs is a list of
+     untitled lessons, and there is no glyph for "the one about governor
+     limits". The toggle lives in the lesson header, so it is still reachable
+     once the rail is gone. */
+  .ns-player[data-rail="collapsed"] { grid-template-columns: minmax(0, 1fr) 0; }
+  .ns-player[data-rail="collapsed"] .ns-player__side { overflow: hidden; border-inline-start-color: transparent; }
 
   /* --- Stage --------------------------------------------------------------
      aspect-ratio reserves the box before the video loads, so the page never
@@ -186,11 +223,36 @@
   .ns-player__side {
     border-inline-start: 1px solid var(--color-border);
     background: var(--color-surface);
-    display: flex; flex-direction: column;
-    max-block-size: calc(100dvh - var(--navbar-h));
-    position: sticky; inset-block-start: var(--navbar-h);
-    overflow: hidden;
+    /* head / scrolling list / CTA foot — three rows, and only the middle one
+       moves. The rail is FIXED: it is part of the locked grid rather than a
+       sticky block inside a scrolling page, so the curriculum and the CTA at
+       its foot are on screen for the whole lesson. */
+    display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+    min-block-size: 0; overflow: hidden;
   }
+  .ns-player--scroll .ns-player__side {
+    position: sticky; inset-block-start: var(--navbar-h);
+    max-block-size: calc(100dvh - var(--navbar-h));
+  }
+
+  /* The rail's standing action. It sits at the FOOT and never scrolls away,
+     because it is the one thing on this screen that is not navigation: enrol,
+     resume, download the certificate. Kept to one primary and one line of
+     mono fine print — a rail that ends in three buttons is an upsell. */
+  .ns-player__side-cta {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    padding: var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  .ns-player__side-cta .ns-progress { inline-size: 100%; }
+  .ns-player__side-cta-meta {
+    display: flex; align-items: baseline; justify-content: space-between;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-player__side-cta-meta b { color: var(--color-ink); font-weight: var(--weight-label); font-variant-numeric: tabular-nums; }
   .ns-player__side-head {
     display: flex; align-items: baseline; gap: var(--space-2);
     padding: var(--pad-card);
@@ -220,7 +282,10 @@
        current  brand ink + the left accent line, aria-current="true"
      A real <a>: lessons are pages, middle-click must work. */
   .ns-lesson {
-    display: grid; grid-template-columns: auto 1fr auto;
+    /* index · title · kind · time. The kind glyph gets its own column rather
+       than riding inside the title cell, so a row with one and a row without
+       still line their durations up down the rail. */
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
     align-items: center; gap: var(--space-3);
     padding: var(--pad-row) var(--pad-card);
     min-block-size: var(--target-comfy);
@@ -314,13 +379,21 @@
        one-pane layout with the content amputated. Below lg the fixed variant
        reverts to the scrolling one, and the rail becomes the panel bar +
        drawer (.ns-panelbar, lms.css). */
-    .ns-player--fixed { block-size: auto; overflow: visible; }
-    .ns-player--fixed .ns-player__main { overflow: visible; }
-    .ns-player--fixed .ns-player__stage { position: static; }
+    .ns-player, .ns-player--fixed { block-size: auto; overflow: visible; }
+    .ns-player__main, .ns-player--fixed .ns-player__main { overflow: visible; }
+    .ns-player__stage, .ns-player--fixed .ns-player__stage { position: static; max-block-size: none; }
+    .ns-player__stage > video, .ns-player__stage > iframe, .ns-player__stage > img { object-fit: cover; }
+    .ns-player[data-rail="collapsed"] { grid-template-columns: 1fr; }
     .ns-player__side {
+      display: flex; flex-direction: column;
       position: static; max-block-size: 24rem;
       border-inline-start: 0; border-block-start: 1px solid var(--color-border);
     }
+    .ns-player__list { overflow-y: auto; }
+    /* The CTA is the reason the rail exists on a phone — it goes FIRST, above
+       the lesson list, because a learner who has scrolled past 40 lessons to
+       reach the enrol button has been made to work for it. */
+    .ns-player__side-cta { order: -1; border-block-start: 0; border-block-end: 1px solid var(--color-border); }
     .ns-player__nav { margin-block-start: 0; }
     .ns-player__nav .ns-progress-row { display: none; } /* the rail header shows the count */
   }
@@ -453,26 +526,60 @@
      whether to watch at all, it should be readable without playing, and it
      should be in the page for search engines and for anyone who never presses
      play. Hiding it inside the video is the common mistake. */
-  .ns-vchapters { list-style: none; margin: 0; padding: 0; border-block-start: 1px solid var(--color-border); }
+  /* Chapters — a contents page for a video, not a log file.
+     ---------------------------------------------------------------------
+     The old list put a mono timestamp and a title on one baseline in a
+     bordered row, repeated fifteen times: a table of numbers where the reader
+     is actually scanning TITLES and using the time only to decide whether to
+     commit. So the title leads, the time sits under it as metadata, and the
+     hairline between rows carries the structure instead of a box per chapter.
+
+     The progress a chapter has (watched / current / ahead) is the row's own
+     leading edge, which is the same device the lesson rail uses — one idea of
+     "where I am" across the whole product. */
+  .ns-vchapters { list-style: none; margin: 0; padding: 0; }
   .ns-vchapters__item + .ns-vchapters__item { border-block-start: 1px solid var(--color-border); }
   .ns-vchapters__btn {
-    display: flex; align-items: baseline; gap: var(--space-3); inline-size: 100%;
-    padding: var(--space-2) var(--space-3);
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline; gap: var(--space-1) var(--space-3); inline-size: 100%;
+    padding: var(--space-2-5) var(--space-3);
     border: 0; background: none; cursor: pointer; text-align: start;
     font-size: var(--size-small); color: var(--color-ink);
-    box-shadow: inset 2px 0 0 transparent;
-    transition: background var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
+    border-inline-start: 2px solid transparent;
+    transition: background var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
   }
-  .ns-vchapters__btn:hover { background: var(--color-surface-sunken); }
+  .ns-vchapters__btn:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-300); }
+  .ns-vchapters__btn:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-vchapters__title { min-inline-size: 0; font-weight: var(--weight-medium); }
+  /* Time is metadata now: mono, dim, on its own line under the title, with
+     the duration of the chapter beside its start so "is this the long one?"
+     is answerable without arithmetic. */
+  .ns-vchapters__time {
+    grid-column: 2; grid-row: 1;
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-vchapters__meta {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  /* Watched, playing, ahead — the leading edge, plus ink weight. */
+  .ns-vchapters__item[data-state="done"] .ns-vchapters__title { color: var(--color-muted); font-weight: var(--weight-body); }
   .ns-vchapters__item[aria-current="true"] .ns-vchapters__btn {
-    box-shadow: inset 2px 0 0 var(--color-brand-500);
+    border-inline-start-color: var(--color-brand-500);
     background: var(--color-surface-sunken);
   }
-  .ns-vchapters__time {
-    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); color: var(--color-label);
-    font-variant-numeric: tabular-nums;
-  }
-  .ns-vchapters__title { min-inline-size: 0; }
+  .ns-vchapters__item[aria-current="true"] .ns-vchapters__title { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-vchapters__item[aria-current="true"] .ns-vchapters__title { color: var(--color-brand-300); }
+
+  /* --- Inline: chapters under the scrubber -------------------------------
+     The compact form for a player with no rail — one line per chapter, time
+     first because in this shape the reader IS seeking. */
+  .ns-vchapters--inline .ns-vchapters__btn { grid-template-columns: auto minmax(0, 1fr); padding-block: var(--space-1-5); }
+  .ns-vchapters--inline .ns-vchapters__time { grid-column: 1; grid-row: 1; }
+  .ns-vchapters--inline .ns-vchapters__title { grid-column: 2; grid-row: 1; font-weight: var(--weight-body); }
+  .ns-vchapters--inline .ns-vchapters__meta { display: none; }
 
 }

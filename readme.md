@@ -28,7 +28,7 @@ the system it documents.
 
 [![Overview](docs/images/overview.jpg)](https://dev.imswarnil.com/NS-Design-System/)
 
-255 tokens, 1,139 classes, 118 components. The sidebar collapses to the section
+255 tokens, 1,140 classes, 129 components. The sidebar collapses to the section
 you are in and scrolls it into view; every component page carries its own
 use / not-for / accessibility contract beside the demos.
 
@@ -43,7 +43,7 @@ and the private `--ns-*` source it follows.
 
 ![Typography](docs/images/typography.jpg)
 
-Two shipped faces and one system stack. Reading copy is 14px.
+Two shipped faces. Reading copy is 14px.
 
 ### Dark mode
 
@@ -72,7 +72,7 @@ long rather than hidden.
 This system is not "brand blue on white Tailwind cards." It follows **five explicit rules**, borrowed from developer-tool product design (Mux, Vercel, Linear) rather than marketing-site conventions — every component in `components/` inherits them, and any new component should be checked against this list before it ships.
 
 1. **The hairline is the structure, not the shadow.** Cards, inputs, and tags are built from a single `1px` border (`--color-border`). Soft drop-shadows are almost entirely retired (`--shadow-card` is nearly flat) — elevation comes from a border brightening to brand-blue on hover, never a floating lift.
-2. **Monospace is a structural material, not a code-block accessory.** The mono face renders every index, duration, timestamp, status tag and section kicker — Switzer is reserved for prose and headings, Sentient for quotations. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
+2. **Monospace is a structural material, not a code-block accessory.** The mono face renders every index, duration, timestamp, status tag and section kicker — Switzer is reserved for prose, headings and quotations. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
 3. **One signal color.** Brand blue (`#0176D3`) is the only color that means "interactive" or "active." Status (success/warning/error) shows as a small dot + mono text, never a background wash — so a screen with a solid blue button on it has exactly one obvious next action.
 4. **Sharp, specific geometry.** `--radius-card` (6px) and `--radius-btn` (4px) replace the generic "12px + pill-everywhere" look; `--radius-pill` is reserved for true pills (tags). Nothing is rounded just because rounding is the default.
 5. **Motion is instant, not springy.** State changes (hover, press, active) resolve in 120–180ms with a plain ease-out — no bounce, no scale-pop, no translateY lift on hover. The one exception is the small float loop on decorative illustrations. This is what makes the UI feel like a precise tool, not a marketing page.
@@ -98,7 +98,7 @@ Governed by the five Design Principles above. In short:
 
 - **Color:** one working blue (`#0176D3`) carries every interactive/active signal. Status colors show as a dot + mono text, never a tinted background fill.
 - **Dark mode:** semantic role tokens (`--color-surface`, `--color-ink`, `--color-muted`, `--color-border`) flip under `[data-theme="dark"]` on `<html>`, resolving to the brand navy scale (`--color-brand-800`/`900`) rather than a generic slate — dark mode is *this brand's* console, not a GitHub reskin.
-- **Type:** Switzer for headings (700) and prose (**400 at 14px** — the compact scale, after [carapace](https://github.com/openclaw/carapace)); Sentient for quotations; the system mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
+- **Type:** Switzer for headings (700) and prose (**400 at 14px** — the compact scale, after [carapace](https://github.com/openclaw/carapace)); Roboto Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
 - **Geometry:** `--radius-card` 6px, `--radius-btn` 4px — sharp and specific, not "rounded because rounded." `--radius-pill` only for true pill tags.
 - **Elevation:** a `1px` hairline border is the primary structuring device; hover brightens the border to brand-blue (or draws a left/top accent line), it never lifts on a shadow.
 - **Spacing:** a 4px scale (`--space-*`) whose index matches Tailwind's 1:1, so `p-4` in a Handlebars template and `var(--space-4)` in a React component are the same 16px. Semantic aliases (`--pad-card`, `--gap-grid`, `--stack-lg`) carry the repeated structural relationships.
@@ -314,8 +314,8 @@ NS-Design-System/
 │   ├── course/        LMS-specific React components
 │   └── forms/ overlays/ navigation/ feedback/ progress/
 ├── icons/             both icon sets: Phosphor subset (font + classes) + bespoke sprite
-├── fonts/             Switzer + Sentient — latin-subset variable woff2s (69 KB),
-│                   the Fontshare EULA, and the weight docs in its README
+├── fonts/             Switzer + Roboto Mono — latin-subset variable woff2s
+│                   (67 KB), both licences, and the weight docs in its README
 ├── patterns/          nine hairline background patterns (pure CSS)
 ├── templates/         framework-agnostic HTML for full surfaces
 ├── assets/            logo, images, theme-init.js
@@ -416,6 +416,17 @@ conventions someone has to remember.
   **RailBox**, **PublishBar** (Admin.jsx); **TitleBox**, **SlugField**,
   **RichText**, **CurriculumBuilder** (keyboard reordering), **TagInput**,
   **Dropzone**, **FileRow** (Builder.jsx).
+- `components/ai/` — the learning assistant: **Assistant** (shell, docked and
+  embedded), **AssistantBar**, **AssistantThread**, **AssistantFoot**,
+  **ConversationRail**, **Turn**/**TurnBody**, **Thinking**, **StreamCaret**,
+  **ToolCall**, **Trace** (Assistant.jsx); **Composer** (context pills,
+  attachments, Enter-sends), **Welcome** (Composer.jsx); **Attachments**,
+  **CourseAttachment**, **Snippet**, **AnswerImage**, **LearningPath**,
+  **Sources**, **PracticeCheck**, **AnswerError**, **SignInGate**
+  (AnswerBlocks.jsx); **SettingsGroup**, **SettingsRow**, **ModeChoice**,
+  **SettingSwitch** (Settings.jsx). An answer renders the product's own
+  objects — the course it recommends is the same `CourseCard` the catalog
+  renders.
 - `components/sections/` — the reusable page bands: **Band**, **BandHead**,
   **Kicker**, **HeroSection**, **FeatureGrid**, **StatBand**, **Quote**,
   **CtaBand**, **Faq** (native `<details>`), **LogoRow**.
@@ -427,9 +438,15 @@ conventions someone has to remember.
   **navbar**, **blog navbar**, **course navbar**, **dashboard navbar** —
   plus the admin surfaces
   (`admin-dashboard`, `admin-course-new`, `admin-lesson-editor`), the composed
-  marketing page (`sections-home`) and the full **type specimen**
-  (`type-specimen`). Each has a full-screen demo in
+  marketing page (`sections-home`), the full **type specimen**
+  (`type-specimen`) and the three assistant screens (`ai-chat`,
+  `ai-signin`, `ai-settings`). Each has a full-screen demo in
   the styleguide (`preview/demo-*.html`).
+- `assets/js/ai.js` — the assistant screen's wiring: the rail toggle
+  (attribute + aria-expanded, Escape closes the phone sheet), Enter-sends /
+  Shift+Enter-breaks, the character count, removable context and file chips,
+  and autoscroll that leaves a reader alone when they have scrolled up. The
+  canned reply is demo-only; everything else is production behaviour.
 - `assets/js/theme-init.js` — the shared no-flash theme bootstrap. Inlined
   verbatim by both products, using one storage key so a reader keeps their
   theme moving between the marketing site and the app.
@@ -459,7 +476,7 @@ conventions someone has to remember.
   **Content Design**, and the four type cards: **Text Effects**, **Display
   Typography**, **Circular Text / Links / Citations** and **Typographic
   Accessibility**.
-- `fonts/` — Switzer + Sentient variable woff2s and `FONTSHARE-EULA.txt`,
+- `fonts/` — Switzer + Roboto Mono variable woff2s, `FONTSHARE-EULA.txt` and `licences/`,
   which must travel with them. No static package is generated: the EULA
   permits self-hosting but not redistributing the font software, and shipping
   a derived static family is redistribution. `fonts/README.md` holds the
@@ -488,17 +505,19 @@ it is not. One neutral copy, adapted at the edge, keeps the contract single.
 
 ## Font pairing
 
-Two shipped faces and one system stack — **69 KB** for the pair. Both are
-[Indian Type Foundry](https://www.indiantypefoundry.com) cuts from
-[Fontshare](https://www.fontshare.com), latin-subset variable woff2, under the
-Fontshare Free Font EULA (free for personal and commercial use, self-hosting
-provided for). The licence ships in `fonts/FONTSHARE-EULA.txt`.
+Two shipped faces — **67 KB**, latin-subset variable woff2, both
+self-hosted. Switzer is an [Indian Type
+Foundry](https://www.indiantypefoundry.com) cut from
+[Fontshare](https://www.fontshare.com) under the Fontshare Free Font EULA
+(`fonts/FONTSHARE-EULA.txt`); Roboto Mono is under the SIL Open Font Licence
+1.1 (`fonts/licences/`). Both licences permit self-hosting and commercial use
+and require the licence text to travel with the files.
 
 | Role | Face | Weights | Why |
 |---|---|---|---|
 | Headings, display **and** prose | **Switzer** (variable 100–900) | 700 headings, 600 sub-heads, 500 nav, **400 body** | One grotesque across the whole range. Neutral, tightly drawn, reads "product" rather than "marketing". |
-| Quotations — the editorial voice | **Sentient** (variable 200–700) | 400 | A real serif for pull-quotes, drop caps and section quotations: the register that quotes rather than argues. |
-| Structure: indexes, labels, timestamps, kickers, code | *system mono* — **not shipped** | 400 code, 700 labels | `ui-monospace` / SF Mono / Consolas. Short tracked uppercase runs, where the reader's own console face beats anything we could send. |
+| Quotations — the editorial voice | *platform serif* — **not shipped** | 400 | Georgia / Iowan Old Style / Times. A quotation still reads as a quotation, and a handful of blockquotes per page does not earn a 40 KB face the way the mono voice on every label does. |
+| Structure: indexes, labels, timestamps, kickers, code | **Roboto Mono** (variable 100–700) | 400 code, 700 labels | The face the reader sees most — every index, duration, tag and status. Plain, wide-set and unmannered on purpose: it does structural work behind `01` and `21:15` hundreds of times a page rather than asking to be admired. Shipped rather than borrowed, so the most-repeated voice in the UI is the same on every platform. |
 
 **One sans, not a display/text pair.** The previous system ran two cuts — one
 to speak, one to explain — and the seam between them had to be managed at
@@ -509,7 +528,7 @@ covers the range alone, separated by **weight and size** rather than by face.
 future display face is one token away); it resolves to the same stack.
 
 The faces still **never compete for a job** — that hard rule is Principle 2.
-If it is a sentence it is Switzer; if it is a quotation it is Sentient; if it
+If it is a sentence it is Switzer; if it is a quotation it is the platform serif; if it
 is data it is mono, uppercase and tracked (`--tracking-label`).
 
 Optical corrections applied (the part generic deployments miss):

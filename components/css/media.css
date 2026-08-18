@@ -63,4 +63,82 @@
   .ns-carousel__slide { flex: 0 0 min(16rem, 85%); scroll-snap-align: start; min-inline-size: 0; }
   .ns-carousel__slide--wide { flex-basis: min(24rem, 92%); }
   .ns-carousel__nav { display: flex; gap: var(--space-2); justify-content: flex-end; }
+
+  /* ================================================== Picture frames ====
+     A photograph in this system is usually a hairline box, and that is right
+     for a course still or a screenshot. These are for the places where the
+     image is an OBJECT rather than a document: an instructor's desk, a
+     community meetup, a certificate on a wall, the top of a story.
+
+     All four are one element plus one border treatment — no wrappers, no
+     images of frames. They are print metaphors, so none of them animate.
+
+       --photo      a white margin and a hairline: a print in an album, the
+                    caption sitting in the bottom margin like a photo-book
+       --polaroid   the same idea with the deep bottom margin an instant
+                    print has, for a caption in the reader's own voice
+       --matted     a museum mat: a wide sunken border inside the frame, the
+                    treatment that says "this is being presented"
+       --tape       a print stuck down at two corners — the community/meetup
+                    look, and the only one with rotation                    */
+  .ns-pframe { display: inline-block; max-inline-size: 100%; background: var(--color-surface-raised); }
+  .ns-pframe img { display: block; inline-size: 100%; block-size: auto; }
+  .ns-pframe figcaption {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); text-align: center;
+  }
+
+  .ns-pframe--photo {
+    padding: var(--space-3) var(--space-3) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+  }
+  .ns-pframe--photo figcaption { margin-block-start: var(--space-2); }
+
+  .ns-pframe--polaroid {
+    padding: var(--space-3) var(--space-3) var(--space-6);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-card);
+  }
+  .ns-pframe--polaroid figcaption {
+    margin-block-start: var(--space-4);
+    font-family: var(--font-serif); font-size: var(--size-small);
+    color: var(--color-ink); text-transform: none; letter-spacing: normal;
+  }
+
+  .ns-pframe--matted {
+    padding: var(--space-8);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+  }
+  .ns-pframe--matted img { border: 1px solid var(--color-border); }
+  .ns-pframe--matted figcaption { margin-block-start: var(--space-4); }
+
+  /* The tape: two short strips at the top corners, drawn from the brand wash
+     so it reads as tape rather than as a yellow rectangle. The whole print
+     sits at a slight angle — the one place this system rotates anything, and
+     it is doing what rotation is for: saying "a person put this here". */
+  .ns-pframe--tape {
+    position: relative; padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    rotate: -1.2deg; /* lint-ok: the print's own tilt, not a spacing or motion token */
+  }
+  .ns-pframe--tape::before, .ns-pframe--tape::after {
+    content: ""; position: absolute; inset-block-start: calc(-1 * var(--space-2));
+    inline-size: var(--space-12); block-size: var(--space-5);
+    background: color-mix(in srgb, var(--color-brand-300) 45%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-brand-500) 25%, transparent);
+  }
+  .ns-pframe--tape::before { inset-inline-start: var(--space-4); rotate: -6deg; } /* lint-ok: tape angle */
+  .ns-pframe--tape::after { inset-inline-end: var(--space-4); rotate: 5deg; } /* lint-ok: tape angle */
+  .ns-pframe--tape figcaption { margin-block-start: var(--space-2); }
+
+  /* A wall of them — a meetup gallery, a testimonial strip. Alternating tilt
+     so a row does not read as a mistake. */
+  .ns-pframes { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
+  .ns-pframes .ns-pframe--tape:nth-child(even) { rotate: 1.4deg; } /* lint-ok: tape angle */
+
+  @media (prefers-reduced-motion: reduce) {
+    .ns-pframe--tape, .ns-pframes .ns-pframe--tape:nth-child(even) { rotate: none; }
+  }
 }

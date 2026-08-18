@@ -1,0 +1,820 @@
+/* NS Design System — the AI assistant surface.
+   =========================================================================
+   The learning assistant: a teacher-shaped LLM sitting inside the LMS. A
+   student asks "what is a trigger context variable", "give me a project to
+   practise flows", "review my resume for a Salesforce admin role" — and the
+   answer comes back as prose PLUS the product's own objects: a course card,
+   a lesson link, a generated learning path, a rich snippet of a blog post.
+
+   That last part is the whole reason this is a component family and not
+   one generic chat class. A generic chat UI renders text. This one renders the
+   catalog: every answer can carry the same ns-ccard, ns-bcard, ns-resource
+   and ns-roadmap objects the rest of the product renders, so a
+   recommendation in chat and the same course on the catalog page are one
+   component, not two things that look alike.
+
+   Four decisions worth stating, because every chat UI on the internet makes
+   them the other way:
+
+   1. NO BUBBLES, NO WASHES. Principle 3 gives brand blue one job — "this is
+      interactive" — and status colors one form: a dot plus mono text. A
+      tinted speech balloon per speaker spends the entire color budget on
+      information the role label already carries. The student's turn is a
+      sunken hairline card at a narrow measure; the assistant's turn is
+      full-measure prose on the page surface, because the assistant's turn is
+      READING and reading gets the reading treatment.
+
+   2. THE ROLE IS MONO, LIKE EVERY OTHER LABEL. `YOU` / `ASSISTANT` render in
+      the same uppercase mono as a lesson index or a ticket id (Principle 2).
+      A transcript should read as a record.
+
+   3. MOTION IS OPACITY ONLY. Thinking dots fade, they do not bounce or
+      scale; the stream caret blinks on a 1.1s step. Principle 5 rules out
+      the springy typing indicator every chat product ships. Under
+      prefers-reduced-motion the loops stop and the label alone carries the
+      state — which is also what a screen reader gets via aria-live.
+
+   4. THE ASSISTANT IS ALWAYS ATTRIBUTED AND ALWAYS FALLIBLE. Every response
+      block has room for sources (.ns-aisource) and every screen has the
+      standing note (.ns-ai__note). An LMS assistant that cites nothing is a
+      confident stranger talking to a beginner who cannot yet tell.
+
+   Layout contract for the shell:
+     ≥ lg   two columns — conversation rail | thread, both scrolling
+            independently inside one locked viewport, composer docked.
+     < lg   one column — the rail becomes an off-canvas sheet behind a
+            toggle; the thread and composer get the whole screen.
+
+   State lives on attributes, never on state classes:
+     data-state="thinking|streaming|done|error"   on .ns-aiturn
+     data-state="running|done|failed"             on .ns-aitool
+     aria-expanded                                on the trace toggle
+     data-collapsed="true"                        on .ns-ai__side */
+@layer ns-components {
+
+  /* --- Shell --------------------------------------------------------------
+     One viewport, two independently scrolling columns, composer docked to
+     the bottom of the right one. The page does NOT scroll: a chat where the
+     document scrolls means the composer walks off the screen mid-sentence,
+     which is the single most-reported bug in every chat UI ever shipped.
+
+     --embedded drops the viewport lock for the in-page variant (a chat
+     panel inside a lesson), where the surrounding page owns the scroll. */
+  .ns-ai {
+    display: grid;
+    grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+    block-size: 100dvh;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+  /* Docked under the product navbar rather than owning the whole viewport. */
+  .ns-ai--docked { block-size: calc(100dvh - var(--navbar-h)); }
+  .ns-ai--embedded {
+    block-size: auto; min-block-size: 0; overflow: visible;
+    grid-template-columns: minmax(0, 1fr);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+  }
+
+  .ns-ai__side {
+    display: flex; flex-direction: column; min-block-size: 0;
+    border-inline-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  /* Collapsed rail: the sidebar folds to nothing on ≥ lg rather than to an
+     icon strip. An icon-only conversation list is a list of untitled
+     conversations — there is no glyph for "the one about triggers". */
+  .ns-ai[data-collapsed="true"] { grid-template-columns: 0 minmax(0, 1fr); }
+  .ns-ai[data-collapsed="true"] .ns-ai__side { overflow: hidden; border-inline-end-color: transparent; }
+
+  .ns-ai__main {
+    display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+    min-inline-size: 0; min-block-size: 0;
+  }
+  .ns-ai--embedded .ns-ai__main { grid-template-rows: auto auto auto; }
+
+  /* Top bar — the current conversation's identity plus the model in use.
+     Sticky is unnecessary: it is a grid row above a scroll region. */
+  .ns-ai__bar {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2-5) var(--gutter);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+  .ns-ai__bar-title {
+    font-weight: var(--weight-medium); font-size: var(--size-small);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-ai__bar-meta {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); white-space: nowrap;
+  }
+  .ns-ai__bar-actions { display: flex; align-items: center; gap: var(--space-1); margin-inline-start: auto; }
+
+  /* The scrolling transcript. overscroll-behavior stops a flick at the top
+     of the thread from scrolling the page behind the app. */
+  .ns-ai__scroll {
+    overflow-y: auto; overscroll-behavior: contain;
+    padding: var(--space-8) var(--gutter);
+    scroll-behavior: smooth;
+  }
+  .ns-ai--embedded .ns-ai__scroll { max-block-size: 60vh; padding: var(--pad-card); }
+  @media (prefers-reduced-motion: reduce) { .ns-ai__scroll { scroll-behavior: auto; } }
+
+  /* Everything in the thread shares one measure and one left edge, so the
+     role labels line up into a readable column down the page. */
+  .ns-ai__inner { max-inline-size: var(--container-prose); margin-inline: auto; }
+
+  .ns-ai__foot {
+    padding: var(--space-4) var(--gutter) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface);
+  }
+
+  /* The standing disclaimer. Fine print, mono, centred under the composer —
+     present on every screen, never dismissible. */
+  .ns-ai__note {
+    max-inline-size: var(--container-prose); margin-inline: auto;
+    margin-block-start: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); text-align: center;
+  }
+
+  @media (max-width: 63.999rem) {
+    /* Phone/tablet: the rail becomes an off-canvas sheet over the thread.
+       It is still in the DOM and still focusable — hidden by transform, not
+       display:none, so the open/close is one attribute flip. */
+    .ns-ai, .ns-ai[data-collapsed="true"] { grid-template-columns: minmax(0, 1fr); }
+    .ns-ai__side {
+      position: fixed; inset-block: 0; inset-inline-start: 0;
+      inline-size: var(--sidebar-w); max-inline-size: 85vw;
+      z-index: var(--z-dropdown);
+      transform: translateX(-100%);
+      transition: transform var(--duration-base) var(--ease-out);
+    }
+    .ns-ai[data-collapsed="false"] .ns-ai__side { transform: translateX(0); box-shadow: var(--shadow-raised); }
+    .ns-ai[data-collapsed="true"] .ns-ai__side { overflow: hidden; }
+    .ns-ai__scroll, .ns-ai__foot { padding-inline: var(--gutter-md); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ns-ai__side { transition: none; }
+  }
+
+  /* --- Conversation rail --------------------------------------------------
+     History, grouped by recency, in the terminal-row idiom the rest of the
+     system uses for lists: hairline separation, hover brightens a leading
+     edge, the active row carries aria-current. */
+  .ns-aiside__head {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    padding: var(--space-4) var(--space-4) var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-aiside__brand {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aiside__brand .ph-sparkle { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-aiside__brand .ph-sparkle { color: var(--color-brand-300); }
+
+  .ns-aiside__list { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-block: var(--space-2); }
+
+  .ns-aiside__group { padding-block-start: var(--space-3); }
+  .ns-aiside__label {
+    padding: var(--space-1) var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  .ns-aiside__item {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-inline-start: 2px solid transparent;
+    color: var(--color-ink); text-decoration: none;
+    font-size: var(--size-small);
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-aiside__item:hover { background: var(--color-surface); border-inline-start-color: var(--color-brand-500); }
+  .ns-aiside__item:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-aiside__item[aria-current="true"] {
+    background: var(--color-surface);
+    border-inline-start-color: var(--color-brand-500);
+    font-weight: var(--weight-medium);
+  }
+  .ns-aiside__title { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* The course a conversation is anchored to. A student's chat history is
+     mostly "the one from the Apex module", so the course is the real title
+     and the question is the subtitle. */
+  .ns-aiside__course {
+    display: block;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-aiside__when {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-aiside__foot { border-block-start: 1px solid var(--color-border); padding: var(--space-3) var(--space-4); }
+
+  /* Remaining messages on the free plan. A meter, not a warning banner —
+     it is information until it is nearly gone. */
+  .ns-aiside__quota { display: flex; flex-direction: column; gap: var(--space-1-5); }
+  .ns-aiside__quota-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-aiside__quota-row b { color: var(--color-ink); font-weight: var(--weight-label); font-variant-numeric: tabular-nums; }
+
+  /* --- A turn -------------------------------------------------------------
+     The unit of transcript. Student and assistant are told apart by
+     structure — measure, surface, alignment — not by hue. */
+  .ns-aiturn { display: flex; flex-direction: column; gap: var(--space-4); }
+  .ns-aiturn + .ns-aiturn { margin-block-start: var(--space-10); }
+
+  .ns-aiturn__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aiturn__head time { margin-inline-start: auto; color: var(--color-muted); font-variant-numeric: tabular-nums; }
+
+  /* The assistant's mark: a hairline square with the sparkle, never a
+     photo-real avatar. The product is not pretending to be a person. */
+  .ns-aiturn__mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--space-5); block-size: var(--space-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    color: var(--color-brand-600); background: var(--color-surface);
+    font-size: var(--size-small);
+  }
+  [data-theme="dark"] .ns-aiturn__mark { color: var(--color-brand-300); }
+
+  .ns-aiturn__body { font-size: var(--size-body); line-height: var(--leading-body); }
+  .ns-aiturn__body > * + * { margin-block-start: var(--space-5); }
+
+  /* The student's turn: sunken, hairline, capped narrow. Narrow because a
+     question is short and a full-measure question reads as an essay. */
+  .ns-aiturn--user .ns-aiturn__body {
+    max-inline-size: var(--measure-narrow);
+    padding: var(--space-3) var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    font-size: var(--size-small);
+  }
+  /* Assistant turns get the reading measure and no container at all. */
+  .ns-aiturn--agent .ns-aiturn__body { max-inline-size: var(--measure-prose); }
+
+  /* Per-response actions. Quiet until the turn is hovered or focused
+     within — present for keyboards from the start, out of the way for
+     readers. Always visible on touch, where there is no hover to reveal
+     them and a permanently hidden control is simply a missing one. */
+  .ns-aiturn__actions {
+    display: flex; align-items: center; gap: var(--space-1);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+  .ns-aiturn:hover .ns-aiturn__actions,
+  .ns-aiturn:focus-within .ns-aiturn__actions { opacity: 1; }
+  @media (hover: none) { .ns-aiturn__actions { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .ns-aiturn__actions { transition: none; } }
+
+  /* An edited/regenerated turn says so, in mono, rather than silently
+     replacing what the student read a moment ago. */
+  .ns-aiturn__note {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+  }
+
+  /* --- Thinking -----------------------------------------------------------
+     Three squares, not three bouncing circles: sharp geometry (Principle 4)
+     and opacity-only motion (Principle 5). The label beside them is the real
+     status — the dots are decoration, and under reduced motion the label is
+     all that is left, which is exactly the right degradation.
+
+     The whole block is aria-live="polite" in markup so the wait is
+     announced once rather than being a silent pause. */
+  .ns-aithinking {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-aithinking__dots { display: inline-flex; gap: var(--space-1); }
+  .ns-aithinking__dots i {
+    inline-size: var(--space-1-5); block-size: var(--space-1-5);
+    background: var(--color-brand-500); border-radius: var(--radius-sm);
+    opacity: var(--opacity-disabled);
+    animation: ns-ai-pulse 1.2s var(--ease-out) infinite;
+  }
+  .ns-aithinking__dots i:nth-child(2) { animation-delay: 0.15s; }
+  .ns-aithinking__dots i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes ns-ai-pulse { 0%, 100% { opacity: var(--opacity-disabled); } 50% { opacity: 1; } }
+
+  /* The reasoning trace: what it is doing, in order, disclosed on demand.
+     Collapsed by default — a beginner asking "what is a trigger" does not
+     want to read a plan, and a student debugging their own prompt very much
+     does. A real <details>, so it works with no JavaScript. */
+  .ns-aitrace { margin-block-start: var(--space-2); }
+  .ns-aitrace > summary {
+    display: flex; align-items: center; gap: var(--space-2);
+    cursor: pointer; list-style: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-muted);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-aitrace > summary::-webkit-details-marker { display: none; }
+  .ns-aitrace > summary:hover { color: var(--color-brand-600); }
+  .ns-aitrace > summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-aitrace > summary .ph-caret-right { transition: transform var(--duration-fast) var(--ease-out); }
+  .ns-aitrace[open] > summary .ph-caret-right { transform: rotate(90deg); }
+  [data-theme="dark"] .ns-aitrace > summary:hover { color: var(--color-brand-300); }
+
+  .ns-aitrace__steps {
+    margin-block-start: var(--space-3);
+    padding-inline-start: var(--space-4);
+    border-inline-start: 1px solid var(--color-border);
+    display: flex; flex-direction: column; gap: var(--space-2);
+    font-size: var(--size-small); color: var(--color-muted);
+  }
+  .ns-aitrace__step { display: flex; gap: var(--space-2); align-items: baseline; }
+  .ns-aitrace__step > i:first-child { color: var(--color-success); font-size: var(--size-label); }
+  .ns-aitrace__step b {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* A tool call, shown as a row rather than hidden. "Searched the catalog",
+     "Read your progress" — the student can see what the assistant looked at,
+     which is the difference between a tutor and an oracle. */
+  .ns-aitool {
+    /* A quiet line of text, not a pill. Six bordered chips above every answer
+       was the loudest thing on the screen and the least important: what the
+       assistant read is context, not a control. No border, no fill, no
+       uppercase — it now reads as a footnote that happens to sit on top. */
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    margin-inline-end: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+  }
+  .ns-aitool[data-state="running"] { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-aitool[data-state="running"] { color: var(--color-brand-300); }
+  .ns-aitool[data-state="running"] i:first-child { animation: ns-ai-spin var(--duration-slow) linear infinite; }
+  .ns-aitool[data-state="done"] i:first-child { color: var(--color-success); }
+  .ns-aitool[data-state="failed"] { color: var(--color-error-ink); }
+  .ns-aitool__count { color: var(--color-label); font-variant-numeric: tabular-nums; }
+  @keyframes ns-ai-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .ns-aithinking__dots i, .ns-aitool[data-state="running"] i:first-child { animation: none; }
+  }
+
+  /* The streaming caret — a mono block that blinks on a 1.1s step, appended
+     to the last text node while tokens arrive. A step timing, not a fade:
+     a cursor is a discrete thing. */
+  .ns-aistream {
+    display: inline-block;
+    inline-size: 0.5em; block-size: 1em; /* lint-ok: an em box sized to the caret's own type, not a spacing value */
+    vertical-align: -0.15em; /* lint-ok: optical baseline drop for the caret box */
+    background: var(--color-brand-500);
+    animation: ns-ai-caret 1.1s step-end infinite;
+  }
+  @keyframes ns-ai-caret { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .ns-aistream { animation: none; opacity: 1; } }
+
+  /* --- Attachments in an answer -------------------------------------------
+     The grid an assistant drops product objects into. It is a plain grid on
+     purpose: what goes inside is ns-ccard, ns-bcard, ns-resource — the real
+     components — so a course recommended in chat is the same course card as
+     everywhere else, at the same measure. */
+  .ns-aiattach {
+    display: grid; gap: var(--gap-card);
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  }
+  .ns-aiattach--single { grid-template-columns: minmax(0, 1fr); }
+  /* Attached objects carry a mono caption so the student knows why they are
+     being shown this, not just that they are. */
+  .ns-aiattach__label {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    margin-block-end: var(--space-2);
+  }
+
+  /* --- Rich link snippet --------------------------------------------------
+     A blog post, a doc page or an external reference unfurled inside the
+     answer: thumbnail, title, one line, host. Hairline card, hover brightens
+     the border — the same contract as every other card here. */
+  .ns-aisnippet {
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--pad-card); align-items: start;
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    text-decoration: none; color: var(--color-ink);
+    box-shadow: inset 0 2px 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-aisnippet:hover { border-color: var(--color-brand-500); box-shadow: inset 0 2px 0 var(--color-brand-500); }
+  .ns-aisnippet:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-aisnippet__thumb {
+    inline-size: var(--space-20); aspect-ratio: 16 / 9;
+    object-fit: cover; border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+  }
+  .ns-aisnippet__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aisnippet__kicker { display: block; }
+  .ns-aisnippet__title { display: block; font-weight: var(--weight-medium); margin-block-start: var(--space-0-5); }
+  .ns-aisnippet__desc {
+    font-size: var(--size-small); color: var(--color-muted);
+    margin-block-start: var(--space-1);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ns-aisnippet__meta {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-block-start: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+  }
+  @media (max-width: 39.999rem) {
+    .ns-aisnippet { grid-template-columns: minmax(0, 1fr); }
+    .ns-aisnippet__thumb { inline-size: 100%; }
+  }
+
+  /* An image the assistant produced or was given: framed, captioned, and
+     labelled as generated when it is. An unlabelled generated image in a
+     learning product is a diagram a student will cite in an exam. */
+  .ns-aiimage { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; }
+  .ns-aiimage img { display: block; inline-size: 100%; }
+  .ns-aiimage__cap {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+  }
+  .ns-aiimage__cap .ns-badge { margin-inline-start: auto; }
+
+  /* --- Generated learning path --------------------------------------------
+     The assistant's most product-specific output: "here is a 6-week route
+     from where you are to a Platform Developer I attempt." Numbered steps on
+     a rail, each pointing at a real course or lesson, with a save action at
+     the end. Deliberately NOT ns-roadmap: that is a marketing object with
+     illustrations and lede copy; this is a compact plan inside a message. */
+  .ns-aipath {
+    /* Hairlines, not a card. An answer that carried a bordered trace, a
+       bordered attachment grid, a bordered path and a bordered check was four
+       boxes deep — every one of them saying "I am a container" and none of
+       them saying anything about the answer. The path keeps its rules and
+       loses its frame. */
+    border-block: 1px solid var(--color-border);
+    background: none;
+  }
+  .ns-aipath__head {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-3) 0;
+  }
+  .ns-aipath__title { font-weight: var(--weight-semibold); }
+  .ns-aipath__meta {
+    margin-inline-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); white-space: nowrap;
+  }
+  .ns-aipath__steps { display: flex; flex-direction: column; }
+  .ns-aipath__step {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center; gap: var(--space-3);
+    padding: var(--space-2-5) var(--space-2);
+    border-inline-start: 2px solid transparent;
+    color: var(--color-ink); text-decoration: none;
+    transition: background-color var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-aipath__step + .ns-aipath__step { border-block-start: 1px solid var(--color-border); }
+  .ns-aipath__step:hover { background: var(--color-surface-sunken); border-inline-start-color: var(--color-brand-500); }
+  .ns-aipath__step:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
+  .ns-aipath__index {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* Block, not inline: the step's name and its subtitle are two lines. An
+     inline span here is how "Apex basicsLessons 01-03" ships. */
+  .ns-aipath__name { display: block; font-size: var(--size-small); font-weight: var(--weight-medium); }
+  .ns-aipath__sub { display: block; font-size: var(--size-label); color: var(--color-muted); }
+  .ns-aipath__when {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); white-space: nowrap;
+  }
+  /* A step the student has already finished: the check, and the row dimmed
+     rather than removed — seeing what you have done is half the point. */
+  .ns-aipath__step[data-state="done"] .ns-aipath__index { color: var(--color-success); }
+  .ns-aipath__step[data-state="done"] .ns-aipath__name { color: var(--color-muted); }
+  .ns-aipath__foot {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) 0 0;
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-aipath__foot .ns-aipath__meta { margin-inline-start: 0; }
+
+  /* --- Sources ------------------------------------------------------------
+     Where the answer came from, as numbered mono chips under it. Numbered so
+     the prose can reference [1] inline the way the ns-cite component does in
+     an article. */
+  .ns-aisource { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+  .ns-aisource__label {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aisource__item {
+    /* Text, not chips. A citation is a reference, and three bordered pills
+       under every answer turned attribution into a button bar. */
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    font-size: var(--size-label); color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-aisource__item + .ns-aisource__item { margin-inline-start: var(--space-3); }
+  .ns-aisource__item:hover { color: var(--color-brand-600); text-decoration: underline; text-underline-offset: 0.2em; }
+  .ns-aisource__item:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  [data-theme="dark"] .ns-aisource__item:hover { color: var(--color-brand-300); }
+  .ns-aisource__num {
+    font-family: var(--font-mono); font-weight: var(--weight-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Practice check -----------------------------------------------------
+     A question the assistant asks back, inline. This is what makes it a
+     teacher rather than an answer machine: after explaining governor limits
+     it asks one question and waits. Options are real radios in a fieldset. */
+  .ns-aicheck {
+    border-inline-start: 2px solid var(--color-brand-500);
+    padding: var(--space-1) 0 var(--space-1) var(--pad-card);
+  }
+  .ns-aicheck__kicker {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aicheck__q { font-weight: var(--weight-medium); margin-block: var(--space-2) var(--space-3); }
+  .ns-aicheck__options { display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-aicheck__foot { display: flex; align-items: center; gap: var(--space-3); margin-block-start: var(--space-4); }
+
+  /* --- Error and limit states ---------------------------------------------
+     Failures render INSIDE the transcript, in the assistant's slot, because
+     that is where the student is looking and because the failed turn must
+     stay in the record. The 3px leading edge is the system's error device;
+     the retry is an outline button, never the primary — the primary action
+     on the screen is still the composer.
+
+     --limit is the same shape in warning, for a quota the student can fix by
+     waiting or upgrading rather than by retrying. */
+  .ns-aierror {
+    border: 1px solid var(--color-border);
+    border-inline-start: 3px solid var(--color-error);
+    border-radius: var(--radius-card);
+    padding: var(--pad-card);
+    background: var(--color-surface-raised);
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  .ns-aierror__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-error-ink);
+  }
+  .ns-aierror__text { font-size: var(--size-small); color: var(--color-muted); }
+  .ns-aierror__actions { display: flex; align-items: center; gap: var(--space-2); margin-block-start: var(--space-1); }
+  /* The technical detail, for a student who is going to paste it into a
+     ticket. Mono, dim, collapsed. */
+  .ns-aierror__code {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label);
+  }
+  .ns-aierror--limit { border-inline-start-color: var(--color-warning); }
+  .ns-aierror--limit .ns-aierror__head { color: var(--color-warning-ink); }
+  .ns-aierror--offline { border-inline-start-color: var(--color-muted); }
+  .ns-aierror--offline .ns-aierror__head { color: var(--color-muted); }
+
+  /* --- Empty state / starters ---------------------------------------------
+     The first screen. A blank composer with a blinking cursor tells a
+     beginner nothing about what this thing can do, so the empty state is the
+     capability list: four things a student actually wants, phrased as the
+     student would say them, each one a real prompt that fires on click. */
+  .ns-aiwelcome { display: flex; flex-direction: column; gap: var(--space-6); padding-block: var(--space-10); text-align: center; }
+  .ns-aiwelcome__mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--space-12); block-size: var(--space-12);
+    margin-inline: auto;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    color: var(--color-brand-600); font-size: var(--size-h2);
+    background: var(--color-surface-raised);
+  }
+  [data-theme="dark"] .ns-aiwelcome__mark { color: var(--color-brand-300); }
+  .ns-aiwelcome__title { font-family: var(--font-heading); font-size: var(--size-h2); line-height: var(--leading-heading); }
+  .ns-aiwelcome__lede { color: var(--color-muted); max-inline-size: var(--measure-narrow); margin-inline: auto; }
+
+  .ns-aisuggest {
+    display: grid; gap: var(--gap-card);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    text-align: start;
+  }
+  .ns-aisuggest__item {
+    display: flex; flex-direction: column; gap: var(--space-1);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    text-align: start; cursor: pointer; color: var(--color-ink);
+    box-shadow: inset 0 2px 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-aisuggest__item:hover { border-color: var(--color-brand-500); box-shadow: inset 0 2px 0 var(--color-brand-500); }
+  .ns-aisuggest__item:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-aisuggest__item:active { opacity: var(--opacity-press); }
+  .ns-aisuggest__kicker {
+    display: flex; align-items: center; gap: var(--space-1-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aisuggest__text { font-size: var(--size-small); line-height: var(--leading-body); }
+
+  /* --- Composer -----------------------------------------------------------
+     The input. One hairline box that GROWS with the textarea rather than a
+     fixed-height field with a scrollbar, because a student pasting an Apex
+     class needs to see it. The box is the focus target: focus-within moves
+     the ring to the whole composer, so the toolbar reads as part of the
+     control it belongs to.
+
+     Enter sends and Shift+Enter breaks the line — stated in the hint rather
+     than left to be discovered, since the wrong guess posts a half-question
+     to a class. */
+  .ns-aicomposer {
+    max-inline-size: var(--container-prose); margin-inline: auto;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-aicomposer:focus-within { border-color: var(--color-brand-500); box-shadow: var(--shadow-focus); }
+  .ns-aicomposer[aria-disabled="true"] { opacity: var(--opacity-disabled); }
+
+  .ns-aicomposer__area {
+    display: block; inline-size: 100%;
+    padding: var(--space-3) var(--pad-card) var(--space-2);
+    border: 0; background: none; color: inherit;
+    font-family: inherit; font-size: var(--size-body); line-height: var(--leading-body);
+    resize: none; field-sizing: content;
+    min-block-size: var(--space-10); max-block-size: 12rem; /* lint-ok: the composer's own growth ceiling in rem, not a spacing relationship */
+  }
+  .ns-aicomposer__area:focus { outline: none; } /* the ring is on the wrapper */
+  .ns-aicomposer__area::placeholder { color: var(--color-muted); }
+
+  .ns-aicomposer__bar {
+    display: flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-aicomposer__spacer { margin-inline-start: auto; }
+  .ns-aicomposer__hint {
+    margin-inline: var(--space-3) var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); white-space: nowrap;
+  }
+  /* Character/token budget. Turns warning near the ceiling and error past
+     it — a status, so it is a dot-and-text signal, not a red field. */
+  .ns-aicomposer__count {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-aicomposer__count[data-state="near"] { color: var(--color-warning-ink); }
+  .ns-aicomposer__count[data-state="over"] { color: var(--color-error-ink); }
+
+  /* Attached files, above the textarea: mono name, size, remove. */
+  .ns-aifiles {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    padding: var(--space-3) var(--pad-card) 0;
+  }
+  .ns-aifile {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); max-inline-size: 100%;
+  }
+  .ns-aifile__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--color-ink); }
+  .ns-aifile__size { font-variant-numeric: tabular-nums; }
+  .ns-aifile[data-state="uploading"] .ph-circle-notch { animation: ns-ai-spin var(--duration-slow) linear infinite; }
+  .ns-aifile[data-state="failed"] { border-color: var(--color-error); color: var(--color-error-ink); }
+  @media (prefers-reduced-motion: reduce) { .ns-aifile[data-state="uploading"] .ph-circle-notch { animation: none; } }
+
+  /* The context pill: what the assistant can currently see. A student asking
+     about "this lesson" means THIS lesson, and the answer is only right if
+     the assistant is actually reading it — so what is in scope is stated on
+     the composer, removable, never inferred silently. */
+  .ns-aicontext {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5) var(--space-2);
+    border: 1px solid var(--color-brand-500); border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-aicontext { color: var(--color-brand-300); }
+  .ns-aicontext__x {
+    display: inline-flex; border: 0; background: none; cursor: pointer;
+    color: inherit; opacity: var(--opacity-loading);
+  }
+  .ns-aicontext__x:hover { opacity: 1; }
+
+  /* --- Model / mode picker ------------------------------------------------
+     Which teacher you are talking to: Tutor (explains), Coach (asks back),
+     Reviewer (marks your code). Rendered as the menu trigger in the composer
+     bar; the menu itself is the shared ns-menu. */
+  .ns-aimode {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid transparent; border-radius: var(--radius-btn);
+    background: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-aimode:hover { border-color: var(--color-border); color: var(--color-ink); }
+  .ns-aimode:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
+  .ns-aimode[aria-expanded="true"] { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-aimode[aria-expanded="true"] { color: var(--color-brand-300); }
+
+  /* --- Settings -----------------------------------------------------------
+     The assistant's own preferences screen: mode default, memory, what it may
+     read, data retention. Rows, not cards — a settings page is a list of
+     decisions and a card grid makes it a shopping page. */
+  .ns-aiset { border: 1px solid var(--color-border); border-radius: var(--radius-card); overflow: hidden; }
+  .ns-aiset__legend {
+    padding: var(--space-2-5) var(--pad-card);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-aiset__row {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center; gap: var(--space-4);
+    padding: var(--pad-card);
+  }
+  .ns-aiset__row + .ns-aiset__row { border-block-start: 1px solid var(--color-border); }
+  .ns-aiset__name { font-size: var(--size-small); font-weight: var(--weight-medium); }
+  .ns-aiset__desc { font-size: var(--size-label); color: var(--color-muted); margin-block-start: var(--space-1); line-height: var(--leading-body); }
+  .ns-aiset__control { justify-self: end; }
+  /* A destructive row (forget everything, delete history) is the one place
+     the error hue appears on this screen. */
+  .ns-aiset__row--danger .ns-aiset__name { color: var(--color-error-ink); }
+  @media (max-width: 39.999rem) {
+    .ns-aiset__row { grid-template-columns: minmax(0, 1fr); }
+    .ns-aiset__control { justify-self: start; }
+  }
+
+  /* --- Sign-in gate -------------------------------------------------------
+     The assistant behind an account. Not a modal over a blurred transcript —
+     a real card in the thread's place, with the reason stated: the answers
+     are personalised to the student's own progress, which requires knowing
+     who they are. */
+  .ns-aigate {
+    max-inline-size: var(--measure-narrow); margin-inline: auto;
+    display: flex; flex-direction: column; gap: var(--space-4);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    text-align: center;
+  }
+  .ns-aigate__title { font-family: var(--font-heading); font-size: var(--size-h3); line-height: var(--leading-heading); }
+  .ns-aigate__text { font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body); }
+  .ns-aigate__list {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    text-align: start; font-size: var(--size-small);
+  }
+  .ns-aigate__list li { display: flex; gap: var(--space-2); align-items: baseline; }
+  .ns-aigate__list i { color: var(--color-success); font-size: var(--size-label); }
+  .ns-aigate__actions { display: flex; flex-direction: column; gap: var(--space-2); }
+}

@@ -162,4 +162,65 @@
    bottom — it belongs to the burger, and motion should say so. */
 @keyframes ns-sheet-in { from { opacity: 0; translate: 0 -1rem; } }
 @keyframes ns-sheet-row { from { opacity: 0; translate: 0 0.5rem; } }
-@keyframes ns-slide-end { from { translate: 100% 0; } }
+@keyframes ns-slide-end { from { translate: 100% 0; } 
+  /* --- Lesson panel -------------------------------------------------------
+     The curriculum, opened from anywhere. Two shapes for two situations, and
+     they are the same dialog:
+
+       ≥ sm   a CENTRED modal. The lesson list is a thing you are choosing
+              from, not a drawer you are peeking into, so it gets the middle
+              of the screen and a scrim.
+       < sm   a bottom sheet, because a centred box on a phone is a centred
+              box with a keyboard-sized margin round it, and the reachable
+              part of a phone screen is the bottom half.
+
+     Both are <dialog showModal>, so focus trapping, Esc and the scrim are the
+     platform's. The list inside is the same .ns-lesson rows as everywhere. */
+  .ns-lessonmodal {
+    inline-size: min(32rem, 100vw - var(--space-8));
+    max-block-size: min(38rem, 100dvh - var(--space-16));
+    padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised); color: var(--color-ink);
+    display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: hidden;
+  }
+  .ns-lessonmodal::backdrop { background: var(--color-scrim); }
+  .ns-lessonmodal__head {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--pad-card);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-lessonmodal__title { font-weight: var(--weight-semibold); font-size: var(--size-small); }
+  .ns-lessonmodal__count {
+    margin-inline-start: auto;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-lessonmodal__list { overflow-y: auto; overscroll-behavior: contain; }
+  .ns-lessonmodal__foot {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-3) var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  @media (max-width: 39.999rem) {
+    .ns-lessonmodal {
+      inline-size: 100vw; max-inline-size: none;
+      max-block-size: 82dvh;
+      margin: auto auto 0; /* pinned to the bottom edge */
+      border-inline: 0; border-block-end: 0;
+      border-start-start-radius: var(--radius-card); border-start-end-radius: var(--radius-card);
+      border-end-start-radius: 0; border-end-end-radius: 0;
+    }
+    /* The grab handle: the affordance that says this came up and can go back
+       down. Decorative — the close button is the real control. */
+    .ns-lessonmodal__head::before {
+      content: ""; position: absolute; inset-block-start: var(--space-2); inset-inline: 0;
+      inline-size: var(--space-10); block-size: var(--space-1);
+      margin-inline: auto; border-radius: var(--radius-pill);
+      background: var(--color-border);
+    }
+    .ns-lessonmodal__head { position: relative; padding-block-start: var(--space-6); }
+  }
+}

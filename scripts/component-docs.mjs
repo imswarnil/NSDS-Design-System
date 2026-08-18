@@ -32,7 +32,7 @@ const codeBodyPlain = (src, lang, marks) => `  <div class="ns-code__body">
     <pre class="ns-code__pre"><code>${highlightLines(src, lang, marks)}</code></pre>
   </div>`;
 
-export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Training", "Blog", "Content blocks", "CMS", "Sections"];
+export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Training", "Blog", "AI", "Content blocks", "CMS", "Sections"];
 
 export const COMPONENTS = [
 
@@ -1067,7 +1067,8 @@ export const COMPONENTS = [
     a11y: [
       "Sections are &lt;details&gt;/&lt;summary&gt;: open state, keyboard operation and find-in-page are the platform's, not a re-implementation",
       "Rows are links; state is spelled in visually-hidden text, not only drawn",
-      "The lesson TYPE is a word plus an icon, never an icon alone — a video and a lab are not interchangeable",
+      "The lesson TYPE is an icon whose word is deferred, not deleted: it stays in the DOM for assistive tech and returns on hover OR keyboard focus, so it is never a mouse-only affordance",
+      "Locked rows are dimmed and carry a lock glyph plus a word — never opacity alone",
       "Locked rows stay links (to the join page) and their lock is a glyph, not only 0.7 opacity",
       "Expand-all is labelled with the ACTION and flips once the sections do",
     ],
@@ -1205,47 +1206,229 @@ export const COMPONENTS = [
     </a>
   </details>
 </div>` },
+      { name: "Flat — a course", note: "THE SHAPE A COURSE USES. Courses here do not have sections: a course is one arc of eight to fourteen lessons, and wrapping that in a single collapsible “Section 1” is a disclosure control that discloses everything. Sections belong to training, where a module really does contain several posts. Note the kind: an icon, not the word — hover or tab to it and the word comes back.", html: `<div class="ns-curriculum ns-curriculum--flat" style="max-inline-size:32rem;inline-size:100%">
+  <div class="ns-curriculum__bar">
+    <span class="ns-curriculum__totals">12 lessons · 3h 40m</span>
+    <span class="ns-curriculum__totals ns-curriculum__done">3 done</span>
+  </div>
+  <a class="ns-lesson" href="#0" data-state="done">
+    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <span class="ns-lesson__body">
+      <span class="ns-lesson__title">What is an org?</span>
+    </span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+      <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span>
+    </span>
+    <span class="ns-lesson__time">08:12</span>
+  </a>
+  <a class="ns-lesson" href="#0" data-state="done">
+    <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+    <span class="ns-lesson__body"><span class="ns-lesson__title">Objects &amp; fields</span></span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
+      <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span>
+    </span>
+    <span class="ns-lesson__time">12:40</span>
+  </a>
+  <a class="ns-lesson" href="#0" aria-current="true">
+    <span class="ns-lesson__index">03</span>
+    <span class="ns-lesson__body"><span class="ns-lesson__title">Navigation that sticks</span></span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+      <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span>
+    </span>
+    <span class="ns-lesson__time">11:08</span>
+  </a>
+  <a class="ns-lesson" href="#0">
+    <span class="ns-lesson__index">04</span>
+    <span class="ns-lesson__body"><span class="ns-lesson__title">Your first automation</span></span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0">
+      <i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Lab</span>
+    </span>
+    <span class="ns-lesson__time">18:22</span>
+  </a>
+  <a class="ns-lesson" href="#0">
+    <span class="ns-lesson__index">05</span>
+    <span class="ns-lesson__body"><span class="ns-lesson__title">Check what you know</span></span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--quiz ns-tooltip-host" tabindex="0">
+      <i class="ph ph-exam" aria-hidden="true"></i><span class="ns-tooltip">Quiz</span>
+    </span>
+    <span class="ns-lesson__time">6 q</span>
+  </a>
+</div>` },
+      { name: "Free and members-only", note: "A curriculum a visitor cannot open yet still has to sell the course, so locked rows are DIMMED, never hidden — the titles are the argument. Free rows keep full contrast and the one green chip on the screen, because in a locked list they are the reason to sign up.", html: `<div class="ns-curriculum ns-curriculum--flat" style="max-inline-size:32rem;inline-size:100%">
+  <a class="ns-lesson" href="#0" data-access="free">
+    <span class="ns-lesson__index">01</span>
+    <span class="ns-lesson__body">
+      <span class="ns-lesson__title">What is an org?</span>
+      <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--free"><i class="ph ph-lock-simple-open" aria-hidden="true"></i>Free</span></span>
+    </span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+      <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span>
+    </span>
+    <span class="ns-lesson__time">08:12</span>
+  </a>
+  <a class="ns-lesson" href="#0" data-access="free">
+    <span class="ns-lesson__index">02</span>
+    <span class="ns-lesson__body">
+      <span class="ns-lesson__title">Objects &amp; fields</span>
+      <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--free"><i class="ph ph-lock-simple-open" aria-hidden="true"></i>Free preview</span></span>
+    </span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
+      <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span>
+    </span>
+    <span class="ns-lesson__time">12:40</span>
+  </a>
+  <a class="ns-lesson" href="#0" data-access="members">
+    <span class="ns-lesson__index">03</span>
+    <span class="ns-lesson__body">
+      <span class="ns-lesson__title">Navigation that sticks</span>
+      <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--members"><i class="ph ph-lock-simple" aria-hidden="true"></i>Members</span></span>
+    </span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+      <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span>
+    </span>
+    <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span>
+  </a>
+  <a class="ns-lesson" href="#0" data-access="members">
+    <span class="ns-lesson__index">04</span>
+    <span class="ns-lesson__body">
+      <span class="ns-lesson__title">Your first automation</span>
+      <span class="ns-lesson__sub"><span class="ns-laccess ns-laccess--soon"><i class="ph ph-clock" aria-hidden="true"></i>Recording soon</span></span>
+    </span>
+    <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0">
+      <i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Lab</span>
+    </span>
+    <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span>
+  </a>
+</div>` },
+      { name: "Modules — training", note: "The OTHER shape, and the only one that keeps sections. A training module carries a still, a sentence saying what it is for, and its own progress, because a module is a thing you choose to start — a course lesson is not. Courses never render this.", html: `<div class="ns-curriculum ns-curriculum--modules" style="max-inline-size:34rem;inline-size:100%">
+  <details class="ns-curriculum__section" open>
+    <summary class="ns-curriculum__head">
+      <img class="ns-curriculum__cover" src="../assets/img/training-trail.svg" alt="">
+      <span class="ns-curriculum__headbody">
+        <span class="ns-curriculum__title"><span class="ns-curriculum__index">01</span> Security and access</span>
+        <span class="ns-curriculum__desc">Profiles, permission sets and the sharing model — who can see which record, and why the answer is almost never “profiles”.</span>
+        <span class="ns-curriculum__meta"><span>4 posts</span><span>1h 02m</span><span class="ns-curriculum__done">2 done</span></span>
+      </span>
+      <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+    </summary>
+    <a class="ns-lesson" href="#0" data-state="done">
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+      <span class="ns-lesson__body"><span class="ns-lesson__title">The permission set model</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0">
+        <i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span>
+      </span>
+      <span class="ns-lesson__time">09:30</span>
+    </a>
+    <a class="ns-lesson" href="#0" aria-current="true">
+      <span class="ns-lesson__index">02</span>
+      <span class="ns-lesson__body"><span class="ns-lesson__title">The role hierarchy</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+        <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span>
+      </span>
+      <span class="ns-lesson__time">14:05</span>
+    </a>
+  </details>
+  <details class="ns-curriculum__section">
+    <summary class="ns-curriculum__head">
+      <img class="ns-curriculum__cover" src="../assets/img/publication-cover.svg" alt="">
+      <span class="ns-curriculum__headbody">
+        <span class="ns-curriculum__title"><span class="ns-curriculum__index">02</span> Automation</span>
+        <span class="ns-curriculum__desc">Flow first, Apex when flow runs out — and how to tell which situation you are in before you build.</span>
+        <span class="ns-curriculum__meta"><span>6 posts</span><span>1h 48m</span></span>
+      </span>
+      <i class="ph ph-caret-down ns-curriculum__toggle" aria-hidden="true"></i>
+    </summary>
+    <a class="ns-lesson" href="#0">
+      <span class="ns-lesson__index">01</span>
+      <span class="ns-lesson__body"><span class="ns-lesson__title">Record-triggered flow</span></span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0">
+        <i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span>
+      </span>
+      <span class="ns-lesson__time">16:20</span>
+    </a>
+  </details>
+</div>` },
     ],
   },
   {
     id: "lesson-nav", title: "Lesson navigation", family: "LMS",
-    summary: "Prev / next by NAME. An arrow pair with no titles makes the learner click to find out where they are going — so the name is the control and the arrow is the decoration, not the other way round. A still where there is one, the lesson-type glyph where there is not. Between them sits the course progress, and a way back to the full list.",
-    use: ["The end of every lesson, video or article", "--sticky on a long article lesson, so the way out is always one reach away"],
+    summary: "Prev / next by NAME, and by as little else as possible. An arrow pair with no titles makes the learner click to find out where they are going — so the name is the control and the arrow is the decoration. The default draws nothing around them: no box, no fill, no still, and the only motion is the arrow travelling two pixels in the direction it points.",
+    use: ["The end of every lesson, video or article", "--split at the end of a video, where there is exactly one thing to do next", "--minimal in a rail or a dense column", "--cards at the end of a COURSE, where the next thing is a decision", "--sticky on a long article lesson, so the way out is always one reach away"],
     not: ["Inside the player's stage — the player has its own bar", "Paging a table or a search result — that is Pagination"],
     a11y: [
       "Each control is a link with the lesson's real name in its accessible name — \"Next\" alone tells a screen-reader user nothing",
       "A locked next lesson stays a link, to the upgrade page: a dead button at the end of a lesson explains nothing",
       "The progress element carries the human numbers in its aria-label",
-      "Below 48rem the thumbs and the progress row are dropped, not shrunk — the two named buttons ARE the navigation on a phone",
+      "Below 48rem the stills and the progress row are dropped, not shrunk — the two named links ARE the navigation on a phone",
+      "The arrow's 2px travel is the only motion, and it is dropped under prefers-reduced-motion",
     ],
     variants: [
-      { name: "Named prev / next", html: `<nav class="ns-lesson-nav" aria-label="Lesson navigation" style="inline-size:100%">
-  <a class="ns-lesson-nav__btn" href="#">
-    <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
-    <span class="ns-lesson-nav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+      { name: "Minimal — the default", note: "An arrow, the direction in mono, the name. No box, no fill, no still. This replaced two bordered cards carrying a label, a title and a 16:9 thumbnail each, with a progress row between them: five objects competing at the exact moment the reader wants one thing.", html: `<nav class="ns-lesson-nav" aria-label="Lesson navigation" style="inline-size:100%">
+  <a class="ns-lesson-nav__btn" href="#0">
+    <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+    <span class="ns-lesson-nav__dir">Previous</span>
     <span class="ns-lesson-nav__name">Objects &amp; fields</span>
   </a>
   <div class="ns-progress-row">
     <progress class="ns-progress" value="8" max="24" aria-label="8 of 24 lessons complete"></progress>
     <span class="ns-progress-row__value">8/24</span>
   </div>
-  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#">
-    <span class="ns-lesson-nav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#0">
+    <span class="ns-lesson-nav__dir">Next</span>
     <span class="ns-lesson-nav__name">Flow builder basics</span>
-    <img class="ns-lesson-nav__thumb" src="../assets/img/training-trail.svg" alt="">
+    <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
+  </a>
+</nav>` },
+      { name: "Split — one obvious next action", note: "At the end of a video there is exactly one thing to do, so it looks like one thing to do: prev stays a quiet link, next becomes the solid control. This is the shape the player uses.", html: `<nav class="ns-lesson-nav ns-lesson-nav--split" aria-label="Lesson navigation" style="inline-size:100%">
+  <a class="ns-lesson-nav__btn" href="#0">
+    <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+    <span class="ns-lesson-nav__dir">Previous</span>
+    <span class="ns-lesson-nav__name">Objects &amp; fields</span>
+  </a>
+  <a class="ns-lesson-nav__up" href="#0"><i class="ph ph-list" aria-hidden="true"></i> All 24 lessons</a>
+  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#0">
+    <span class="ns-lesson-nav__dir">Next</span>
+    <span class="ns-lesson-nav__name">Flow builder basics</span>
+    <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
+  </a>
+</nav>` },
+      { name: "Minimal one-line", note: "Names only, no direction labels — for a rail, a dense player column, or an article whose footer is already busy.", html: `<nav class="ns-lesson-nav ns-lesson-nav--minimal" aria-label="Lesson navigation" style="inline-size:100%">
+  <a class="ns-lesson-nav__btn" href="#0">
+    <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+    <span class="ns-lesson-nav__dir">Previous lesson:</span>
+    <span class="ns-lesson-nav__name">Objects &amp; fields</span>
+  </a>
+  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#0">
+    <span class="ns-lesson-nav__dir">Next lesson:</span>
+    <span class="ns-lesson-nav__name">Flow builder basics</span>
+    <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
   </a>
 </nav>` },
       { name: "Locked next, and the way back", note: "The locked control still navigates — to the join page. <code>__up</code> is the way back to the curriculum, which on a phone is the only way back to it.", html: `<nav class="ns-lesson-nav" aria-label="Lesson navigation" style="inline-size:100%">
-  <a class="ns-lesson-nav__btn" href="#">
-    <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-article"></i></span>
-    <span class="ns-lesson-nav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+  <a class="ns-lesson-nav__btn" href="#0">
+    <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+    <span class="ns-lesson-nav__dir">Previous</span>
     <span class="ns-lesson-nav__name">Bulkification, properly</span>
   </a>
-  <a class="ns-lesson-nav__up" href="#"><i class="ph ph-list" aria-hidden="true"></i> All 24 lessons</a>
-  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#" data-state="locked">
-    <span class="ns-lesson-nav__dir">Next — members only</span>
+  <a class="ns-lesson-nav__up" href="#0"><i class="ph ph-list" aria-hidden="true"></i> All 24 lessons</a>
+  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#0" data-state="locked">
+    <span class="ns-lesson-nav__dir">Members only</span>
     <span class="ns-lesson-nav__name">Governor limits in practice</span>
-    <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-lock"></i></span>
+    <i class="ph ph-lock-simple ns-lesson-nav__arrow" aria-hidden="true"></i>
+  </a>
+</nav>` },
+      { name: "Cards — the end of a course", note: "The boxed pair WITH the still, now opt-in. Correct where the next thing is a decision rather than a continuation: the last lesson, or a course-complete screen.", html: `<nav class="ns-lesson-nav ns-lesson-nav--cards" aria-label="Lesson navigation" style="inline-size:100%">
+  <a class="ns-lesson-nav__btn" href="#0">
+    <i class="ph ph-arrow-left ns-lesson-nav__arrow" aria-hidden="true"></i>
+    <span class="ns-lesson-nav__thumb" aria-hidden="true"><i class="ph ph-video"></i></span>
+    <span class="ns-lesson-nav__dir">Previous</span>
+    <span class="ns-lesson-nav__name">Testing and deployment</span>
+  </a>
+  <a class="ns-lesson-nav__btn ns-lesson-nav__btn--next" href="#0">
+    <span class="ns-lesson-nav__dir">Next course</span>
+    <span class="ns-lesson-nav__name">Bulk-safe Apex patterns</span>
+    <img class="ns-lesson-nav__thumb" src="../assets/img/training-trail.svg" alt="">
+    <i class="ph ph-arrow-right ns-lesson-nav__arrow" aria-hidden="true"></i>
   </a>
 </nav>` },
     ],
@@ -1283,6 +1466,43 @@ export const COMPONENTS = [
   <a class="ns-lesson" href="#" data-state="done"><span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span><span class="ns-lesson__title">SELECT and WHERE</span><span class="ns-lesson__time">14:02</span></a>
   <a class="ns-lesson" href="#" aria-current="true"><span class="ns-lesson__index" aria-hidden="true">07</span><span class="ns-lesson__title">SOQL joins: relationships</span><span class="ns-lesson__time">21:15</span></a>
   <a class="ns-lesson" href="#"><span class="ns-lesson__index" aria-hidden="true">08</span><span class="ns-lesson__title">Aggregate queries</span><span class="ns-lesson__time">18:40</span></a>
+</dialog>` },
+      { name: "Centred modal", note: "The desktop shape, and the one that was missing: the lesson list is a thing you are CHOOSING from, so it gets the middle of the screen and a scrim rather than sliding in from an edge. Below 40rem the same dialog becomes a bottom sheet with a grab handle, because a centred box on a phone is a centred box with a keyboard-sized margin round it.", script: `document.querySelectorAll('[data-open-lessonmodal]').forEach(function (b) {
+  var dlg = document.getElementById('lessonmodal-demo');
+  if (dlg) b.addEventListener('click', function () { dlg.showModal(); });
+});`, html: `<button class="ns-btn ns-btn--outline ns-btn--sm" data-open-lessonmodal><i class="ph ph-list" aria-hidden="true"></i> Open the lesson list</button>
+<dialog class="ns-lessonmodal" id="lessonmodal-demo">
+  <div class="ns-lessonmodal__head">
+    <span class="ns-lessonmodal__title">Apex fundamentals</span>
+    <span class="ns-lessonmodal__count">6 / 12 done</span>
+    <form method="dialog"><button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Close"><i class="ph ph-x" aria-hidden="true"></i></button></form>
+  </div>
+  <div class="ns-lessonmodal__list">
+    <a class="ns-lesson" href="#0" data-state="done">
+      <span class="ns-lesson__index" aria-hidden="true"><i class="ph ph-check"></i></span>
+      <span class="ns-lesson__title">SELECT and WHERE</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+      <span class="ns-lesson__time">14:02</span></a>
+    <a class="ns-lesson" href="#0" aria-current="true">
+      <span class="ns-lesson__index">07</span>
+      <span class="ns-lesson__title">SOQL joins: relationships</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--video ns-tooltip-host" tabindex="0"><i class="ph ph-video" aria-hidden="true"></i><span class="ns-tooltip">Video</span></span>
+      <span class="ns-lesson__time">21:15</span></a>
+    <a class="ns-lesson" href="#0">
+      <span class="ns-lesson__index">08</span>
+      <span class="ns-lesson__title">Aggregate queries</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--article ns-tooltip-host" tabindex="0"><i class="ph ph-article" aria-hidden="true"></i><span class="ns-tooltip">Article</span></span>
+      <span class="ns-lesson__time">18:40</span></a>
+    <a class="ns-lesson" href="#0" data-access="members">
+      <span class="ns-lesson__index">09</span>
+      <span class="ns-lesson__title">Bulk-safe triggers</span>
+      <span class="ns-ltype ns-ltype--icon ns-ltype--lab ns-tooltip-host" tabindex="0"><i class="ph ph-flask" aria-hidden="true"></i><span class="ns-tooltip">Lab</span></span>
+      <span class="ns-lesson__time"><i class="ph ph-lock-simple" aria-hidden="true"></i></span></a>
+  </div>
+  <div class="ns-lessonmodal__foot">
+    <progress class="ns-progress" value="6" max="12" aria-label="6 of 12 lessons complete"></progress>
+    <span class="ns-lessonmodal__count">50%</span>
+  </div>
 </dialog>` },
     ],
   },
@@ -1322,6 +1542,19 @@ export const COMPONENTS = [
   </aside>
 </div>` },
       { name: "Full page", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-course-detail.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "The five shapes", note: "Same content, same components, five arrangements — because a $9 course, a certification track and a free tutorial are not the same sale. <code>--wide</code> puts the rail LEFT for a course whose curriculum is the product; <code>--stacked</code> drops the rail entirely (free courses: a sticky price rail advertising nothing); <code>--syllabus</code> leads with the curriculum for a returning learner; <code>--compact</code> is one prose column, the documentation-page look.", html: `<div style="display:grid;gap:var(--space-6);inline-size:100%">
+  <div class="ns-course-detail ns-course-detail--wide" style="border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--pad-card)">
+    <aside class="ns-course-detail__rail"><div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">// Rail left</span><span class="ns-card__title">$49</span></div></div></aside>
+    <div class="ns-course-detail__main"><p class="ns-kicker">--wide</p><p>The curriculum is the product, so it gets the wide column and the price follows it down.</p></div>
+  </div>
+  <div class="ns-course-detail ns-course-detail--stacked" style="border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--pad-card)">
+    <div class="ns-course-detail__main"><p class="ns-kicker">--stacked</p><p>No rail at all — the buy box sits after the outcomes, in the reading column.</p></div>
+    <aside class="ns-course-detail__rail"><div class="ns-card"><div class="ns-card__body"><span class="ns-card__title">Free</span></div></div></aside>
+  </div>
+  <div class="ns-course-detail ns-course-detail--compact" style="border:1px solid var(--color-border);border-radius:var(--radius-card);padding:var(--pad-card)">
+    <div class="ns-course-detail__main"><p class="ns-kicker">--compact</p><p>One column at the prose measure, no media: a course documented rather than sold.</p></div>
+  </div>
+</div>` },
     ],
   },
   {
@@ -1509,6 +1742,45 @@ export const COMPONENTS = [
     </div>
   </div>
 </section>` },
+      { name: "Split", note: "Copy one side, the cover art the other, both on the page surface. The other heroes put the media BEHIND the copy, which is why they all need on-dark ink — this is the one to use when the artwork matters as artwork.", html: `<header class="ns-chero ns-chero--split" style="inline-size:100%">
+  <div class="ns-chero__inner">
+    <div class="ns-chero__grid">
+      <div class="ns-chero__body">
+        <span class="ns-chero__kicker">// Developer track</span>
+        <h1 class="ns-chero__title">Bulk-safe Apex patterns</h1>
+        <p class="ns-chero__lede">Triggers that survive the 200-record data load — the one skill that separates code that works on your desk from code that works in production.</p>
+        <div class="ns-chero__meta"><span>9 lessons</span><span>2h 10m</span><span>Intermediate</span></div>
+        <div class="ns-chero__actions">
+          <a class="ns-btn ns-btn--primary" href="#0">Start the course</a>
+          <a class="ns-btn ns-btn--outline" href="#0">Syllabus</a>
+        </div>
+      </div>
+      <img class="ns-chero__media" src="../assets/img/training-trail.svg" alt="">
+    </div>
+  </div>
+</header>` },
+      { name: "Certification", note: "For a course whose end state is an exam. The badge sits beside the title at display size rather than being mentioned in the meta row, because for this reader the badge IS the product.", html: `<header class="ns-chero ns-chero--cert" style="inline-size:100%">
+  <div class="ns-chero__inner">
+    <div class="ns-chero__grid">
+      <div class="ns-chero__body">
+        <span class="ns-chero__kicker">// Certification track</span>
+        <h1 class="ns-chero__title">Platform Developer I</h1>
+        <p class="ns-chero__lede">Six weeks, five courses, one exam. Every objective on the outline, in the order the exam asks them.</p>
+        <div class="ns-chero__meta"><span>5 courses</span><span>18h 40m</span><span>Exam-aligned</span></div>
+        <div class="ns-chero__actions"><a class="ns-btn ns-btn--primary" href="#0">Start the track</a></div>
+      </div>
+      <span class="ns-certbadge ns-certbadge--specialist">
+        <span class="ns-certbadge__plate" aria-hidden="true"></span>
+        <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+        <span class="ns-certbadge__inner">
+          <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+          <span class="ns-certbadge__word">Certified</span>
+          <span class="ns-certbadge__name">Platform Developer</span>
+        </span>
+      </span>
+    </div>
+  </div>
+</header>` },
     ],
   },
 
@@ -1690,6 +1962,48 @@ export const COMPONENTS = [
     </footer>
   </blockquote>
 </div>` },
+      { name: "With the result", note: "The claim a learner is actually shopping for, in mono above the quote. A testimonial that says “great course” proves nothing; one that says “passed PD1 in nine weeks” is the whole argument.", html: `<figure class="ns-testimonial" style="max-inline-size:32rem">
+  <span class="ns-testimonial__result"><i class="ph ph-seal-check" aria-hidden="true"></i>Passed PD1 in 9 weeks</span>
+  <blockquote class="ns-testimonial__quote">I had written Apex for a year and still could not say why my triggers broke on data loads. The bulk lesson fixed that in an afternoon.</blockquote>
+  <figcaption class="ns-testimonial__who">
+    <span class="ns-avatar ns-testimonial__avatar">AM</span>
+    <span><span class="ns-testimonial__name">Anita M.</span><span class="ns-testimonial__role">Admin → developer, Pune</span></span>
+  </figcaption>
+</figure>` },
+      { name: "Compact strip", note: "<code>--compact</code>: one line each, three under a hero. The quote drops to the sans face because at this size the serif is a texture rather than a voice.", html: `<div class="ns-testimonials" style="inline-size:100%">
+  <figure class="ns-testimonial ns-testimonial--compact">
+    <blockquote class="ns-testimonial__quote">The labs are the reason it stuck.</blockquote>
+    <figcaption class="ns-testimonial__who"><span class="ns-avatar ns-avatar--sm ns-testimonial__avatar">RK</span><span class="ns-testimonial__name">Ravi K.</span></figcaption>
+  </figure>
+  <figure class="ns-testimonial ns-testimonial--compact">
+    <blockquote class="ns-testimonial__quote">First course that explained governor limits like a budget.</blockquote>
+    <figcaption class="ns-testimonial__who"><span class="ns-avatar ns-avatar--sm ns-testimonial__avatar">PJ</span><span class="ns-testimonial__name">Priya J.</span></figcaption>
+  </figure>
+  <figure class="ns-testimonial ns-testimonial--compact">
+    <blockquote class="ns-testimonial__quote">Short lessons, no filler, no intro music.</blockquote>
+    <figcaption class="ns-testimonial__who"><span class="ns-avatar ns-avatar--sm ns-testimonial__avatar">DN</span><span class="ns-testimonial__name">Dev N.</span></figcaption>
+  </figure>
+</div>` },
+      { name: "With a portrait", note: "<code>--media</code>: the one testimonial a page leads with, using the taped print from Picture frames so the person reads as a person rather than as a stock avatar.", html: `<figure class="ns-testimonial ns-testimonial--media" style="max-inline-size:36rem">
+  <span class="ns-pframe ns-pframe--photo"><img src="../assets/img/publication-cover.svg" alt=""></span>
+  <span>
+    <span class="ns-testimonial__result"><i class="ph ph-seal-check" aria-hidden="true"></i>Hired as a junior developer</span>
+    <blockquote class="ns-testimonial__quote">I built the volunteer-shift project from the course and talked through it in the interview. That was the interview.</blockquote>
+    <figcaption class="ns-testimonial__who"><span><span class="ns-testimonial__name">Sana R.</span><span class="ns-testimonial__role">Bengaluru</span></span></figcaption>
+  </span>
+</figure>` },
+      { name: "Marquee", note: "A continuous strip of short testimonials, for the band above a footer. Uses the shared Marquee — same track, same pause-on-hover, same reduced-motion stop — so this is a placement of testimonials rather than a second component. Keep the quotes to one line each: a marquee is read in passing, and a paragraph in motion is unreadable by design.", html: `<div class="ns-marquee ns-marquee--slow" style="inline-size:100%">
+  <div class="ns-marquee__track">
+    <span class="ns-marquee__item">“The labs are the reason it stuck.” <b>Ravi K.</b></span>
+    <span class="ns-marquee__item">“Passed PD1 in nine weeks.” <b>Anita M.</b></span>
+    <span class="ns-marquee__item">“Short lessons, no filler, no intro music.” <b>Dev N.</b></span>
+    <span class="ns-marquee__item">“Explained governor limits like a budget.” <b>Priya J.</b></span>
+    <span class="ns-marquee__item">“The labs are the reason it stuck.” <b>Ravi K.</b></span>
+    <span class="ns-marquee__item">“Passed PD1 in nine weeks.” <b>Anita M.</b></span>
+    <span class="ns-marquee__item">“Short lessons, no filler, no intro music.” <b>Dev N.</b></span>
+    <span class="ns-marquee__item">“Explained governor limits like a budget.” <b>Priya J.</b></span>
+  </div>
+</div>` },
     ],
   },
 
@@ -1753,14 +2067,56 @@ export const COMPONENTS = [
     </ul>
   </div>
 </div>` },
+      { name: "Two instructors", note: "<code>--pair</code>: equal blocks. A course written by two people has two authors, and shrinking the second one is an editorial claim the layout should not be making.", html: `<div class="ns-instructors ns-instructors--pair" style="inline-size:100%">
+  <div class="ns-instructor">
+    <span class="ns-avatar ns-avatar--lg ns-instructor__avatar">SW</span>
+    <div>
+      <p class="ns-instructor__name">Swarnil Singhai</p>
+      <p class="ns-instructor__role">Platform architect · 9 years</p>
+      <p class="ns-instructor__bio">Writes the Apex and integration tracks. Has deployed to orgs with more triggers than tests, and would like that to stop.</p>
+    </div>
+  </div>
+  <div class="ns-instructor">
+    <span class="ns-avatar ns-avatar--lg ns-instructor__avatar">RS</span>
+    <div>
+      <p class="ns-instructor__name">Rahul Sharma</p>
+      <p class="ns-instructor__role">Admin lead · 6 years</p>
+      <p class="ns-instructor__bio">Writes the admin and flow tracks, and the labs that make you build the thing rather than watch it.</p>
+    </div>
+  </div>
+</div>` },
+      { name: "Byline", note: "Attribution rather than biography: the avatar stack plus names that read as a sentence. For a card foot, a lesson header, a blog post — anywhere the authors are a credit rather than a section.", html: `<div style="display:flex;flex-direction:column;gap:var(--space-4)">
+  <span class="ns-byline">
+    <span class="ns-avatar-stack">
+      <span class="ns-avatar ns-avatar--sm">SW</span>
+      <span class="ns-avatar ns-avatar--sm">RS</span>
+    </span>
+    <span class="ns-byline__names"><b>Swarnil</b> and <b>Rahul</b></span>
+  </span>
+  <span class="ns-byline">
+    <span class="ns-avatar-stack">
+      <span class="ns-avatar ns-avatar--sm">SW</span>
+      <span class="ns-avatar ns-avatar--sm">RS</span>
+      <span class="ns-avatar ns-avatar--sm ns-avatar--more">+2</span>
+    </span>
+    <span class="ns-byline__names"><b>Swarnil</b>, <b>Rahul</b> and two more</span>
+  </span>
+  <span class="ns-byline ns-byline--stack">
+    <span class="ns-avatar-stack">
+      <span class="ns-avatar ns-avatar--sm">SW</span>
+      <span class="ns-avatar ns-avatar--sm">RS</span>
+    </span>
+    <span class="ns-byline__names">Written by <b>Swarnil</b> and <b>Rahul</b> · updated Jan 2026</span>
+  </span>
+</div>` },
     ],
   },
   {
     id: "player", title: "Course player", family: "LMS",
-    summary: "The screen a learner lives in: 16:9 stage on brand-900 in both themes, lesson header, prev/next with ←/→ shortcuts, and the curriculum rail with done / current / locked rows. Two columns ≥ lg; below, a single column with the stage always first.",
-    use: ["Lesson pages in both products — Ghost via templates/course-player.html, Next.js via CoursePlayer/LessonRail"],
+    summary: "The screen a learner lives in: 16:9 stage on brand-900 in both themes, lesson header, prev/next with ←/→ shortcuts, and a FIXED curriculum rail ending in the course's standing action. One viewport, one scrollbar — only the content column moves. Two columns ≥ lg; below, a single column with the stage always first and the CTA above the list.",
+    use: ["Lesson pages in both products — Ghost via templates/course-player.html, Next.js via CoursePlayer/LessonRail", "--article for a lesson that is mostly reading: no stage, the column set to the reading measure", "--scroll where the document scroll is genuinely the right one"],
     not: ["Marketing pages with one embedded video — that is just a video in prose"],
-    a11y: ["←/→ move lessons; space/k is left to the media element — stealing it breaks the player's own controls", "Row state is spelled for assistive tech (\"completed\", \"locked — members only\"), not only drawn", "Locked rows stay links (to the upgrade page) — a dead row explains nothing"],
+    a11y: ["←/→ move lessons; space/k is left to the media element — stealing it breaks the player's own controls", "Row state is spelled for assistive tech (\"completed\", \"locked — members only\"), not only drawn", "Locked rows stay links (to the upgrade page) — a dead row explains nothing", "The rail toggle carries aria-expanded and lives in the lesson header, so it is still reachable once the rail is gone"],
     variants: [
       { name: "Lesson rows", note: "done replaces the index with a check — the number has done its job; current gets the accent line; locked dims but stays a link.", html: `<div style="max-inline-size:22rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
   <a class="ns-lesson" href="#" data-state="done">
@@ -1793,6 +2149,21 @@ export const COMPONENTS = [
       <span class="ns-progress-row__value">6/12</span>
     </div>
     <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Next lesson <i class="ph ph-caret-right" aria-hidden="true"></i></a>
+  </div>
+</div>` },
+      { name: "The rail's foot", note: "The rail is a fixed three-row grid — head, scrolling list, and this. The standing action never scrolls away, because it is the one thing on the screen that is not navigation. One primary and one line of mono fine print: a rail that ends in three buttons is an upsell.", html: `<div style="max-inline-size:20rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-player__side-cta">
+    <span class="ns-player__side-cta-meta">Your progress <b>8 / 24</b></span>
+    <progress class="ns-progress" value="8" max="24" aria-label="8 of 24 lessons complete"></progress>
+    <button type="button" class="ns-btn ns-btn--primary ns-btn--block ns-btn--sm"><i class="ph ph-play" aria-hidden="true"></i> Resume lesson 09</button>
+    <span class="ns-player__side-cta-meta">Certificate at 100%</span>
+  </div>
+</div>` },
+      { name: "Locked-course foot", note: "The same slot doing the other job: this course is not bought yet, so the action is enrol and the fine print is what that buys.", html: `<div style="max-inline-size:20rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-player__side-cta">
+    <span class="ns-player__side-cta-meta">Free preview <b>2 / 24</b></span>
+    <button type="button" class="ns-btn ns-btn--primary ns-btn--block ns-btn--sm">Enrol — $49</button>
+    <span class="ns-player__side-cta-meta">Lifetime access · certificate</span>
   </div>
 </div>` },
       { name: "Full layout", note: "The complete two-column screen — the framework-agnostic template rendered with the real stylesheet. Resize it to see the single-column collapse.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-player.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
@@ -2989,6 +3360,45 @@ export const COMPONENTS = [
     <ul class="ns-trainingnav__list"><li><a class="ns-trainingnav__link" href="#0">Record-triggered flows</a></li></ul>
   </details>
 </nav>` },
+      { name: "Modules, sections and posts", note: "THE STRUCTURAL DIFFERENCE BETWEEN TRAINING AND A COURSE. A course is a flat list of lessons; a training module is a body of writing with parts, so its posts group under section labels. One sidebar, three levels — track → module → section → post. Any deeper and it is a file tree, which is what this is designed not to be. Every row carries its kind as an icon, with the word on hover or focus.", html: `<nav class="ns-trainingnav" style="position:static;max-block-size:none;inline-size:100%;max-inline-size:19rem" aria-label="Training">
+  <a class="ns-trainingnav__track" href="#0">// Admin track</a>
+  <details class="ns-trainingnav__module" open>
+    <summary>
+      <i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>
+      <span>Security and access</span>
+      <span class="ns-trainingnav__count">4</span>
+    </summary>
+    <div class="ns-trainingnav__bar"><progress class="ns-progress" value="2" max="4" aria-label="2 of 4 posts read"></progress></div>
+    <p class="ns-trainingnav__section">Concepts</p>
+    <ul class="ns-trainingnav__list">
+      <li><a class="ns-trainingnav__link" href="#0" data-state="done">
+        <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+        <span>The permission set model</span><span class="ns-trainingnav__time">9m</span></a></li>
+      <li><a class="ns-trainingnav__link" href="#0" aria-current="page">
+        <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
+        <span>The role hierarchy</span><span class="ns-trainingnav__time">14m</span></a></li>
+    </ul>
+    <p class="ns-trainingnav__section">Practice</p>
+    <ul class="ns-trainingnav__list">
+      <li><a class="ns-trainingnav__link" href="#0">
+        <i class="ph ph-flask ns-trainingnav__icon" aria-hidden="true"></i>
+        <span>Build a sharing rule</span><span class="ns-trainingnav__time">22m</span></a></li>
+      <li><a class="ns-trainingnav__link" href="#0">
+        <i class="ph ph-exam ns-trainingnav__icon" aria-hidden="true"></i>
+        <span>Check what you know</span><span class="ns-trainingnav__time">6q</span></a></li>
+    </ul>
+  </details>
+  <details class="ns-trainingnav__module">
+    <summary>
+      <i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>
+      <span>Automation</span>
+      <span class="ns-trainingnav__count">6</span>
+    </summary>
+    <ul class="ns-trainingnav__list">
+      <li><a class="ns-trainingnav__link" href="#0"><i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i><span>Record-triggered flow</span><span class="ns-trainingnav__time">16m</span></a></li>
+    </ul>
+  </details>
+</nav>` },
     ],
   },
   {
@@ -3339,6 +3749,41 @@ export const COMPONENTS = [
     <span class="ns-vplayer__time" data-ns-video-duration>0:00</span>
   </div>
 </div>` },
+      { name: "Chapters", note: "A contents page for a video, not a log file. The old list set a mono timestamp and a title on one baseline in a bordered row, fifteen times — a table of numbers, when the reader is scanning TITLES and using time only to decide whether to commit. So the title leads, time is metadata under it, and the row's leading edge carries watched / playing / ahead — the same device the lesson rail uses.", html: `<ol class="ns-vchapters" style="max-inline-size:26rem;inline-size:100%;border:1px solid var(--color-border);border-radius:var(--radius-card)">
+  <li class="ns-vchapters__item" data-state="done">
+    <button type="button" class="ns-vchapters__btn">
+      <span class="ns-vchapters__title">What a trigger actually receives</span>
+      <span class="ns-vchapters__time">00:00</span>
+      <span class="ns-vchapters__meta">4 min · watched</span>
+    </button>
+  </li>
+  <li class="ns-vchapters__item" aria-current="true">
+    <button type="button" class="ns-vchapters__btn">
+      <span class="ns-vchapters__title">Why 200 records breaks it</span>
+      <span class="ns-vchapters__time">04:12</span>
+      <span class="ns-vchapters__meta">6 min · playing</span>
+    </button>
+  </li>
+  <li class="ns-vchapters__item">
+    <button type="button" class="ns-vchapters__btn">
+      <span class="ns-vchapters__title">The Map, and one query</span>
+      <span class="ns-vchapters__time">10:40</span>
+      <span class="ns-vchapters__meta">7 min</span>
+    </button>
+  </li>
+  <li class="ns-vchapters__item">
+    <button type="button" class="ns-vchapters__btn">
+      <span class="ns-vchapters__title">Testing the bulk case</span>
+      <span class="ns-vchapters__time">17:55</span>
+      <span class="ns-vchapters__meta">3 min</span>
+    </button>
+  </li>
+</ol>` },
+      { name: "Inline chapters", note: "<code>--inline</code> for a player with no rail: one line each, time first, because in this shape the reader IS seeking rather than choosing.", html: `<ol class="ns-vchapters ns-vchapters--inline" style="max-inline-size:26rem;inline-size:100%;border:1px solid var(--color-border);border-radius:var(--radius-card)">
+  <li class="ns-vchapters__item" data-state="done"><button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">00:00</span><span class="ns-vchapters__title">What a trigger receives</span></button></li>
+  <li class="ns-vchapters__item" aria-current="true"><button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">04:12</span><span class="ns-vchapters__title">Why 200 records breaks it</span></button></li>
+  <li class="ns-vchapters__item"><button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">10:40</span><span class="ns-vchapters__title">The Map, and one query</span></button></li>
+</ol>` },
     ],
   },
   {
@@ -4272,6 +4717,787 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
       { name: "Slim", note: "The bar alone — app screens where the page owns the space.", html: `<footer class="ns-footer" style="inline-size:100%">
   <div class="ns-footer__bar"><span>© 2026 Namaste Salesforce</span><span class="ns-footer__spacer"></span><a href="#">Privacy</a><a href="#">Terms</a></div>
 </footer>` },
+    ],
+  },
+  /* ============================================ Course page blocks ==== */
+  {
+    id: "outcomes", title: "What you'll learn", family: "LMS",
+    summary: "The promise list. Ticked outcomes in two columns, each one a thing the learner can DO afterwards — not a topic the course covers. The single most-read block on a course page after the title, and the one most often written as a syllabus by mistake.",
+    use: ["Every course detail page, directly under the hero", "A module page, scoped to that module", "<code>--single</code> in a narrow rail"],
+    not: ["A syllabus — that is Curriculum, and it lists lessons rather than abilities", "Marketing claims. \"Become a Salesforce expert\" is not an outcome; \"write a trigger that survives a 200-record load\" is"],
+    a11y: ["A real <code>&lt;ul&gt;</code>, so the count is announced — a grid of divs is a paragraph to a screen reader", "The tick is decorative and aria-hidden; the outcome is the text"],
+    variants: [
+      { name: "Two columns", note: "The default. Outcomes start with a verb, because the reader is buying an ability.", html: `<ul class="ns-outcomes" style="inline-size:100%">
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Write a trigger that survives a 200-record data load</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Query with SOQL and know when a query stops being selective</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Move logic out of a flow and into Apex — and say why</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Write tests that prove the bulk case, not the happy one</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Deploy with confidence from a scratch org</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Read a debug log without guessing</span></li>
+</ul>` },
+      { name: "Single column, quiet ticks", note: "<code>--single</code> for a rail; <code>--plain</code> drops the success colour where the list is informational rather than a promise.", html: `<ul class="ns-outcomes ns-outcomes--single ns-outcomes--plain" style="max-inline-size:22rem">
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Covers the Platform Developer I exam outline</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Includes the practice org and sample data</span></li>
+  <li><i class="ph ph-check" aria-hidden="true"></i><span>Certificate on completion</span></li>
+</ul>` },
+    ],
+  },
+
+  {
+    id: "prerequisites", title: "Prerequisites", family: "LMS",
+    summary: "The other half of the promise, and the half that gets left out: what you need BEFORE this course. Each row states the condition and — this is the whole point — where to go if you do not meet it. A prerequisite with no route to meeting it is a wall, not a warning.",
+    use: ["Course and training-module pages, directly after What you'll learn", "Anywhere a course assumes earlier work"],
+    not: ["Selling. This block exists to let people leave, which is what makes the ones who stay finish", "Rendering as ticked outcomes — a promise and a condition must not look alike"],
+    a11y: ["Met / unmet is <code>data-met</code> plus a different glyph and word, never colour alone", "The escape link names its destination — \"Start Apex basics\", not \"here\""],
+    variants: [
+      { name: "With a route out", note: "The default: condition, one line of why, and the fix. Deliberately not ticked and not green — outcomes are promises, prerequisites are conditions, and rendering them alike is how entry requirements read as features.", html: `<div class="ns-prereq" style="max-inline-size:34rem;inline-size:100%">
+  <div class="ns-prereq__item">
+    <i class="ph ph-circle ns-prereq__icon" aria-hidden="true"></i>
+    <span>
+      <span class="ns-prereq__title">Comfortable in Lightning Experience</span>
+      <span class="ns-prereq__note">You can find setup, create a custom object and add a field without following a screenshot.</span>
+    </span>
+    <a class="ns-prereq__fix" href="#0">Admin fundamentals</a>
+  </div>
+  <div class="ns-prereq__item">
+    <i class="ph ph-circle ns-prereq__icon" aria-hidden="true"></i>
+    <span>
+      <span class="ns-prereq__title">Any programming language, at all</span>
+      <span class="ns-prereq__note">Variables, loops and if-statements. It does not have to be Apex — JavaScript or Python is plenty.</span>
+    </span>
+    <a class="ns-prereq__fix" href="#0">Free primer</a>
+  </div>
+  <div class="ns-prereq__item">
+    <i class="ph ph-circle ns-prereq__icon" aria-hidden="true"></i>
+    <span>
+      <span class="ns-prereq__title">A developer org</span>
+      <span class="ns-prereq__note">Free, takes two minutes, and every lab in this course runs in it.</span>
+    </span>
+    <a class="ns-prereq__fix" href="#0">Sign up</a>
+  </div>
+</div>` },
+      { name: "Known state", note: "When the product already knows — a signed-in learner who finished the earlier course should not be asked to check. Met and unmet differ by glyph AND word, not by colour.", html: `<div class="ns-prereq" style="max-inline-size:34rem;inline-size:100%">
+  <div class="ns-prereq__item" data-met="true">
+    <i class="ph ph-check-circle ns-prereq__icon" aria-hidden="true"></i>
+    <span>
+      <span class="ns-prereq__title">Admin fundamentals <span class="ns-laccess ns-laccess--free">Completed</span></span>
+      <span class="ns-prereq__note">Finished in March. Nothing to do here.</span>
+    </span>
+  </div>
+  <div class="ns-prereq__item" data-met="false">
+    <i class="ph ph-warning-circle ns-prereq__icon" aria-hidden="true"></i>
+    <span>
+      <span class="ns-prereq__title">Apex basics <span class="ns-laccess ns-laccess--soon">4 lessons left</span></span>
+      <span class="ns-prereq__note">You can start this course now, but lesson 05 assumes the collections lesson.</span>
+    </span>
+    <a class="ns-prereq__fix" href="#0">Resume</a>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "course-share", title: "Course share & footer CTA", family: "LMS",
+    summary: "The two blocks that close a course page. Share is a row of real links with the network named, never an icon soup. The footer CTA is the page's last argument — one action, one line of fine print, and nothing else competing with it.",
+    use: ["The end of a course, module or lesson page", "Share on anything a learner might send to a colleague"],
+    not: ["A share dialog with twelve networks — ship the three people actually use here, and a copy-link", "Two CTAs. A page with two last arguments has none"],
+    a11y: ["Each share control names the destination (\"Share on LinkedIn\"), because the glyph is not a label", "Copy-link confirms in text, not only by changing colour", "The CTA is one <code>&lt;a&gt;</code> — a div that navigates is not a link"],
+    variants: [
+      { name: "Share row", html: `<div class="ns-share" style="inline-size:100%">
+  <span class="ns-share__label">Share this course</span>
+  <a class="ns-btn ns-btn--outline ns-btn--sm" href="#0"><i class="ph ph-linkedin-logo" aria-hidden="true"></i> LinkedIn</a>
+  <a class="ns-btn ns-btn--outline ns-btn--sm" href="#0"><i class="ph ph-x-logo" aria-hidden="true"></i> X</a>
+  <a class="ns-btn ns-btn--outline ns-btn--sm" href="#0"><i class="ph ph-envelope-simple" aria-hidden="true"></i> Email</a>
+  <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm" data-copy><i class="ph ph-link-simple" aria-hidden="true"></i> Copy link</button>
+</div>` },
+      { name: "Footer CTA", note: "The last thing on the page. One action, and the fine print answers the question that stops people clicking it.", html: `<section class="ns-band ns-band--sunken" style="inline-size:100%">
+  <div class="ns-band__inner">
+    <div class="ns-cta">
+      <span class="ns-kicker">Ready when you are</span>
+      <h2 class="ns-band__title">Start Apex basics</h2>
+      <p class="ns-band__lede">Twelve lessons, three hours forty, and a bulk-safe trigger you wrote yourself at the end of it.</p>
+      <div class="ns-cta__actions">
+        <a class="ns-btn ns-btn--primary ns-btn--lg" href="#0">Enrol — $49</a>
+        <a class="ns-btn ns-btn--outline ns-btn--lg" href="#0">Watch a free lesson</a>
+      </div>
+      <p class="ns-cta__fine">Lifetime access · certificate on completion · 14-day refund, no questions</p>
+    </div>
+  </div>
+</section>` },
+    ],
+  },
+
+  {
+    id: "certbadge", title: "Certification badge", family: "LMS",
+    summary: "The heptagon-and-ribbon badge a certification ships as, rebuilt as one element so a course page, a profile or a certificate can render any credential at any size. Drawn with <code>clip-path</code> — no image files, so it scales, prints and flips with the theme.",
+    use: ["A certification track's hero and its course cards", "A learner profile — earned badges, and the next one greyed", "The certificate document"],
+    not: ["Reproducing Salesforce's own badges. Those are their trademark and belong to the credential THEY issue — this is the shape family in this brand's colours, for this product's own tracks", "Anything that is not a credential. A badge means an exam was passed"],
+    a11y: ["The badge is one element with a text name inside it, so it is read rather than described", "Locked badges keep their name in the DOM and add \"not yet earned\" — greyscale is not an announcement"],
+    variants: [
+      { name: "The three levels", note: "Only the ribbon changes between levels, because the ribbon is what a wall of badges is scanned by. Colours are ours — brand navy plate, brand-400 mark, brand→accent ribbon — not the official palette.", html: `<div class="ns-certbadges">
+  <span class="ns-certbadge ns-certbadge--associate">
+    <span class="ns-certbadge__plate" aria-hidden="true"></span>
+    <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+    <span class="ns-certbadge__inner">
+      <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__word">Certified</span>
+      <span class="ns-certbadge__name">Associate</span>
+    </span>
+  </span>
+  <span class="ns-certbadge ns-certbadge--specialist">
+    <span class="ns-certbadge__plate" aria-hidden="true"></span>
+    <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+    <span class="ns-certbadge__inner">
+      <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__word">Certified</span>
+      <span class="ns-certbadge__name">Platform Developer</span>
+    </span>
+  </span>
+  <span class="ns-certbadge ns-certbadge--architect">
+    <span class="ns-certbadge__plate" aria-hidden="true"></span>
+    <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+    <span class="ns-certbadge__inner">
+      <i class="ph ph-cube ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__word">Certified</span>
+      <span class="ns-certbadge__name">Architect</span>
+    </span>
+  </span>
+</div>` },
+      { name: "Sizes and locked", note: "Set <code>inline-size</code> and everything inside scales from it. A badge you have not earned is drained rather than hidden — a track should show what is ahead of you.", html: `<div class="ns-certbadges" style="align-items:center">
+  <span class="ns-certbadge ns-certbadge--specialist" style="inline-size:5rem">
+    <span class="ns-certbadge__plate" aria-hidden="true"></span>
+    <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+    <span class="ns-certbadge__inner">
+      <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__word">Certified</span>
+      <span class="ns-certbadge__name">Admin</span>
+    </span>
+  </span>
+  <span class="ns-certbadge ns-certbadge--specialist" style="inline-size:7rem">
+    <span class="ns-certbadge__plate" aria-hidden="true"></span>
+    <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+    <span class="ns-certbadge__inner">
+      <i class="ph ph-cloud ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__word">Certified</span>
+      <span class="ns-certbadge__name">Admin</span>
+    </span>
+  </span>
+  <span class="ns-certbadge ns-certbadge--architect ns-certbadge--locked" style="inline-size:7rem">
+    <span class="ns-certbadge__plate" aria-hidden="true"></span>
+    <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
+    <span class="ns-certbadge__inner">
+      <i class="ph ph-cube ns-certbadge__mark" aria-hidden="true"></i>
+      <span class="ns-certbadge__word">Certified</span>
+      <span class="ns-certbadge__name">Architect<span class="ns-visually-hidden"> — not yet earned</span></span>
+    </span>
+  </span>
+</div>` },
+    ],
+  },
+
+  {
+    id: "pframe", title: "Picture frames", family: "Media",
+    summary: "Four print treatments for the places an image is an OBJECT rather than a document — an instructor's desk, a meetup, a certificate on a wall. Everywhere else, a photo is a hairline box (see Image); these are for when the photograph is the content.",
+    use: ["Instructor and community photography", "A testimonial that leads with a face", "<code>--tape</code> for meetup and event galleries"],
+    not: ["Course stills, screenshots, diagrams — those are documents and want the plain frame", "Mixing three styles on one page. Pick one per surface"],
+    a11y: ["A real <code>&lt;figure&gt;</code>/<code>&lt;figcaption&gt;</code>, so the caption is tied to the image", "The tape and the tilt are decorative and drop under prefers-reduced-motion"],
+    variants: [
+      { name: "The four", note: "<code>--photo</code> a print in an album · <code>--polaroid</code> the deep bottom margin, caption in the reader's own voice (Sentient) · <code>--matted</code> a museum mat, for something being presented · <code>--tape</code> stuck down at two corners, the only rotation in the system.", html: `<div class="ns-pframes">
+  <figure class="ns-pframe ns-pframe--photo" style="inline-size:12rem">
+    <img src="../assets/img/training-trail.svg" alt="">
+    <figcaption>Bengaluru meetup, 2026</figcaption>
+  </figure>
+  <figure class="ns-pframe ns-pframe--polaroid" style="inline-size:12rem">
+    <img src="../assets/img/publication-cover.svg" alt="">
+    <figcaption>First trigger that survived the load</figcaption>
+  </figure>
+  <figure class="ns-pframe ns-pframe--matted" style="inline-size:14rem">
+    <img src="../assets/img/training-trail.svg" alt="">
+    <figcaption>Certificate 0042</figcaption>
+  </figure>
+  <figure class="ns-pframe ns-pframe--tape" style="inline-size:12rem">
+    <img src="../assets/img/publication-cover.svg" alt="">
+    <figcaption>Study group, week 6</figcaption>
+  </figure>
+</div>` },
+    ],
+  },
+
+  /* ============================================================= AI ==== */
+  {
+    id: "ai-shell", title: "Assistant shell", family: "AI",
+    summary: "The room the assistant lives in: conversation rail, thread, docked composer, one locked viewport. The page behind it does not scroll — a chat where the document scrolls is a chat whose composer walks off the screen mid-sentence.",
+    use: ["The assistant's own route — the full-screen learning tutor", "<code>--docked</code> under the product navbar, so the student can still navigate", "<code>--embedded</code> for a chat panel inside a lesson, where the page owns the scroll"],
+    not: ["A support ticket thread — that is Ticket thread, and it is a record with a status, not a conversation", "A comment section — a chat shell implies a reply is coming"],
+    a11y: ["The rail is an <code>&lt;aside aria-label&gt;</code>; the toggle carries aria-controls and aria-expanded, so the announced state cannot drift from the CSS collapse", "Below 64rem the rail is an overlay and Escape closes it — a sheet you can only dismiss with a small button is a trap on a phone", "The transcript is a list of <code>&lt;article&gt;</code>s, so a screen reader can move turn by turn"],
+    variants: [
+      { name: "Full screen", note: "The whole screen at once — rail, thread, composer, and every state a real assistant has. This is the visual test for the family.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-chat.html" target="_blank" rel="noopener">Open the full-screen demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
+      { name: "Embedded", note: "The same shell with the viewport lock dropped, for a panel beside a lesson. The scroll region caps at 60vh and the surrounding page keeps its own scroll.", html: `<div class="ns-ai ns-ai--embedded">
+  <div class="ns-ai__main">
+    <header class="ns-ai__bar">
+      <span class="ns-ai__bar-title">Ask about this lesson</span>
+      <span class="ns-ai__bar-meta">Apex basics · 03</span>
+    </header>
+    <div class="ns-ai__scroll">
+      <div class="ns-ai__inner">
+        <article class="ns-aiturn ns-aiturn--user">
+          <header class="ns-aiturn__head"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">RS</span>You</header>
+          <div class="ns-aiturn__body"><p>What does "bulkified" actually mean here?</p></div>
+        </article>
+        <article class="ns-aiturn ns-aiturn--agent">
+          <header class="ns-aiturn__head"><span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>Assistant</header>
+          <div class="ns-aiturn__body"><p>It means the code handles 200 records in one call as cheaply as it handles one — no query and no DML inside the loop.</p></div>
+        </article>
+      </div>
+    </div>
+    <div class="ns-ai__foot">
+      <form class="ns-aicomposer">
+        <label class="ns-visually-hidden" for="ai-embed-in">Ask about this lesson</label>
+        <textarea class="ns-aicomposer__area" id="ai-embed-in" rows="1" placeholder="Ask about this lesson…"></textarea>
+        <div class="ns-aicomposer__bar">
+          <span class="ns-aicomposer__spacer"></span>
+          <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>` },
+      { name: "Top bar", note: "The conversation's identity plus the course it belongs to. The course is the mono half: a student's history is mostly “the one from the Apex module”, so the anchor matters as much as the question.", html: `<header class="ns-ai__bar" style="border:1px solid var(--color-border);border-radius:var(--radius-card)">
+  <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Toggle conversations" aria-expanded="true"><i class="ph ph-sidebar" aria-hidden="true"></i></button>
+  <span class="ns-ai__bar-title">Why does my trigger hit governor limits?</span>
+  <span class="ns-ai__bar-meta">Apex basics · lesson 03</span>
+  <span class="ns-ai__bar-actions">
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share this chat"><i class="ph ph-share-network" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Assistant settings"><i class="ph ph-gear" aria-hidden="true"></i></button>
+  </span>
+</header>` },
+      { name: "The standing note", note: "Present on every assistant screen, never dismissible. An LMS assistant talks to people who cannot yet tell when it is wrong — which is the entire reason they are here.", html: `<p class="ns-ai__note">The assistant can be wrong. Check anything it says against the lesson it cites.</p>` },
+    ],
+  },
+
+  {
+    id: "ai-rail", title: "Conversation rail", family: "AI",
+    summary: "History, grouped by recency, in the terminal-row idiom the rest of the system uses for lists. The course a conversation belongs to is the mono line above the question — a student's chat history is organised by module, not by date.",
+    use: ["The assistant's history sidebar", "Grouping by <em>Today / Earlier this week / Earlier</em> — a date stamp per row is noise", "The quota meter at the foot, where it is information rather than a warning"],
+    not: ["A navigation menu — this is a list of documents, use Sidebar nav for routes", "An icon-only collapsed strip: there is no glyph for “the one about triggers”, so the rail collapses to nothing instead"],
+    a11y: ["The current conversation is aria-current=\"true\", not a class", "Rows are real links — a conversation is a page, and middle-click must work"],
+    variants: [
+      { name: "Anatomy", html: `<aside class="ns-ai__side" style="block-size:26rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-aiside__head">
+    <span class="ns-aiside__brand"><i class="ph ph-sparkle" aria-hidden="true"></i>Namaste AI</span>
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm ns-btn--block"><i class="ph ph-plus" aria-hidden="true"></i> New chat</button>
+    <span class="ns-input-wrap">
+      <i class="ph ph-magnifying-glass ns-input-wrap__icon" aria-hidden="true"></i>
+      <input class="ns-input ns-input--has-icon" type="search" placeholder="Search chats" aria-label="Search conversations">
+    </span>
+  </div>
+  <div class="ns-aiside__list">
+    <div class="ns-aiside__group">
+      <p class="ns-aiside__label">Today</p>
+      <a class="ns-aiside__item" href="#0" aria-current="true">
+        <span><span class="ns-aiside__course">Apex basics</span><span class="ns-aiside__title">Why does my trigger hit governor limits?</span></span>
+        <span class="ns-aiside__when">09:12</span>
+      </a>
+      <a class="ns-aiside__item" href="#0">
+        <span><span class="ns-aiside__course">Career</span><span class="ns-aiside__title">Resume review for admin roles</span></span>
+        <span class="ns-aiside__when">08:40</span>
+      </a>
+    </div>
+    <div class="ns-aiside__group">
+      <p class="ns-aiside__label">Earlier this week</p>
+      <a class="ns-aiside__item" href="#0">
+        <span><span class="ns-aiside__course">Flows, end to end</span><span class="ns-aiside__title">Record-triggered vs scheduled flow</span></span>
+        <span class="ns-aiside__when">Tue</span>
+      </a>
+    </div>
+  </div>
+  <div class="ns-aiside__foot">
+    <div class="ns-aiside__quota">
+      <span class="ns-aiside__quota-row">Questions today <b>12 / 30</b></span>
+      <progress class="ns-progress" value="12" max="30" aria-label="12 of 30 questions used today"></progress>
+      <a class="ns-link" href="#0">Go unlimited with Pro</a>
+    </div>
+  </div>
+</aside>` },
+      { name: "Empty history", note: "Told honestly, not as a skeleton pretending to load. It says where the chats will go and what groups them.", html: `<aside class="ns-ai__side" style="block-size:14rem;border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <div class="ns-aiside__list">
+    <div class="ns-empty">
+      <i class="ph ph-chats-circle ns-empty__icon" aria-hidden="true"></i>
+      <p class="ns-empty__title">No conversations yet</p>
+      <p class="ns-empty__text">Your chats appear here, grouped by the course they belong to.</p>
+    </div>
+  </div>
+</aside>` },
+    ],
+  },
+
+  {
+    id: "ai-turn", title: "Message turn", family: "AI",
+    summary: "One entry in the transcript. The student and the assistant are told apart by structure — measure, surface, the mono role label — never by a tinted bubble. A question is short and sits in a narrow sunken card; an answer is reading, and gets the reading measure on the page surface.",
+    use: ["Every message in a transcript, both sides", "Per-response actions — copy, regenerate, feedback — in the turn's footer"],
+    not: ["Colored speech balloons per speaker: that spends the whole color budget (Principle 3) on what the role label already says", "A photo-real avatar for the assistant — the product is not pretending to be a person, so it gets a hairline mark"],
+    a11y: ["Each turn is an <code>&lt;article&gt;</code> with a heading-ish mono head, so turn-by-turn navigation works", "Actions are visible on hover AND focus, and always visible on touch — a control revealed only by a hover that cannot happen is a missing control", "State is data-state (thinking / streaming / done / error), never a class"],
+    variants: [
+      { name: "The pair", note: "The whole visual argument in two turns: narrow sunken card vs full-measure prose.", html: `<div style="max-inline-size:44rem">
+  <article class="ns-aiturn ns-aiturn--user">
+    <header class="ns-aiturn__head"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">RS</span>You<time datetime="2026-03-04T09:12">09:12</time></header>
+    <div class="ns-aiturn__body"><p>My trigger works on one record but fails when I data-load 200. What is going on?</p></div>
+  </article>
+  <article class="ns-aiturn ns-aiturn--agent" data-state="done">
+    <header class="ns-aiturn__head"><span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>Assistant<time datetime="2026-03-04T09:12">09:12</time></header>
+    <div class="ns-aiturn__body">
+      <p>Your trigger is written for one record at a time. Salesforce hands a trigger up to 200 records in a single call, so a query inside the loop runs 200 times and blows the per-transaction limit.</p>
+      <p>Query once before the loop into a Map; collect changes into a List and insert once after it.</p>
+    </div>
+    <footer class="ns-aiturn__actions">
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy answer"><i class="ph ph-copy" aria-hidden="true"></i></button>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Regenerate answer"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i></button>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Helpful"><i class="ph ph-heart" aria-hidden="true"></i></button>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Report a problem with this answer"><i class="ph ph-flag" aria-hidden="true"></i></button>
+    </footer>
+  </article>
+</div>` },
+      { name: "In dark mode", note: "The same two turns, and nothing about them is re-specified for dark: every surface here is a role token, so the transcript flips when the page does. Use the theme toggle at the top of this styleguide to see it — dark mode is set by <code>data-theme</code> on <code>&lt;html&gt;</code>, page-wide, because the role tokens resolve at the root. A navy band painted behind light components is the thing this system does not do.", html: `<div style="max-inline-size:40rem">
+  <article class="ns-aiturn ns-aiturn--user">
+    <header class="ns-aiturn__head"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">RS</span>You</header>
+    <div class="ns-aiturn__body"><p>Explain SOQL selectivity like I have never seen an index.</p></div>
+  </article>
+  <article class="ns-aiturn ns-aiturn--agent">
+    <header class="ns-aiturn__head"><span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>Assistant</header>
+    <div class="ns-aiturn__body"><p>A query is selective when the filter can find its rows without reading the whole table. Below roughly 10% of the object's records, the platform will use the index; above it, it scans.</p></div>
+  </article>
+</div>` },
+      { name: "Regenerated", note: "A replaced answer says so, in mono. Silently swapping what someone read a moment ago is how a tutor loses trust.", html: `<article class="ns-aiturn ns-aiturn--agent" style="max-inline-size:40rem">
+  <header class="ns-aiturn__head"><span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>Assistant<time datetime="2026-03-04T09:20">09:20</time></header>
+  <p class="ns-aiturn__note">Rewritten at your request — the earlier answer assumed you had finished the Collections lesson.</p>
+  <div class="ns-aiturn__body"><p>Start with the Map. A Map is a lookup table keyed by Id, and it is the one data structure that turns 200 queries into one.</p></div>
+</article>` },
+    ],
+  },
+
+  {
+    id: "ai-thinking", title: "Thinking & streaming", family: "AI",
+    summary: "The wait, made legible. Three squares fading on a 1.2s loop beside a mono label that says what is actually happening, a disclosable trace of the steps taken, tool chips for what was read, and a block caret while tokens arrive.",
+    use: ["Between send and first token — with a label that names the stage, not a generic “Thinking…”", "Tool chips whenever the assistant reads something the student could check themselves", "The trace on any answer that consulted more than one source"],
+    not: ["A bouncing three-dot indicator: Principle 5 rules out springy motion, and opacity carries the same meaning", "Hiding the tools it used — the difference between a tutor and an oracle is that you can see what it looked at"],
+    a11y: ["The thinking block is role=\"status\" aria-live=\"polite\", so the wait is announced once instead of being a silent pause", "Under prefers-reduced-motion the dots, spinner and caret all stop and the label alone carries the state", "The trace is a real <code>&lt;details&gt;</code> — it discloses with no JavaScript"],
+    variants: [
+      { name: "Thinking", note: "The label is the status; the dots are decoration. Name the stage — “Reading your progress” tells a waiting student more than a spinner ever will.", html: `<p class="ns-aithinking" role="status" aria-live="polite"><span class="ns-aithinking__dots" aria-hidden="true"><i></i><i></i><i></i></span>Reading your progress</p>` },
+      { name: "Streaming", note: "A mono block caret on a 1.1s step timing — a cursor is a discrete thing, so it steps rather than fades.", html: `<div class="ns-aiturn__body" style="max-inline-size:36rem"><p>Three project ideas that map to what you have already built, hardest last<span class="ns-aistream" aria-hidden="true"></span></p></div>` },
+      { name: "Tool calls", note: "What it read, as chips. Running spins, done checks, failed carries the error border — and a failed tool does not silently become an unsourced answer.", html: `<p>
+  <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Read your progress</span>
+  <span class="ns-aitool" data-state="done"><i class="ph ph-check" aria-hidden="true"></i>Searched catalog<span class="ns-aitool__count">6</span></span>
+  <span class="ns-aitool" data-state="running"><i class="ph ph-circle-notch" aria-hidden="true"></i>Checking exam outline</span>
+  <span class="ns-aitool" data-state="failed"><i class="ph ph-x" aria-hidden="true"></i>Trailhead lookup</span>
+</p>` },
+      { name: "Reasoning trace", note: "Collapsed by default. A beginner asking “what is a trigger” does not want a plan; a student debugging their own prompt very much does.", html: `<details class="ns-aitrace" open>
+  <summary><i class="ph ph-caret-right" aria-hidden="true"></i> How I answered this <span class="ns-aisource__num">3 steps</span></summary>
+  <div class="ns-aitrace__steps">
+    <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Read</b> your progress — Apex basics, lesson 03 of 12.</span></p>
+    <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Searched</b> the catalog for bulk-safe Apex material.</span></p>
+    <p class="ns-aitrace__step"><i class="ph ph-check" aria-hidden="true"></i><span><b>Checked</b> the Platform Developer I outline against what you have finished.</span></p>
+  </div>
+</details>` },
+    ],
+  },
+
+  {
+    id: "ai-composer", title: "Composer", family: "AI",
+    summary: "The input. One hairline box that grows with the textarea rather than a fixed field with a scrollbar — a student pasting an Apex class needs to see it. Focus moves the ring to the whole composer, so the toolbar reads as part of the control it belongs to.",
+    use: ["The assistant's input, docked at the foot of the thread", "The context pill for what is in scope — the lesson, the file, the org", "Attachments: Apex classes, flow screenshots, error logs"],
+    not: ["A search field — a search box returns results, this one starts a conversation", "Hiding the Enter/Shift+Enter contract: the wrong guess posts half a question to a class"],
+    a11y: ["The textarea has a real label, visually hidden — a placeholder is not a label", "The focus ring is on the wrapper, so the whole control shows focus rather than an inner box", "aria-disabled on the wrapper for the signed-out state, with the reason in the bar rather than a dead control"],
+    variants: [
+      { name: "Default", html: `<form class="ns-aicomposer">
+  <label class="ns-visually-hidden" for="ai-doc-in">Ask the assistant</label>
+  <textarea class="ns-aicomposer__area" id="ai-doc-in" rows="2" placeholder="Ask about this lesson, paste your Apex, or ask for a project…"></textarea>
+  <div class="ns-aicomposer__bar">
+    <button type="button" class="ns-aimode" aria-haspopup="true" aria-expanded="false"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <i class="ph ph-caret-down" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-paperclip" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Dictate"><i class="ph ph-microphone" aria-hidden="true"></i></button>
+    <span class="ns-aicomposer__spacer"></span>
+    <span class="ns-aicomposer__hint">Enter to send · Shift+Enter for a new line</span>
+    <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send message"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button>
+  </div>
+</form>` },
+      { name: "Context & attachments", note: "What the assistant can see is <em>stated</em>, not inferred. “Explain this bit” only means the paragraph in front of you if the lesson is genuinely in scope — and the student must be able to take it out.", html: `<form class="ns-aicomposer">
+  <div class="ns-aifiles">
+    <span class="ns-aicontext"><i class="ph ph-book-open-text" aria-hidden="true"></i> Apex basics · lesson 03
+      <button type="button" class="ns-aicontext__x" aria-label="Remove this lesson from context"><i class="ph ph-x" aria-hidden="true"></i></button></span>
+    <span class="ns-aifile"><i class="ph ph-file-text" aria-hidden="true"></i><span class="ns-aifile__name">AccountTrigger.cls</span><span class="ns-aifile__size">4 KB</span>
+      <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--xs" aria-label="Remove AccountTrigger.cls"><i class="ph ph-x" aria-hidden="true"></i></button></span>
+    <span class="ns-aifile" data-state="uploading"><i class="ph ph-circle-notch" aria-hidden="true"></i><span class="ns-aifile__name">error-log.txt</span><span class="ns-aifile__size">uploading</span></span>
+    <span class="ns-aifile" data-state="failed"><i class="ph ph-warning" aria-hidden="true"></i><span class="ns-aifile__name">flow-screenshot.png</span><span class="ns-aifile__size">too large</span></span>
+  </div>
+  <label class="ns-visually-hidden" for="ai-doc-in2">Ask the assistant</label>
+  <textarea class="ns-aicomposer__area" id="ai-doc-in2" rows="2" placeholder="What is wrong with this trigger?"></textarea>
+  <div class="ns-aicomposer__bar">
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Attach a file"><i class="ph ph-paperclip" aria-hidden="true"></i></button>
+    <span class="ns-aicomposer__spacer"></span>
+    <span class="ns-aicomposer__count" data-state="near">3620 / 4000</span>
+    <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send message"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button>
+  </div>
+</form>` },
+      { name: "Mode picker", note: "Which teacher you are talking to. Tutor explains, Coach answers with a question first, Reviewer marks the code you paste. The trigger is mono because it is a label; the menu is the shared ns-menu.", html: `<div style="display:flex;gap:var(--space-4);align-items:flex-start">
+  <button type="button" class="ns-aimode" aria-expanded="true" aria-haspopup="true"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <i class="ph ph-caret-down" aria-hidden="true"></i></button>
+  <div class="ns-menu" style="position:static;display:block;inline-size:17rem">
+    <p class="ns-menu__label">Mode</p>
+    <button type="button" class="ns-menu__item" aria-current="true"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <span>explains, then shows</span></button>
+    <button type="button" class="ns-menu__item"><i class="ph ph-question" aria-hidden="true"></i> Coach <span>asks you first</span></button>
+    <button type="button" class="ns-menu__item"><i class="ph ph-code" aria-hidden="true"></i> Reviewer <span>marks your Apex</span></button>
+  </div>
+</div>` },
+      { name: "Signed out", note: "Visible but disabled, with the reason on it. A composer that is simply gone reads as a broken page.", html: `<div class="ns-aicomposer" aria-disabled="true">
+  <label class="ns-visually-hidden" for="ai-doc-in3">Ask the assistant</label>
+  <textarea class="ns-aicomposer__area" id="ai-doc-in3" rows="2" disabled placeholder="Sign in to ask a question…"></textarea>
+  <div class="ns-aicomposer__bar">
+    <span class="ns-aicomposer__hint"><i class="ph ph-lock-simple" aria-hidden="true"></i> Sign in to send</span>
+    <span class="ns-aicomposer__spacer"></span>
+    <button type="button" class="ns-btn ns-btn--primary ns-btn--sm">Sign in</button>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "ai-attachments", title: "Answer attachments", family: "AI",
+    summary: "What makes this an LMS assistant rather than a chat box: an answer can carry the product's own objects. The course it recommends is the same <code>.ns-card.ns-ccard</code> the catalog renders — one component with two placements, not two cards that drift apart.",
+    use: ["Course and lesson cards, when the answer's real conclusion is “go and do this course”", "A rich snippet for a blog post, doc page or external reference", "An image the assistant produced — always labelled as generated"],
+    not: ["Decorating every answer with a card — an attachment is a recommendation, and four of them is none", "A bespoke mini course card: use the catalog's <code>--compact</code> shape"],
+    a11y: ["The mono caption above the grid says <em>why</em> these are here, not just that they are", "Generated images carry a badge in the caption — an unlabelled generated diagram is one a student will cite in an exam"],
+    variants: [
+      { name: "Course cards", note: "The catalog's own compact card, dropped into a message. Same anatomy, same meta row, same hover.", html: `<div style="max-inline-size:40rem">
+  <p class="ns-aiattach__label">Covers this, in order</p>
+  <div class="ns-aiattach">
+    <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body">
+      <span class="ns-card__kicker">// Course</span>
+      <a class="ns-card__link" href="#0"><span class="ns-card__title">Bulk-safe Apex patterns</span></a>
+      <p class="ns-card__text">Triggers that survive the 200-record data load.</p>
+      <span class="ns-ccard__meta"><span>9 lessons</span><span>2h 10m</span></span>
+    </div></div>
+    <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body">
+      <span class="ns-card__kicker">// Lesson</span>
+      <a class="ns-card__link" href="#0"><span class="ns-card__title">Collections, maps and sets</span></a>
+      <p class="ns-card__text">The data structure that makes one query enough.</p>
+      <span class="ns-ccard__meta"><span>14:40</span><span>Beginner</span></span>
+    </div></div>
+  </div>
+</div>` },
+      { name: "Rich snippet", note: "A link, unfurled: thumbnail, title, one line, host. For a blog post or an external doc — anything that is not a catalog object.", html: `<div style="max-inline-size:36rem;display:grid;gap:var(--space-3)">
+  <a class="ns-aisnippet" href="#0">
+    <img class="ns-aisnippet__thumb" src="../assets/img/publication-cover.svg" alt="">
+    <span>
+      <span class="ns-aisnippet__kicker">// Blog</span>
+      <span class="ns-aisnippet__title">The trigger that survived a 200-record load</span>
+      <span class="ns-aisnippet__desc">A walk through one real bulkification bug, from the debug log to the pattern that fixes it for good.</span>
+      <span class="ns-aisnippet__meta"><i class="ph ph-globe" aria-hidden="true"></i> namastesalesforce.com · 8 min read</span>
+    </span>
+  </a>
+  <a class="ns-aisnippet" href="#0">
+    <img class="ns-aisnippet__thumb" src="../assets/img/training-trail.svg" alt="">
+    <span>
+      <span class="ns-aisnippet__kicker">// Reference</span>
+      <span class="ns-aisnippet__title">Execution governors and limits</span>
+      <span class="ns-aisnippet__desc">The per-transaction table: 100 SOQL queries, 150 DML statements, 50,000 rows retrieved.</span>
+      <span class="ns-aisnippet__meta"><i class="ph ph-arrow-square-out" aria-hidden="true"></i> developer.salesforce.com</span>
+    </span>
+  </a>
+</div>` },
+      { name: "Image", note: "Framed, captioned, and labelled when it was generated. The badge is not decoration — it is the difference between a diagram and a source.", html: `<figure class="ns-aiimage" style="max-inline-size:28rem">
+  <img src="../assets/img/training-trail.svg" alt="A diagram of the trigger execution order">
+  <figcaption class="ns-aiimage__cap">Trigger execution order, simplified <span class="ns-badge ns-badge--warning"><span class="ns-badge__dot" aria-hidden="true"></span>Generated</span></figcaption>
+</figure>` },
+      { name: "Downloadable", note: "For a cheat sheet or a starter repo the assistant hands over, the catalog's resource row is already the right object.", html: `<div style="max-inline-size:36rem">
+  <p class="ns-aiattach__label">Take this with you</p>
+  <div class="ns-aiattach ns-aiattach--single">
+  <a class="ns-resource" href="#0">
+    <span class="ns-resource__icon"><i class="ph ph-file-text" aria-hidden="true"></i></span>
+    <span class="ns-resource__body">
+      <span class="ns-resource__title">Governor limits cheat sheet</span>
+      <span class="ns-resource__type">PDF · 1 page</span>
+    </span>
+    <i class="ph ph-download-simple ns-resource__cue" aria-hidden="true"></i>
+  </a>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "ai-path", title: "Generated learning path", family: "AI",
+    summary: "The assistant's most product-specific output: “here is a six-week route from where you actually are to a Platform Developer I attempt.” Numbered steps on a rail, each pointing at a real course or lesson, with what the student has already finished marked done — and a save action that turns the answer into an object on their dashboard.",
+    use: ["Any answer whose real conclusion is a sequence — certification routes, “where do I start”, catching up after a gap", "Marking completed steps done rather than dropping them: seeing what you have finished is half the motivation"],
+    not: ["The marketing roadmap — that is Roadmap card, with illustrations and lede copy; this is a compact plan inside a message", "A path made of steps that are not real courses. Every row must be a link to something that exists"],
+    a11y: ["Steps are real links with the state on data-state, so “done” is not carried by color alone — the index turns green AND the row reads <em>done</em>", "The save action is a button, not a link: it changes data"],
+    variants: [
+      { name: "In an answer", html: `<div class="ns-aipath" style="max-inline-size:38rem">
+  <div class="ns-aipath__head">
+    <span class="ns-aipath__title">Route to Platform Developer I</span>
+    <span class="ns-aipath__meta">6 weeks · 5 steps</span>
+  </div>
+  <div class="ns-aipath__steps">
+    <a class="ns-aipath__step" href="#0" data-state="done">
+      <span class="ns-aipath__index">01</span>
+      <span><span class="ns-aipath__name">Apex basics</span><span class="ns-aipath__sub">Lessons 01–03 · already done</span></span>
+      <span class="ns-aipath__when">done</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">02</span>
+      <span><span class="ns-aipath__name">Collections, maps and sets</span><span class="ns-aipath__sub">Apex basics · lesson 09</span></span>
+      <span class="ns-aipath__when">this week</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">03</span>
+      <span><span class="ns-aipath__name">Bulk-safe Apex patterns</span><span class="ns-aipath__sub">9 lessons · the fix, properly</span></span>
+      <span class="ns-aipath__when">week 2</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">04</span>
+      <span><span class="ns-aipath__name">SOQL, properly</span><span class="ns-aipath__sub">Relationships and selective queries</span></span>
+      <span class="ns-aipath__when">week 3</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">05</span>
+      <span><span class="ns-aipath__name">Testing and deployment</span><span class="ns-aipath__sub">75%+ coverage, and what it is for</span></span>
+      <span class="ns-aipath__when">weeks 4–6</span>
+    </a>
+  </div>
+  <div class="ns-aipath__foot">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Save as my path</button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm">Adjust pace</button>
+    <span class="ns-aipath__meta">~4h / week</span>
+  </div>
+</div>` },
+      { name: "Project plan", note: "The same object doing career work: a portfolio project broken into build steps, which is what a student asking “what do I put on my resume” actually needs.", html: `<div class="ns-aipath" style="max-inline-size:38rem">
+  <div class="ns-aipath__head">
+    <span class="ns-aipath__title">Project: a volunteer-shift manager</span>
+    <span class="ns-aipath__meta">portfolio · 4 steps</span>
+  </div>
+  <div class="ns-aipath__steps">
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">01</span>
+      <span><span class="ns-aipath__name">Model it</span><span class="ns-aipath__sub">Volunteer, Shift, Signup — two lookups, one rollup</span></span>
+      <span class="ns-aipath__when">2h</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">02</span>
+      <span><span class="ns-aipath__name">Automate the double-booking check</span><span class="ns-aipath__sub">Record-triggered flow, then the same rule in Apex</span></span>
+      <span class="ns-aipath__when">3h</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">03</span>
+      <span><span class="ns-aipath__name">Build the signup screen</span><span class="ns-aipath__sub">One LWC, wire adapter, no imperative Apex</span></span>
+      <span class="ns-aipath__when">4h</span>
+    </a>
+    <a class="ns-aipath__step" href="#0">
+      <span class="ns-aipath__index">04</span>
+      <span><span class="ns-aipath__name">Test it honestly</span><span class="ns-aipath__sub">Insert 200 signups, not one</span></span>
+      <span class="ns-aipath__when">2h</span>
+    </a>
+  </div>
+  <div class="ns-aipath__foot">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Save this project</button>
+    <span class="ns-aipath__meta">talks well in an interview</span>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "ai-sources", title: "Sources & practice check", family: "AI",
+    summary: "The two things that separate a tutor from an answer machine: where it got this, and one question back. Sources are numbered mono chips so the prose can reference [1] inline the way an article cites; the check is a real fieldset of radios, asked after an explanation.",
+    use: ["Every answer built from lesson content — the citation is the student's way of verifying", "One check question after an explanation, when the mode is Coach or the setting is on"],
+    not: ["More than about four sources — a citation list longer than the answer is not attribution, it is noise", "A quiz: this is one question in a conversation, not a graded assessment (see Quiz for that)"],
+    a11y: ["Source chips are links with visible numbers, not superscript-only markers", "The check is a real radio group inside a fieldset — arrow keys work, and the options are labels, not clickable divs"],
+    variants: [
+      { name: "Sources", html: `<div class="ns-aisource" style="max-inline-size:40rem">
+  <span class="ns-aisource__label">Sources</span>
+  <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">1</span> Bulk-safe Apex patterns · lesson 04</a>
+  <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">2</span> Apex basics · lesson 09</a>
+  <a class="ns-aisource__item" href="#0"><span class="ns-aisource__num">3</span> Execution governors and limits <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a>
+</div>` },
+      { name: "Practice check", note: "The teaching move. After explaining governor limits it asks one question and waits — which is the whole difference between reading an answer and knowing it.", html: `<div class="ns-aicheck" style="max-inline-size:36rem">
+  <span class="ns-aicheck__kicker">// Quick check</span>
+  <p class="ns-aicheck__q">Your trigger queries Account inside a <code class="ns-code-inline">for</code> loop over 200 Contacts. How many SOQL queries does the transaction use?</p>
+  <div class="ns-aicheck__options">
+    <label class="ns-choice"><input class="ns-radio" type="radio" name="ai-doc-check"><span class="ns-choice__text"><span class="ns-choice__label">1 — the loop is compiled away</span></span></label>
+    <label class="ns-choice"><input class="ns-radio" type="radio" name="ai-doc-check"><span class="ns-choice__text"><span class="ns-choice__label">200 — one per record, and the limit is 100</span></span></label>
+    <label class="ns-choice"><input class="ns-radio" type="radio" name="ai-doc-check"><span class="ns-choice__text"><span class="ns-choice__label">100 — it stops at the limit and continues</span></span></label>
+  </div>
+  <div class="ns-aicheck__foot">
+    <button type="button" class="ns-btn ns-btn--primary ns-btn--sm">Check answer</button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm">Skip</button>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "ai-error", title: "Errors & limits", family: "AI",
+    summary: "Failures render inside the transcript, in the assistant's own slot, because that is where the student is already looking and because a failed turn must stay in the record. The 3px leading edge is the system's error device; the retry is an outline button — the primary action on the screen is still the composer.",
+    use: ["A tool or model failure, in the turn it happened in", "<code>--limit</code> for a quota the student fixes by waiting or upgrading, not by retrying", "<code>--offline</code> for a lost connection, where nothing is wrong with the question"],
+    not: ["A toast — a toast disappears, and the student needs to see which question failed", "Blaming the student: “something went wrong” with no state about what survived is worse than the error"],
+    a11y: ["role=\"alert\" on the block, so the failure is announced when it lands", "The technical code is present, in mono — a student pasting <code>ERR_TOOL_TIMEOUT</code> into a ticket is doing support's job for them", "Always says what happened to the input: “nothing you typed was lost” is the sentence people are looking for"],
+    variants: [
+      { name: "Tool failure", html: `<article class="ns-aiturn ns-aiturn--agent" data-state="error" style="max-inline-size:40rem">
+  <header class="ns-aiturn__head"><span class="ns-aiturn__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>Assistant<time datetime="2026-03-04T09:19">09:19</time></header>
+  <div class="ns-aierror" role="alert">
+    <p class="ns-aierror__head"><i class="ph ph-warning-circle" aria-hidden="true"></i> Could not reach the catalog</p>
+    <p class="ns-aierror__text">The explanation above is written from what I already know about your progress; the course list needs the catalog and it did not respond. Nothing you typed was lost.</p>
+    <div class="ns-aierror__actions">
+      <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-arrow-counter-clockwise" aria-hidden="true"></i> Try again</button>
+      <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#0">Report this</a>
+      <span class="ns-aierror__code">ERR_TOOL_TIMEOUT · 09:19:04</span>
+    </div>
+  </div>
+</article>` },
+      { name: "Daily limit", note: "Warning, not error: nothing is broken and retrying will not help. The upgrade is an outline button beside a plain “comes back at midnight”, because a paywall that shouts is a paywall people resent.", html: `<div class="ns-aierror ns-aierror--limit" role="alert" style="max-inline-size:40rem">
+  <p class="ns-aierror__head"><i class="ph ph-timer" aria-hidden="true"></i> That is your 30th question today</p>
+  <p class="ns-aierror__text">The free plan resets at midnight — your history, saved paths and this conversation are all still here. Pro removes the cap.</p>
+  <div class="ns-aierror__actions">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm">See Pro</button>
+    <span class="ns-aierror__code">resets in 6h 12m</span>
+  </div>
+</div>` },
+      { name: "Offline", note: "Muted, not red. A dropped connection is not a failure of the answer, and colouring it like one teaches students to ignore the colour.", html: `<div class="ns-aierror ns-aierror--offline" role="alert" style="max-inline-size:40rem">
+  <p class="ns-aierror__head"><i class="ph ph-plugs" aria-hidden="true"></i> You are offline</p>
+  <p class="ns-aierror__text">Your question is saved in the box and will send when the connection is back.</p>
+  <div class="ns-aierror__actions">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-arrows-clockwise" aria-hidden="true"></i> Retry now</button>
+  </div>
+</div>` },
+      { name: "Refused", note: "The one the LMS actually needs: a student asking for the graded assignment's answers. It says no, says why once, and offers the thing it CAN do — no lecture.", html: `<div class="ns-aierror ns-aierror--limit" role="alert" style="max-inline-size:40rem">
+  <p class="ns-aierror__head"><i class="ph ph-shield-check" aria-hidden="true"></i> I will not answer the graded assessment</p>
+  <p class="ns-aierror__text">This one is marked, and handing you the answer is the one thing that would not help. I can walk you through the concept it tests, or review an attempt you have written.</p>
+  <div class="ns-aierror__actions">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm">Explain the concept</button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm">Review my attempt</button>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "ai-welcome", title: "Empty state & starters", family: "AI",
+    summary: "The first screen. A blank composer with a blinking cursor tells a beginner nothing about what this thing can do, so the empty state is the capability list: four things a student actually wants, phrased the way a student would say them, each one a real prompt that fills the composer on click.",
+    use: ["A new conversation, and the signed-out gate — the promise and the product should match", "Starters that span the four jobs: explain, review my code, plan my learning, help with my career"],
+    not: ["Filling the composer AND sending: the student almost always edits a word first, and a question they did not finish reading is a wasted turn", "Cute example prompts nobody would type. “Write a haiku about Apex” teaches a student the tool is a toy"],
+    a11y: ["Starters are real buttons, so they are reachable and announced as actions", "The heading is a real heading — this is the page's title when the thread is empty"],
+    variants: [
+      { name: "New conversation", html: `<div class="ns-aiwelcome" style="max-inline-size:44rem;margin-inline:auto">
+  <span class="ns-aiwelcome__mark" aria-hidden="true"><i class="ph ph-sparkle"></i></span>
+  <div>
+    <h2 class="ns-aiwelcome__title">What are we working on?</h2>
+    <p class="ns-aiwelcome__lede">Ask about a lesson, paste code that will not deploy, or get a route to your next certification.</p>
+  </div>
+  <div class="ns-aisuggest">
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-book-open-text" aria-hidden="true"></i>Explain</span>
+      <span class="ns-aisuggest__text">What is the difference between a workflow rule and a record-triggered flow?</span>
+    </button>
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-code" aria-hidden="true"></i>Review</span>
+      <span class="ns-aisuggest__text">Here is my trigger — why does it fail on a 200-record load?</span>
+    </button>
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-flag-banner-fold" aria-hidden="true"></i>Plan</span>
+      <span class="ns-aisuggest__text">Give me a six-week route to Platform Developer I.</span>
+    </button>
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-briefcase" aria-hidden="true"></i>Career</span>
+      <span class="ns-aisuggest__text">What should a junior admin have on their resume?</span>
+    </button>
+  </div>
+</div>` },
+      { name: "In a lesson", note: "The embedded panel's version: three starters, all about the paragraph in front of the student, because that is the only thing they can be about.", html: `<div class="ns-aiwelcome" style="max-inline-size:32rem">
+  <div>
+    <p class="ns-aiwelcome__lede">Stuck on this lesson? Start here.</p>
+  </div>
+  <div class="ns-aisuggest">
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-lightbulb" aria-hidden="true"></i>Simplify</span>
+      <span class="ns-aisuggest__text">Explain this section as if I have never written a line of Apex.</span>
+    </button>
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-terminal-window" aria-hidden="true"></i>Example</span>
+      <span class="ns-aisuggest__text">Show me the same thing with real field names.</span>
+    </button>
+    <button type="button" class="ns-aisuggest__item">
+      <span class="ns-aisuggest__kicker"><i class="ph ph-exam" aria-hidden="true"></i>Test me</span>
+      <span class="ns-aisuggest__text">Ask me three questions on this lesson.</span>
+    </button>
+  </div>
+</div>` },
+    ],
+  },
+
+  {
+    id: "ai-settings", title: "Settings & sign-in", family: "AI",
+    summary: "The assistant's own preferences — how it teaches, what it may read, what it remembers — as rows rather than cards, because a settings screen is a list of decisions. Plus the sign-in gate, which states the reason for the account instead of just blocking the composer.",
+    use: ["The assistant settings page; group in the order a student cares — teaching, reading, memory, deletion", "The gate wherever an anonymous visitor meets the assistant"],
+    not: ["A modal over a blurred fake transcript — show the real empty state and gate the send", "Hiding what it remembers. If memory is on, the facts it holds are printed on this screen"],
+    a11y: ["Each group is a section with a real heading; each row's control has its own label or aria-label", "Destructive rows are marked in text, not by color alone, and their buttons are outline (see Button)"],
+    variants: [
+      { name: "Settings rows", html: `<div style="max-inline-size:42rem">
+  <section class="ns-aiset">
+    <h3 class="ns-aiset__legend">How it teaches</h3>
+    <div class="ns-aiset__row">
+      <div>
+        <p class="ns-aiset__name">Default mode</p>
+        <p class="ns-aiset__desc">Tutor explains and shows an example. Coach answers with a question first. Reviewer marks the code you paste.</p>
+      </div>
+      <div class="ns-aiset__control">
+        <fieldset class="ns-segmented" aria-label="Default mode">
+          <label class="ns-segmented__option"><input type="radio" name="ai-doc-mode" checked><span>Tutor</span></label>
+          <label class="ns-segmented__option"><input type="radio" name="ai-doc-mode"><span>Coach</span></label>
+          <label class="ns-segmented__option"><input type="radio" name="ai-doc-mode"><span>Reviewer</span></label>
+        </fieldset>
+      </div>
+    </div>
+    <div class="ns-aiset__row">
+      <div>
+        <p class="ns-aiset__name">Always show sources</p>
+        <p class="ns-aiset__desc">Every answer cites the lesson it came from. An uncited answer is one you cannot check.</p>
+      </div>
+      <div class="ns-aiset__control">
+        <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+      </div>
+    </div>
+    <div class="ns-aiset__row ns-aiset__row--danger">
+      <div>
+        <p class="ns-aiset__name">Forget what it remembers</p>
+        <p class="ns-aiset__desc">Clears the facts it holds about your goals. History and saved paths are kept.</p>
+      </div>
+      <div class="ns-aiset__control">
+        <button type="button" class="ns-btn ns-btn--danger ns-btn--sm">Forget memory</button>
+      </div>
+    </div>
+  </section>
+  <p style="margin-block-start:var(--space-4)"><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-settings.html" target="_blank" rel="noopener">Open the full settings screen <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>
+</div>` },
+      { name: "Sign-in gate", note: "The reason first: the answers are built from this student's own progress, which an anonymous session does not have. Then what signing in buys, then the field.", html: `<div class="ns-aigate">
+  <div>
+    <h3 class="ns-aigate__title">Sign in to ask</h3>
+    <p class="ns-aigate__text">Answers are built from your own progress — which lessons you have finished, where you got stuck, what you are working towards. That needs an account.</p>
+  </div>
+  <ul class="ns-aigate__list">
+    <li><i class="ph ph-check" aria-hidden="true"></i> Answers that cite the lesson you are on</li>
+    <li><i class="ph ph-check" aria-hidden="true"></i> Learning paths saved to your dashboard</li>
+    <li><i class="ph ph-check" aria-hidden="true"></i> 30 questions a day on the free plan</li>
+  </ul>
+  <form class="ns-auth__form" action="#">
+    <div class="ns-field">
+      <label class="ns-field__label" for="ai-doc-email">Email address</label>
+      <input id="ai-doc-email" class="ns-input" type="email" autocomplete="email" required>
+    </div>
+    <div class="ns-aigate__actions">
+      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Send sign-in link</button>
+      <a class="ns-btn ns-btn--quiet ns-btn--block" href="#0">Browse the courses instead</a>
+    </div>
+  </form>
+  <p class="ns-aigate__text">Free, no card. We do not train on your conversations.</p>
+</div>` },
+      { name: "The signed-out screen", note: "Gate, empty state and disabled composer in one room — what a visitor sees before they hand over an email address.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-ai-signin.html" target="_blank" rel="noopener">Open the signed-out demo <i class="ph ph-arrow-square-out" aria-hidden="true"></i></a></p>` },
     ],
   },
 ];

@@ -1,28 +1,44 @@
-/* The type system — two self-hosted variable woff2s and one system stack.
+/* The type system — two self-hosted variable woff2s.
    =========================================================================
-     Switzer    sans   — the whole interface AND the reading layer. One face
-                         at two volumes rather than a display/text pair.
-     Sentient   serif  — the editorial voice: pull-quotes, drop caps,
-                         section quotations. The register that quotes.
-     (mono)     system — ui-monospace and the platform's own console face.
+     Switzer     sans   — the whole interface AND the reading layer: headings,
+                          prose, controls, quotations. One face across the
+                          range, separated by WEIGHT and SIZE, never by family.
+     Roboto Mono mono   — data, labels and code: every index, duration,
+                          kicker, tag, status and <pre> in the product.
 
-   Both are Indian Type Foundry faces from Fontshare, under the Fontshare Free
-   Font EULA: free for personal AND commercial use, any medium, self-hosting
-   explicitly permitted. The EULA travels with them in fonts/FONTSHARE-EULA.txt
-   and must stay there. Subset to latin (+ the punctuation and arrows the UI
-   actually draws) — 69 KB for the pair. Re-subset upstream if a page ever
-   needs extended coverage; see fonts/README.md.
+   Switzer is an Indian Type Foundry face from Fontshare under the Fontshare
+   Free Font EULA (free for personal AND commercial use, any medium,
+   self-hosting explicitly permitted); the EULA travels with it in
+   fonts/FONTSHARE-EULA.txt. Roboto Mono is under the SIL Open Font Licence
+   1.1, in fonts/licences/. Both licences must stay in the repo. Both faces are
+   subset to latin plus the punctuation and arrows the UI actually draws —
+   67 KB for the pair. Re-subset upstream if a page ever needs extended
+   coverage; see fonts/README.md.
 
-   MONO IS DELIBERATELY NOT SHIPPED. Every index, timestamp, duration, kicker
-   and status in this system runs through the mono face — it is the material
-   Principle 2 is made of — but it is always set in short, tracked, uppercase
-   runs where the platform's own console face is not merely adequate, it is
-   more familiar to the reader than anything we could ship. Spending ~22 KB to
-   make "12:40" look marginally more on-brand is not a trade this system makes.
-   The consequence to know: mono renders as SF Mono on macOS, Consolas on
-   Windows, and whatever the distro sets on Linux, so mono column widths are
-   not identical across platforms. Never rely on a mono run being an exact
-   width; the tabular-nums in tokens/base.css is what keeps digits aligned. */
+   MONO IS SHIPPED, AND IT HAS TO BE. Every index, timestamp, duration,
+   kicker, tag and status runs through the mono face — it is the material
+   Principle 2 is made of, and it is on screen far more often than a code
+   block is. Borrowing that face from the OS meant the most-repeated voice in
+   the interface was SF Mono on a Mac, Consolas on Windows and a lottery on
+   Linux: three different products, none of them chosen. Roboto Mono is the
+   one shipped for it — a plain, wide-set, unmannered grotesque mono that
+   stays quiet at the 11px tracked-uppercase label floor where this system
+   spends most of its mono, and that a reader recognises without noticing.
+   37 KB, doing the work of the face seen most.
+
+   The consequence that used to be listed here — that a mono run is a
+   different width on every platform, so nothing may be laid out against one —
+   is gone: the face is now the same everywhere, and the
+   font-variant-numeric: tabular-nums in tokens/base.css keeps digit columns
+   aligned on top of that.
+
+   NO SHIPPED SERIF. The editorial register (pull-quotes, drop caps, section
+   quotations) used to run on Sentient. It has been retired: --font-serif now
+   resolves to the platform's own serif, so the register still reads as a
+   quotation on every machine that has Georgia while costing nothing, and the
+   system ships exactly two faces. If the quoting voice should be Switzer
+   instead, point --ns-font-serif at --ns-font-sans — one line in
+   tokens/typography.css. */
 @font-face {
   font-family: "Switzer";
   src: url("../fonts/switzer-var-latin.woff2") format("woff2-variations"), url("../fonts/switzer-var-latin.woff2") format("woff2");
@@ -31,9 +47,11 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "Sentient";
-  src: url("../fonts/sentient-var-latin.woff2") format("woff2-variations"), url("../fonts/sentient-var-latin.woff2") format("woff2");
-  font-weight: 200 700;
+  /* Data, labels and code — see the note above. Variable 100-700; the system
+     uses 400 for code and 700 for the tracked uppercase labels. */
+  font-family: "Roboto Mono";
+  src: url("../fonts/roboto-mono-var-latin.woff2") format("woff2-variations"), url("../fonts/roboto-mono-var-latin.woff2") format("woff2");
+  font-weight: 100 700;
   font-style: normal;
   font-display: swap;
 }

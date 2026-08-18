@@ -190,6 +190,43 @@
                 border-color var(--duration-fast) var(--ease-out);
   }
   .ns-trainingnav__link:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+
+  /* --- Post sections inside a module --------------------------------------
+     THE STRUCTURAL DIFFERENCE BETWEEN TRAINING AND A COURSE. A course is a
+     flat list of lessons (see .ns-curriculum--flat). A training module is a
+     body of writing that genuinely has parts — "the sharing model" has a
+     concept post, two walkthroughs and a lab — so the module's rail groups
+     its posts under section labels rather than running them as one list.
+
+     One sidebar, three levels: track → module → section → post. Any deeper
+     and the rail is a file tree, which is what this is designed not to be. */
+  .ns-trainingnav__section {
+    display: block;
+    padding: var(--space-3) var(--space-2) var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+
+  /* Every row says what KIND of post it is, in the same icon vocabulary the
+     course rail uses — the word arrives on hover or focus from the shared
+     tooltip. A rail where a lab and a two-minute concept note look identical
+     is a rail that cannot be planned against. */
+  .ns-trainingnav__link { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-2); align-items: center; }
+  .ns-trainingnav__icon { flex: none; color: var(--color-label); font-size: var(--size-body); }
+  .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-300); }
+  .ns-trainingnav__link[data-state="done"] .ns-trainingnav__icon { color: var(--color-success); }
+  .ns-trainingnav__time {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+
+  /* Module-level progress, under the module's own summary: a training track
+     is long enough that "how far into THIS module" is a different and more
+     useful number than "how far into the track". */
+  .ns-trainingnav__bar { margin: var(--space-1) var(--space-2) var(--space-2); }
+  .ns-trainingnav__bar .ns-progress { inline-size: 100%; }
   /* aria-current, not a class — the highlighted unit and the announced unit
      come from one attribute, and training.js reads the same one to decide
      which module to open. */

@@ -83,4 +83,5 @@
       root.style.colorScheme = next;
     },
   };
+
 })();

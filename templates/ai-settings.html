@@ -1,0 +1,190 @@
+<!--
+  NS Design System template — AI assistant settings
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Adapt the marked slots to your stack:
+    Ghost   → paste into an account page partial; the toggles post to your
+              members settings endpoint.
+    Next.js → prefer the React components in components/ai/; this file is
+              the markup contract they implement.
+    Static  → use directly.
+
+  Rows, not cards. A settings screen is a list of decisions, and a card
+  grid turns it into a shopping page. Four groups, in the order a student
+  actually cares about them: how it teaches, what it may read, what it
+  remembers, and how to get rid of it.
+-->
+<main class="ns-page ns-page--narrow">
+  <div class="ns-pagehead">
+    <div>
+      <span class="ns-pagehead__kicker">// Assistant</span>
+      <h1>Settings</h1>
+      <p class="ns-pagehead__meta">How the assistant teaches you, what it is allowed to read, and what it keeps. Changes apply to your next question.</p>
+    </div>
+  </div>
+
+  <div class="ns-stack ns-stack--lg">
+
+    <!-- --- How it teaches ------------------------------------------------
+         The mode is the single highest-value setting on this screen: a
+         student revising for an exam wants to be asked questions, and a
+         student mid-bug wants an answer. Segmented, because there are three
+         and they are mutually exclusive. -->
+    <section class="ns-aiset">
+      <h2 class="ns-aiset__legend">How it teaches</h2>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Default mode</p>
+          <p class="ns-aiset__desc">Tutor explains and shows an example. Coach answers with a question first. Reviewer marks the code you paste against the lesson's standard.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <fieldset class="ns-segmented" aria-label="Default mode">
+            <label class="ns-segmented__option"><input type="radio" name="ai-mode" value="tutor" checked><span>Tutor</span></label>
+            <label class="ns-segmented__option"><input type="radio" name="ai-mode" value="coach"><span>Coach</span></label>
+            <label class="ns-segmented__option"><input type="radio" name="ai-mode" value="reviewer"><span>Reviewer</span></label>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Explain at this level</p>
+          <p class="ns-aiset__desc">Sets the assumed starting point. It still adapts to what you have finished — this is where it starts, not where it stops.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <select class="ns-select" aria-label="Explanation level">
+            <option>New to Salesforce</option>
+            <option selected>Some admin experience</option>
+            <option>Working developer</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Ask me a check question</p>
+          <p class="ns-aiset__desc">After an explanation, end with one question to answer. Off means it just explains.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Always show sources</p>
+          <p class="ns-aiset__desc">Every answer cites the lesson or doc it came from. Leaving this on is strongly recommended: an uncited answer is one you cannot check.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- What it may read ---------------------------------------------- -->
+    <section class="ns-aiset">
+      <h2 class="ns-aiset__legend">What it may read</h2>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">The lesson I am on</p>
+          <p class="ns-aiset__desc">Lets "explain this bit" mean the paragraph in front of you. Off, and every question needs its own context.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">My course progress</p>
+          <p class="ns-aiset__desc">Which lessons you have finished and your quiz scores. This is what makes a learning path fit you rather than a generic syllabus.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Files I attach</p>
+          <p class="ns-aiset__desc">Apex classes, flow screenshots, error logs. Attachments are read for that question only and are never used for training.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- Memory --------------------------------------------------------- -->
+    <section class="ns-aiset">
+      <h2 class="ns-aiset__legend">Memory</h2>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Remember what I am working towards</p>
+          <p class="ns-aiset__desc">Currently remembering: <b>Platform Developer I by June</b>, <b>prefers examples before theory</b>, <b>works in an org with no dev sandbox</b>.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <label class="ns-choice"><input type="checkbox" role="switch" class="ns-switch" checked><span class="ns-choice__text"><span class="ns-choice__label">On</span></span></label>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Keep my chat history</p>
+          <p class="ns-aiset__desc">History is stored so you can return to a conversation. Turn this off and each chat is discarded when you close it.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <select class="ns-select" aria-label="Keep history for">
+            <option>Until I delete it</option>
+            <option selected>90 days</option>
+            <option>30 days</option>
+            <option>Do not keep history</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- --- Data ------------------------------------------------------------
+         The one screen where the error hue is correct: these rows destroy
+         something. Outline buttons still — a delete is almost never the
+         primary action (see the Button page). -->
+    <section class="ns-aiset">
+      <h2 class="ns-aiset__legend">Your data</h2>
+
+      <div class="ns-aiset__row">
+        <div>
+          <p class="ns-aiset__name">Export everything</p>
+          <p class="ns-aiset__desc">A JSON file of every conversation, path and saved answer. Sent to your account email.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <button type="button" class="ns-btn ns-btn--outline ns-btn--sm"><i class="ph ph-download-simple" aria-hidden="true"></i> Export</button>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row ns-aiset__row--danger">
+        <div>
+          <p class="ns-aiset__name">Forget what it remembers</p>
+          <p class="ns-aiset__desc">Clears the three facts above. Your chat history and saved paths are kept.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <button type="button" class="ns-btn ns-btn--danger ns-btn--sm">Forget memory</button>
+        </div>
+      </div>
+
+      <div class="ns-aiset__row ns-aiset__row--danger">
+        <div>
+          <p class="ns-aiset__name">Delete all conversations</p>
+          <p class="ns-aiset__desc">Permanent, and it cannot be undone. Saved learning paths stay on your dashboard.</p>
+        </div>
+        <div class="ns-aiset__control">
+          <button type="button" class="ns-btn ns-btn--danger ns-btn--sm">Delete history</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="ns-ai__note">The assistant can be wrong. Check anything it says against the lesson it cites.</p>
+  </div>
+</main>
