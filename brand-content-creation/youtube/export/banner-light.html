@@ -1,0 +1,101 @@
+<!doctype html><html><head><meta charset="utf-8"><title>YouTube banner — light — 2560×1440</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<style>
+/* Export artboard, 1:1 pixels. Render with:
+     chrome --headless=new --screenshot=banner-light.png \
+            --window-size=2560,1440 --force-device-scale-factor=1 file://<this>
+   Raw px is correct here — this IS the 2560×1440 file (see improve.md
+   IMPROVE-11: diagram/artboard cards are exempt from the token rule). */
+html,body{margin:0;width:2560px;height:1440px;overflow:hidden}
+body{position:relative;background:#fff;font-family:var(--font-sans);color:var(--color-brand-900)}
+
+/* Blueprint ground: 64px hairline grid + a wide-cell overlay, so the texture
+   has two frequencies instead of one. */
+.grid{position:absolute;inset:0;
+  background-image:
+    linear-gradient(to right,rgb(3 45 96/.085) 1px,transparent 1px),
+    linear-gradient(to bottom,rgb(3 45 96/.085) 1px,transparent 1px),
+    linear-gradient(to right,rgb(3 45 96/.05) 1px,transparent 1px),
+    linear-gradient(to bottom,rgb(3 45 96/.05) 1px,transparent 1px);
+  background-size:320px 320px,320px 320px,64px 64px,64px 64px}
+.bar{position:absolute;inset-inline:0;top:0;height:10px;background:var(--color-brand-500);z-index:9}
+
+/* The wings — everything outside 1546×423 is texture, never information.
+   Oversized Phosphor glyphs from the shipped subset, a ring, and one faint
+   deploy line: the console, murmuring. */
+.wing-glyph{position:absolute;color:rgb(3 45 96/.06);line-height:1}
+.g-cloud{font-size:430px;left:60px;bottom:60px;rotate:-6deg}
+.g-code{font-size:300px;right:130px;top:130px;rotate:8deg}
+.g-flow{font-size:230px;left:210px;top:150px;rotate:-10deg;color:rgb(1 118 211/.08)}
+.g-db{font-size:230px;right:120px;bottom:150px;rotate:6deg;color:rgb(1 118 211/.07)}
+.g-bolt{font-size:150px;right:560px;bottom:60px;rotate:-12deg}
+.ring{position:absolute;border-radius:50%;border:2px solid rgb(1 118 211/.14)}
+.r1{width:640px;height:640px;right:-180px;top:400px}
+.r2{width:640px;height:640px;right:-120px;top:460px;border-color:rgb(3 45 96/.07)}
+.r3{width:420px;height:420px;left:-140px;top:-160px;border-color:rgb(3 45 96/.08)}
+.deploy{position:absolute;left:96px;bottom:170px;font-family:var(--font-mono);font-size:22px;
+  letter-spacing:.04em;color:rgb(3 45 96/.22)}
+.deploy b{color:rgb(1 118 211/.42);font-weight:400}
+.comment{position:absolute;right:620px;top:432px;font-family:var(--font-mono);font-size:22px;
+  color:rgb(3 45 96/.2);letter-spacing:.06em}
+
+/* Registration ticks on the safe-box corners — blueprint marks, quiet. */
+.tick{position:absolute;width:26px;height:26px;border:0 solid rgb(3 45 96/.3);z-index:8}
+.t-tl{left:507px;top:508px;border-left-width:2px;border-top-width:2px}
+.t-tr{right:507px;top:508px;border-right-width:2px;border-top-width:2px}
+.t-br{right:507px;bottom:509px;border-right-width:2px;border-bottom-width:2px}
+/* No bottom-left tick: the avatar overlaps that corner on mobile. */
+
+/* The safe box: 1546×423 at (507,508). Everything readable lives here. */
+.safe{position:absolute;left:507px;top:508px;width:1546px;height:423px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:44px;z-index:10}
+.lockrow{display:flex;align-items:center;gap:56px}
+.mark{width:132px;height:132px;flex:none;filter:drop-shadow(0 0 60px rgb(1 118 211/.22))}
+.words{display:flex;flex-direction:column;gap:6px}
+.wm{font-family:var(--font-heading);font-weight:700;font-size:88px;line-height:.98;letter-spacing:-.02em}
+.wm i{font-style:normal;color:var(--color-brand-500)}
+.rule{width:2px;align-self:stretch;background:linear-gradient(to bottom,transparent,rgb(3 45 96/.3),transparent)}
+.side{display:flex;flex-direction:column;gap:14px;max-width:560px}
+.tagline{font-size:33px;line-height:1.35;color:rgb(3 45 96/.75)}
+.sched{font-family:var(--font-mono);font-size:22px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--color-brand-500)}
+.sched::before{content:"// "}
+/* The channel's table of contents — icon + word chips, hairline-separated. */
+.topics{display:flex;align-items:center;gap:0;border-block:1px solid rgb(3 45 96/.18);padding:18px 8px}
+.topic{display:flex;align-items:center;gap:12px;padding-inline:34px;
+  font-family:var(--font-mono);font-size:19px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:rgb(3 45 96/.62)}
+.topic+.topic{border-left:1px solid rgb(3 45 96/.18)}
+.topic i{font-size:26px;color:var(--color-brand-500)}
+</style></head><body>
+  <div class="grid"></div>
+  <i class="ph ph-cloud wing-glyph g-cloud"></i>
+  <i class="ph ph-code wing-glyph g-code"></i>
+  <i class="ph ph-flow-arrow wing-glyph g-flow"></i>
+  <i class="ph ph-database wing-glyph g-db"></i>
+  <i class="ph ph-lightning wing-glyph g-bolt"></i>
+  <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+  <div class="deploy">$ sf project deploy start --dry-run &nbsp;<b>✓ PASS</b></div>
+  <div class="comment">/* build. deploy. teach. */</div>
+  <span class="tick t-tl"></span><span class="tick t-tr"></span><span class="tick t-br"></span>
+  <div class="bar"></div>
+
+  <div class="safe">
+    <div class="lockrow">
+      <img class="mark" src="../../../assets/logo/favicon.svg" alt="">
+      <div class="words"><div class="wm">Namaste<br>Salesforce<i>.</i></div></div>
+      <div class="rule"></div>
+      <div class="side">
+        <div class="tagline">Salesforce, taught the way it is actually used.</div>
+        <div class="sched">New lesson every Monday</div>
+      </div>
+    </div>
+    <div class="topics">
+      <span class="topic"><i class="ph ph-code"></i>Apex</span>
+      <span class="topic"><i class="ph ph-flow-arrow"></i>Flow</span>
+      <span class="topic"><i class="ph ph-gear-six"></i>Admin</span>
+      <span class="topic"><i class="ph ph-plugs"></i>Integration</span>
+      <span class="topic"><i class="ph ph-seal-check"></i>Certification</span>
+    </div>
+  </div>
+</body></html>

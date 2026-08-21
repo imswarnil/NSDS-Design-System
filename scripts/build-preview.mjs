@@ -1279,6 +1279,10 @@ ${[["Active learners", "1,284", "up", "▲ 12%", "0,26 29,22 58,24 87,18 116,20 
    VIDEOS: this is the page a stranger lands on before they have watched
    anything, and it has about four seconds to say what the channel is. */
 const YOUTUBE_BODY = `
+  <p class="sub">The finished assets</p>
+  <p class="variant-note">Not mockups — the real files, rendered at true size from HTML artboards in <code>brand-content-creation/youtube/export/</code> that use the system's own tokens, fonts and glyph subset. The light banner is derived from the dark one by palette substitution, so the two cannot drift in geometry. Regeneration is one headless-Chrome command per file, documented in the export README.</p>
+  ${spec(["brand-content-creation/youtube/finished-assets.card.html"])}
+
   <p class="sub">The banner, and the only part of it anyone sees</p>
   <p class="variant-note">A YouTube banner is one 2560&times;1440 file cropped four different ways, and only the middle 1546&times;423 survives all of them. Design that rectangle first and extend the background outward — the common failure is the reverse, a composition laid across the full canvas that looks right in the design tool and arrives on a phone with its title half gone.</p>
   ${spec(["brand-content-creation/youtube/banner-safe-areas.card.html"])}

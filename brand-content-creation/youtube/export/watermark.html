@@ -1,0 +1,12 @@
+<!doctype html><html><head><meta charset="utf-8"><title>YouTube watermark — 150×150</title>
+<style>
+/* Export artboard, 1:1 pixels. Render with:
+     chrome --headless=new --screenshot=watermark.png --window-size=150,150 \
+            --force-device-scale-factor=1 --default-background-color=00000000 file://<this>
+   Mark alone on transparency — YouTube renders it ~30px in the player corner
+   and applies its own hover state. Anything more than the mark is a sticker. */
+html,body{margin:0;width:150px;height:150px;background:transparent;overflow:hidden}
+img{position:absolute;inset:11px;width:128px;height:128px}
+</style></head><body>
+  <img src="../../../assets/logo/favicon.svg" alt="">
+</body></html>

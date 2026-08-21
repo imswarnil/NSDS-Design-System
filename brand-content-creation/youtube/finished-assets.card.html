@@ -1,0 +1,41 @@
+<!-- @dsCard group="Content Creation" viewport="760x1290" name="YouTube — The Finished Assets" subtitle="The real files, rendered from the export artboards — upload these" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.lab{font-family:var(--font-mono);font-size:var(--size-label);text-transform:uppercase;
+  letter-spacing:var(--tracking-label);color:var(--color-muted);margin:0 0 7px;display:flex;gap:10px;align-items:baseline}
+.lab b{color:var(--color-brand-500);font-weight:700}
+.lab--sp{margin-top:22px}
+.shot{display:block;width:100%;border:1px solid var(--color-border)}
+.row{display:flex;gap:24px;align-items:flex-end;flex-wrap:wrap}
+.cell{display:flex;flex-direction:column;align-items:center;gap:8px}
+.cell span{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);
+  letter-spacing:var(--tracking-label);text-transform:uppercase}
+.checker{background:repeating-conic-gradient(var(--color-surface-sunken) 0% 25%, var(--color-surface) 0% 50%) 50%/16px 16px;
+  border:1px solid var(--color-border);display:grid;place-items:center;padding:14px}
+.note{margin-top:20px;border:1px solid var(--color-border);border-inline-start:3px solid var(--color-brand-500);padding:10px 12px}
+.note p{margin:0;font-size:var(--size-body);line-height:var(--leading-body);color:var(--color-muted)}
+.note b{color:var(--color-ink);font-weight:600}
+.note code{font-family:var(--font-mono);font-size:var(--size-fine);background:var(--color-surface-sunken);
+  border:1px solid var(--color-border);border-radius:var(--radius-sm);padding:0 4px}
+</style></head><body>
+
+<p class="lab"><b>01</b> Banner, dark — <span>assets/social/youtube/banner-dark.png · 2560 × 1440</span></p>
+<img class="shot" src="../../assets/social/youtube/banner-dark.png" alt="Dark channel banner: lockup, tagline and topic strip in the safe area, blueprint glyph wings">
+
+<p class="lab lab--sp"><b>02</b> Banner, light — <span>banner-light.png · same geometry, re-inked</span></p>
+<img class="shot" src="../../assets/social/youtube/banner-light.png" alt="Light channel banner, identical layout on white">
+
+<p class="lab lab--sp"><b>03</b> Profile photo &amp; watermark — <span>avatar.png 800 × 800 · watermark.png 150 × 150</span></p>
+<div class="row">
+  <div class="cell"><img src="../../assets/social/youtube/avatar.png" alt="Channel avatar" style="width:132px;height:132px;border-radius:50%"><span>98 · channel</span></div>
+  <div class="cell"><img src="../../assets/social/youtube/avatar.png" alt="" style="width:48px;height:48px;border-radius:50%"><span>48 · row</span></div>
+  <div class="cell"><img src="../../assets/social/youtube/avatar.png" alt="" style="width:24px;height:24px;border-radius:50%"><span>24 · comment</span></div>
+  <div class="cell"><span class="checker"><img src="../../assets/social/youtube/watermark.png" alt="Video watermark" style="width:64px;height:64px"></span><span>watermark · transparent</span></div>
+</div>
+
+<div class="note">
+  <p><b>These are renders, not sources.</b> The sources are the HTML artboards in <code>brand-content-creation/youtube/export/</code> — 1:1 pixel pages styled with the system's own tokens, glyphs and fonts. Change the tagline or the topic strip there and re-render with the headless-Chrome command in each file's header (or <code>export/README.md</code>); never edit the PNGs. The light banner is <em>derived</em> from the dark one by palette substitution, so the two can never drift in geometry.</p>
+</div>
+
+</body></html>

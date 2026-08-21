@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><title>YouTube avatar — 800×800</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<style>
+/* Export artboard, 1:1 pixels. Render with:
+     chrome --headless=new --screenshot=avatar.png --window-size=800,800 \
+            --force-device-scale-factor=1 --default-background-color=00000000 file://<this>
+   The corners stay transparent; YouTube crops to the circle anyway, but a
+   transparent square also drops cleanly into any other service.
+
+   The disc is textured, not flat: the hairline grid clipped inside it and one
+   thin ring — console blueprint at 800px, invisible at 24px, which is the
+   whole trick. The mark holds the middle ~55% so the circle never reads as
+   clipping it. */
+html,body{margin:0;width:800px;height:800px;background:transparent;overflow:hidden}
+.disc{position:absolute;inset:0;border-radius:50%;background:var(--color-brand-900);overflow:hidden}
+.disc .grid{position:absolute;inset:0;
+  background-image:
+    linear-gradient(to right,rgb(255 255 255/.06) 1px,transparent 1px),
+    linear-gradient(to bottom,rgb(255 255 255/.06) 1px,transparent 1px);
+  background-size:64px 64px;background-position:center}
+/* A soft brand glow behind the mark, so the disc has depth at channel size. */
+.disc .glow{position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,rgb(1 118 211/.4),transparent 62%)}
+.ring{position:absolute;inset:64px;border-radius:50%;border:2px solid rgb(124 190 255/.22)}
+.ring2{position:absolute;inset:88px;border-radius:50%;border:1px solid rgb(255 255 255/.08)}
+/* The accent: one arc segment of the outer ring in brand-500 — the top accent
+   bar, bent around the circle. Drawn with a conic mask so it is a true arc. */
+.arc{position:absolute;inset:64px;border-radius:50%;border:6px solid var(--color-brand-500);
+  mask:conic-gradient(from -35deg,#000 0 70deg,transparent 70deg)}
+.mark{position:absolute;left:50%;top:50%;translate:-50% -52%;width:430px;height:430px;
+  filter:drop-shadow(0 24px 70px rgb(0 0 0/.45))}
+</style></head><body>
+  <div class="disc"><div class="grid"></div><div class="glow"></div></div>
+  <div class="ring"></div><div class="ring2"></div><div class="arc"></div>
+  <img class="mark" src="../../../assets/logo/favicon.svg" alt="">
+</body></html>
