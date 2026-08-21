@@ -1,0 +1,83 @@
+<!-- @dsCard group="Content Creation" viewport="760x950" name="YouTube Banner — The Four Crops" subtitle="One 2560×1440 file, cropped four different ways — and only the middle 1546×423 survives all of them" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.lab{font-family:var(--font-mono);font-size:var(--size-label);text-transform:uppercase;
+  letter-spacing:var(--tracking-label);color:var(--color-muted);margin-bottom:6px}
+/* The upload canvas. Everything below is a percentage of it, so the diagram
+   stays true at any width the styleguide frames it at. */
+.canvas{position:relative;width:100%;aspect-ratio:16/9;background:var(--color-brand-900);overflow:hidden}
+.pat{position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
+  background-size:24px 24px}
+/* 2560×1440 → the four crops, as fractions of the canvas.
+   tv      2560×1440  full bleed
+   desktop 2560× 423  full width, centred band
+   tablet  1855× 423  72.46% wide
+   all     1546× 423  60.39% wide — the only zone on every device */
+.zone{position:absolute;border:1px dashed rgb(255 255 255/.45)}
+.z-desktop{inset-inline:0;top:35.31%;height:29.38%}
+.z-tablet{inset-inline:13.77%;top:35.31%;height:29.38%}
+.z-all{inset-inline:19.80%;top:35.31%;height:29.38%;
+  border:2px solid var(--color-brand-400);background:rgb(1 118 211/.16)}
+.tag{position:absolute;font-family:var(--font-mono);font-size:8px;letter-spacing:.05em;
+  text-transform:uppercase;padding:2px 5px;white-space:nowrap;
+  background:rgb(0 26 62/.85);color:#fff;border:1px solid rgb(255 255 255/.3)}
+.t-tv{inset-inline-start:6px;top:6px}
+.t-desktop{inset-inline-start:6px;top:calc(35.31% + 6px)}
+.t-tablet{inset-inline-start:calc(13.77% + 6px);bottom:calc(35.31% + 6px)}
+.t-all{inset-inline-start:50%;translate:-50% 0;top:calc(35.31% - 22px);
+  background:var(--color-brand-500);border-color:var(--color-brand-400);font-weight:700}
+/* The content that has to live inside the safe box, shown in place. */
+.safe-content{position:absolute;inset-inline:19.80%;top:35.31%;height:29.38%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#fff}
+.safe-content b{font-family:var(--font-heading);font-size:15px;font-weight:700;letter-spacing:-.01em}
+.safe-content span{font-family:var(--font-mono);font-size:7px;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--color-brand-300)}
+.rows{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px;margin-top:16px}
+.r{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--color-border)}
+.r code{font-family:var(--font-mono);font-size:var(--size-fine);color:var(--color-brand-500);
+  flex:none;width:78px;padding-top:2px}
+.r div{font-size:var(--size-body);line-height:var(--leading-body)}
+.r b{display:block;font-weight:600}
+.r span{color:var(--color-muted)}
+.note{margin-top:14px;border:1px solid var(--color-border);
+  border-inline-start:3px solid var(--color-brand-500);padding:10px 12px}
+.note p{margin:0;font-size:var(--size-body);line-height:var(--leading-body);color:var(--color-muted)}
+.note b{color:var(--color-ink);font-weight:600}
+</style></head><body>
+
+<div class="lab">2560 × 1440 upload · the four crops YouTube takes from it</div>
+<div class="canvas">
+  <div class="pat"></div>
+  <div class="zone z-desktop"></div>
+  <div class="zone z-tablet"></div>
+  <div class="zone z-all"></div>
+  <div class="safe-content">
+    <b>Namaste Salesforce</b>
+    <span>// new lesson every monday</span>
+  </div>
+  <span class="tag t-tv">TV · 2560 × 1440</span>
+  <span class="tag t-desktop">DESKTOP · 2560 × 423</span>
+  <span class="tag t-tablet">TABLET · 1855 × 423</span>
+  <span class="tag t-all">ALL DEVICES · 1546 × 423</span>
+</div>
+
+<div class="rows">
+  <div>
+    <div class="r"><code>UPLOAD</code><div><b>2560 × 1440, 16:9, under 6 MB</b><span>One file. YouTube derives every other size from it — there is no per-device upload, which is the whole reason the safe area exists.</span></div></div>
+    <div class="r"><code>1546 × 423</code><div><b>The only zone on every device</b><span>Centred, 60.4% of the width and 29.4% of the height. Every word and the mark go here. Nothing else is guaranteed to be seen by anybody.</span></div></div>
+    <div class="r"><code>1855 × 423</code><div><b>Tablet</b><span>The first band of wings. Pattern and colour — never a word you need read.</span></div></div>
+  </div>
+  <div>
+    <div class="r"><code>2560 × 423</code><div><b>Desktop, maximised</b><span>The widest strip most viewers ever see. It is a bonus, not a canvas.</span></div></div>
+    <div class="r"><code>2560 × 1440</code><div><b>TV</b><span>The full file, seen by the smallest audience. Design for it last: a banner that only works on a television is a banner that works for nobody.</span></div></div>
+    <div class="r"><code>AVATAR</code><div><b>Overlaps the banner</b><span>On desktop the channel photo sits below-left of the banner and on mobile it overlaps the bottom-left. Keep that corner of the safe box empty.</span></div></div>
+  </div>
+</div>
+
+<div class="note">
+  <p><b>Design the 1546 × 423 box first, then extend the background outward.</b> The common failure is the reverse — a composition laid out across the full 2560 × 1440, which looks correct in the design tool and arrives on a phone cropped to its own middle third, with the title half gone. If the banner does not work as a 1546 × 423 rectangle on its own, it does not work.</p>
+</div>
+
+</body></html>

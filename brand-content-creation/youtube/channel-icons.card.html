@@ -1,0 +1,112 @@
+<!-- @dsCard group="Content Creation" viewport="760x1225" name="YouTube Channel Icons" subtitle="Playlist covers, the 150×150 video watermark, and the link row — one glyph family, one tile" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.lab{font-family:var(--font-mono);font-size:var(--size-label);text-transform:uppercase;
+  letter-spacing:var(--tracking-label);color:var(--color-muted);margin:0 0 8px}
+.lab--sp{margin-top:24px}
+.note{font-size:var(--size-body);line-height:var(--leading-body);color:var(--color-muted);margin:0 0 12px;max-inline-size:56ch}
+.note b{color:var(--color-ink);font-weight:600}
+
+/* The playlist tile. 16:9 because that is the shape YouTube gives a playlist
+   cover — a square icon set would be cropped to this anyway, so it is drawn
+   at the shape it lands in. */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.tile{position:relative;aspect-ratio:16/9;background:var(--color-brand-900);overflow:hidden;
+  display:flex;flex-direction:column;justify-content:flex-end;padding:9px}
+.tile .pat{position:absolute;inset:0;opacity:.55;
+  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
+  background-size:16px 16px}
+.tile .bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500)}
+.tile i{position:absolute;inset-inline-end:8px;top:9px;font-size:26px;color:var(--color-brand-400);opacity:.9}
+.tile .n{position:relative;font-family:var(--font-mono);font-size:8px;font-weight:700;
+  letter-spacing:.1em;color:var(--color-brand-300)}
+.tile .t{position:relative;font-family:var(--font-heading);font-size:12px;font-weight:700;
+  color:#fff;line-height:1.1;letter-spacing:-.01em;margin-top:2px}
+.tile .c{position:relative;font-family:var(--font-mono);font-size:7px;color:rgb(255 255 255/.55);margin-top:3px}
+
+/* The watermark: 150×150 transparent PNG, rendered small over video. */
+.wmrow{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+.wmsrc{position:relative;width:110px;height:110px;flex:none;
+  background:repeating-conic-gradient(var(--color-surface-sunken) 0% 25%, var(--color-surface) 0% 50%) 50%/16px 16px;
+  border:1px solid var(--color-border);display:grid;place-items:center}
+.wmsrc .clear{position:absolute;inset:14%;border:1px dashed var(--color-brand-400)}
+.wmsrc img{width:52px;height:52px}
+/* In situ — the corner of a playing video. */
+.frame{position:relative;width:250px;aspect-ratio:16/9;background:var(--color-brand-900);overflow:hidden;flex:none}
+.frame .pat{position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(to right,rgb(255 255 255/.06) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.06) 1px,transparent 1px);
+  background-size:18px 18px}
+.frame .wm{position:absolute;inset-inline-end:9px;bottom:9px;width:22px;height:22px;opacity:.72}
+.frame .cue{position:absolute;inset-inline-start:9px;bottom:9px;font-family:var(--font-mono);
+  font-size:7px;color:rgb(255 255 255/.5);letter-spacing:.08em;text-transform:uppercase}
+
+/* The link row — the icons under the banner. */
+.links{display:flex;flex-wrap:wrap;gap:9px}
+.link{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;
+  border:1px solid var(--color-border);border-radius:var(--radius-pill);
+  font-family:var(--font-mono);font-size:var(--size-label);letter-spacing:var(--tracking-label);
+  text-transform:uppercase;color:var(--color-ink);text-decoration:none}
+.link i{font-size:14px;color:var(--color-brand-500)}
+.rows{margin-top:22px}
+.r{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--color-border)}
+.r code{font-family:var(--font-mono);font-size:var(--size-fine);color:var(--color-brand-500);flex:none;width:82px;padding-top:2px}
+.r div{font-size:var(--size-body);line-height:var(--leading-body)}
+.r b{display:block;font-weight:600}
+.r span{color:var(--color-muted)}
+</style></head><body>
+
+<p class="lab">Playlist &amp; section covers — 1280 × 720</p>
+<p class="note"><b>One tile, one glyph, one index.</b> Every cover is the same frame with the glyph and the words swapped, so a channel page of eight playlists reads as one shelf rather than eight decisions. The glyph is a Phosphor icon from the system's own subset — never a stock illustration, never an emoji — set large and low-contrast in the corner, because it is a marker, not the content.</p>
+<div class="grid">
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-code"></i>
+    <span class="n">01</span><span class="t">Apex</span><span class="c">18 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-flow-arrow"></i>
+    <span class="n">02</span><span class="t">Flow</span><span class="c">12 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-gear-six"></i>
+    <span class="n">03</span><span class="t">Admin</span><span class="c">24 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-plugs"></i>
+    <span class="n">04</span><span class="t">Integration</span><span class="c">9 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-seal-check"></i>
+    <span class="n">05</span><span class="t">Certification</span><span class="c">15 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-graduation-cap"></i>
+    <span class="n">06</span><span class="t">Careers</span><span class="c">7 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-video-camera"></i>
+    <span class="n">07</span><span class="t">Live sessions</span><span class="c">21 videos</span></div>
+  <div class="tile"><div class="bar"></div><div class="pat"></div><i class="ph ph-lightning"></i>
+    <span class="n">08</span><span class="t">Shorts</span><span class="c">46 videos</span></div>
+</div>
+
+<p class="lab lab--sp">Video watermark — 150 × 150, transparent PNG</p>
+<p class="note">The subscribe glyph baked into the corner of every video. It is the mark alone on transparency — a watermark with a wordmark in it is unreadable at the size it renders, and a watermark with a background is a sticker.</p>
+<div class="wmrow">
+  <div>
+    <div class="wmsrc"><div class="clear"></div><img src="../../assets/logo/favicon.svg" alt=""></div>
+    <p class="lab" style="margin:7px 0 0">source · transparent</p>
+  </div>
+  <div>
+    <div class="frame"><div class="pat"></div>
+      <span class="cue">bottom-right, always</span>
+      <img class="wm" src="../../assets/logo/favicon.svg" alt="">
+    </div>
+    <p class="lab" style="margin:7px 0 0">in place, at ~70% opacity</p>
+  </div>
+</div>
+
+<p class="lab lab--sp">Channel links</p>
+<p class="note">The row under the banner. Four destinations, in this order, and the site first — the others are places to follow, the site is the place to learn.</p>
+<div class="links">
+  <a class="link" href="#0"><i class="ph ph-globe"></i>namastesalesforce.com</a>
+  <a class="link" href="#0"><i class="ph ph-linkedin-logo"></i>LinkedIn</a>
+  <a class="link" href="#0"><i class="ph ph-x-logo"></i>X</a>
+  <a class="link" href="#0"><i class="ph ph-envelope-simple"></i>Contact</a>
+</div>
+
+<div class="rows">
+  <div class="r"><code>GLYPHS</code><div><b>Phosphor, from the shipped subset only</b><span>The same family that sets every icon in the product. A cover using an icon the site does not have is a cover that cannot be rebuilt later.</span></div></div>
+  <div class="r"><code>WATERMARK</code><div><b>150 × 150 PNG, transparent, mark only</b><span>Bottom-right, ~70% opacity, on for the whole video rather than the last ten seconds — a clipped moment travels without a title.</span></div></div>
+  <div class="r"><code>COVERS</code><div><b>1280 × 720, index top-left, glyph top-right</b><span>Same frame every time. Vary the glyph and the words; never the layout, the pattern scale or the accent bar.</span></div></div>
+  <div class="r"><code>NEVER</code><div><b>Emoji, stock icons, or a second accent colour</b><span>Brand blue is the only saturated colour on the shelf. A row of covers in eight different hues is eight brands.</span></div></div>
+</div>
+
+</body></html>

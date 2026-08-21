@@ -1,0 +1,158 @@
+<!-- @dsCard group="Content Creation" viewport="760x2480" name="YouTube Banner — Namaste Salesforce" subtitle="Three banners, each with the phone crop underneath it — dark, light, and a course launch" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.set{margin-block-end:26px}
+.set:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:7px}
+.hd code{font-family:var(--font-mono);font-size:var(--size-fine);font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:var(--size-body-lg);font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:var(--tracking-label)}
+.lab{font-family:var(--font-mono);font-size:var(--size-label);text-transform:uppercase;
+  letter-spacing:var(--tracking-label);color:var(--color-muted);margin:8px 0 5px}
+.cap{font-size:var(--size-body);line-height:var(--leading-body);color:var(--color-muted);margin-top:8px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+/* 2560×1440 upload canvas, and the 1546×423 crop a phone takes from it. */
+.canvas{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden}
+.crop{position:relative;width:100%;aspect-ratio:1546/423;overflow:hidden}
+.d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.62);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07)}
+.l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+   --dim:var(--color-muted);--accent:var(--color-brand-500);--grid:rgb(0 26 62/.06)}
+.pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px}
+.bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500);z-index:4}
+/* The guide only shows on the full canvas, never in the crop — the crop IS
+   the safe area, so an outline on it would be drawing the frame twice. */
+.guide{position:absolute;inset-inline:19.80%;top:35.31%;height:29.38%;
+  border:1px dashed rgb(1 118 211/.55);pointer-events:none;z-index:5}
+.guide::after{content:"1546 × 423";position:absolute;inset-inline-start:0;top:-15px;
+  font-family:var(--font-mono);font-size:7px;letter-spacing:.06em;color:var(--color-brand-400)}
+
+/* Content sits inside the safe box on the canvas, and fills the crop. */
+.safe{position:absolute;inset-inline:19.80%;top:35.31%;height:29.38%;
+  display:flex;align-items:center;justify-content:center;gap:14px;color:var(--ink)}
+.crop .safe{inset:0}
+.lock{display:flex;align-items:center;gap:9px}
+.lock img{width:26px;height:26px;flex:none}
+.crop .lock img{width:34px;height:34px}
+.wm{font-family:var(--font-heading);font-weight:700;font-size:17px;letter-spacing:-.015em;line-height:1}
+.crop .wm{font-size:23px}
+.rule{inline-size:1px;align-self:stretch;background:currentColor;opacity:.25}
+.side{display:flex;flex-direction:column;gap:4px}
+.tagline{font-size:10px;line-height:1.3;color:var(--dim);max-inline-size:22ch}
+.crop .tagline{font-size:13px}
+.sched{font-family:var(--font-mono);font-size:7px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.crop .sched{font-size:9px}
+
+/* Launch variant — left-aligned, a course name doing the talking. */
+.launch{position:absolute;inset-inline:19.80%;top:35.31%;height:29.38%;
+  display:flex;flex-direction:column;justify-content:center;gap:5px;color:var(--ink)}
+.crop .launch{inset:0}
+.kick{font-family:var(--font-mono);font-size:7px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.crop .kick{font-size:9px}
+.big{font-family:var(--font-heading);font-weight:700;font-size:20px;line-height:1.02;letter-spacing:-.02em}
+.crop .big{font-size:27px}
+.meta{font-family:var(--font-mono);font-size:7px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.crop .meta{font-size:9px}
+/* The avatar's footprint. It overlaps this corner in the real product, so the
+   composition leaves it alone rather than hoping. */
+.avatarghost{position:absolute;inset-inline-start:calc(19.80% - 4px);bottom:calc(35.31% - 30px);
+  width:34px;height:34px;border-radius:50%;border:1px dashed rgb(255 255 255/.45);
+  display:grid;place-items:center;font-family:var(--font-mono);font-size:6px;color:rgb(255 255 255/.5);z-index:6}
+.l .avatarghost{border-color:rgb(0 26 62/.35);color:rgb(0 26 62/.45)}
+</style></head><body>
+
+<!-- 01 -------------------------------------------------------------------- -->
+<div class="set">
+  <div class="hd"><code>01</code><b>The channel banner</b><em>dark · the default</em></div>
+  <div class="lab">2560 × 1440 upload</div>
+  <div class="canvas d">
+    <div class="bar"></div><div class="pat"></div>
+    <div class="safe">
+      <span class="lock"><img src="../../assets/logo/favicon.svg" alt=""><span class="wm">Namaste Salesforce</span></span>
+      <span class="rule"></span>
+      <span class="side">
+        <span class="tagline">Salesforce, taught the way it is actually used.</span>
+        <span class="sched">// new lesson every monday</span>
+      </span>
+    </div>
+    <span class="avatarghost">AVATAR</span>
+    <div class="guide"></div>
+  </div>
+  <div class="lab">what a phone sees — 1546 × 423</div>
+  <div class="crop d">
+    <div class="bar"></div><div class="pat"></div>
+    <div class="safe">
+      <span class="lock"><img src="../../assets/logo/favicon.svg" alt=""><span class="wm">Namaste Salesforce</span></span>
+      <span class="rule"></span>
+      <span class="side">
+        <span class="tagline">Salesforce, taught the way it is actually used.</span>
+        <span class="sched">// new lesson every monday</span>
+      </span>
+    </div>
+  </div>
+  <p class="cap"><b>Mark, wordmark, one sentence, one schedule line.</b> That is the whole banner. It answers the only two questions a visitor has — what is this channel, and how often does it publish — and the hairline rule between the lockup and the copy is the same device the site uses to separate a name from its description. The wings carry the pattern outward and nothing else, so the phone crop above loses no information at all.</p>
+</div>
+
+<!-- 02 -------------------------------------------------------------------- -->
+<div class="set">
+  <div class="hd"><code>02</code><b>Light</b><em>same geometry, swapped palette</em></div>
+  <div class="lab">2560 × 1440 upload</div>
+  <div class="canvas l">
+    <div class="bar"></div><div class="pat"></div>
+    <div class="safe">
+      <span class="lock"><img src="../../assets/logo/favicon.svg" alt=""><span class="wm">Namaste Salesforce</span></span>
+      <span class="rule"></span>
+      <span class="side">
+        <span class="tagline">Salesforce, taught the way it is actually used.</span>
+        <span class="sched">// new lesson every monday</span>
+      </span>
+    </div>
+    <span class="avatarghost">AVATAR</span>
+    <div class="guide"></div>
+  </div>
+  <div class="lab">what a phone sees — 1546 × 423</div>
+  <div class="crop l">
+    <div class="bar"></div><div class="pat"></div>
+    <div class="safe">
+      <span class="lock"><img src="../../assets/logo/favicon.svg" alt=""><span class="wm">Namaste Salesforce</span></span>
+      <span class="rule"></span>
+      <span class="side">
+        <span class="tagline">Salesforce, taught the way it is actually used.</span>
+        <span class="sched">// new lesson every monday</span>
+      </span>
+    </div>
+  </div>
+  <p class="cap"><b>The same layout with the palette swapped, not a second design.</b> Worth having: YouTube's own dark theme puts a navy banner against a near-black page, where the top accent bar is doing most of the work of separating them. On a light channel page the dark banner wins; if the surrounding page is dark for most of your audience, this one reads better.</p>
+</div>
+
+<!-- 03 -------------------------------------------------------------------- -->
+<div class="set">
+  <div class="hd"><code>03</code><b>Course launch</b><em>temporary · swap back after</em></div>
+  <div class="lab">2560 × 1440 upload</div>
+  <div class="canvas d">
+    <div class="bar"></div><div class="pat"></div>
+    <div class="launch">
+      <span class="kick">// now enrolling</span>
+      <span class="big">Apex, from zero<br>to your first trigger</span>
+      <span class="meta">12 lessons · free · namastesalesforce.com</span>
+    </div>
+    <span class="avatarghost">AVATAR</span>
+    <div class="guide"></div>
+  </div>
+  <div class="lab">what a phone sees — 1546 × 423</div>
+  <div class="crop d">
+    <div class="bar"></div><div class="pat"></div>
+    <div class="launch">
+      <span class="kick">// now enrolling</span>
+      <span class="big">Apex, from zero<br>to your first trigger</span>
+      <span class="meta">12 lessons · free · namastesalesforce.com</span>
+    </div>
+  </div>
+  <p class="cap"><b>Left-aligned, because a title of this length centred is a title nobody finishes.</b> The mark comes off — the avatar directly beneath it is already saying whose channel this is, and repeating it costs the room the course name needs. Set a date to swap it back on the day enrolment closes: a banner still advertising a launch three months later is the clearest possible signal that nobody is home.</p>
+</div>
+
+</body></html>

@@ -1,0 +1,117 @@
+<!-- @dsCard group="Content Creation" viewport="760x885" name="YouTube Profile Photo" subtitle="800×800 square, shown as a circle — and it has to survive being 24px in a comment" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.lab{font-family:var(--font-mono);font-size:var(--size-label);text-transform:uppercase;
+  letter-spacing:var(--tracking-label);color:var(--color-muted);margin:0 0 7px}
+.top{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}
+
+/* The 800×800 source, with the circle YouTube crops out of it. */
+.src{position:relative;width:150px;height:150px;flex:none;background:var(--color-brand-900);overflow:hidden}
+.src .pat{position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
+  background-size:18px 18px}
+.src .ring{position:absolute;inset:0;border-radius:50%;border:1px dashed var(--color-brand-400);z-index:3}
+/* Inside the circle, a further margin: the mark never touches the crop edge. */
+.src .clear{position:absolute;inset:18%;border-radius:50%;border:1px dashed rgb(255 255 255/.28);z-index:3}
+.src img{position:absolute;inset:0;margin:auto;width:58px;height:58px;z-index:2}
+.corner{position:absolute;font-family:var(--font-mono);font-size:7px;color:rgb(255 255 255/.42);z-index:4}
+.c1{inset-inline-start:4px;top:3px}
+
+/* The mark as it actually ships — navy disc, mark centred. */
+.avatar{border-radius:50%;background:var(--color-brand-900);display:grid;place-items:center;flex:none;overflow:hidden}
+.avatar img{display:block}
+.sizes{display:flex;align-items:flex-end;gap:20px}
+.size{display:flex;flex-direction:column;align-items:center;gap:7px}
+.size span{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);
+  letter-spacing:var(--tracking-label);text-transform:uppercase;white-space:nowrap}
+
+/* In situ: the comment row, where the avatar is smallest and most often seen. */
+.situ{display:flex;gap:9px;align-items:flex-start;border:1px solid var(--color-border);
+  padding:11px 13px;max-inline-size:26rem}
+.situ p{margin:0;font-size:var(--size-small);line-height:var(--leading-body);color:var(--color-ink)}
+.situ b{display:block;font-family:var(--font-mono);font-size:var(--size-label);
+  letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--color-label);margin-bottom:2px}
+
+.pair{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:20px}
+.verdict{display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:var(--size-label);
+  letter-spacing:var(--tracking-label);text-transform:uppercase;margin-bottom:7px}
+.ok{color:var(--color-success)}.no{color:var(--color-error)}
+.demo{display:flex;align-items:center;gap:14px;border:1px solid var(--color-border);padding:12px}
+/* The wordmark crammed into a disc — the failure this card exists to prevent. */
+.bad{border-radius:50%;background:var(--color-brand-900);display:grid;place-items:center;
+  color:#fff;font-family:var(--font-heading);font-weight:700;text-align:center;line-height:1;overflow:hidden}
+.cap{font-size:var(--size-body);line-height:var(--leading-body);color:var(--color-muted);margin-top:8px}
+.cap b{color:var(--color-ink);font-weight:600}
+.rows{margin-top:18px}
+.r{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--color-border)}
+.r code{font-family:var(--font-mono);font-size:var(--size-fine);color:var(--color-brand-500);flex:none;width:78px;padding-top:2px}
+.r div{font-size:var(--size-body);line-height:var(--leading-body)}
+.r b{display:block;font-weight:600}
+.r span{color:var(--color-muted)}
+</style></head><body>
+
+<div class="top">
+  <div>
+    <p class="lab">800 × 800 source</p>
+    <div class="src">
+      <div class="pat"></div>
+      <img src="../../assets/logo/favicon.svg" alt="">
+      <div class="ring"></div>
+      <div class="clear"></div>
+      <span class="corner c1">CROPPED</span>
+    </div>
+  </div>
+
+  <div>
+    <p class="lab">rendered, at the sizes YouTube actually uses</p>
+    <div class="sizes">
+      <div class="size">
+        <span class="avatar" style="width:98px;height:98px"><img src="../../assets/logo/favicon.svg" style="width:52px;height:52px" alt=""></span>
+        <span>98 · channel</span>
+      </div>
+      <div class="size">
+        <span class="avatar" style="width:48px;height:48px"><img src="../../assets/logo/favicon.svg" style="width:26px;height:26px" alt=""></span>
+        <span>48 · video row</span>
+      </div>
+      <div class="size">
+        <span class="avatar" style="width:24px;height:24px"><img src="../../assets/logo/favicon.svg" style="width:13px;height:13px" alt=""></span>
+        <span>24 · comment</span>
+      </div>
+    </div>
+
+    <p class="lab" style="margin-top:18px">in a comment, which is where it is seen most</p>
+    <div class="situ">
+      <span class="avatar" style="width:24px;height:24px"><img src="../../assets/logo/favicon.svg" style="width:13px;height:13px" alt=""></span>
+      <p><b>Namaste Salesforce</b>Pinned this — the governor-limit fix is at 6:40 if you came for that.</p>
+    </div>
+  </div>
+</div>
+
+<div class="pair">
+  <div>
+    <div class="verdict ok"><i class="ph ph-check-circle"></i>Do — the mark alone</div>
+    <div class="demo">
+      <span class="avatar" style="width:56px;height:56px"><img src="../../assets/logo/favicon.svg" style="width:30px;height:30px" alt=""></span>
+      <span class="avatar" style="width:24px;height:24px"><img src="../../assets/logo/favicon.svg" style="width:13px;height:13px" alt=""></span>
+    </div>
+    <p class="cap"><b>One shape on the navy disc, with real clear space around it.</b> It is still legible at 24px, which is the size it spends most of its life at.</p>
+  </div>
+  <div>
+    <div class="verdict no"><i class="ph ph-x-circle"></i>Never — the wordmark</div>
+    <div class="demo">
+      <span class="bad" style="width:56px;height:56px;font-size:9px">Namaste<br>Salesforce</span>
+      <span class="bad" style="width:24px;height:24px;font-size:4px">Namaste<br>Salesforce</span>
+    </div>
+    <p class="cap"><b>Readable in the design tool, a grey smudge in a comment thread.</b> The channel name is written beside the avatar everywhere it appears — putting it inside as well spends the only 24 pixels you get on information already on screen.</p>
+  </div>
+</div>
+
+<div class="rows">
+  <div class="r"><code>UPLOAD</code><div><b>800 × 800 PNG or JPG, square, under 4 MB</b><span>Square in, circle out. Anything in the corners is discarded — do not put a badge there and expect it back.</span></div></div>
+  <div class="r"><code>CLEAR SPACE</code><div><b>The mark occupies about the middle 60%</b><span>The inner dashed ring above. A mark pushed to the edge of the crop reads as clipped even when it is not, because the eye reads the circle as a frame.</span></div></div>
+  <div class="r"><code>GROUND</code><div><b>Solid brand navy, never transparent</b><span>A transparent PNG becomes a white disc on the light theme and a black one on dark — two different avatars, neither of them yours.</span></div></div>
+  <div class="r"><code>NO TEXT</code><div><b>Nothing that has to be read</b><span>Not the name, not a tagline, not a subscriber milestone. 24 pixels is the design constraint, not 800.</span></div></div>
+</div>
+
+</body></html>

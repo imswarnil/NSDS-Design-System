@@ -1273,6 +1273,51 @@ ${[["Active learners", "1,284", "up", "▲ 12%", "0,26 29,22 58,24 87,18 116,20 
   </ul></div></div>` },
 ];
 
+/* ---- YouTube channel ------------------------------------------------------
+   The channel's own furniture — banner, avatar, watermark, playlist covers.
+   Distinct from the Thumbnails and Promo pages, which are about individual
+   VIDEOS: this is the page a stranger lands on before they have watched
+   anything, and it has about four seconds to say what the channel is. */
+const YOUTUBE_BODY = `
+  <p class="sub">The banner, and the only part of it anyone sees</p>
+  <p class="variant-note">A YouTube banner is one 2560&times;1440 file cropped four different ways, and only the middle 1546&times;423 survives all of them. Design that rectangle first and extend the background outward — the common failure is the reverse, a composition laid across the full canvas that looks right in the design tool and arrives on a phone with its title half gone.</p>
+  ${spec(["brand-content-creation/youtube/banner-safe-areas.card.html"])}
+
+  <p class="sub">The banners</p>
+  <p class="variant-note">Three, each shown with the phone crop directly underneath so the claim is checkable rather than asserted. The default answers the only two questions a first-time visitor has — what is this channel, and how often does it publish.</p>
+  ${spec(["brand-content-creation/youtube/banner-designs.card.html"])}
+
+  <p class="sub">The profile photo</p>
+  <p class="variant-note">Square in, circle out, and it spends most of its life at 24 pixels in a comment thread. That, not the 800&times;800 upload, is the size it has to be designed for.</p>
+  ${spec(["brand-content-creation/youtube/profile-photo.card.html"])}
+
+  <p class="sub">Icons — playlists, watermark, links</p>
+  <p class="variant-note">One tile with the glyph and the words swapped, so a shelf of eight playlists reads as one channel rather than eight decisions. Glyphs come from the system's own Phosphor subset — a cover using an icon the site does not ship is a cover nobody can rebuild.</p>
+  ${spec(["brand-content-creation/youtube/channel-icons.card.html"])}
+
+  <p class="sub">Every asset, and its real size</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>BANNER</code></td><td style="inline-size:45%">2560 &times; 1440, 16:9, under 6&nbsp;MB</td><td class="fill">Safe area 1546 &times; 423, centred. Keep the bottom-left of it clear — the avatar overlaps that corner.</td></tr>
+    <tr><td><code>AVATAR</code></td><td style="inline-size:45%">800 &times; 800, square, under 4&nbsp;MB</td><td class="fill">Rendered as a circle. Solid navy ground, mark only, no text, no transparency.</td></tr>
+    <tr><td><code>WATERMARK</code></td><td style="inline-size:45%">150 &times; 150 PNG, transparent</td><td class="fill">Bottom-right of every video at about 70% opacity, for the whole runtime.</td></tr>
+    <tr><td><code>PLAYLIST</code></td><td style="inline-size:45%">1280 &times; 720</td><td class="fill">Same tile every time: index top-left, glyph top-right, name and count bottom-left.</td></tr>
+    <tr><td><code>THUMBNAIL</code></td><td style="inline-size:45%">1280 &times; 720, under 2&nbsp;MB</td><td class="fill">On the Thumbnails page &mdash; it belongs to a video, not to the channel.</td></tr>
+    <tr><td><code>END SCREEN</code></td><td style="inline-size:45%">last 20 seconds</td><td class="fill">On the Promo page. Same geometry as the lesson end card.</td></tr>
+  </tbody></table>
+
+  <p class="sub">What goes wrong</p>
+  <div class="use-grid"><div><p class="sub k-dont">On the banner</p><ul>
+    <li>Anything readable outside the middle 1546&times;423. It exists on your monitor and nowhere else.</li>
+    <li>A launch banner left up after the launch. Nothing says &ldquo;abandoned&rdquo; more clearly than an enrolment that closed in March.</li>
+    <li>Content in the bottom-left of the safe box, where the avatar lands on top of it.</li>
+    <li>A subscriber count. It is stale the day you upload it, and it is already on the page.</li>
+  </ul></div><div><p class="sub k-dont">On the avatar and icons</p><ul>
+    <li>The wordmark in the circle. Legible in the design tool, a grey smudge in a comment.</li>
+    <li>A transparent avatar — it becomes a white disc on one theme and a black one on the other.</li>
+    <li>A second accent colour across the playlist shelf. Brand blue is the only saturated colour; eight hues is eight brands.</li>
+    <li>Emoji or stock icons anywhere. The Phosphor subset is the icon set.</li>
+  </ul></div></div>`;
+
 const CONTENT_DOCS = [
   { id: "cc-approach", title: "Approach", lede: "What content creation is in this system: every public asset — thumbnail, post, video frame — is built from the same tokens and voice as the product, so the feed is recognizably one brand.", cards: ["brand-content-creation/README.card.html", "brand-content-creation/training/training-pair.card.html", "brand-content-creation/course-lesson-pairs/pairs.card.html"] },
   { id: "cc-schedule", title: "Video series & schedule", lede: "The publishing plan: what ships on which day, and the second-by-second template every video follows — hook, promise, sting, teaching, bridge.", body: SCHEDULE_BODY, cards: ["brand-content-creation/video-structure/first-60-seconds.card.html"] },
@@ -1282,6 +1327,7 @@ const CONTENT_DOCS = [
   { id: "cc-thumbnails", title: "Thumbnails", lede: "Every thumbnail surface — course, lesson, blog, YouTube — from one style family, so a row of them reads as a series.", cards: ["brand-content-creation/thumbnails/15-thumbnail-styles.card.html", "brand-content-creation/course-thumbnail.card.html", "brand-content-creation/lesson-thumbnail.card.html", "brand-content-creation/blog/10-blog-thumbnail-styles.card.html", "brand-content-creation/youtube-thumbnail.card.html"] },
   { id: "cc-instagram", title: "Instagram", lede: "Post and story templates. Same tokens, same mono indices — the feed is the product's voice at 1080px.", cards: ["brand-content-creation/instagram-post.card.html", "brand-content-creation/instagram-story.card.html", "brand-content-creation/instagram/instagram-post-styles.card.html"] },
   { id: "cc-linkedin", title: "LinkedIn", lede: "The professional-feed variant: hook-first text posts and carousel PDFs cut from the same weekly asset as the Instagram carousel.", body: LINKEDIN_BODY, cards: [] },
+  { id: "cc-youtube", title: "YouTube banner & logo", lede: "The channel's own furniture, as opposed to any one video's: the 2560\u00d71440 banner and the 1546\u00d7423 rectangle inside it that is the only part every device shows, the profile photo that has to survive being 24 pixels wide, the video watermark, and the playlist covers.", body: YOUTUBE_BODY, cards: [] },
   { id: "cc-promo", title: "Promo & end screens", lede: "Website promo cards, social action icons, and the YouTube end screen every video closes on.", cards: ["brand-content-creation/promo/website-promo-card.card.html", "brand-content-creation/promo/social-action-icons.card.html", "brand-content-creation/promo/youtube-end-screen.card.html"] },
 ];
 
