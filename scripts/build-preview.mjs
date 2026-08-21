@@ -1935,7 +1935,7 @@ const ADMIN_DEMO_JS = `
 /* Read one templates/*.html fragment and make it renderable as part of a page
    here. Templates are written for a Ghost site served at ITS root, so
    /assets/logo/favicon.svg is correct where they ship and wrong here — this
-   styleguide lives under /NS-Design-System/, one directory deep. Rewriting at
+   styleguide's pages live under /preview/, one directory deep. Rewriting at
    render time keeps the shipped fragment honest for its real consumer while
    the demo page still shows every image. Used for the main template AND its
    extras: a fragment pulled in as an extra needs exactly the same treatment,

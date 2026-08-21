@@ -22,9 +22,9 @@
        bug above, and it is always a real defect.
 
      ROOT-ABSOLUTE (/tag/apex, /media/x.mp4)  checked only when it is an ASSET
-       — src=, or href= on a <link>. The site is served under
-       /NS-Design-System/ (see LIVE.md), so a root-absolute asset path 404s in
-       production even though it works on a dev server at the root. But
+       — src=, or href= on a <link>. A specimen card is meant to open on its
+       own and the site is meant to survive a move to a subpath, so a
+       root-absolute asset path is a latent 404 (see LIVE.md §1). But
        root-absolute <a href> in templates/ and the demo pages is placeholder
        navigation — /join, /tag/apex, /account/ are illustrative markup for a
        Ghost site, not links into this styleguide, and flagging them would bury
@@ -87,7 +87,7 @@ for (const page of pages) {
     // that actually render them rewrite these paths (see build-preview.mjs).
     if (clean.startsWith("/") && where.startsWith("templates/")) continue;
     if (clean.startsWith("/")) {
-      problems.push([where, `"${raw}" is a root-absolute asset — 404s under the /NS-Design-System/ base path (LIVE.md §2); make it relative`]);
+      problems.push([where, `"${raw}" is a root-absolute asset — breaks a card opened on its own and any non-root host (LIVE.md §1); make it relative`]);
       continue;
     }
     const target = resolve(dirname(page), clean);

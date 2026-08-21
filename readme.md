@@ -311,7 +311,7 @@ broken relative paths, root-absolute assets, duplicate ids and dangling
 ## Repository layout
 
 ```
-NS-Design-System/
+NSDS-Design-System/
 ├── LIVE.md            the hosted site: URLs, contents, deploy pipeline, fixes
 ├── tokens/            authored token CSS + generated JSON/JS/Tailwind exports
 ├── components/

@@ -70,9 +70,9 @@
   "homepage": "https://nsds.imswarnil.com/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/imswarnil/NS-Design-System.git"
+    "url": "git+https://github.com/imswarnil/NSDS-Design-System.git"
   },
-  "bugs": "https://github.com/imswarnil/NS-Design-System/issues",
+  "bugs": "https://github.com/imswarnil/NSDS-Design-System/issues",
   "keywords": [
     "design-system",
     "design-tokens",

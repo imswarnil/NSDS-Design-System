@@ -12,16 +12,16 @@ gets there, and how to fix it when it breaks.
 | **Homepage** | **<https://nsds.imswarnil.com/>** |
 | Styleguide | <https://nsds.imswarnil.com/preview/index.html> |
 | Sitemap | <https://nsds.imswarnil.com/sitemap.xml> |
-| GitHub Pages origin | <https://imswarnil.github.io/NS-Design-System/> |
-| Repository | <https://github.com/imswarnil/NS-Design-System> |
-| Issues | <https://github.com/imswarnil/NS-Design-System/issues> |
-| CI / deploy runs | <https://github.com/imswarnil/NS-Design-System/actions> |
-| Clone (HTTPS) | `git clone https://github.com/imswarnil/NS-Design-System.git` |
-| Clone (SSH) | `git clone git@github.com:imswarnil/NS-Design-System.git` |
+| GitHub Pages origin | <https://imswarnil.github.io/NSDS-Design-System/> |
+| Repository | <https://github.com/imswarnil/NSDS-Design-System> |
+| Issues | <https://github.com/imswarnil/NSDS-Design-System/issues> |
+| CI / deploy runs | <https://github.com/imswarnil/NSDS-Design-System/actions> |
+| Clone (HTTPS) | `git clone https://github.com/imswarnil/NSDS-Design-System.git` |
+| Clone (SSH) | `git clone git@github.com:imswarnil/NSDS-Design-System.git` |
 
-The site is **NSDS**; the repository slug is still `NS-Design-System`. Renaming
-the repo would buy a shorter clone URL and cost every existing link a redirect,
-so it stays.
+The site is **NSDS**, the repository slug is `NSDS-Design-System`, and the npm
+package is still `@namaste-salesforce/design-system` — that last one is the
+name two products import by, and renaming it breaks both for nothing.
 
 ### The custom domain
 
@@ -192,7 +192,7 @@ SITE_URL=https://staging.example.com npm run site
 ```bash
 gh run watch                                    # follow the latest run
 gh run list --workflow=ci.yml --limit 5         # recent runs
-gh api repos/imswarnil/NS-Design-System/pages --jq '.status, .html_url'
+gh api repos/imswarnil/NSDS-Design-System/pages --jq '.status, .html_url, .cname'
 ```
 
 ### Re-deploy without a code change
@@ -240,7 +240,7 @@ the Ghost theme's gulp pipeline consumes the flat bundle directly, and
 The live site is documentation. Products consume the package, not the site.
 
 ```bash
-npm i github:imswarnil/NS-Design-System
+npm i github:imswarnil/NSDS-Design-System
 ```
 
 ```js
@@ -281,10 +281,11 @@ theme or the Next.js LMS.
 - **License:** MIT (see `LICENSE`)
 - **Package:** `@namaste-salesforce/design-system` (unchanged — the npm name is
   what two products import by; only the *product* name became NSDS)
-- **History:** the repo was renamed from `imswarnil/design-system` to
-  `imswarnil/NS-Design-System`. GitHub permanently redirects the old repo URL
-  and old git remotes, but update any hardcoded links you own:
-  `git remote set-url origin https://github.com/imswarnil/NS-Design-System.git`
+- **History:** the repo was renamed `imswarnil/design-system` →
+  `imswarnil/NS-Design-System` → `imswarnil/NSDS-Design-System`. GitHub
+  permanently redirects every old URL and old git remote, so nothing breaks —
+  but update any hardcoded link you own, and your own clone:
+  `git remote set-url origin https://github.com/imswarnil/NSDS-Design-System.git`
 - **Domain history:** the site moved from `dev.imswarnil.com/NS-Design-System/`
   to `nsds.imswarnil.com/` (a repo-level custom domain, served at the root).
   The old path is not redirected — GitHub Pages cannot redirect between two
