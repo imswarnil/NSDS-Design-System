@@ -1,0 +1,126 @@
+<!--
+  NS Design System template — single tag page
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → tag.hbs with {{#foreach posts}}; Next.js → app/tag/[slug];
+  Static → use directly.
+
+  This is the blog index with two things changed and nothing added:
+
+    1. .ns-taghead replaces the band, because a tag page reached from a
+       search result is otherwise a list of posts with no statement of what
+       connects them. The description is the only element on the page that
+       says what the tag MEANS, which is why it is not optional — if you
+       cannot write one sentence about what a tag collects, the tag is not
+       a tag, it is a typo with twelve posts in it.
+
+    2. The featured card is dropped. "Featured" is an editorial claim about
+       the whole blog; inside one tag the newest post is simply the newest
+       post, and promoting it to double size says something the editor did
+       not mean.
+
+  Everything else — the grid, the rail, the pagination — is the index's
+  markup unchanged. That is the point: a tag archive is not a second
+  template, it is the same page with a different header.
+-->
+<header class="ns-taghead" style="max-inline-size:var(--container-page);margin-inline:auto;padding-inline:var(--gutter)">
+  <!-- The # is generated in CSS. A hash character in the DOM is read aloud
+       as "number sign" before every tag name on the page. -->
+  <h1 class="ns-taghead__title">apex <span class="ns-taghead__count">42 posts</span></h1>
+  <p class="ns-taghead__desc">Everything about Salesforce&rsquo;s own language: triggers, governor limits, testing, and the patterns that survive a real org.</p>
+  <div class="ns-taghead__actions">
+    <a class="ns-btn ns-btn--outline ns-btn--sm" href="/tag/apex/rss"><i class="ph ph-rss-simple" aria-hidden="true"></i> Subscribe to this tag</a>
+    <a class="ns-btn ns-btn--quiet ns-btn--sm" href="/tags">All tags <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+  </div>
+</header>
+
+<!-- Sibling tags, not a tag cloud: equal weight, alphabetical, so the one
+     the reader is hunting for is as findable as the popular one. -->
+<nav class="ns-tagrow" aria-label="Related tags" style="max-inline-size:var(--container-page);margin:var(--space-5) auto 0;padding-inline:var(--gutter)">
+  <a class="ns-tag ns-tag--pill" href="/tag/governor-limits">governor-limits <span class="ns-tag__count">14</span></a>
+  <a class="ns-tag ns-tag--pill" href="/tag/soql">soql <span class="ns-tag__count">9</span></a>
+  <a class="ns-tag ns-tag--pill" href="/tag/testing">testing <span class="ns-tag__count">6</span></a>
+  <a class="ns-tag ns-tag--pill" href="/tag/triggers">triggers <span class="ns-tag__count">5</span></a>
+</nav>
+
+<div class="ns-blog-listing" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-8) var(--gutter) var(--space-16)">
+  <div>
+    <!-- SLOT: repeat one .ns-bcard per post. No featured card here — see above. -->
+    <div class="ns-blog-grid">
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-ph" aria-hidden="true"></span>
+          <span class="ns-tag ns-bcard__cat">Apex</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/why-your-trigger-fails"><h2 class="ns-bcard__title">Why your trigger fails at 201 records</h2></a>
+          <p class="ns-bcard__excerpt">Governor limits are per transaction, not per record — and the fix is a pattern, not a setting.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-08-04">4 Aug 2026</time></span><span>6 min read</span></div>
+        </div>
+      </article>
+
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-ph" aria-hidden="true"></span>
+          <span class="ns-tag ns-bcard__cat">Apex</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/bulkify-everything"><h2 class="ns-bcard__title">Bulkify everything, including the things that look safe</h2></a>
+          <p class="ns-bcard__excerpt">The single-record path is the one that never runs in production. Write the loop first.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-21">21 Jul 2026</time></span><span>8 min read</span></div>
+        </div>
+      </article>
+
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover ns-bcard__cover--empty" aria-hidden="true"><i class="ph ph-article"></i></span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/test-data-factory"><h2 class="ns-bcard__title">A test data factory you will actually maintain</h2></a>
+          <p class="ns-bcard__excerpt">Three methods, no framework, and it survives the next object you add.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-09">9 Jul 2026</time></span><span>7 min read</span></div>
+        </div>
+      </article>
+
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-ph" aria-hidden="true"></span>
+          <span class="ns-tag ns-bcard__cat">Apex</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="/async-apex-when"><h2 class="ns-bcard__title">When to reach for async, and when it is a smell</h2></a>
+          <p class="ns-bcard__excerpt">Queueable, Batch, Future and Scheduled — what each one actually buys you.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-06-30">30 Jun 2026</time></span><span>11 min read</span></div>
+        </div>
+      </article>
+    </div>
+
+    <nav class="ns-pagination" aria-label="Pagination" style="margin-block-start:var(--space-10)">
+      <a class="ns-pagination__link" href="#" aria-current="page">1</a>
+      <a class="ns-pagination__link" href="#">2</a>
+      <a class="ns-pagination__link" href="#">3</a>
+      <span class="ns-pagination__ellipsis">…</span>
+      <a class="ns-pagination__link" href="#">6</a>
+    </nav>
+  </div>
+
+  <!-- The index's rail, unchanged. On a tag page it answers "what else is
+       here" while the grid answers "what is in this tag". -->
+  <aside class="ns-blog-listing__rail">
+    <div>
+      <p class="ns-toc__title" style="padding-inline:0">Start here</p>
+      <div class="ns-blog-archive">
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">21 Jul</span><span class="ns-blog-archive__title">Bulkify everything</span><span class="ns-blog-archive__read">8m</span></a>
+        <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">09 Jul</span><span class="ns-blog-archive__title">A test data factory</span><span class="ns-blog-archive__read">7m</span></a>
+      </div>
+    </div>
+
+    <!-- The Newsletter pattern (.ns-field + .ns-input + Button), stacked for
+         a narrow rail. Not a second subscribe component. -->
+    <form class="ns-field">
+      <label class="ns-field__label" for="tag-sub">Follow #apex</label>
+      <input class="ns-input" id="tag-sub" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button>
+      <p class="ns-field__help">New Apex posts only. Nothing else from the blog.</p>
+    </form>
+  </aside>
+</div>

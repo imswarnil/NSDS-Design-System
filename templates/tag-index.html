@@ -1,0 +1,83 @@
+<!--
+  NS Design System template — all tags
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → a custom page template over {{#get "tags"}}; Next.js →
+  app/tags; Static → use directly.
+
+  The page that lists every tag. It is deliberately NOT a tag cloud.
+
+  A cloud encodes count as type size, which means the biggest tag is also
+  the most legible one and the specific tag somebody actually came here
+  hunting for is the smallest thing on the page. It optimises for the
+  reader who has no goal, at the expense of the one who does. A sorted grid
+  of equal cards is duller and works.
+
+  The one-line description on each card is what makes this navigable rather
+  than a wall of nouns — and writing it is a useful forcing function: a tag
+  you cannot describe in a sentence is a tag that should be merged.
+-->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <div class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Index</span>
+        <h1 class="ns-band__title">All tags</h1>
+        <p class="ns-band__lede">Every subject on the blog, with what it collects. 24 tags, 180 posts.</p>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn ns-btn--outline ns-btn--sm" href="/blog"><i class="ph ph-arrow-left" aria-hidden="true"></i> Back to the blog</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div style="max-inline-size:var(--container-page);margin-inline:auto;padding:0 var(--gutter) var(--space-16)">
+  <!-- A real search input, not a filter-as-you-type gimmick: with JS off it
+       submits and the server filters. -->
+  <form class="ns-field" role="search" style="max-inline-size:22rem;margin-block-end:var(--space-8)">
+    <label class="ns-field__label" for="tag-find">Find a tag</label>
+    <span class="ns-input-wrap">
+      <i class="ns-input-wrap__icon ph ph-magnifying-glass" aria-hidden="true"></i>
+      <input class="ns-input ns-input--has-icon" id="tag-find" type="search" name="q" placeholder="apex, flow, testing&hellip;">
+    </span>
+  </form>
+
+  <!-- SLOT: repeat one .ns-tagcard per tag, sorted alphabetically. Sorting
+       by count puts the answer to "what does this blog write about most" on
+       a page whose job is "where is the thing I want". -->
+  <div class="ns-tagindex">
+    <a class="ns-tagcard" href="/tag/apex">
+      <span class="ns-tagcard__name">apex <span class="ns-tagcard__count">42</span></span>
+      <span class="ns-tagcard__desc">Triggers, governor limits, testing, and the patterns that survive a real org.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/architecture">
+      <span class="ns-tagcard__name">architecture <span class="ns-tagcard__count">11</span></span>
+      <span class="ns-tagcard__desc">Data models, sharing, and the decisions that are expensive to reverse.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/careers">
+      <span class="ns-tagcard__name">careers <span class="ns-tagcard__count">7</span></span>
+      <span class="ns-tagcard__desc">Certifications, interviews, and what actually gets people hired.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/flow">
+      <span class="ns-tagcard__name">flow <span class="ns-tagcard__count">18</span></span>
+      <span class="ns-tagcard__desc">Declarative automation, and where it stops being the right tool.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/governor-limits">
+      <span class="ns-tagcard__name">governor-limits <span class="ns-tagcard__count">14</span></span>
+      <span class="ns-tagcard__desc">The ceilings every transaction runs into, and how to stay under them.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/integration">
+      <span class="ns-tagcard__name">integration <span class="ns-tagcard__count">9</span></span>
+      <span class="ns-tagcard__desc">Callouts, platform events, and making two systems agree.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/soql">
+      <span class="ns-tagcard__name">soql <span class="ns-tagcard__count">9</span></span>
+      <span class="ns-tagcard__desc">Selectivity, indexes, and why the report times out at 50,000 rows.</span>
+    </a>
+    <a class="ns-tagcard" href="/tag/testing">
+      <span class="ns-tagcard__name">testing <span class="ns-tagcard__count">6</span></span>
+      <span class="ns-tagcard__desc">Coverage that means something, and test data you can maintain.</span>
+    </a>
+  </div>
+</div>

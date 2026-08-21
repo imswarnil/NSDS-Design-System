@@ -3044,6 +3044,53 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <a class="ns-toc__link ns-toc__link--sub" href="#s-count">Counting the wrong thing</a>
   <a class="ns-toc__link" href="#s-fix">The fix is a pattern</a>
 </details>` },
+      { name: "Without a sidebar", flush: true, note: "<code>--wide</code>: no rails at all, the measure centred, nothing beside it. For an essay. A TOC on a piece with four headings is furniture pretending to be navigation, and a share rail beside 900 words is a request the reader has not earned yet. Note what does <em>not</em> happen — the article column is exactly the width it is in the three-column page.", html: `<div class="ns-post ns-post--wide" style="padding-block:var(--space-6)">
+  <div class="ns-post__body ns-prose">
+    <h2>The data model is the product</h2>
+    <p>Everything downstream — the sharing rules, the reports, the integrations someone writes in two years — is a consequence of the objects you draw in the first week. It is the one decision on a Salesforce project that is genuinely expensive to reverse.</p>
+    <p>Which is why the instinct to &ldquo;start with the UI and see what data we need&rdquo; is backwards, and why the first workshop should be a whiteboard rather than a mockup.</p>
+  </div>
+</div>` },
+      { name: "With a sidebar", flush: true, note: "<code>--sidebar</code>: prose plus a real 18rem column on the end side, for a post carrying a newsletter box, a popular shelf or an ad. The TOC rail goes — a page cannot put navigation on both sides of the text and still read as text. Below 64rem the sidebar moves under the article rather than vanishing: a newsletter box and a related shelf are content.", html: `<div class="ns-post ns-post--sidebar" style="padding-block:var(--space-6)">
+  <div class="ns-post__body ns-prose">
+    <h2>Counting the wrong thing</h2>
+    <p>The 101-query error almost never means you wrote 101 queries. It means you wrote one, inside a loop, and the loop ran 101 times.</p>
+    <p>Tests hide it, because a test with one record spends one query. The same code meets a data load and spends two hundred.</p>
+  </div>
+  <aside class="ns-post__side">
+    <div class="ns-card">
+      <div class="ns-card__body">
+        <span class="ns-kicker">Newsletter</span>
+        <p style="font-size:var(--size-small);color:var(--color-muted);margin-block:var(--space-2)">One Salesforce lesson a week. No spam, unsubscribe whenever.</p>
+        <form><input class="ns-input" type="email" placeholder="you@work.com" aria-label="Email"><button class="ns-btn ns-btn--primary ns-btn--block ns-btn--sm" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button></form>
+      </div>
+    </div>
+    <div>
+      <span class="ns-kicker">Most read</span>
+      <div class="ns-blog-list" style="margin-block-start:var(--space-3)">
+        <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#0"><h3 class="ns-bcard__title">Profiles vs permission sets</h3></a><span class="ns-postmeta"><span>6 min</span></span></div></article>
+        <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#0"><h3 class="ns-bcard__title">What the query planner actually does</h3></a><span class="ns-postmeta"><span>9 min</span></span></div></article>
+      </div>
+    </div>
+  </aside>
+</div>` },
+      { name: "With ads", flush: true, note: "The sidebar layout carrying the two placements worth keeping: a half-page in the rail and one in-article unit after the second section. Both are <code>.ns-ad</code> from the Monetization family, reserved at their real size so nothing reflows when the slot fills. Every other placement lives on the Ad unit page — it is a catalogue, not a recommendation.", html: `<div class="ns-post ns-post--sidebar" style="padding-block:var(--space-6)">
+  <div class="ns-post__body ns-prose">
+    <h2>The fix is a pattern</h2>
+    <p>Collect the ids first, query once outside the loop, then work from the map. It is the same three lines in every language that has ever had this problem.</p>
+    <div class="ns-ad ns-ad--article" data-state="filled" role="complementary" aria-label="Advertisement">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame"><span class="ns-ad__dummy"><span class="ns-ad__dummy-name">In-article</span><span class="ns-ad__dummy-size">fluid</span></span></div>
+    </div>
+    <p>The only judgement left is where the map lives, and that is a readability question rather than a limits one.</p>
+  </div>
+  <aside class="ns-post__side">
+    <div class="ns-ad ns-ad--halfpage" data-state="filled" role="complementary" aria-label="Advertisement">
+      <span class="ns-ad__label">Advertisement</span>
+      <div class="ns-ad__frame"><span class="ns-ad__dummy"><span class="ns-ad__dummy-name">Half page</span><span class="ns-ad__dummy-size">300&times;600</span></span></div>
+    </div>
+  </aside>
+</div>` },
       { name: "Callouts", note: "The aside inside prose. A 3px leading edge and a tint — never a heavy full box, which stops the eye at the top of the paragraph instead of carrying it through. The WORD in the label is the signal and the colour only agrees with it: a warning that is only orange is not a warning to a monochromat.", html: `<div style="display:grid;gap:var(--space-3);max-inline-size:34rem;inline-size:100%">
   <div class="ns-callout"><i class="ph ph-info" aria-hidden="true"></i><div><span class="ns-callout__label">Note</span>Context the reader needs but did not ask for.</div></div>
   <div class="ns-callout ns-callout--tip"><i class="ph ph-lightbulb" aria-hidden="true"></i><div><span class="ns-callout__label">Tip</span>Something that makes the task easier, which they can safely skip.</div></div>
@@ -3178,6 +3225,165 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">14 Jul 2026</span><span class="ns-blog-archive__title">What the query planner actually does</span><span class="ns-blog-archive__read">9 min</span></a>
   <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">02 Jul 2026</span><span class="ns-blog-archive__title">Flow or Apex? A decision table</span><span class="ns-blog-archive__read">5 min</span></a>
 </div>` },
+    ],
+  },
+  {
+    id: "comments", title: "Comments", family: "Blog",
+    summary: "The thread under a post. The hard part is not the list — it is restraint: comments are user-generated, arrive at any length, and will out-scroll the article if the page lets them. So there are no cards, no shadows and no per-comment borders, just a hairline between siblings and one level of indentation for a reply.",
+    use: ["Discussion under a post or a lesson", "--op to mark the author answering, so a reader can find the authoritative reply"],
+    not: ["Threading deeper than one level. A reply to a reply is a conversation two people are having while everyone watches — it belongs in the reply, addressed by name, and on a 360px screen a third level has nowhere to go but a 40-character column", "Vote scores, awards, share-this-comment. Engagement machinery, not reading", "Making the section look heavier than the article. That says the comments matter more, and they do not"],
+    a11y: ["Each comment is an <code>&lt;article&gt;</code> with a real <code>&lt;time datetime&gt;</code>, so &ldquo;2 days ago&rdquo; is also a machine-readable date", "Every marker is a WORD — <em>author</em>, <em>moderator</em>, <em>pinned</em> — never a coloured ring or a bare rule, which is a private joke between the design and the people who already know what it means. <code>--pinned</code>'s brand edge agrees with the badge; it does not replace it", "Replies are a nested list inside the comment they answer, so the structure survives with CSS off", "A removed comment leaves a tombstone rather than vanishing: a thread that silently loses its third reply reads as broken, and the replies that answered it are still there", "The like button carries <code>aria-pressed</code> and the count is in the accessible name, so it is not announced as a bare number"],
+    variants: [
+      { name: "The thread", note: "One level of replies, enforced in CSS: a third level flattens back to the second rather than indenting again.", html: `<section class="ns-comments" style="max-inline-size:42rem;inline-size:100%">
+  <div class="ns-comments__head">
+    <h2 class="ns-comments__count"><b>24</b> comments</h2>
+    <label class="ns-commentform__hint">Sort
+      <select class="ns-select" style="margin-inline-start:var(--space-2)">
+        <option>Newest</option><option>Oldest</option><option>Most liked</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="ns-comments__list">
+    <article class="ns-comment ns-comment--pinned">
+      <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+      <div class="ns-comment__main">
+        <div class="ns-comment__head">
+          <a class="ns-comment__author" href="#0">Priya Nair</a>
+          <span class="ns-comment__badge">moderator</span>
+          <span class="ns-comment__badge"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> pinned</span>
+          <time class="ns-comment__time" datetime="2026-08-14">3 days ago</time>
+        </div>
+        <div class="ns-comment__text"><p>Worth adding: the 101-query error usually shows up in a test long before production, because tests run with a fresh limit counter per method. If your test passes with one record and fails with 200, this is why.</p></div>
+        <div class="ns-comment__actions">
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" aria-pressed="false" aria-label="Like, 12 likes"><i class="ph ph-heart" aria-hidden="true"></i> 12</button>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs">Reply</button>
+        </div>
+      </div>
+    </article>
+
+    <article class="ns-comment">
+      <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+      <div class="ns-comment__main">
+        <div class="ns-comment__head">
+          <a class="ns-comment__author" href="#0">dev_arun</a>
+          <time class="ns-comment__time" datetime="2026-08-15">2 days ago</time>
+        </div>
+        <div class="ns-comment__text"><p>Does a Flow element count against the same SOQL limit as an Apex query, or does it get its own budget?</p></div>
+        <div class="ns-comment__actions">
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" aria-pressed="false" aria-label="Like, 3 likes"><i class="ph ph-heart" aria-hidden="true"></i> 3</button>
+          <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs">Reply</button>
+        </div>
+
+        <div class="ns-comment__replies">
+          <article class="ns-comment ns-comment--op">
+            <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+            <div class="ns-comment__main">
+              <div class="ns-comment__head">
+                <a class="ns-comment__author" href="#0">Swarnil Singhai</a>
+                <span class="ns-comment__badge">author</span>
+                <time class="ns-comment__time" datetime="2026-08-15">2 days ago</time>
+              </div>
+              <div class="ns-comment__text"><p>Same budget. Everything in one transaction shares the 100, whichever tool spent it — which is exactly why a Flow looping over records hits it as fast as a trigger does.</p></div>
+              <div class="ns-comment__actions">
+                <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" aria-pressed="true" aria-label="Liked, 8 likes"><i class="ph ph-heart" aria-hidden="true"></i> 8</button>
+                <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs">Reply</button>
+              </div>
+            </div>
+          </article>
+          <article class="ns-comment ns-comment--removed">
+            <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+            <div class="ns-comment__main">
+              <div class="ns-comment__head"><span class="ns-comment__author">Removed</span><time class="ns-comment__time" datetime="2026-08-16">1 day ago</time></div>
+              <div class="ns-comment__text"><p>This comment was removed for breaking the house rules.</p></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <button type="button" class="ns-btn ns-btn--outline ns-btn--block">Load 21 more comments</button>
+</section>` },
+      { name: "Leave a comment", note: "Reuses the form layer wholesale — <code>.ns-field</code>, <code>.ns-textarea</code>, <code>.ns-btn</code>. There is no bespoke comment input, because a comment box is a textarea and pretending otherwise is how a design system grows a second form system.", html: `<form class="ns-commentform" style="max-inline-size:42rem;inline-size:100%">
+  <div class="ns-field">
+    <label class="ns-field__label" for="c-body">Leave a comment</label>
+    <textarea class="ns-textarea" id="c-body" rows="4" placeholder="Add to the discussion&hellip;"></textarea>
+    <span class="ns-field__help">Markdown is supported. Be useful or be brief.</span>
+  </div>
+  <div class="ns-commentform__row">
+    <span class="ns-commentform__hint">Posting as <strong>dev_arun</strong></span>
+    <button type="submit" class="ns-btn ns-btn--primary">Post comment</button>
+  </div>
+</form>` },
+      { name: "Signed out, closed, and empty", note: "Three states that are not errors, so none of them is a warning: a hairline note for the first two, the system's own empty state for the third.", html: `<div style="display:grid;gap:var(--space-6);max-inline-size:42rem;inline-size:100%">
+  <div class="ns-comments__note">
+    <i class="ph ph-user-circle" aria-hidden="true"></i>
+    <p>Sign in to join the discussion. Comments are open to anyone with an account &mdash; free or paid.</p>
+    <a class="ns-btn ns-btn--outline ns-btn--sm" href="#0">Sign in</a>
+  </div>
+  <div class="ns-comments__note">
+    <i class="ph ph-lock-simple" aria-hidden="true"></i>
+    <p>Comments closed. This post is over a year old and the thread has stopped being useful &mdash; the replies are still here.</p>
+  </div>
+  <div class="ns-empty">
+    <i class="ns-empty__icon ph ph-chats-circle" aria-hidden="true"></i>
+    <p class="ns-empty__title">No comments yet</p>
+    <p class="ns-empty__text">Be the first. Questions get answered here more reliably than anywhere else.</p>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "tag-page", title: "Tag pages", family: "Blog",
+    summary: "Two surfaces answering different questions: the top of ONE tag's page, and the page that lists every tag. A tag page arrived at from search is otherwise a list of posts with no statement of what connects them — which is why the description is not decoration here, it is the only thing that says what the tag means.",
+    use: ["A tag or category archive — the header, then a Blog index with the featured card dropped", "An all-tags page", "--compact when the tag header sits above a rail-and-grid listing rather than alone"],
+    not: ["A tag cloud. Encoding count as type size makes the biggest tag the most legible and buries the specific one somebody is hunting for. A sorted grid of equal cards is duller and works", "A tag page with no description. If you cannot write one sentence about what the tag collects, the tag is not a tag — it is a typo with twelve posts in it"],
+    a11y: ["The <code>#</code> is generated in CSS, never typed: a hash in the DOM is read aloud as &ldquo;number sign&rdquo; before every tag name on the page", "The count is real text beside the title, so &ldquo;12 posts&rdquo; is announced rather than inferred from the length of a list", "The tag row is a <code>&lt;nav&gt;</code> with an accessible name — it is navigation, not a set of decorative chips"],
+    variants: [
+      { name: "One tag", note: "Header, then the listing. The count sets an expectation before the reader starts scrolling: 12 posts and 300 posts are different promises about how long they are about to be here.", html: `<div style="max-inline-size:52rem;inline-size:100%">
+  <header class="ns-taghead">
+    <h1 class="ns-taghead__title">apex <span class="ns-taghead__count">42 posts</span></h1>
+    <p class="ns-taghead__desc">Everything about Salesforce&rsquo;s own language: triggers, governor limits, testing, and the patterns that survive a real org.</p>
+    <div class="ns-taghead__actions">
+      <a class="ns-btn ns-btn--outline ns-btn--sm" href="#0"><i class="ph ph-rss-simple" aria-hidden="true"></i> Subscribe</a>
+      <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#0">All tags</a>
+    </div>
+  </header>
+  <nav class="ns-tagrow" aria-label="Related tags" style="margin-block-start:var(--space-5)">
+    <a class="ns-tag" href="#0">triggers</a>
+    <a class="ns-tag" href="#0">soql</a>
+    <a class="ns-tag" href="#0">testing</a>
+    <a class="ns-tag" href="#0">governor-limits</a>
+  </nav>
+</div>` },
+      { name: "Compact", note: "For a tag header that sits above the rail-and-grid listing, where the page already has a lot to say.", html: `<header class="ns-taghead ns-taghead--compact" style="max-inline-size:52rem;inline-size:100%">
+  <h1 class="ns-taghead__title">flow <span class="ns-taghead__count">18 posts</span></h1>
+  <p class="ns-taghead__desc">Declarative automation, and where it stops being the right tool.</p>
+</header>` },
+      { name: "Every tag", note: "Sorted, equal weight, count on the right. The description is what makes this page navigable rather than a wall of nouns.", html: `<div class="ns-tagindex">
+  <a class="ns-tagcard" href="#0">
+    <span class="ns-tagcard__name">apex <span class="ns-tagcard__count">42</span></span>
+    <span class="ns-tagcard__desc">Triggers, governor limits, testing, and the patterns that survive a real org.</span>
+  </a>
+  <a class="ns-tagcard" href="#0">
+    <span class="ns-tagcard__name">flow <span class="ns-tagcard__count">18</span></span>
+    <span class="ns-tagcard__desc">Declarative automation, and where it stops being the right tool.</span>
+  </a>
+  <a class="ns-tagcard" href="#0">
+    <span class="ns-tagcard__name">architecture <span class="ns-tagcard__count">11</span></span>
+    <span class="ns-tagcard__desc">Data models, sharing, and decisions that are expensive to reverse.</span>
+  </a>
+  <a class="ns-tagcard" href="#0">
+    <span class="ns-tagcard__name">careers <span class="ns-tagcard__count">7</span></span>
+    <span class="ns-tagcard__desc">Certifications, interviews, and what actually gets people hired.</span>
+  </a>
+</div>` },
+      { name: "Both, full page", note: "The tag page is the blog index with its header swapped and the featured card dropped — worth checking side by side rather than taking on trust. Resize either one: the rail drops below the grid at 64rem, and the tag cards reflow from four columns to one.", html: `<p style="display:flex;flex-wrap:wrap;gap:var(--space-3)">
+  <a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-tag-page.html" target="_blank" rel="noopener">Open the tag page <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+  <a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-tag-index.html" target="_blank" rel="noopener">Open the all-tags page <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+  <a class="ns-btn ns-btn--quiet ns-btn--sm" href="./demo-blog-listing.html" target="_blank" rel="noopener">Compare with the index <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+</p>` },
     ],
   },
 
@@ -3951,6 +4157,15 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <a class="ns-toc__link" href="#0" aria-current="true">What is Apex</a>
   <a class="ns-toc__link" href="#0">Governor limits</a>
 </details>` },
+      { name: "Float — the other mobile answer", stack: true, note: "In situ this is <code>position: fixed</code> at the bottom-right and the panel opens <em>upward</em>; the specimen is pinned in place and opened downward so it can be seen. Reach for it over <code>--collapsible</code> on a long reference page where the reader jumps around — a disclosure at the very top is four screens behind them by the time they want it. One or the other, never both: a page with two tables of contents has none.", html: `<details class="ns-toc ns-toc--float" open style="position:relative;inset:auto;margin-block-end:11rem">
+  <summary>On this page<i class="ph ph-caret-down" aria-hidden="true"></i></summary>
+  <div class="ns-toc--float__panel" style="inset-block:calc(100% + var(--space-2)) auto;inset-inline:0 auto">
+    <a class="ns-toc__link" href="#0" aria-current="true">What is Apex</a>
+    <a class="ns-toc__link" href="#0">Governor limits</a>
+    <a class="ns-toc__link ns-toc__link--sub" href="#0">Counting the wrong thing</a>
+    <a class="ns-toc__link" href="#0">Testing</a>
+  </div>
+</details>` },
     ],
   },
   {
@@ -4066,6 +4281,48 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <li><a href="#0"><span class="ns-related__kind">Doc</span>Sharing rules reference</a></li>
   </ul>
 </aside>` },
+    ],
+  },
+  {
+    id: "notice", title: "Notice", family: "Content blocks",
+    summary: "The dated line at the top of a post that has changed since it was published. Technical writing rots — a post about a platform that ships three releases a year is wrong within eighteen months, and the reader has no way to know unless the page says so.",
+    use: ["A post you have revised: what changed, and when", "--archive for a piece kept for its inbound links but no longer true"],
+    not: ["A callout — that is an aside about the paragraph beside it; this is a statement about the whole document, so it spans the measure above the prose", "A correction. A correction is a sentence saying what was wrong, and it belongs in the text", "&ldquo;Recently updated&rdquo;. Either you have the date or you do not have the claim"],
+    a11y: ["A real <code>&lt;time datetime&gt;</code>, so the date is machine-readable and gets localised rather than being a string that says August to everyone", "The amber on --archive is a border and a label colour, never the only signal: the word <em>Superseded</em> carries it"],
+    variants: [
+      { name: "Updated", stack: true, html: `<aside class="ns-notice">
+  <i class="ph ph-clock-clockwise" aria-hidden="true"></i>
+  <div>
+    <time class="ns-notice__date" datetime="2026-08-12">Updated 12 August 2026</time>
+    <p class="ns-notice__text">Rewritten for API v62. The <code>Database.Stateful</code> workaround in the original is no longer needed — batch context now survives the callout.</p>
+  </div>
+</aside>` },
+      { name: "Superseded", stack: true, note: "Kept because other people linked to it. The reader deserves to know that before they act on it, not after.", html: `<aside class="ns-notice ns-notice--archive">
+  <i class="ph ph-warning" aria-hidden="true"></i>
+  <div>
+    <time class="ns-notice__date" datetime="2024-03-01">Superseded &middot; March 2024</time>
+    <p class="ns-notice__text">This describes the old Process Builder migration path. Start from <a href="#0">the Flow migration guide</a> instead.</p>
+  </div>
+</aside>` },
+    ],
+  },
+  {
+    id: "refs", title: "References", family: "Content blocks",
+    summary: "Numbered sources at the foot of a post, and the markers in the text that point at them. A link inside a sentence is a reference the reader must follow now or lose; a numbered marker is one they can finish the paragraph and then check.",
+    use: ["A post that cites a release note, a governor limit and a doc page", "Any claim a reader might reasonably want to verify"],
+    not: ["Every link in the post — an inline link the reader should follow now stays inline", "A generated list. A references list a script built is a references list nobody has read"],
+    a11y: ["The marker is a real anchor to a real <code>id</code> and the entry links back, so it works with JS off and both directions are keyboard-reachable", "The visible link text is the source, never &ldquo;here&rdquo; — a screen reader's link list of six &ldquo;here&rdquo;s is unusable", "Tabular numerals and <code>vertical-align: super</code> rather than <code>&lt;sup&gt;</code> alone, so the marker never changes the line height of the paragraph it sits in"],
+    variants: [
+      { name: "Markers and list", stack: true, html: `<div class="ns-prose">
+  <p>A synchronous transaction gets 100 SOQL queries<a class="ns-ref" id="r1-mark" href="#r1" aria-label="Reference 1">1</a> and 6&nbsp;MB of heap. Batch Apex raises the query limit but not the heap<a class="ns-ref" id="r2-mark" href="#r2" aria-label="Reference 2">2</a>.</p>
+</div>
+<section class="ns-refs">
+  <span class="ns-refs__label">References</span>
+  <ol>
+    <li id="r1"><a href="#r1-mark">Apex Developer Guide — Execution Governors and Limits</a><span class="ns-refs__src">developer.salesforce.com/docs/atlas.en-us.apexcode.meta</span></li>
+    <li id="r2"><a href="#r2-mark">Apex Developer Guide — Using Batch Apex</a><span class="ns-refs__src">developer.salesforce.com/docs/atlas.en-us.apexcode.meta</span></li>
+  </ol>
+</section>` },
     ],
   },
   {

@@ -18,7 +18,9 @@
 
    Callout (blog.css) and Figure (media.css) already exist and are not
    duplicated here: a callout is an aside about the paragraph beside it, a
-   figure is an image with a caption. These are the seven other shapes. */
+   figure is an image with a caption. These are the nine other shapes —
+   seven that interrupt the prose, plus Notice and References, which are
+   claims about the whole document rather than about a paragraph in it. */
 @layer ns-components {
 
   /* --- Takeaway -----------------------------------------------------------
@@ -195,4 +197,102 @@
   [data-theme="dark"] .ns-related a { color: var(--color-brand-300); }
   .ns-related a:hover { text-decoration: underline; }
   .ns-related__kind { flex: none; font-family: var(--font-mono); font-size: var(--size-label); letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+
+  /* --- Notice -------------------------------------------------------------
+     "Updated 12 August 2026 — rewritten for API v62." The dated note at the
+     top of a post that has changed since it was published.
+
+     Technical writing rots. A post about a platform that ships three
+     releases a year is wrong within eighteen months, and the reader has no
+     way to know unless the page says so. This is the block that says so.
+
+     It is deliberately NOT a callout. A callout is an aside about the
+     paragraph beside it; this is a statement about the whole document, so it
+     sits above the prose, spans the measure, and carries a real date in a
+     <time> element rather than "recently updated". Two kinds:
+
+       (default)   updated — the piece was revised and is current
+       --archive   superseded — still here for the links, no longer true
+
+     There is no "correction" variant, because a correction is not a status:
+     it is a sentence saying what was wrong, and it goes in the text. */
+  .ns-notice {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3);
+    margin-block: var(--stack-md);
+    padding-block: var(--space-3);
+    border-block: 1px solid var(--color-border);
+    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-muted);
+  }
+  .ns-notice > i { color: var(--color-label); font-size: var(--size-body-lg); }
+  .ns-notice__date {
+    display: block;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-notice__text { margin-block-start: var(--space-1); color: var(--color-ink); text-wrap: pretty; }
+  .ns-notice p { margin: 0; }
+  /* Amber, and only here: a page the reader should stop trusting is the one
+     status in a blog that is genuinely a warning. */
+  .ns-notice--archive { border-block-color: color-mix(in srgb, var(--color-warning) 45%, var(--color-border)); }
+  .ns-notice--archive > i, .ns-notice--archive .ns-notice__date { color: var(--color-warning-ink); }
+
+  /* --- References ---------------------------------------------------------
+     The numbered sources at the foot of a post, and the markers in the text
+     that point at them.
+
+     A link inside a sentence is a reference the reader must either follow
+     now or lose; a numbered marker is one they can finish the paragraph and
+     then check. For a post that cites a release note, a limit and a doc
+     page, the difference is whether the argument survives being read.
+
+     The marker is a real anchor to a real id, so it works with JS off, and
+     the entry links back. Nothing here is generated: a references list a
+     script builds is a references list nobody has read. */
+  .ns-ref {
+    font-family: var(--font-mono); font-size: 0.75em;
+    font-variant-numeric: tabular-nums;
+    vertical-align: super; line-height: 1;
+    padding-inline: 1px;
+    color: var(--color-brand-600); text-decoration: none;
+  }
+  [data-theme="dark"] .ns-ref { color: var(--color-brand-300); }
+  .ns-ref:hover { text-decoration: underline; }
+  .ns-refs {
+    margin-block: var(--stack-md);
+    padding-block-start: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-refs__label {
+    display: block; margin-block-end: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-refs ol { list-style: none; margin: 0; padding: 0; counter-reset: ns-ref; }
+  .ns-refs li {
+    display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: var(--space-2);
+    padding-block: var(--space-2);
+    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-muted);
+  }
+  .ns-refs li + li { border-block-start: 1px solid var(--color-border); }
+  .ns-refs li::before {
+    counter-increment: ns-ref; content: counter(ns-ref);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* An entry is two elements — the title and the source — and the counter is
+     a third grid item. Without this the source auto-places into the number
+     column and a URL sets one character per line. */
+  .ns-refs li > * { grid-column: 2; }
+  /* The source, not the sentence: a citation whose visible text is "here"
+     is unusable in a screen-reader's link list. */
+  .ns-refs__src {
+    display: block; margin-block-start: var(--space-1);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+    overflow-wrap: anywhere;
+  }
+  .ns-refs :target { color: var(--color-ink); }
 }

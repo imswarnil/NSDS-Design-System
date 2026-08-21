@@ -1842,6 +1842,11 @@ const DEMOS = [
   { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
   { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
   { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
+  /* The tag pages are the index with its header swapped and its featured
+     card dropped — which is the claim worth being able to check side by
+     side, so they get their own demos rather than a note saying so. */
+  { out: "demo-tag-page.html", tpl: "tag-page.html", title: "Tag page — full page", back: "c-tag-page.html", note: "the index with a tag header and no featured card; resize to watch the rail drop below the grid" },
+  { out: "demo-tag-index.html", tpl: "tag-index.html", title: "All tags — full page", back: "c-tag-page.html", note: "sorted, equal weight, count on the right — deliberately not a tag cloud" },
   /* The same post, monetized. It carries EVERY ad format at once, which no
      real page should — it is a catalogue of placements, and the template says
      so at the top and names the three worth keeping. The slots start in
