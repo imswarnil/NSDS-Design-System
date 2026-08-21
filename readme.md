@@ -2,7 +2,8 @@
 
 **Live → <https://nsds.imswarnil.com/>** — published from `main` on every push.
 See **[`LIVE.md`](LIVE.md)** for the URLs, what is on the site, how the deploy
-works, and how to fix it when it breaks.
+works, and how to fix it when it breaks, and **[`OBS.md`](OBS.md)** for building
+the lesson and live-stream scenes in OBS Studio.
 
 *NSDS* is the short name; *NS Design System* is the full one. Both refer to this
 repository. The CSS bundle keeps its `namaste-ui` filenames — renaming a file
@@ -313,6 +314,7 @@ broken relative paths, root-absolute assets, duplicate ids and dangling
 ```
 NSDS-Design-System/
 ├── LIVE.md            the hosted site: URLs, contents, deploy pipeline, fixes
+├── OBS.md             building the lesson and live scenes in OBS Studio
 ├── tokens/            authored token CSS + generated JSON/JS/Tailwind exports
 ├── components/
 │   ├── css/           the portable .ns-* layer BOTH products render
