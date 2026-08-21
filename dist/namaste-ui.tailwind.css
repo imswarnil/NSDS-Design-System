@@ -14598,7 +14598,7 @@
     object-fit: cover;
     opacity: 0;
     pointer-events: none;
-    transition: opacity var(--duration-slow, 240ms) var(--ease-out);
+    transition: opacity var(--duration-base) var(--ease-out);
   }
   .ns-video--hover:hover .ns-video__preview, .ns-video--hover:focus-within .ns-video__preview {
     opacity: 1;
@@ -14607,7 +14607,7 @@
     opacity: 0;
   }
   .ns-video--zoom .ns-video__poster {
-    transition: scale var(--duration-slow, 240ms) var(--ease-out);
+    transition: scale var(--duration-slow) var(--ease-out);
   }
   .ns-video--zoom:hover .ns-video__poster {
     scale: 1.04;

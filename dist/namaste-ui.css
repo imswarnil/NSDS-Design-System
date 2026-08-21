@@ -8767,13 +8767,13 @@
   .ns-video__preview {
     position: absolute; inset: 0; inline-size: 100%; block-size: 100%;
     object-fit: cover; opacity: 0; pointer-events: none;
-    transition: opacity var(--duration-slow, 240ms) var(--ease-out);
+    transition: opacity var(--duration-base) var(--ease-out);
   }
   .ns-video--hover:hover .ns-video__preview,
   .ns-video--hover:focus-within .ns-video__preview { opacity: 1; }
   .ns-video--hover:hover .ns-video__poster,
   .ns-video--hover:focus-within .ns-video__poster { opacity: 0; }
-  .ns-video--zoom .ns-video__poster { transition: scale var(--duration-slow, 240ms) var(--ease-out); }
+  .ns-video--zoom .ns-video__poster { transition: scale var(--duration-slow) var(--ease-out); }
   .ns-video--zoom:hover .ns-video__poster { scale: 1.04; }
   /* A preview that plays because a pointer passed over it is exactly the
      motion this setting exists to stop. */
