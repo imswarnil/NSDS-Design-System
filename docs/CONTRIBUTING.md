@@ -1,4 +1,4 @@
-# Contributing to NS Design System
+# Contributing to NSDS
 
 ## Before you add a component
 

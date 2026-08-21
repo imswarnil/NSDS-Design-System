@@ -1,4 +1,4 @@
-# NS Design System — live site
+# NSDS — live site
 
 Everything about where this design system is published, what is on it, how it
 gets there, and how to fix it when it breaks.
@@ -9,45 +9,75 @@ gets there, and how to fix it when it breaks.
 
 | What | URL |
 | --- | --- |
-| **Live styleguide** | **<https://dev.imswarnil.com/NS-Design-System/>** |
-| Styleguide home (canonical) | <https://dev.imswarnil.com/NS-Design-System/preview/index.html> |
-| GitHub Pages fallback host | <https://imswarnil.github.io/NS-Design-System/> |
+| **Homepage** | **<https://nsds.imswarnil.com/>** |
+| Styleguide | <https://nsds.imswarnil.com/preview/index.html> |
+| Sitemap | <https://nsds.imswarnil.com/sitemap.xml> |
+| GitHub Pages origin | <https://imswarnil.github.io/NS-Design-System/> |
 | Repository | <https://github.com/imswarnil/NS-Design-System> |
 | Issues | <https://github.com/imswarnil/NS-Design-System/issues> |
 | CI / deploy runs | <https://github.com/imswarnil/NS-Design-System/actions> |
 | Clone (HTTPS) | `git clone https://github.com/imswarnil/NS-Design-System.git` |
 | Clone (SSH) | `git clone git@github.com:imswarnil/NS-Design-System.git` |
 
-**Why `dev.imswarnil.com` and not `imswarnil.github.io`?** The GitHub account
-`imswarnil` has an *account-level* custom domain (`dev.imswarnil.com`) with a
-GitHub-managed TLS certificate. An account-level domain applies to **every**
-Pages site on the account, so this repo is served under it at the repo path
-`/NS-Design-System/`. Requests to `imswarnil.github.io/NS-Design-System/`
-redirect to the custom domain. HTTPS is enforced — plain `http://` 301s to
-`https://`.
+The site is **NSDS**; the repository slug is still `NS-Design-System`. Renaming
+the repo would buy a shorter clone URL and cost every existing link a redirect,
+so it stays.
 
-**Everything is served under a subpath** (`/NS-Design-System/`), so every asset
-reference in the built site is *relative*. Never introduce a root-absolute
-`/assets/...` path in a card, the preview generator, or a CSS `url()` — it
-would resolve against the domain root and 404. `scripts/build-site.mjs` copies
-files at their repo-relative paths precisely so relative links keep working.
+### The custom domain
+
+`nsds.imswarnil.com` is a **repo-level** custom domain, which means the site is
+served at the **domain root** (`/`), not under a repo subpath. Two things pin
+it, and both are required:
+
+1. **DNS** — one record at the `imswarnil.com` provider:
+
+   | Type | Name | Value | Proxy |
+   | --- | --- | --- | --- |
+   | `CNAME` | `nsds` | `imswarnil.github.io` | DNS-only (grey cloud on Cloudflare) |
+
+   Proxying it breaks GitHub's certificate issuance — leave it unproxied at
+   least until the cert is issued.
+
+2. **`_site/CNAME`** — written by `scripts/build-site.mjs` on every build. On an
+   *Actions* deploy GitHub reads the custom domain out of the uploaded
+   artifact; a deploy that ships no `CNAME` silently drops the domain back to
+   `imswarnil.github.io` on the next publish. Setting it in Settings → Pages
+   alone is not enough. Override for another host with `SITE_URL=…`.
+
+Then: Settings → Pages → Custom domain → `nsds.imswarnil.com`, and tick
+**Enforce HTTPS** once the certificate is issued (can take up to an hour).
+
+**Account-level domain.** The account `imswarnil` also has an account-level
+domain (`dev.imswarnil.com`) that applies to every Pages site without one of
+its own. The repo-level domain set here takes precedence, so this site no
+longer answers on `dev.imswarnil.com/NS-Design-System/` — update any bookmark
+you own.
+
+**Paths stay relative.** Even though the site is now at a domain root, every
+asset reference in the built site is *relative* and must stay that way: a card
+opened directly, a branch preview, or a move to a subpath all keep working.
+Never introduce a root-absolute `/assets/...` path in a card, the preview
+generator, or a CSS `url()`.
 
 Deep links are shareable: the styleguide is multi-page (one URL per foundation
-section and per specimen group), e.g.
-`https://dev.imswarnil.com/NS-Design-System/preview/color.html`.
+section, component and doc), e.g.
+`https://nsds.imswarnil.com/preview/color.html`.
 
 ---
 
 ## 2. What is on the live site
 
-`gulp site` stages a fully self-contained static bundle (~4 MB — 98 styleguide
-pages, 38 specimen cards, the CSS closure and self-hosted fonts) into `_site/`.
-It is **not** the repo — `node_modules/`, `docs/`, `scripts/`, and the git
-history are all excluded. What ships:
+`gulp site` stages a fully self-contained static bundle (~13 MB — 165
+styleguide pages, 46 specimen cards, the CSS closure and self-hosted fonts)
+into `_site/`. It is **not** the repo — `node_modules/`, `docs/`, `scripts/`,
+and the git history are all excluded. What ships:
 
 | Path on the live site | Contents |
 | --- | --- |
-| `/` | `index.html` — a meta-refresh redirect into `preview/index.html` |
+| `/` | `index.html` — the homepage: what NSDS is, the numbers, and a linked index of all 165 generated pages |
+| `/robots.txt` | crawl policy + the sitemap pointer |
+| `/sitemap.xml` | the homepage and every generated page |
+| `/CNAME` | `nsds.imswarnil.com` — what actually pins the custom domain |
 | `/preview/` | the generated multi-page styleguide (home, one page per foundation, one per specimen group) |
 | `/dist/` | the flat CSS bundle `namaste-ui.css` + `.min.css` the preview links |
 | `/styles.css` | the entry stylesheet the specimen cards link as `../styles.css` |
@@ -58,6 +88,24 @@ history are all excluded. What ships:
 | `/icons/`, `/patterns/`, `/templates/` | specimen source directories |
 | `/**/*.card.html` | every specimen, at its real repo-relative path (the preview iframes them) |
 | `/.nojekyll` | tells Pages to serve `_`-prefixed paths verbatim, no Jekyll pass |
+
+### Why the homepage is a page and not a redirect
+
+`/` used to be a meta-refresh into `preview/index.html`. A redirect is not a
+page: a crawler follows it, indexes the target, and the domain itself has no
+entry in any index — `nsds.imswarnil.com` would be a URL nothing describes.
+
+So the root is a real document with its own content, and — the part that
+matters — a complete linked index of all 165 generated pages. That list is the
+only route a crawler has into the styleguide, whose own navigation it reaches
+from nowhere else. Both the list and `sitemap.xml` are generated from
+`preview/pages.json`, which `build-preview.mjs` writes: a page added to the
+generator appears in both without anyone maintaining a second list by hand.
+
+Every styleguide page also carries a `<link rel="canonical">`, a meta
+description derived from its lede, and Open Graph tags. The canonical is what
+stops a branch deploy or a local copy from competing with the real site in an
+index.
 
 The styleguide is generated **from the real artifacts**, so the live site
 cannot drift from the system: token tables are read out of
@@ -131,9 +179,13 @@ npm run site      # stage _site/ locally (gulp build → preview → site)
 npx serve _site   # or: python3 -m http.server -d _site 8080
 ```
 
-Note the local server serves `_site/` at the **root**, whereas production
-serves it at `/NS-Design-System/`. Relative links behave the same in both, which
-is why the site must stay relative-only.
+The local server serves `_site/` at the root, exactly as production does. To
+stage a build for a different host, set `SITE_URL` — it drives the canonicals,
+the sitemap and the `CNAME`:
+
+```bash
+SITE_URL=https://staging.example.com npm run site
+```
 
 ### Watch a deploy
 
@@ -210,13 +262,16 @@ theme or the Next.js LMS.
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | Site 404s entirely | Pages source not set to "GitHub Actions", or no successful `deploy` run yet | Settings → Pages → Source: GitHub Actions; then push to `main` |
-| Page loads, all CSS missing | a root-absolute `/…` path crept in — it resolves against the domain root, not `/NS-Design-System/` | make the reference relative; re-run `npm run site` and check locally |
+| Page loads, all CSS missing | a root-absolute `/…` path crept in | make the reference relative; re-run `npm run site` and check locally |
+| Domain reverts to `imswarnil.github.io` after a deploy | the artifact shipped no `CNAME` | confirm `build-site.mjs` still writes `_site/CNAME`; it is read from the artifact, not from repo settings |
+| Custom domain 404s or shows a cert error right after setup | DNS not propagated, or the record is proxied | `dig nsds.imswarnil.com CNAME` must return `imswarnil.github.io`; set the record to DNS-only and wait for the cert |
+| A page is missing from the sitemap | it isn't in `preview/pages.json` | it is generated from `PAGES` in `build-preview.mjs` — if the page exists there, rebuild |
 | Icons render as empty boxes | `dist/` font `url()` paths weren't rebased for the bundle's location | check the woff2 paths inside `dist/namaste-ui.css` and rebuild |
 | Specimen iframes are blank | the `.card.html` wasn't copied — `build-site.mjs` only walks `*.card.html` and skips dot-dirs, `node_modules`, `dist`, `preview`, `_site` | confirm the filename ends in `.card.html` and sits outside those dirs |
 | `check` fails on `git diff --exit-code` | a generated file was hand-edited, or a regeneration wasn't committed | `npm run build && git add -A && git commit` |
 | Deploy skipped | the job only runs on `push` to `main`; PR events never deploy | merge to `main` |
 | Old content after a green deploy | CDN cache | hard-reload (⌘⇧R), or check the run actually finished |
-| Custom domain shows a cert warning | account-level domain cert lapsed | Account → Settings → Pages → verify domain; cert re-issues automatically |
+| Custom domain shows a cert warning | domain verification lapsed | Settings → Pages → verify domain; the cert re-issues automatically |
 
 ---
 
@@ -224,8 +279,13 @@ theme or the Next.js LMS.
 
 - **Maintainer:** Swarnil Singhai — <swarnilsinghaicse@gmail.com> — <https://github.com/imswarnil>
 - **License:** MIT (see `LICENSE`)
-- **Package:** `@namaste-salesforce/design-system`
+- **Package:** `@namaste-salesforce/design-system` (unchanged — the npm name is
+  what two products import by; only the *product* name became NSDS)
 - **History:** the repo was renamed from `imswarnil/design-system` to
   `imswarnil/NS-Design-System`. GitHub permanently redirects the old repo URL
   and old git remotes, but update any hardcoded links you own:
   `git remote set-url origin https://github.com/imswarnil/NS-Design-System.git`
+- **Domain history:** the site moved from `dev.imswarnil.com/NS-Design-System/`
+  to `nsds.imswarnil.com/` (a repo-level custom domain, served at the root).
+  The old path is not redirected — GitHub Pages cannot redirect between two
+  domains it serves — so fix any link you control.

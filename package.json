@@ -1,7 +1,7 @@
 {
   "name": "@namaste-salesforce/design-system",
   "version": "3.0.0",
-  "description": "NS Design System — the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
+  "description": "NSDS — NS Design System, the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -67,7 +67,7 @@
     "email": "swarnilsinghaicse@gmail.com",
     "url": "https://github.com/imswarnil"
   },
-  "homepage": "https://dev.imswarnil.com/NS-Design-System/",
+  "homepage": "https://nsds.imswarnil.com/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/imswarnil/NS-Design-System.git"
@@ -76,6 +76,7 @@
   "keywords": [
     "design-system",
     "design-tokens",
+    "nsds",
     "ghost-theme",
     "nextjs",
     "tailwindcss",

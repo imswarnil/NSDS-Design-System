@@ -1,0 +1,85 @@
+<!-- @dsCard group="Content Creation" viewport="760x1200" name="Live Stream — The 16:9 Scene Grid" subtitle="One canvas, one safe area, seven named zones — every scene is built on this" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.label:first-child{margin-top:0}
+.frame{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
+.dark{background:var(--color-brand-900);color:#fff}
+.light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
+.bar{position:absolute;inset-inline:0;top:0;height:4px;background:var(--color-brand-500);z-index:5}
+/* 12 columns × 8 rows — the only grid a scene is allowed to place things on. */
+.grid{position:absolute;inset:0;
+  background-image:repeating-linear-gradient(to right,currentColor 0 1px,transparent 1px calc(100%/12)),
+                   repeating-linear-gradient(to bottom,currentColor 0 1px,transparent 1px calc(100%/8));
+  opacity:.12}
+/* Action-safe 93% (outer dashes) and title-safe 90% (inner solid). */
+.safe{position:absolute;border:1px dashed currentColor;opacity:.45;inset:3.5%}
+.title-safe{position:absolute;border:1px solid var(--color-brand-500);inset:5%}
+.zone{position:absolute;font-family:var(--font-mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;
+  display:flex;align-items:center;gap:4px;padding:3px 6px;border:1px solid var(--color-brand-500);
+  background:color-mix(in srgb, var(--color-brand-500) 12%, transparent);color:var(--color-brand-500);white-space:nowrap}
+.dark .zone{color:var(--color-brand-300);border-color:var(--color-brand-400);background:rgb(255 255 255/.06)}
+.zone b{font-weight:700}
+.z-kicker{inset-inline-start:5%;top:6.5%}
+.z-live{inset-inline-end:5%;top:6.5%}
+.z-stage{inset-inline-start:5%;inset-inline-end:5%;top:22%;bottom:30%;justify-content:center;background:color-mix(in srgb, var(--color-brand-500) 6%, transparent);border-style:dashed}
+.z-cam{inset-inline-end:5%;bottom:22%;width:19%;aspect-ratio:16/9;justify-content:center;background:color-mix(in srgb, var(--color-brand-500) 10%, transparent)}
+.z-lower{inset-inline-start:5%;bottom:22%;width:34%}
+.z-mark{inset-inline-end:5%;bottom:6.5%}
+.z-ticker{inset-inline-start:5%;bottom:6.5%;width:34%}
+.legend{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px;margin-top:12px}
+.row{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-top:1px solid var(--color-border)}
+.row:first-child,.legend>div:nth-child(2) .row:first-child{border-top:0}
+.row code{font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-500);flex:none;width:74px;padding-top:2px}
+.row div{font-size:11px;line-height:1.45}
+.row b{display:block;font-weight:600;font-size:11px}
+.row span{color:var(--color-muted)}
+</style></head><body>
+
+<div class="label">Dark — the default broadcast canvas</div>
+<div class="frame dark">
+  <div class="bar"></div>
+  <div class="grid"></div>
+  <div class="safe"></div>
+  <div class="title-safe"></div>
+  <div class="zone z-stage"><b>02 · STAGE</b> — screen share, slides, or camera</div>
+  <div class="zone z-kicker">// <b>01 KICKER</b></div>
+  <div class="zone z-live"><b>03 LIVE</b></div>
+  <div class="zone z-cam"><b>04 CAM</b></div>
+  <div class="zone z-lower"><b>05 LOWER THIRD</b></div>
+  <div class="zone z-ticker"><b>06 TICKER / HANDLE</b></div>
+  <div class="zone z-mark"><b>07 MARK</b></div>
+</div>
+
+<div class="label">Light — the same grid, for daylight/whiteboard streams</div>
+<div class="frame light">
+  <div class="bar"></div>
+  <div class="grid"></div>
+  <div class="safe"></div>
+  <div class="title-safe"></div>
+  <div class="zone z-stage"><b>02 · STAGE</b> — screen share, slides, or camera</div>
+  <div class="zone z-kicker">// <b>01 KICKER</b></div>
+  <div class="zone z-live"><b>03 LIVE</b></div>
+  <div class="zone z-cam"><b>04 CAM</b></div>
+  <div class="zone z-lower"><b>05 LOWER THIRD</b></div>
+  <div class="zone z-ticker"><b>06 TICKER / HANDLE</b></div>
+  <div class="zone z-mark"><b>07 MARK</b></div>
+</div>
+
+<div class="legend">
+  <div>
+    <div class="row"><code>CANVAS</code><div><b>1920 × 1080, 16:9, always</b><span>Every scene, every source, every export. 1280×720 only if upload is the constraint — never a non-16:9 canvas.</span></div></div>
+    <div class="row"><code>TITLE-SAFE</code><div><b>Inner 90% — all text lives here</b><span>The solid brand rule. Nothing readable crosses it: platform chrome, chat panels and phone notches eat the outer band.</span></div></div>
+    <div class="row"><code>ACTION-SAFE</code><div><b>Inner 93% — dashed</b><span>Graphics may touch it; only full-bleed backgrounds and the top accent bar go past.</span></div></div>
+    <div class="row"><code>GRID</code><div><b>12 columns × 8 rows</b><span>Every zone snaps to it. A panel that starts at a non-column edge is the first sign a scene was improvised.</span></div></div>
+  </div>
+  <div>
+    <div class="row"><code>01 KICKER</code><div><b>Top-left, mono, uppercase</b><span><code>// LIVE SESSION 04</code> — the same eyebrow every thumbnail uses. Names the series, never the mood.</span></div></div>
+    <div class="row"><code>02 STAGE</code><div><b>The teaching surface</b><span>Screen, slides or camera. It is the only zone allowed to change between scenes; everything else stays nailed down.</span></div></div>
+    <div class="row"><code>04 CAM</code><div><b>Bottom-right, 16:9, 18–22% width</b><span>Never over the slide's content column. Same corner all stream — moving it costs the viewer a re-scan every time.</span></div></div>
+    <div class="row"><code>07 MARK</code><div><b>Logo watermark, bottom-right, 55–65% opacity</b><span>Always present, never animated after the intro. It is the frame's signature, not an element of the layout.</span></div></div>
+  </div>
+</div>
+
+</body></html>

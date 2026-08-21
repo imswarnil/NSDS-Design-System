@@ -1,8 +1,12 @@
-# NS Design System
+# NSDS — NS Design System
 
-**Live styleguide → <https://dev.imswarnil.com/NS-Design-System/>** — published
-from `main` on every push. See **[`LIVE.md`](LIVE.md)** for the URLs, what is on
-the site, how the deploy works, and how to fix it when it breaks.
+**Live → <https://nsds.imswarnil.com/>** — published from `main` on every push.
+See **[`LIVE.md`](LIVE.md)** for the URLs, what is on the site, how the deploy
+works, and how to fix it when it breaks.
+
+*NSDS* is the short name; *NS Design System* is the full one. Both refer to this
+repository. The CSS bundle keeps its `namaste-ui` filenames — renaming a file
+two products link by URL buys nothing and breaks both.
 
 A design system for **Namaste Salesforce**, an open-source Ghost theme (`imswarnil/Namaste-Salesforce`) for Salesforce learning communities: courses, a training roadmap, developer documentation, and a blog, all in one calm, fast, accessible package.
 
@@ -26,7 +30,7 @@ the system it documents.
 
 ### The styleguide
 
-[![Overview](docs/images/overview.jpg)](https://dev.imswarnil.com/NS-Design-System/)
+[![Overview](docs/images/overview.jpg)](https://nsds.imswarnil.com/)
 
 255 tokens, 1,140 classes, 129 components. The sidebar collapses to the section
 you are in and scrolls it into view; every component page carries its own
@@ -213,7 +217,7 @@ attribute, and the `ns-theme` storage key — are documented and enforced in
 ## Preview it
 
 The current `main` is always live at
-**<https://dev.imswarnil.com/NS-Design-System/>** — nothing to install if you
+**<https://nsds.imswarnil.com/>** — nothing to install if you
 only want to look. To run it locally, the design system stands on its own — no
 Ghost, no Next.js, nothing but Node:
 
@@ -297,10 +301,12 @@ broken relative paths, root-absolute assets, duplicate ids and dangling
   colorblind checks, stale `dist/`), then `git diff --exit-code` to prove no
   generated file was hand-edited.
 - **deploy** — pushes to `main`: `gulp site` → publish `_site/` to GitHub
-  Pages at <https://dev.imswarnil.com/NS-Design-System/>, so the team always
-  has a hosted preview of exactly what `main` ships. Already configured
-  (Settings → Pages → Source: "GitHub Actions"); a failing check blocks the
-  deploy. See [`LIVE.md`](LIVE.md) for the full pipeline and troubleshooting.
+  Pages at <https://nsds.imswarnil.com/>, so the team always has a hosted
+  preview of exactly what `main` ships. Already configured (Settings → Pages →
+  Source: "GitHub Actions"); a failing check blocks the deploy. The build
+  writes `_site/CNAME`, `robots.txt` and `sitemap.xml`, and a real indexable
+  homepage at `/`. See [`LIVE.md`](LIVE.md) for the pipeline, the DNS records
+  and troubleshooting.
 
 ## Repository layout
 

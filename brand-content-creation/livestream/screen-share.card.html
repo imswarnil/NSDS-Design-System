@@ -1,0 +1,109 @@
+<!-- @dsCard group="Content Creation" viewport="760x815" name="Live Stream — Screen Share & Slides at 16:9" subtitle="How a shared screen, an org window or a deck reaches the canvas without being stretched or unreadable" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.col{display:flex;flex-direction:column;gap:6px}
+.f{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:var(--color-brand-900)}
+.f::after{content:"16:9";position:absolute;inset-inline-end:4px;bottom:3px;font-family:var(--font-mono);font-size:7px;color:rgb(255 255 255/.4)}
+/* A stand-in for the shared source: a window chrome + a grid of "UI". */
+.win{position:absolute;background:#fff;box-shadow:0 0 0 1px rgb(255 255 255/.25);display:flex;flex-direction:column;overflow:hidden}
+.win .chrome{height:9px;flex:none;background:var(--color-surface-sunken);border-bottom:1px solid var(--color-border);display:flex;align-items:center;gap:2px;padding:0 4px}
+.win .chrome i{width:3px;height:3px;border-radius:50%;background:var(--color-muted)}
+.win .body{flex:1;display:flex}
+.win .rail{width:16%;background:var(--color-brand-900);opacity:.9}
+.win .main{flex:1;padding:5px;display:flex;flex-direction:column;gap:3px}
+.win .line{height:3px;background:var(--color-border);border-radius:1px}
+.win .line.w70{width:70%}.win .line.w45{width:45%}.win .line.w85{width:85%}
+.win .blk{flex:1;background:var(--color-surface-sunken);border:1px solid var(--color-border);margin-top:2px}
+/* 01 — native 16:9 capture: the window fills the stage exactly. */
+.fit .win{inset:0}
+/* 02 — the same 4:3 window, scaled horizontally until it fills the canvas.
+   The chrome dots going oval is the whole point of the demo. */
+.stretch .win{inset:0 12.5%;transform:scaleX(1.3333);transform-origin:center}
+/* 03 — a 4:3 source pillarboxed on the brand canvas. */
+.pillar .win{inset:0 12.5%;}
+.pillar .pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
+  background-size:14px 14px}
+.pillar .kick{position:absolute;inset-inline-start:3%;top:8%;font-family:var(--font-mono);font-size:6px;letter-spacing:.1em;color:var(--color-brand-300);text-transform:uppercase;z-index:3}
+.verdict{display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase}
+.ok{color:var(--color-success)}.no{color:var(--color-error)}
+.cap{font-size:11px;line-height:1.42;color:var(--color-muted)}
+.cap b{display:block;color:var(--color-ink);font-weight:600;font-family:var(--font-sans)}
+
+.sub{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--color-muted);margin:22px 0 8px}
+.rows{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px}
+.r{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--color-border)}
+.r code{font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-500);flex:none;width:96px;padding-top:2px}
+.r div{font-size:11px;line-height:1.45}
+.r b{display:block;font-weight:600}
+.r span{color:var(--color-muted)}
+/* The legibility ruler — same words at the four sizes a 1080p stream produces. */
+.ruler{border:1px solid var(--color-border);padding:10px 12px;display:flex;flex-direction:column;gap:7px}
+.ruler div{display:flex;align-items:baseline;gap:10px}
+.ruler code{font-family:var(--font-mono);font-size:9px;color:var(--color-brand-500);width:96px;flex:none}
+.ruler p{margin:0;font-family:var(--font-mono)}
+.s10{font-size:10px}.s13{font-size:13px}.s16{font-size:16px}.s19{font-size:19px}
+.ruler em{font-style:normal;font-size:10px;color:var(--color-muted);margin-inline-start:auto}
+</style></head><body>
+
+<div class="trio">
+
+  <div class="col">
+    <div class="f fit">
+      <div class="win"><div class="chrome"><i></i><i></i><i></i></div><div class="body">
+        <div class="rail"></div><div class="main"><div class="line w70"></div><div class="line w45"></div><div class="blk"></div></div>
+      </div></div>
+    </div>
+    <div class="verdict ok"><i class="ph ph-check-circle"></i>Do</div>
+    <div class="cap"><b>Capture a 16:9 region</b>Share a 1920×1080 display, or resize the window to 16:9 and share the window — not the whole desktop. What the encoder receives already matches the canvas, so nothing is scaled.</div>
+  </div>
+
+  <div class="col">
+    <div class="f stretch">
+      <div class="win"><div class="chrome"><i></i><i></i><i></i></div><div class="body">
+        <div class="rail"></div><div class="main"><div class="line w70"></div><div class="line w45"></div><div class="blk"></div></div>
+      </div></div>
+    </div>
+    <div class="verdict no"><i class="ph ph-x-circle"></i>Never</div>
+    <div class="cap"><b>Stretch a 4:3 source to fill</b>Type goes wide, circles go oval, the org's icons stop looking like Salesforce's. Nobody consciously notices — everybody registers &ldquo;this looks cheap.&rdquo; Aspect ratio is never a scaling option.</div>
+  </div>
+
+  <div class="col">
+    <div class="f pillar">
+      <div class="pat"></div><div class="kick">// live session 04</div>
+      <div class="win"><div class="chrome"><i></i><i></i><i></i></div><div class="body">
+        <div class="rail"></div><div class="main"><div class="line w85"></div><div class="line w45"></div><div class="blk"></div></div>
+      </div></div>
+    </div>
+    <div class="verdict ok"><i class="ph ph-check-circle"></i>Do instead</div>
+    <div class="cap"><b>Pillarbox on the brand canvas</b>A 4:3 app, a phone screencast, a legacy PDF — centre it at true ratio and let the navy plus hairline pattern carry the gap. The dead space becomes brand, not letterbox black.</div>
+  </div>
+
+</div>
+
+<div class="sub">Before you hit &ldquo;share&rdquo;</div>
+<div class="rows">
+  <div>
+    <div class="r"><code>DISPLAY</code><div><b>1920×1080, scaling at 100%</b><span>A HiDPI screen at default scaling sends a 2× frame the encoder downsamples — every hairline in the org UI turns to mush. Set the shared display to native 1080p.</span></div></div>
+    <div class="r"><code>WINDOW</code><div><b>Share one window, never the desktop</b><span>Notifications, calendar popups, the other tab with your credentials in it. A window share is also a 16:9 crop you control.</span></div></div>
+    <div class="r"><code>DECK</code><div><b>Export slides at 16:9, 1920×1080</b><span>Never 4:3, never A4 landscape. A deck built at the canvas size needs no scaling at all — the sharpest possible path to the viewer.</span></div></div>
+  </div>
+  <div>
+    <div class="r"><code>BROWSER</code><div><b>Zoom to 125–150% before you start</b><span>Not mid-demo. Changing zoom while live reflows the page and the viewer loses their place; do it once, in the starting-soon scene.</span></div></div>
+    <div class="r"><code>EDITOR</code><div><b>Code at 18–20pt, high-contrast theme</b><span>Wrap long lines instead of scrolling sideways. If a snippet needs more than ~14 visible lines, it belongs in a slide, not in the editor.</span></div></div>
+    <div class="r"><code>CAM ZONE</code><div><b>Keep the bottom-right 22% clear</b><span>That corner belongs to the camera and the watermark. Don't park the record detail panel, the console, or the thing you're about to click there.</span></div></div>
+  </div>
+</div>
+
+<div class="sub">The phone test — legibility at 1080p</div>
+<div class="ruler">
+  <div><code>10px</code><p class="s10">SELECT Id FROM Account</p><em>unreadable on a phone — never</em></div>
+  <div><code>13px</code><p class="s13">SELECT Id FROM Account</p><em>borderline — slides only</em></div>
+  <div><code>16px</code><p class="s16">SELECT Id FROM Account</p><em>minimum for shared UI</em></div>
+  <div><code>19px</code><p class="s19">SELECT Id FROM Account</p><em>target for code and SOQL</em></div>
+</div>
+<p style="font-size:11px;color:var(--color-muted);line-height:1.5;margin:10px 0 0">Half the audience watches a live session on a phone held at arm's length — roughly a third of the apparent size shown here. If you cannot read it on your own phone from the couch, it is not on screen yet: zoom in, or put it on a slide.</p>
+
+</body></html>

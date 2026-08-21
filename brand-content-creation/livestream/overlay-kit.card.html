@@ -1,0 +1,129 @@
+<!-- @dsCard group="Content Creation" viewport="760x1155" name="Live Stream — Overlay Kit" subtitle="Every graphic allowed on a live frame, with its position, size and how long it stays" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.kit{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 16px}
+.item{display:flex;flex-direction:column;gap:6px}
+.tile{position:relative;background:var(--color-brand-900);padding:14px;display:flex;align-items:center;justify-content:center;min-height:74px;overflow:hidden}
+.tile::before{content:"";position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(to right,rgb(255 255 255/.06) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.06) 1px,transparent 1px);
+  background-size:16px 16px}
+.tile>*{position:relative}
+.meta{display:flex;gap:8px;align-items:flex-start}
+.meta code{font-family:var(--font-mono);font-size:9px;color:var(--color-brand-500);flex:none;padding-top:1px}
+.meta div{font-size:11px;line-height:1.42}
+.meta b{display:block;font-weight:600}
+.meta span{color:var(--color-muted)}
+.meta em{font-style:normal;font-family:var(--font-mono);font-size:9.5px;color:var(--color-ink);display:block;margin-top:2px}
+
+/* ---- the overlays themselves ------------------------------------------- */
+.o-live{display:inline-flex;align-items:center;gap:5px;background:var(--color-error);color:#fff;
+  font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 9px}
+.o-live::before{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+
+.o-kick{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-brand-300)}
+
+.o-lower{background:rgb(0 26 62/.9);border-inline-start:3px solid var(--color-brand-500);padding:8px 12px;color:#fff;min-width:210px}
+.o-lower b{display:block;font-family:var(--font-heading);font-size:15px;font-weight:700;line-height:1.1}
+.o-lower span{display:block;font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-300);margin-top:3px;letter-spacing:.04em}
+
+.o-topic{display:flex;justify-content:space-between;align-items:baseline;gap:20px;width:100%;
+  border-bottom:1px solid rgb(255 255 255/.22);padding-bottom:5px;color:#fff}
+.o-topic b{font-family:var(--font-heading);font-size:13px;font-weight:600}
+.o-topic span{font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-300);letter-spacing:.06em}
+
+.o-mark{display:flex;align-items:center;gap:7px;opacity:.6;color:#fff}
+.o-mark img{width:20px;height:20px}
+.o-mark b{font-family:var(--font-heading);font-size:13px;font-weight:700;letter-spacing:.01em}
+
+.o-bug{display:flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:10px;color:rgb(255 255 255/.66)}
+.o-bug i{font-size:13px;color:var(--color-brand-300)}
+
+.o-q{background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.2);border-inline-start:3px solid var(--color-brand-500);
+  padding:9px 12px;color:#fff;max-width:280px}
+.o-q b{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;color:var(--color-brand-300)}
+.o-q p{margin:4px 0 0;font-size:11.5px;line-height:1.4;color:rgb(255 255 255/.9)}
+
+.o-cta{display:flex;align-items:center;gap:9px;background:var(--color-brand-500);color:#fff;padding:8px 13px}
+.o-cta i{font-size:16px;flex:none}
+.o-cta b{font-family:var(--font-heading);font-size:12.5px;font-weight:600;display:block}
+.o-cta span{font-family:var(--font-mono);font-size:9px;color:rgb(255 255 255/.78);display:block;margin-top:1px}
+
+.o-count{text-align:center;color:#fff}
+.o-count b{display:block;font-family:var(--font-mono);font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.o-count span{display:block;font-family:var(--font-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-brand-300);margin-top:5px}
+
+.o-wipe{display:flex;width:100%;height:26px}
+.o-wipe i{flex:1;display:block}
+.o-wipe i:nth-child(1){background:var(--color-brand-500)}
+.o-wipe i:nth-child(2){background:var(--color-brand-600)}
+.o-wipe i:nth-child(3){background:var(--color-brand-900);box-shadow:inset 0 0 0 1px rgb(255 255 255/.16)}
+
+.o-cam{width:150px;aspect-ratio:16/9;background:rgb(124 190 255/.16);border:1px solid var(--color-brand-400);
+  display:flex;align-items:center;justify-content:center;color:var(--color-brand-300);font-family:var(--font-mono);font-size:9px;gap:5px}
+.o-cam i{font-size:16px}
+</style></head><body>
+<div class="kit">
+
+  <div class="item">
+    <div class="tile"><div class="o-live">LIVE</div></div>
+    <div class="meta"><code>01</code><div><b>Live badge</b><em>top-right · title-safe · error red</em><span>The only saturated red in the system, and the only thing allowed to compete with the brand blue — because it is a state, not decoration. On for the whole broadcast; the dot never blinks.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-kick">// live session 04</div></div>
+    <div class="meta"><code>02</code><div><b>Kicker</b><em>top-left · mono · brand-300 · always on</em><span>Same eyebrow as the thumbnails and the course pages. Names the series and the number, never the topic — the topic bar does that.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-lower"><b>Swarnil Singhai</b><span>Salesforce Architect · host</span></div></div>
+    <div class="meta"><code>03</code><div><b>Lower third</b><em>bottom-left · 8s on entry, then off</em><span>Name in heading weight, role in mono. Slides in from the left edge over 240ms and leaves the same way. One per person, per appearance — never a permanent name plate.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-topic"><b>03 · Bulkification</b><span>step 2 of 5</span></div></div>
+    <div class="meta"><code>04</code><div><b>Topic bar</b><em>under the kicker · persistent while teaching</em><span>Carries the mono step index. It is the viewer's only answer to &ldquo;how much is left&rdquo; — update it at every step boundary or take it off screen.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-mark"><img src="../../assets/logo/favicon.svg" alt=""><b>Namaste Salesforce</b></div></div>
+    <div class="meta"><code>05</code><div><b>Logo watermark</b><em>bottom-right · 55–65% opacity · never animated</em><span>Mark + wordmark on wide scenes, mark alone when the cam sits in that corner. Clipped VOD moments travel without context — the watermark is what makes a stolen 20-second clip still say who taught it.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-bug"><i class="ph ph-globe"></i>namastesalesforce.com</div></div>
+    <div class="meta"><code>06</code><div><b>Handle bug</b><em>bottom-left · rotates every ~10 min</em><span>One destination at a time — site, then YouTube, then LinkedIn. Never a row of five icons: a viewer who has to choose goes nowhere.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-q"><b>// QUESTION · @dev_arun</b><p>Does a Flow element count against SOQL limits the same way an Apex query does?</p></div></div>
+    <div class="meta"><code>07</code><div><b>Question card</b><em>left of the stage · one at a time</em><span>Attributed by handle, verbatim, max two lines — trim it before it goes up, don't shrink the type. Comes off screen the moment you finish answering.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-cta"><i class="ph ph-bell-ringing"></i><div><b>Full course + notes</b><span>namastesalesforce.com/apex</span></div></div></div>
+    <div class="meta"><code>08</code><div><b>CTA sting</b><em>bottom-centre · 6s · max twice an hour</em><span>The one place brand-500 fills a solid block. Fires after a completed demo, never mid-explanation. One ask per appearance.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-count"><b>04:12</b><span>starting soon</span></div></div>
+    <div class="meta"><code>09</code><div><b>Countdown</b><em>starting-soon scene only · mono tabular</em><span>Counts down, never up. When it hits zero it holds at 00:00 rather than disappearing — a stream that starts four minutes late is fine; a frame that lies is not.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-wipe"><i></i><i></i><i></i></div></div>
+    <div class="meta"><code>10</code><div><b>Scene wipe</b><em>brand bar · 320ms · linear</em><span>The only transition between scenes. Same wipe as the video intro sting, so live and edited content move alike. No crossfades, no zooms, no stingers with sound effects.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-cam"><i class="ph ph-user"></i>CAM 16:9</div></div>
+    <div class="meta"><code>11</code><div><b>Camera frame</b><em>16:9 · 17–22% of canvas width · hard corners</em><span>Never a circle, never a rounded pill — the system's geometry is sharp, and a round cam is the one graphic that instantly reads as somebody else's template.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-bug"><i class="ph ph-chat-circle-text"></i>@priya_dev · &ldquo;this finally clicked&rdquo;</div></div>
+    <div class="meta"><code>12</code><div><b>Chat highlight</b><em>bottom-left · 5s · replaces the handle bug</em><span>One comment at a time, hand-picked. Chat belongs on screen only when it teaches something or thanks somebody — never as a live-scrolling panel competing with the stage.</span></div></div>
+  </div>
+
+</div>
+</body></html>
