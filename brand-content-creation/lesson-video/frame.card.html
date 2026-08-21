@@ -1,0 +1,93 @@
+<!-- @dsCard group="Content Creation" viewport="760x645" name="Lesson Video — The Frame" subtitle="One 16:9 canvas, six zones, both themes — and the live furniture that is deliberately absent" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lab{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--color-muted);margin-bottom:5px}
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+/* The whole light/dark contract, in six variables. Every piece of furniture
+   below reads them, so the two frames are the SAME geometry with a swapped
+   palette — never a second layout. */
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06)}
+.bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500);z-index:5}
+.pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:calc(100%/12) calc(100%/8)}
+.safe{position:absolute;inset:5%;border:1px solid var(--color-brand-500);opacity:.55}
+.z{position:absolute;font-family:var(--font-mono);font-size:8px;letter-spacing:.05em;text-transform:uppercase;
+   display:flex;align-items:center;padding:3px 5px;white-space:nowrap;
+   border:1px solid var(--accent);background:var(--panel);color:var(--accent)}
+.z b{font-weight:700}
+.z-kick{inset-inline-start:5%;top:7%}
+.z-idx{inset-inline-end:5%;top:7%}
+.z-stage{inset:22% 5% 27%;justify-content:center;border-style:dashed}
+.z-cam{inset-inline-end:5%;bottom:20%;width:19%;aspect-ratio:16/9;justify-content:center}
+.z-title{inset-inline-start:5%;bottom:20%;width:36%}
+.z-mark{inset-inline-end:5%;bottom:7%}
+.rows{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px;margin-top:16px}
+.r{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--color-border)}
+.r code{font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-500);flex:none;width:70px;padding-top:2px}
+.r div{font-size:11px;line-height:1.45}
+.r b{display:block;font-weight:600}
+.r span{color:var(--color-muted)}
+.absent{margin-top:16px;border:1px solid var(--color-border);border-inline-start:3px solid var(--color-error);padding:10px 12px}
+.absent p{margin:0;font-size:11px;line-height:1.5;color:var(--color-muted)}
+.absent b{color:var(--color-ink);font-weight:600}
+.absent ul{margin:6px 0 0;padding-inline-start:16px;font-size:11px;line-height:1.6;color:var(--color-muted)}
+</style></head><body>
+
+<div class="pair">
+  <div>
+    <div class="lab">Dark — the default</div>
+    <div class="f f--d">
+      <div class="bar"></div><div class="pat"></div><div class="safe"></div>
+      <div class="z z-stage"><b>03 · STAGE</b></div>
+      <div class="z z-kick">// <b>01 KICKER</b></div>
+      <div class="z z-idx"><b>02 INDEX</b></div>
+      <div class="z z-cam"><b>04 CAM</b></div>
+      <div class="z z-title"><b>05 TITLE</b></div>
+      <div class="z z-mark"><b>06 MARK</b></div>
+    </div>
+  </div>
+  <div>
+    <div class="lab">Light — same geometry, swapped palette</div>
+    <div class="f f--l">
+      <div class="bar"></div><div class="pat"></div><div class="safe"></div>
+      <div class="z z-stage"><b>03 · STAGE</b></div>
+      <div class="z z-kick">// <b>01 KICKER</b></div>
+      <div class="z z-idx"><b>02 INDEX</b></div>
+      <div class="z z-cam"><b>04 CAM</b></div>
+      <div class="z z-title"><b>05 TITLE</b></div>
+      <div class="z z-mark"><b>06 MARK</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="rows">
+  <div>
+    <div class="r"><code>CANVAS</code><div><b>1920 × 1080, 16:9</b><span>Every scene and every source. The frame never changes shape between scenes — only what is inside the stage does.</span></div></div>
+    <div class="r"><code>01 KICKER</code><div><b>Course name, top-left, mono</b><span><code>// APEX FUNDAMENTALS</code>. The same eyebrow the course thumbnail carries, so a frame and its thumbnail are visibly the same lesson.</span></div></div>
+    <div class="r"><code>02 INDEX</code><div><b>Lesson position, top-right</b><span><code>07 / 12</code> in mono. The viewer's only answer to &ldquo;where am I in this course&rdquo; once the video is playing full screen.</span></div></div>
+  </div>
+  <div>
+    <div class="r"><code>03 STAGE</code><div><b>Screen, camera, slide or code</b><span>The only zone that changes between scenes. Everything else stays on the same pixels for the whole lesson.</span></div></div>
+    <div class="r"><code>04 CAM</code><div><b>16:9, 17–22% width, one corner</b><span>Present only when the stage is not the camera. Hard corners, never a circle.</span></div></div>
+    <div class="r"><code>06 MARK</code><div><b>Watermark, bottom-right, 55–65%</b><span>A lesson gets clipped, embedded and re-uploaded. The mark is what still names the teacher when the title is gone.</span></div></div>
+  </div>
+</div>
+
+<div class="absent">
+  <p><b>What a recorded lesson does NOT have.</b> These belong to a live broadcast and nothing else. On a lesson they are noise the viewer cannot dismiss, and they date the video the moment the stream ends:</p>
+  <ul>
+    <li><b>No LIVE badge</b> — there is nothing live about a file.</li>
+    <li><b>No ticker, no chat, no comment strip</b> — a recorded frame has no second audience to acknowledge.</li>
+    <li><b>No countdown, no &ldquo;starting soon&rdquo;</b> — the lesson starts when the viewer presses play.</li>
+    <li><b>No rotating handle bug</b> — one CTA, once, on the end card.</li>
+  </ul>
+</div>
+
+</body></html>

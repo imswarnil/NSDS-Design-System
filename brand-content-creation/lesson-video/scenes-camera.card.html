@@ -1,0 +1,139 @@
+<!-- @dsCard group="Content Creation" viewport="760x1230" name="Lesson Video — On Camera" subtitle="Four camera scenes in both themes: the open, straight-to-camera, with a point card, and two-up with a slide" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--camfill:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--camfill:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:16px 16px}
+.kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.idx{position:absolute;inset-inline-end:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.06em;color:var(--dim)}
+.mark{position:absolute;inset-inline-end:5%;bottom:6%;display:flex;align-items:center;gap:3px;opacity:.6;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.cam{position:absolute;background:var(--camfill);border:1px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  color:var(--accent);font-family:var(--font-mono);font-size:6px}
+.cam i{font-size:14px}
+.panel{position:absolute;background:var(--panel);border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  font-family:var(--font-mono);font-size:6px;color:var(--dim);text-align:center;padding:0 5px}
+.panel i{font-size:13px;color:var(--accent)}
+/* Name plate — 8 seconds on the open, then gone. Never a permanent bug. */
+.lower{position:absolute;background:var(--panel);border-inline-start:2px solid var(--color-brand-500);
+  padding:4px 7px;color:var(--ink)}
+.lower b{display:block;font-family:var(--font-heading);font-size:7.5px;font-weight:700;line-height:1.15}
+.lower span{display:block;font-family:var(--font-mono);font-size:5.5px;color:var(--accent);margin-top:2px;letter-spacing:.05em}
+.big{position:absolute;color:var(--ink)}
+.big b{display:block;font-family:var(--font-heading);font-size:13px;font-weight:700;line-height:1.05;letter-spacing:-.01em}
+.big span{display:block;font-family:var(--font-mono);font-size:6px;color:var(--accent);margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
+/* One idea, stated. Never a bullet dump — that is what a slide is for. */
+.point{position:absolute;background:var(--panel);border:1px solid var(--line);
+  border-inline-start:2px solid var(--color-brand-500);padding:7px 8px;color:var(--ink)}
+.point em{display:block;font-style:normal;font-family:var(--font-mono);font-size:5.5px;
+  letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.point b{display:block;font-family:var(--font-heading);font-size:8.5px;font-weight:700;line-height:1.2;margin-top:3px}
+.point p{margin:4px 0 0;font-size:6px;line-height:1.45;color:var(--dim);font-family:var(--font-mono)}
+</style></head><body>
+
+<!-- 06 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>06</code><b>The open</b><em>first 15 seconds</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="cam" style="inset:12% 4%"><i class="ph ph-video-camera"></i>CAMERA · full bleed</div>
+      <div class="big" style="inset-inline-start:7%;top:33%;max-width:52%"><b>SOQL joins,<br>without the loop</b><span>lesson 07</span></div>
+      <div class="lower" style="inset-inline-start:7%;bottom:14%;max-width:46%"><b>Swarnil Singhai</b><span>Salesforce Architect</span></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="cam" style="inset:12% 4%"><i class="ph ph-video-camera"></i>CAMERA · full bleed</div>
+      <div class="big" style="inset-inline-start:7%;top:33%;max-width:52%"><b>SOQL joins,<br>without the loop</b><span>lesson 07</span></div>
+      <div class="lower" style="inset-inline-start:7%;bottom:14%;max-width:46%"><b>Swarnil Singhai</b><span>Salesforce Architect</span></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>Camera, the lesson title, and your name — once.</b> The title holds for the first 6–8 seconds while you state the promise, the name plate rides with it, and then both leave. Frame yourself off-centre so the title has a side of its own; a title over your face is a title nobody reads. This is the only scene where type is allowed to be large.</p>
+</div>
+
+<!-- 07 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>07</code><b>Camera, full frame</b><em>explaining, not showing</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="cam" style="inset:12% 4%"><i class="ph ph-video-camera"></i>CAMERA · full bleed</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="cam" style="inset:12% 4%"><i class="ph ph-video-camera"></i>CAMERA · full bleed</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>Nothing on screen but you.</b> For the why, the caveat, the &ldquo;here is where people get this wrong&rdquo; — the parts of a lesson that are an argument rather than a demonstration. Cutting to a bare camera is a punctuation mark: it tells the viewer to stop scanning the screen and listen. Which is exactly why it stops working if you leave it up for four minutes.</p>
+</div>
+
+<!-- 08 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>08</code><b>Camera + point card</b><em>one idea, stated</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="cam" style="inset:12% 44% 12% 4%"><i class="ph ph-video-camera"></i>CAMERA</div>
+      <div class="point" style="inset-inline-end:4%;top:24%;width:38%"><em>// the rule</em><b>One query, outside the loop</b><p>200 records · 1 SOQL call</p></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="cam" style="inset:12% 44% 12% 4%"><i class="ph ph-video-camera"></i>CAMERA</div>
+      <div class="point" style="inset-inline-end:4%;top:24%;width:38%"><em>// the rule</em><b>One query, outside the loop</b><p>200 records · 1 SOQL call</p></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>The sentence you want them to remember, on screen while you say it.</b> One card, one idea, a heading and at most one line of mono support — if it needs bullets it needs a slide (scene 10). The card appears as you start the sentence and leaves as you finish it. Never stack two; a second card means the first one was not the point.</p>
+</div>
+
+<!-- 09 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>09</code><b>Camera + slide, two-up</b><em>walking a diagram</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:14% 30% 14% 4%"><i class="ph ph-presentation-chart"></i>SLIDE · 16:9</div>
+      <div class="cam" style="inset-inline-end:4%;top:26%;width:24%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:14% 30% 14% 4%"><i class="ph ph-presentation-chart"></i>SLIDE · 16:9</div>
+      <div class="cam" style="inset-inline-end:4%;top:26%;width:24%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>When you are pointing at something and the pointing matters.</b> The slide keeps its own 16:9 shape at a smaller size rather than being cropped to fit — a diagram squeezed out of ratio is a diagram nobody trusts. Camera sits beside it, not over it. Cut to the slide alone (scene 10) the moment you stop gesturing at it.</p>
+</div>
+
+</body></html>

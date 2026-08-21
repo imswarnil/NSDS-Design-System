@@ -612,6 +612,107 @@ const LINKEDIN_BODY = `
     <li>Don't restyle per post: the templates on the Thumbnails and Instagram pages are the only looks.</li>
   </ul></div></div>`;
 
+/* ---- Lesson video --------------------------------------------------------
+   The recorded counterpart to the live page below. Same 16:9 canvas and the
+   same brand furniture, minus everything that only makes sense while a
+   broadcast is running — no live badge, no ticker, no chat, no countdown. A
+   lesson is a file: it gets embedded, clipped and watched two years later, so
+   its frame must not advertise a moment that has passed.
+
+   Seventeen scenes in four families, every one drawn in BOTH themes, because
+   light/dark parity here is a real constraint and not a nicety: the same
+   lesson gets recorded against a bright office wall and a dark studio, and
+   the layout may not change between them — only the palette. */
+const LESSON_VIDEO_BODY = `
+  <p class="sub">The frame</p>
+  <p class="variant-note">Fixed before the first take and never touched again. Of the six zones, exactly one — the stage — changes between scenes; the kicker, the lesson index and the mark stay on the same pixels for the whole lesson, which is what lets someone who joins at minute nine know what they are watching.</p>
+  ${spec(["brand-content-creation/lesson-video/frame.card.html"])}
+
+  <p class="sub">Pick the scene by what you are doing</p>
+  <p class="variant-note">Not by what you feel like cutting to. Every row below is a thing a teacher is actually doing at a moment in a lesson, and the scene that serves it. If your situation is not in this table, the answer is almost always scene 02 or scene 07.</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>01</code></td><td style="inline-size:45%">Clicking through the org, running a query, watching a deploy — your hands matter, your face does not</td><td class="fill">Screen, full frame</td></tr>
+    <tr><td><code>02</code></td><td style="inline-size:45%">Screen-share teaching where reactions carry meaning — the default for most lessons</td><td class="fill">Screen + camera, corner</td></tr>
+    <tr><td><code>03</code></td><td style="inline-size:45%">The shared window is narrow (a form, a record) and you are explaining rather than demonstrating</td><td class="fill">Screen + camera, column</td></tr>
+    <tr><td><code>04</code></td><td style="inline-size:45%">A procedure with more than three steps</td><td class="fill">Screen + step rail</td></tr>
+    <tr><td><code>05</code></td><td style="inline-size:45%">One error, one field, one line of a debug log</td><td class="fill">Screen detail, zoomed</td></tr>
+    <tr><td><code>06</code></td><td style="inline-size:45%">The first fifteen seconds — hook, promise, who you are</td><td class="fill">The open</td></tr>
+    <tr><td><code>07</code></td><td style="inline-size:45%">The why, the caveat, the common mistake — argument, not demonstration</td><td class="fill">Camera, full frame</td></tr>
+    <tr><td><code>08</code></td><td style="inline-size:45%">The one sentence you want them to remember</td><td class="fill">Camera + point card</td></tr>
+    <tr><td><code>09</code></td><td style="inline-size:45%">Walking a diagram while gesturing at it</td><td class="fill">Camera + slide, two-up</td></tr>
+    <tr><td><code>10</code></td><td style="inline-size:45%">Structure, definitions, a list — anything you cannot demonstrate</td><td class="fill">Slide, full frame</td></tr>
+    <tr><td><code>11</code></td><td style="inline-size:45%">The same slide, but the explanation runs long</td><td class="fill">Slide + camera, corner</td></tr>
+    <tr><td><code>12</code></td><td style="inline-size:45%">Reading a prepared snippet line by line</td><td class="fill">Code, full frame</td></tr>
+    <tr><td><code>13</code></td><td style="inline-size:45%">Showing a mistake and the error it produces</td><td class="fill">Code + result</td></tr>
+    <tr><td><code>14</code></td><td style="inline-size:45%">Two seconds after the hook</td><td class="fill">Title card</td></tr>
+    <tr><td><code>15</code></td><td style="inline-size:45%">Crossing from one section to the next</td><td class="fill">Chapter card</td></tr>
+    <tr><td><code>16</code></td><td style="inline-size:45%">The last minute — what they can now do</td><td class="fill">Recap card</td></tr>
+    <tr><td><code>17</code></td><td style="inline-size:45%">The last ten seconds — the only CTA in the lesson</td><td class="fill">End card</td></tr>
+  </tbody></table>
+
+  <p class="sub">Sharing your screen</p>
+  <p class="variant-note">The five scenes that carry most of a technical lesson. All of them assume the shared source is already 16:9 at native 1080p — a stretched or letterboxed screen is the fastest way to make good teaching look cheap, and the rules for getting that right are on the Live stream page, where they apply identically.</p>
+  ${spec(["brand-content-creation/lesson-video/scenes-screen.card.html"])}
+
+  <p class="sub">On camera</p>
+  <p class="variant-note">Four scenes for the parts of a lesson that are an argument rather than a demonstration. Eyes on the upper-third line, a hand's width of headroom, the same crop the course thumbnails use — and the camera keeps one size and one corner for the entire lesson.</p>
+  ${spec(["brand-content-creation/lesson-video/scenes-camera.card.html"])}
+
+  <p class="sub">Slides and code</p>
+  <p class="variant-note">A deck built at 1920&times;1080 needs no scaling at all, which is the sharpest possible path to the viewer — and it inherits the system's kicker, heading and mono-index voice, so a slide is recognizably the same brand as the course page it sits inside.</p>
+  ${spec(["brand-content-creation/lesson-video/scenes-deck.card.html"])}
+
+  <p class="sub">The cards between the teaching</p>
+  <p class="variant-note">Four full-frame cards with no camera and no screen. They are the lesson's punctuation: they give the viewer somewhere to breathe, they give the platform its chapter marks, and they are geometrically the same assets as the thumbnails, so a course reads as one thing from the grid all the way into the video.</p>
+  ${spec(["brand-content-creation/lesson-video/scenes-cards.card.html"])}
+
+  <p class="sub">Light or dark?</p>
+  <p class="variant-note">Both ship. The rule is that one lesson picks one and holds it — never switch themes mid-lesson, and never mix a dark card with a light stage. Within a course, a whole module may differ from another; a single lesson may not.</p>
+  <div class="use-grid"><div><p class="sub k-do">Record dark when</p><ul>
+    <li>You are in a dark editor or a dark-mode org — the frame and the stage agree instead of fighting.</li>
+    <li>The lesson is code-heavy: a bright frame around a dark code panel is a glare box on a phone at night.</li>
+    <li>You want the default. Dark is this brand's home, and the thumbnails are navy.</li>
+  </ul></div><div><p class="sub k-do">Record light when</p><ul>
+    <li>The shared screen is a light org, a document or a whiteboard — chasing it with a dark frame just outlines it.</li>
+    <li>You are on camera in a bright room and cannot control the background.</li>
+    <li>The lesson is conceptual and diagram-led; hairlines read better on white at low bitrates.</li>
+  </ul></div></div>
+  <p class="variant-note">Whichever you pick, the geometry is identical: every scene above is one layout with a swapped palette, driven by the same seven variables. If the light version needs a different arrangement, the arrangement was wrong.</p>
+
+  <p class="sub">Cutting rhythm</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>2s</code></td><td style="inline-size:45%">Title card &middot; chapter card</td><td class="fill">Hard cut in, hard cut out. Long enough to read, short enough not to be skipped.</td></tr>
+    <tr><td><code>6–8s</code></td><td style="inline-size:45%">Lesson title and name plate on the open</td><td class="fill">They leave together, once, and never return.</td></tr>
+    <tr><td><code>10–40s</code></td><td style="inline-size:45%">Camera, full frame</td><td class="fill">A punctuation mark. Past about 40 seconds it stops reading as emphasis and starts reading as a webcam recording.</td></tr>
+    <tr><td><code>as long as it takes</code></td><td style="inline-size:45%">Screen scenes</td><td class="fill">The stage may hold for minutes — as long as something on it is changing. A still screen with narration over it is a slide, so cut to one.</td></tr>
+    <tr><td><code>320ms</code></td><td style="inline-size:45%">Every transition</td><td class="fill">The brand-bar wipe, or a hard cut. No crossfades, no zooms, no stingers with sound effects.</td></tr>
+    <tr><td><code>10s</code></td><td style="inline-size:45%">End card</td><td class="fill">Held in silence. Do not talk over it and do not cut it short — the platform's own end-screen elements need the room.</td></tr>
+  </tbody></table>
+
+  <p class="sub">Recording settings</p>
+  <div class="use-grid"><div><ul>
+    <li><strong>1920&times;1080, 16:9</strong> — canvas, capture and export. 30 fps for teaching; 60 only if something genuinely moves.</li>
+    <li><strong>Shared display at native 1080p, scaling 100%.</strong> A HiDPI screen at default scaling sends a 2&times; frame the encoder downsamples, and every hairline in the org UI turns to mush.</li>
+    <li><strong>Share one window, never the desktop</strong> — notifications, calendar popups, the other tab.</li>
+  </ul></div><div><ul>
+    <li><strong>Browser at 125–150%, editor at 18–20pt.</strong> Set it before you record, not mid-demo.</li>
+    <li><strong>Mono audio, about &minus;16 LUFS, one mic.</strong> Half the audience has one earbud in.</li>
+    <li><strong>The phone test.</strong> If you cannot read it on your own phone from the couch, it is not on screen yet.</li>
+  </ul></div></div>
+
+  <p class="sub">The failure modes</p>
+  <div class="use-grid"><div><p class="sub k-dont">What makes a lesson look improvised</p><ul>
+    <li>The camera in a different corner or a different size in every scene.</li>
+    <li>A layout invented mid-lesson because the content did not fit one of the seventeen.</li>
+    <li>A theme switch partway through, or a light card against a dark stage.</li>
+    <li>Two overlays on screen at once, neither of them expiring.</li>
+  </ul></div><div><p class="sub k-dont">What belongs to a live stream and never here</p><ul>
+    <li>A LIVE badge on a file.</li>
+    <li>A ticker, a chat panel or a comment strip.</li>
+    <li>A countdown or a &ldquo;starting soon&rdquo; frame.</li>
+    <li>A rotating handle bug. One CTA, once, on the end card.</li>
+  </ul></div></div>`;
+
 /* ---- Live stream ---------------------------------------------------------
    A live teaching session is the one place where the brand is assembled in
    real time, under pressure, by one person who is also teaching. So the rules
@@ -1176,6 +1277,7 @@ const CONTENT_DOCS = [
   { id: "cc-approach", title: "Approach", lede: "What content creation is in this system: every public asset — thumbnail, post, video frame — is built from the same tokens and voice as the product, so the feed is recognizably one brand.", cards: ["brand-content-creation/README.card.html", "brand-content-creation/training/training-pair.card.html", "brand-content-creation/course-lesson-pairs/pairs.card.html"] },
   { id: "cc-schedule", title: "Video series & schedule", lede: "The publishing plan: what ships on which day, and the second-by-second template every video follows — hook, promise, sting, teaching, bridge.", body: SCHEDULE_BODY, cards: ["brand-content-creation/video-structure/first-60-seconds.card.html"] },
   { id: "cc-video", title: "Video structure & motion", lede: "Hooks, closures and the motion rules for moving brand assets — how the intro sting and scene transitions behave.", cards: ["brand-content-creation/video-structure/hooks-and-closures.card.html", "brand-content-creation/motion-guidelines.card.html", "brand-content-creation/motion-demo-intro.card.html", "brand-content-creation/motion-demo-transition.card.html"] },
+  { id: "cc-lesson-scenes", title: "Lesson video scenes", lede: "Seventeen recording layouts on one 16:9 frame, each drawn in light and dark: sharing your screen, on camera, slides and code, and the four cards a lesson cuts to. No live badge, no ticker, no chat — a lesson is a file, not a moment.", body: LESSON_VIDEO_BODY, cards: [] },
   { id: "cc-livestream", title: "Live stream scenes", lede: "The 16:9 broadcast frame: one canvas, eight prebuilt scenes, and twelve overlays. Where the camera, the shared screen, the title, the watermark and the handles sit — and how long each one stays on screen.", body: LIVESTREAM_BODY, cards: [] },
   { id: "cc-thumbnails", title: "Thumbnails", lede: "Every thumbnail surface — course, lesson, blog, YouTube — from one style family, so a row of them reads as a series.", cards: ["brand-content-creation/thumbnails/15-thumbnail-styles.card.html", "brand-content-creation/course-thumbnail.card.html", "brand-content-creation/lesson-thumbnail.card.html", "brand-content-creation/blog/10-blog-thumbnail-styles.card.html", "brand-content-creation/youtube-thumbnail.card.html"] },
   { id: "cc-instagram", title: "Instagram", lede: "Post and story templates. Same tokens, same mono indices — the feed is the product's voice at 1080px.", cards: ["brand-content-creation/instagram-post.card.html", "brand-content-creation/instagram-story.card.html", "brand-content-creation/instagram/instagram-post-styles.card.html"] },

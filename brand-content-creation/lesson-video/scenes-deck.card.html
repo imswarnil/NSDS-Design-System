@@ -1,0 +1,152 @@
+<!-- @dsCard group="Content Creation" viewport="760x1230" name="Lesson Video — Slides & Code" subtitle="Four scenes in both themes: a slide alone, a slide with camera, full-frame code, and code beside its result" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--hl:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--hl:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:16px 16px}
+.kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.idx{position:absolute;inset-inline-end:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.06em;color:var(--dim)}
+.mark{position:absolute;inset-inline-end:5%;bottom:6%;display:flex;align-items:center;gap:3px;opacity:.6;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.cam{position:absolute;aspect-ratio:16/9;background:var(--hl);border:1px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.cam i{font-size:11px}
+/* A real slide, not a grey box — the deck uses the same heading/mono voice as
+   every other surface, which is the entire reason slides are in this system. */
+.slide{position:absolute;background:var(--panel);border:1px solid var(--line);padding:9px 11px;color:var(--ink);overflow:hidden}
+.slide em{display:block;font-style:normal;font-family:var(--font-mono);font-size:5.5px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.slide b{display:block;font-family:var(--font-heading);font-size:10px;font-weight:700;line-height:1.1;margin-top:4px}
+.slide ul{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
+.slide li{display:flex;gap:5px;font-family:var(--font-mono);font-size:5.5px;color:var(--dim);line-height:1.3}
+.slide li i{font-style:normal;color:var(--accent);font-weight:700}
+.code{position:absolute;background:var(--panel);border:1px solid var(--line);padding:7px 0 7px 9px;
+  display:flex;flex-direction:column;gap:3px;font-family:var(--font-mono);font-size:5.5px;color:var(--dim);overflow:hidden}
+.code i{font-style:normal;display:block;white-space:nowrap}
+.code i[data-on]{color:var(--ink);background:var(--hl);border-inline-start:2px solid var(--color-brand-500);
+  margin-inline-start:-9px;padding-inline-start:7px}
+.title{position:absolute;inset-inline-start:5%;bottom:6%;max-width:50%;color:var(--ink)}
+.title b{display:block;font-family:var(--font-heading);font-size:8px;font-weight:700;line-height:1.15}
+.title span{display:block;font-family:var(--font-mono);font-size:5.5px;color:var(--accent);margin-top:2px;letter-spacing:.06em}
+</style></head><body>
+
+<!-- 10 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>10</code><b>Slide, full frame</b><em>the concept beat</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="slide" style="inset:15% 4%"><em>// 03 · bulkification</em><b>Three ways a trigger blows the limit</b>
+        <ul><li><i>01</i>A query inside the loop</li><li><i>02</i>A DML inside the loop</li><li><i>03</i>A second trigger on the same object</li></ul></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="slide" style="inset:15% 4%"><em>// 03 · bulkification</em><b>Three ways a trigger blows the limit</b>
+        <ul><li><i>01</i>A query inside the loop</li><li><i>02</i>A DML inside the loop</li><li><i>03</i>A second trigger on the same object</li></ul></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>For structure, definitions and lists — anything you cannot demonstrate.</b> Built at 1920×1080 so it needs no scaling at all, with the same kicker, heading and mono-index voice as every other surface in the system. Three to five lines, never a paragraph: a slide the viewer has to read is a slide they stop listening during.</p>
+</div>
+
+<!-- 11 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>11</code><b>Slide + camera, corner</b><em>presenting</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="slide" style="inset:15% 4%"><em>// 03 · bulkification</em><b>Three ways a trigger blows the limit</b>
+        <ul><li><i>01</i>A query inside the loop</li><li><i>02</i>A DML inside the loop</li></ul></div>
+      <div class="cam" style="inset-inline-end:6%;bottom:19%;width:17%"><i class="ph ph-user"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="slide" style="inset:15% 4%"><em>// 03 · bulkification</em><b>Three ways a trigger blows the limit</b>
+        <ul><li><i>01</i>A query inside the loop</li><li><i>02</i>A DML inside the loop</li></ul></div>
+      <div class="cam" style="inset-inline-end:6%;bottom:19%;width:17%"><i class="ph ph-user"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>The same slide with you on it — for the long explanations.</b> Camera in the same corner it occupies during screen share, so the eye never has to hunt for you between scenes. Drop a line from the slide to keep the bottom-right clear: a slide laid out around the camera beats a camera parked on top of a full one.</p>
+</div>
+
+<!-- 12 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>12</code><b>Code, full frame</b><em>reading a snippet</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="code" style="inset:15% 4% 22%">
+        <i>trigger AccountTrigger on Account (after update) {</i>
+        <i>&nbsp;&nbsp;Set&lt;Id&gt; ids = new Set&lt;Id&gt;();</i>
+        <i>&nbsp;&nbsp;for (Account a : Trigger.new) ids.add(a.Id);</i>
+        <i data-on>&nbsp;&nbsp;List&lt;Contact&gt; cs = [SELECT Id FROM Contact WHERE AccountId IN :ids];</i>
+        <i>&nbsp;&nbsp;update cs;</i><i>}</i></div>
+      <div class="title"><b>One query, outside the loop</b><span>// the fix</span></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="code" style="inset:15% 4% 22%">
+        <i>trigger AccountTrigger on Account (after update) {</i>
+        <i>&nbsp;&nbsp;Set&lt;Id&gt; ids = new Set&lt;Id&gt;();</i>
+        <i>&nbsp;&nbsp;for (Account a : Trigger.new) ids.add(a.Id);</i>
+        <i data-on>&nbsp;&nbsp;List&lt;Contact&gt; cs = [SELECT Id FROM Contact WHERE AccountId IN :ids];</i>
+        <i>&nbsp;&nbsp;update cs;</i><i>}</i></div>
+      <div class="title"><b>One query, outside the loop</b><span>// the fix</span></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>A prepared snippet, not your editor.</b> Camera off, type at 18–20pt, at most 14 visible lines, and the line under discussion marked with the brand rule — highlighting is how you point without a cursor. Wrap long lines; never scroll sideways. If it does not fit in fourteen lines, teach the shape on a slide first and the code second.</p>
+</div>
+
+<!-- 13 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>13</code><b>Code + result</b><em>cause and effect</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="code" style="inset:15% 48% 15% 4%">
+        <i>for (Account a : accs) {</i><i data-on>&nbsp;&nbsp;[SELECT Id FROM Contact ...]</i><i>}</i></div>
+      <div class="slide" style="inset:15% 4% 15% 54%"><em>// debug log</em><b>101 SOQL queries</b>
+        <ul><li><i>&times;</i>System.LimitException</li><li><i>&times;</i>Too many SOQL queries: 101</li></ul></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="code" style="inset:15% 48% 15% 4%">
+        <i>for (Account a : accs) {</i><i data-on>&nbsp;&nbsp;[SELECT Id FROM Contact ...]</i><i>}</i></div>
+      <div class="slide" style="inset:15% 4% 15% 54%"><em>// debug log</em><b>101 SOQL queries</b>
+        <ul><li><i>&times;</i>System.LimitException</li><li><i>&times;</i>Too many SOQL queries: 101</li></ul></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>The code that causes it beside the thing it causes.</b> The single most useful frame in technical teaching, and the one most people never build: the mistake and its consequence visible at the same moment, so the viewer does not have to hold one in memory while looking at the other. Keep the split even — the error is not a footnote.</p>
+</div>
+
+</body></html>

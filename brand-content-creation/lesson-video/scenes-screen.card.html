@@ -1,0 +1,166 @@
+<!-- @dsCard group="Content Creation" viewport="760x1530" name="Lesson Video — Sharing Your Screen" subtitle="Five screen-share scenes, each in both themes: screen alone, with a camera, with a rail, and zoomed" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+/* The light/dark contract in seven variables — the two frames in every pair
+   below are the same geometry with a swapped palette, never a second layout. */
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--camfill:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--camfill:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:16px 16px}
+.kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.idx{position:absolute;inset-inline-end:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.06em;color:var(--dim)}
+.mark{position:absolute;inset-inline-end:5%;bottom:6%;display:flex;align-items:center;gap:3px;opacity:.6;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.panel{position:absolute;background:var(--panel);border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  font-family:var(--font-mono);font-size:6px;color:var(--dim);text-align:center;padding:0 5px}
+.panel i{font-size:13px;color:var(--accent)}
+.cam{position:absolute;aspect-ratio:16/9;background:var(--camfill);border:1px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;color:var(--accent)}
+.cam i{font-size:11px}
+.title{position:absolute;inset-inline-start:5%;bottom:6%;max-width:50%;color:var(--ink)}
+.title b{display:block;font-family:var(--font-heading);font-size:8px;font-weight:700;line-height:1.15}
+.title span{display:block;font-family:var(--font-mono);font-size:5.5px;color:var(--accent);margin-top:2px;letter-spacing:.06em}
+/* A numbered rail — the same 01/02/03 voice the lessons and thumbnails use. */
+.steps{position:absolute;display:flex;flex-direction:column;gap:5px}
+.steps div{display:flex;gap:5px;align-items:flex-start;font-family:var(--font-mono);font-size:5.5px;color:var(--dim);line-height:1.3}
+.steps i{font-style:normal;color:var(--accent);font-weight:700}
+.steps div[data-on]{color:var(--ink)}
+/* The zoom scene's locator: the whole screen, small, with the crop marked. */
+.loc{position:absolute;border:1px solid var(--line);background:var(--panel)}
+.loc span{position:absolute;border:1px solid var(--color-brand-500);background:rgb(1 118 211/.18)}
+</style></head><body>
+
+<!-- 01 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>01</code><b>Screen, full frame</b><em>no camera</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN · 16:9</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN · 16:9</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>The default for anything you are doing rather than saying.</b> Screen fills the stage; only the kicker, the lesson index and the mark ride on top. Use it the moment your hands matter more than your face — clicking through Setup, running a query, watching a deploy. Your voice carries the teaching, so the frame does not need you in it.</p>
+</div>
+
+<!-- 02 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>02</code><b>Screen + camera, corner</b><em>the workhorse</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN</div>
+      <div class="cam" style="inset-inline-end:6%;bottom:19%;width:17%"><i class="ph ph-user"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN</div>
+      <div class="cam" style="inset-inline-end:6%;bottom:19%;width:17%"><i class="ph ph-user"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>Screen-share teaching with a face on it.</b> Camera bottom-right at 17–20% of frame width, one corner for the whole lesson — moving it costs the viewer a re-scan every time. Park it over dead space, never over the org's left nav or the record you are about to edit. If the corner you need is busy, switch to scene 03 rather than shuffling the camera around.</p>
+</div>
+
+<!-- 03 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>03</code><b>Screen + camera, column</b><em>talking through</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 29% 15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN</div>
+      <div class="cam" style="inset-inline-end:4%;top:15%;width:23%"><i class="ph ph-user"></i></div>
+      <div class="panel" style="inset-inline-end:4%;top:42%;width:23%;bottom:15%;justify-content:flex-start;padding-top:6px"><i class="ph ph-lightbulb"></i>NOTE PANEL</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 29% 15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN</div>
+      <div class="cam" style="inset-inline-end:4%;top:15%;width:23%"><i class="ph ph-user"></i></div>
+      <div class="panel" style="inset-inline-end:4%;top:42%;width:23%;bottom:15%;justify-content:flex-start;padding-top:6px"><i class="ph ph-lightbulb"></i>NOTE PANEL</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>When the screen is narrow and you are explaining, not demonstrating.</b> The camera gets a real column instead of a corner, with room under it for the point you are making. Nothing overlaps, so both the screen and your face keep full contrast. Costs you screen width — only worth it when the shared window is a form, a record, or anything else that does not need 16:9.</p>
+</div>
+
+<!-- 04 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>04</code><b>Screen + step rail</b><em>multi-step walkthrough</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 31% 15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN</div>
+      <div class="steps" style="inset-inline-end:4%;top:17%;width:25%">
+        <div><i>01</i>Create the trigger</div><div data-on><i>02</i>Move the query out of the loop</div>
+        <div><i>03</i>Bulkify the update</div><div><i>04</i>Re-run the test</div>
+      </div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 31% 15% 4%"><i class="ph ph-projector-screen"></i>SHARED SCREEN</div>
+      <div class="steps" style="inset-inline-end:4%;top:17%;width:25%">
+        <div><i>01</i>Create the trigger</div><div data-on><i>02</i>Move the query out of the loop</div>
+        <div><i>03</i>Bulkify the update</div><div><i>04</i>Re-run the test</div>
+      </div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>Any procedure longer than three steps.</b> The rail lists them in the mono 01/02/03 voice the whole platform uses, with the current one at full ink and the rest dimmed. It is the cheapest possible fix for the most common lesson complaint — &ldquo;I lost track of where we were.&rdquo; Update it as you cross each boundary, or take it off screen.</p>
+</div>
+
+<!-- 05 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>05</code><b>Screen detail</b><em>zoomed, with a locator</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 4% 15% 26%"><i class="ph ph-magnifying-glass"></i>ZOOMED REGION · 200%</div>
+      <div class="loc" style="inset-inline-start:4%;top:24%;width:19%;aspect-ratio:16/9">
+        <span style="inset-inline-start:12%;top:38%;width:44%;height:34%"></span></div>
+      <div class="title"><b>Governor limits panel</b><span>// detail</span></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="panel" style="inset:15% 4% 15% 26%"><i class="ph ph-magnifying-glass"></i>ZOOMED REGION · 200%</div>
+      <div class="loc" style="inset-inline-start:4%;top:24%;width:19%;aspect-ratio:16/9">
+        <span style="inset-inline-start:12%;top:38%;width:44%;height:34%"></span></div>
+      <div class="title"><b>Governor limits panel</b><span>// detail</span></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>For the debug log, the error toast, the one field that matters.</b> Zoom in post, not live — a mid-recording zoom reflows the page and loses the viewer. The small locator keeps the crop honest by showing where it came from; without it a zoomed frame is a claim the viewer cannot check. Come back out as soon as the detail is read.</p>
+</div>
+
+</body></html>

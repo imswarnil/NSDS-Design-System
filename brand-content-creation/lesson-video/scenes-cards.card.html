@@ -1,0 +1,148 @@
+<!-- @dsCard group="Content Creation" viewport="760x1215" name="Lesson Video — The Cards Between" subtitle="Four full-frame cards in both themes: title, chapter, recap and end — no camera, no screen" -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--hl:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--hl:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+  background-size:16px 16px}
+.kick{position:absolute;inset-inline-start:6%;top:9%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.idx{position:absolute;inset-inline-end:6%;top:9%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.06em;color:var(--dim)}
+.mark{position:absolute;inset-inline-end:6%;bottom:8%;display:flex;align-items:center;gap:3px;opacity:.6;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.meta{position:absolute;inset-inline-start:6%;bottom:8%;font-family:var(--font-mono);font-size:5.5px;color:var(--dim);letter-spacing:.05em}
+.big{position:absolute;color:var(--ink)}
+.big b{display:block;font-family:var(--font-heading);font-weight:700;line-height:1.05;letter-spacing:-.015em;font-size:15px}
+.big span{display:block;font-family:var(--font-mono);font-size:6px;color:var(--accent);margin-top:5px;
+  letter-spacing:.1em;text-transform:uppercase}
+/* The chapter number set huge — the numbering IS the structure. */
+.chapno{position:absolute;font-family:var(--font-mono);font-weight:700;font-size:38px;line-height:1;
+  color:var(--accent);opacity:.35;letter-spacing:-.03em}
+.rule{position:absolute;height:1px;background:var(--line)}
+.list{position:absolute;display:flex;flex-direction:column;gap:6px;color:var(--ink)}
+.list div{display:flex;gap:7px;align-items:baseline}
+.list i{font-style:normal;font-family:var(--font-mono);font-size:6px;font-weight:700;color:var(--accent);flex:none}
+.list b{font-family:var(--font-heading);font-size:8px;font-weight:600;line-height:1.25}
+.next{position:absolute;background:var(--panel);border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  font-family:var(--font-mono);font-size:5.5px;color:var(--dim);text-align:center;padding:0 6px}
+.next i{font-size:13px;color:var(--accent)}
+.cta{position:absolute;display:flex;align-items:center;gap:6px;background:var(--color-brand-500);color:#fff;padding:5px 9px}
+.cta i{font-size:11px}
+.cta b{font-family:var(--font-heading);font-size:7px;font-weight:600}
+</style></head><body>
+
+<!-- 14 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>14</code><b>Title card</b><em>0:00 · 2 seconds</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="big" style="inset-inline-start:6%;top:34%;max-width:66%"><b>SOQL joins,<br>without the loop</b><span>lesson 07</span></div>
+      <div class="meta">14 min · intermediate</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="big" style="inset-inline-start:6%;top:34%;max-width:66%"><b>SOQL joins,<br>without the loop</b><span>lesson 07</span></div>
+      <div class="meta">14 min · intermediate</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>Geometrically the lesson thumbnail, in motion.</b> Same kicker, same index badge, same meta row — so the frame the viewer clicked and the frame they land on are visibly one thing. Two seconds, hard cut in and out, and it goes <em>after</em> the hook, never before it: a title card is the first thing a viewer skips when it is the first thing they see.</p>
+</div>
+
+<!-- 15 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>15</code><b>Chapter card</b><em>between sections · 1.5s</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="chapno" style="inset-inline-start:6%;top:28%">03</div>
+      <div class="rule" style="inset-inline:6%;top:60%"></div>
+      <div class="big" style="inset-inline-start:6%;top:66%;max-width:66%"><b style="font-size:11px">Bulkification</b></div>
+      <div class="meta">step 3 of 5</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="chapno" style="inset-inline-start:6%;top:28%">03</div>
+      <div class="rule" style="inset-inline:6%;top:60%"></div>
+      <div class="big" style="inset-inline-start:6%;top:66%;max-width:66%"><b style="font-size:11px">Bulkification</b></div>
+      <div class="meta">step 3 of 5</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>A breath between sections, and a chapter marker for the platform.</b> The number is set huge because the numbering is the structure — the same 01/02/03 the step rail, the curriculum and the thumbnails carry. Cut it on a beat where a viewer might reasonably stop; those are also the timestamps worth putting in the description.</p>
+</div>
+
+<!-- 16 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>16</code><b>Recap card</b><em>last minute</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// you can now</div><div class="idx">07 / 12</div>
+      <div class="list" style="inset-inline-start:6%;top:28%;max-width:74%">
+        <div><i>01</i><b>Spot a query inside a loop</b></div>
+        <div><i>02</i><b>Rewrite it as one bulk query</b></div>
+        <div><i>03</i><b>Prove it with a 200-record test</b></div></div>
+      <div class="meta">next · governor limits</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// you can now</div><div class="idx">07 / 12</div>
+      <div class="list" style="inset-inline-start:6%;top:28%;max-width:74%">
+        <div><i>01</i><b>Spot a query inside a loop</b></div>
+        <div><i>02</i><b>Rewrite it as one bulk query</b></div>
+        <div><i>03</i><b>Prove it with a 200-record test</b></div></div>
+      <div class="meta">next · governor limits</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>Three things, phrased as things they can now do.</b> Not &ldquo;we covered bulkification&rdquo; — &ldquo;you can now rewrite it as one bulk query.&rdquo; Capability, not coverage. Three lines maximum: a recap that lists everything is a recap that ranks nothing, and the viewer remembers none of it.</p>
+</div>
+
+<!-- 17 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>17</code><b>End card</b><em>last 10 seconds · the only CTA</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="big" style="inset-inline-start:6%;top:30%;max-width:44%"><b style="font-size:12px">Next: Governor<br>limits, in practice</b><span>lesson 08</span></div>
+      <div class="next" style="inset-inline-end:6%;top:26%;width:32%;aspect-ratio:16/9"><i class="ph ph-play-circle"></i>NEXT LESSON</div>
+      <div class="cta" style="inset-inline-start:6%;bottom:14%"><i class="ph ph-graduation-cap"></i><b>Full course · namastesalesforce.com</b></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// apex fundamentals</div><div class="idx">07 / 12</div>
+      <div class="big" style="inset-inline-start:6%;top:30%;max-width:44%"><b style="font-size:12px">Next: Governor<br>limits, in practice</b><span>lesson 08</span></div>
+      <div class="next" style="inset-inline-end:6%;top:26%;width:32%;aspect-ratio:16/9"><i class="ph ph-play-circle"></i>NEXT LESSON</div>
+      <div class="cta" style="inset-inline-start:6%;bottom:14%"><i class="ph ph-graduation-cap"></i><b>Full course · namastesalesforce.com</b></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <p class="cap"><b>The next lesson by name, and one ask.</b> This is the single place in a recorded lesson where brand-500 fills a solid block and where a CTA is allowed at all — which is what makes it work. Hold it ten seconds in silence; the platform's own end-screen elements land in the right-hand third, which is why the next-lesson card sits there.</p>
+</div>
+
+</body></html>
