@@ -32,7 +32,7 @@ the system it documents.
 
 [![Overview](docs/images/overview.jpg)](https://nsds.imswarnil.com/)
 
-255 tokens, 1,140 classes, 129 components. The sidebar collapses to the section
+257 tokens, 1,629 classes, 138 components. The sidebar collapses to the section
 you are in and scrolls it into view; every component page carries its own
 use / not-for / accessibility contract beside the demos.
 
