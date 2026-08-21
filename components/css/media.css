@@ -41,6 +41,94 @@
                    padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
                    background: var(--color-scrim); color: var(--color-on-dark);
                    font-family: var(--font-mono); font-size: var(--size-label); }
+  /* The opposite corner, for what KIND of video this is — SHORT, CLIP, LIVE,
+     REPLAY. Duration and kind are different facts and a reader triaging a row
+     of thumbnails wants both, so they do not share a corner. */
+  .ns-video__tag { position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
+                   padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
+                   background: var(--color-scrim); color: var(--color-on-dark);
+                   font-family: var(--font-mono); font-size: var(--size-label);
+                   font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+                   text-transform: uppercase; }
+
+  /* Ratios. A video is 16:9 until the platform says otherwise, and the two
+     that say otherwise are vertical (a Short, a Reel) and square (a feed
+     post). These crop nothing — they change the frame the embed fills, which
+     is the only honest way to carry a 9:16 source. Letterboxing a vertical
+     video into a 16:9 box to keep the grid tidy wastes two thirds of the
+     frame and is the single most common way an embedded Short looks broken. */
+  .ns-video--9x16 { aspect-ratio: 9 / 16; }
+  .ns-video--1x1 { aspect-ratio: 1; }
+  .ns-video--21x9 { aspect-ratio: 21 / 9; }
+  /* A vertical video needs a width cap or it becomes a two-metre column on a
+     desktop. 22rem is about a phone held at arm's length. */
+  .ns-video--9x16 { max-inline-size: 22rem; }
+
+  /* --- Video effects ------------------------------------------------------
+     Two, and they are both about the POSTER, because the frame and the
+     controls stay still — Principle 5. Anything that moves the frame itself
+     (a lift, a tilt, a glow) is out.
+
+     --hover crossfades a muted, looping preview over the poster on hover or
+     keyboard focus. It is the one genuinely useful motion on a thumbnail:
+     it answers "is this the clip I mean" without a page load. The preview is
+     a real <video muted loop playsinline> that the product may lazy-load;
+     with no preview element the modifier does nothing, which is the correct
+     failure.
+
+     --zoom is a slow scale on the poster alone, clipped by the frame. */
+  .ns-video__preview {
+    position: absolute; inset: 0; inline-size: 100%; block-size: 100%;
+    object-fit: cover; opacity: 0; pointer-events: none;
+    transition: opacity var(--duration-slow, 240ms) var(--ease-out);
+  }
+  .ns-video--hover:hover .ns-video__preview,
+  .ns-video--hover:focus-within .ns-video__preview { opacity: 1; }
+  .ns-video--hover:hover .ns-video__poster,
+  .ns-video--hover:focus-within .ns-video__poster { opacity: 0; }
+  .ns-video--zoom .ns-video__poster { transition: scale var(--duration-slow, 240ms) var(--ease-out); }
+  .ns-video--zoom:hover .ns-video__poster { scale: 1.04; }
+  /* A preview that plays because a pointer passed over it is exactly the
+     motion this setting exists to stop. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-video__preview { transition: none; }
+    .ns-video--hover:hover .ns-video__preview,
+    .ns-video--hover:focus-within .ns-video__preview { opacity: 0; }
+    .ns-video--hover:hover .ns-video__poster,
+    .ns-video--hover:focus-within .ns-video__poster { opacity: 0.85; }
+    .ns-video--zoom:hover .ns-video__poster { scale: 1; }
+  }
+
+  /* --- Shorts strip -------------------------------------------------------
+     A row of vertical clips. Same scroll-snap mechanics as .ns-carousel —
+     this is a shaped instance of it rather than a second scroller, so the
+     swipe behaviour, the snap and the scrollbar handling are all inherited
+     and cannot drift.
+
+     Vertical video is the one format where a strip beats a grid: the clips
+     are short, the decision is fast, and a grid of 9:16 tiles pushes
+     everything else on the page below two screens of thumbnails. */
+  .ns-shorts { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-shorts__track {
+    display: flex; gap: var(--gap-grid);
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-1);
+    padding-block-end: var(--space-2);
+  }
+  .ns-shorts__item {
+    flex: 0 0 min(11rem, 44%); scroll-snap-align: start; min-inline-size: 0;
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  /* Inside the strip the cap comes off — the item is already narrow. */
+  .ns-shorts__item .ns-video--9x16 { max-inline-size: none; }
+  .ns-shorts__cap {
+    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-ink);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ns-shorts__meta {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
 
   /* --- Gallery ------------------------------------------------------------
      A grid of figures. Auto-fills; --two locks two columns for pairs. */

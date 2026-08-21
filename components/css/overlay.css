@@ -57,6 +57,26 @@
   .ns-modal[open] { display: flex; flex-direction: column; }
   .ns-modal--sm { inline-size: min(24rem, calc(100vw - var(--space-8))); }
   .ns-modal--lg { inline-size: min(48rem, calc(100vw - var(--space-8))); }
+  /* A modal whose content IS a video. It widens to the video's own shape and
+     drops the card padding, because a 16:9 embed inside a 32rem column with
+     card padding on both sides is a postage stamp with a title over it.
+
+     This is the pattern for "watch it here" — a button or a poster in an
+     article that opens the player without navigating away. The frame goes
+     navy so the letterbox around a non-16:9 source reads as the brand rather
+     than as a rendering fault, and the title stays ABOVE the video: a title
+     overlaid on a frame you are about to play is a title in the way. */
+  .ns-modal--video {
+    inline-size: min(60rem, calc(100vw - var(--space-8)));
+    max-block-size: calc(100dvh - var(--space-12));
+    background: var(--color-brand-900); border-color: transparent;
+  }
+  .ns-modal--video .ns-modal__header { padding-block-end: var(--space-3); color: var(--color-on-dark); }
+  .ns-modal--video .ns-modal__title { font-size: var(--size-body-lg); color: var(--color-on-dark); }
+  .ns-modal--video .ns-modal__body { padding: 0; overflow: visible; }
+  /* Inside the dialog the frame's own border and radius are redundant — the
+     dialog is the frame. */
+  .ns-modal--video .ns-video { border: 0; border-radius: 0; }
 
   .ns-modal__header {
     display: flex; align-items: flex-start; gap: var(--space-4);

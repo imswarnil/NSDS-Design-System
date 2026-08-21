@@ -611,9 +611,35 @@
   --size-h3: 1.5rem;        /* 24 — carapace 2xl */
   --size-h4: 1.25rem;       /* 20 — carapace xl  */
   --size-body-lg: 1.0625rem;/* 17 — carapace lg — ledes and standfirsts */
-  --size-body: 0.875rem;    /* 14 — carapace base — THE READING SIZE */
+  --size-body: 0.875rem;    /* 14 — carapace base — THE UI SIZE */
   --size-small: 0.8125rem;  /* 13 — carapace sm */
   --size-fine: 0.75rem;     /* 12 — carapace xs — legal, footnotes, captions */
+
+  /* The READING scale — and why there are two.
+     =======================================================================
+     14px is the right base for the app. A curriculum rail, an admin table, a
+     player's chrome and a dashboard are scanned, not read, and at 16px every
+     one of them had to fight the base size with --size-small, which is the
+     tell that the base is wrong for those screens.
+
+     14px is the wrong base for an ARTICLE. A blog post and a written lesson
+     are read continuously for eight minutes, and the thing that makes that
+     comfortable — long descenders, open counters, a 68ch measure — needs the
+     size to go with it. Setting a 2,000-word essay at the same size as a
+     table row is how a design system ends up with an app that feels tight
+     and a blog that feels cramped.
+
+     So the scale forks once, here, on the axis it actually forks on: SCANNED
+     versus READ. .ns-prose and the surfaces built on it take these; every
+     other component keeps --size-body. Two tokens, one rule, and no
+     component has to decide.
+
+     15 is the step the UI scale never needed and prose does — it is what
+     sets a table or a code block INSIDE an article, where dropping to 13
+     would put the code two full steps below the paragraph it explains. */
+  --size-prose: 1.0625rem;      /* 17 — THE READING SIZE */
+  --size-prose-lead: 1.25rem;   /* 20 — standfirsts and ledes on a reading page */
+  --size-prose-small: 0.9375rem;/* 15 — tables, code and captions inside prose */
 
   /* Mono/label scale — the structural material. Every index, timestamp,
      duration, kicker and status runs through this, uppercase + tracked,
@@ -2198,6 +2224,26 @@
   .ns-modal[open] { display: flex; flex-direction: column; }
   .ns-modal--sm { inline-size: min(24rem, calc(100vw - var(--space-8))); }
   .ns-modal--lg { inline-size: min(48rem, calc(100vw - var(--space-8))); }
+  /* A modal whose content IS a video. It widens to the video's own shape and
+     drops the card padding, because a 16:9 embed inside a 32rem column with
+     card padding on both sides is a postage stamp with a title over it.
+
+     This is the pattern for "watch it here" — a button or a poster in an
+     article that opens the player without navigating away. The frame goes
+     navy so the letterbox around a non-16:9 source reads as the brand rather
+     than as a rendering fault, and the title stays ABOVE the video: a title
+     overlaid on a frame you are about to play is a title in the way. */
+  .ns-modal--video {
+    inline-size: min(60rem, calc(100vw - var(--space-8)));
+    max-block-size: calc(100dvh - var(--space-12));
+    background: var(--color-brand-900); border-color: transparent;
+  }
+  .ns-modal--video .ns-modal__header { padding-block-end: var(--space-3); color: var(--color-on-dark); }
+  .ns-modal--video .ns-modal__title { font-size: var(--size-body-lg); color: var(--color-on-dark); }
+  .ns-modal--video .ns-modal__body { padding: 0; overflow: visible; }
+  /* Inside the dialog the frame's own border and radius are redundant — the
+     dialog is the frame. */
+  .ns-modal--video .ns-video { border: 0; border-radius: 0; }
 
   .ns-modal__header {
     display: flex; align-items: flex-start; gap: var(--space-4);
@@ -7316,6 +7362,55 @@
   .ns-tposition b { color: var(--color-ink); font-weight: var(--weight-semibold); }
   .ns-tposition__sep { color: var(--color-border); }
 
+  /* ======================================================== Pace ====
+     "At 30 minutes a day you finish on 12 September."
+
+     A track page states hours, modules and lessons, and none of those is the
+     question the learner actually has. Forty-two hours is not a number
+     anybody can convert into a decision; a DATE is. This is the one element
+     on the page that turns the size of the commitment into something a
+     person can say yes or no to, which is why it is a component rather than
+     a sentence somebody remembers to write.
+
+     The date is the loud thing and the hours are the small print —
+     deliberately the reverse of how every course page does it. The control
+     is .ns-segmented from the form layer: the learner is choosing between
+     three named options, which is exactly what a segmented control is for,
+     and a slider here would invite a precision the estimate does not have.
+
+     It is honest about being an estimate: the meta line always says what the
+     figure assumes, because a finish date with no stated pace is a promise
+     rather than a projection. */
+  .ns-pace {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-pace__label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-pace__date {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight); color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-pace__meta {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+    display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3);
+  }
+  .ns-pace__meta b { color: var(--color-ink); font-weight: var(--weight-label); }
+  /* The control gets the full width in a rail and sits inline when there is
+     room — the track page puts this in an 18rem sidebar and the catalog page
+     puts it under a hero. */
+  .ns-pace__control .ns-segmented { inline-size: 100%; }
+  .ns-pace--inline { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--space-4); }
+  .ns-pace--inline .ns-pace__control { margin-inline-start: auto; }
+  .ns-pace--inline .ns-pace__date { font-size: var(--size-h4); }
 }
 /* NS Design System — catalog: course hero, buy box, filters, social proof.
    =========================================================================
@@ -8633,6 +8728,94 @@
                    padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
                    background: var(--color-scrim); color: var(--color-on-dark);
                    font-family: var(--font-mono); font-size: var(--size-label); }
+  /* The opposite corner, for what KIND of video this is — SHORT, CLIP, LIVE,
+     REPLAY. Duration and kind are different facts and a reader triaging a row
+     of thumbnails wants both, so they do not share a corner. */
+  .ns-video__tag { position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
+                   padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
+                   background: var(--color-scrim); color: var(--color-on-dark);
+                   font-family: var(--font-mono); font-size: var(--size-label);
+                   font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+                   text-transform: uppercase; }
+
+  /* Ratios. A video is 16:9 until the platform says otherwise, and the two
+     that say otherwise are vertical (a Short, a Reel) and square (a feed
+     post). These crop nothing — they change the frame the embed fills, which
+     is the only honest way to carry a 9:16 source. Letterboxing a vertical
+     video into a 16:9 box to keep the grid tidy wastes two thirds of the
+     frame and is the single most common way an embedded Short looks broken. */
+  .ns-video--9x16 { aspect-ratio: 9 / 16; }
+  .ns-video--1x1 { aspect-ratio: 1; }
+  .ns-video--21x9 { aspect-ratio: 21 / 9; }
+  /* A vertical video needs a width cap or it becomes a two-metre column on a
+     desktop. 22rem is about a phone held at arm's length. */
+  .ns-video--9x16 { max-inline-size: 22rem; }
+
+  /* --- Video effects ------------------------------------------------------
+     Two, and they are both about the POSTER, because the frame and the
+     controls stay still — Principle 5. Anything that moves the frame itself
+     (a lift, a tilt, a glow) is out.
+
+     --hover crossfades a muted, looping preview over the poster on hover or
+     keyboard focus. It is the one genuinely useful motion on a thumbnail:
+     it answers "is this the clip I mean" without a page load. The preview is
+     a real <video muted loop playsinline> that the product may lazy-load;
+     with no preview element the modifier does nothing, which is the correct
+     failure.
+
+     --zoom is a slow scale on the poster alone, clipped by the frame. */
+  .ns-video__preview {
+    position: absolute; inset: 0; inline-size: 100%; block-size: 100%;
+    object-fit: cover; opacity: 0; pointer-events: none;
+    transition: opacity var(--duration-slow, 240ms) var(--ease-out);
+  }
+  .ns-video--hover:hover .ns-video__preview,
+  .ns-video--hover:focus-within .ns-video__preview { opacity: 1; }
+  .ns-video--hover:hover .ns-video__poster,
+  .ns-video--hover:focus-within .ns-video__poster { opacity: 0; }
+  .ns-video--zoom .ns-video__poster { transition: scale var(--duration-slow, 240ms) var(--ease-out); }
+  .ns-video--zoom:hover .ns-video__poster { scale: 1.04; }
+  /* A preview that plays because a pointer passed over it is exactly the
+     motion this setting exists to stop. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-video__preview { transition: none; }
+    .ns-video--hover:hover .ns-video__preview,
+    .ns-video--hover:focus-within .ns-video__preview { opacity: 0; }
+    .ns-video--hover:hover .ns-video__poster,
+    .ns-video--hover:focus-within .ns-video__poster { opacity: 0.85; }
+    .ns-video--zoom:hover .ns-video__poster { scale: 1; }
+  }
+
+  /* --- Shorts strip -------------------------------------------------------
+     A row of vertical clips. Same scroll-snap mechanics as .ns-carousel —
+     this is a shaped instance of it rather than a second scroller, so the
+     swipe behaviour, the snap and the scrollbar handling are all inherited
+     and cannot drift.
+
+     Vertical video is the one format where a strip beats a grid: the clips
+     are short, the decision is fast, and a grid of 9:16 tiles pushes
+     everything else on the page below two screens of thumbnails. */
+  .ns-shorts { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-shorts__track {
+    display: flex; gap: var(--gap-grid);
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-1);
+    padding-block-end: var(--space-2);
+  }
+  .ns-shorts__item {
+    flex: 0 0 min(11rem, 44%); scroll-snap-align: start; min-inline-size: 0;
+    display: flex; flex-direction: column; gap: var(--space-2);
+  }
+  /* Inside the strip the cap comes off — the item is already narrow. */
+  .ns-shorts__item .ns-video--9x16 { max-inline-size: none; }
+  .ns-shorts__cap {
+    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-ink);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ns-shorts__meta {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
 
   /* --- Gallery ------------------------------------------------------------
      A grid of figures. Auto-fills; --two locks two columns for pairs. */
@@ -8792,8 +8975,10 @@
    measure, mono for everything that is data — and the hairline doing the
    structure (blockquote edge, hr, table rules), never a background wash. */
 @layer ns-components {
+  /* The reading size, not the UI size. See tokens/typography.css § the
+     READING scale for why the two forked. */
   .ns-prose {
-    font-size: var(--size-body); line-height: var(--leading-body);
+    font-size: var(--size-prose); line-height: var(--leading-body);
     color: var(--color-ink); max-inline-size: var(--container-prose, 42rem);
   }
   .ns-prose > * + * { margin-block-start: var(--stack-md); }
@@ -8801,13 +8986,17 @@
   /* Headings — tightened display face, generous air above, little below:
      a heading belongs to what follows it. */
   .ns-prose h2, .ns-prose h3, .ns-prose h4 { line-height: var(--leading-tight); }
-  .ns-prose h2 { font-size: var(--size-h3); margin-block-start: var(--stack-xl); }
-  .ns-prose h3 { font-size: var(--size-h4); margin-block-start: var(--stack-lg); }
-  .ns-prose h4 { font-size: var(--size-body); margin-block-start: var(--stack-lg); }
+  /* 32 / 24 / 20 over a 17 body. The ramp moved up a step with the reading
+     size: h4 used to be --size-body, which made it the same size as the
+     paragraph under it and left weight doing all the work. A heading that is
+     only bolder is a heading a skimming reader misses. */
+  .ns-prose h2 { font-size: var(--size-h2); margin-block-start: var(--stack-xl); }
+  .ns-prose h3 { font-size: var(--size-h3); margin-block-start: var(--stack-lg); }
+  .ns-prose h4 { font-size: var(--size-h4); margin-block-start: var(--stack-lg); }
   .ns-prose h2 + *, .ns-prose h3 + *, .ns-prose h4 + * { margin-block-start: var(--space-3); }
 
   /* Lead paragraph — the deck under a title. */
-  .ns-prose .ns-lead { font-size: var(--size-body-lg); color: var(--color-muted); }
+  .ns-prose .ns-lead { font-size: var(--size-prose-lead); color: var(--color-muted); line-height: var(--leading-heading); }
 
   /* Links — brand blue with a hairline underline that solidifies on hover. */
   .ns-prose a { color: var(--color-brand-600); text-decoration: underline;
@@ -8823,7 +9012,7 @@
   .ns-prose li { margin-block-start: var(--space-2); }
   .ns-prose li::marker { color: var(--color-label); }
   .ns-prose ol { list-style: decimal; }
-  .ns-prose ol > li::marker { font-family: var(--font-mono); font-size: var(--size-small); }
+  .ns-prose ol > li::marker { font-family: var(--font-mono); font-size: var(--size-prose-small); }
   .ns-prose ul { list-style: square; } /* square = this system's sharp geometry, not the default disc */
   .ns-prose ul ul, .ns-prose ol ol, .ns-prose ul ol, .ns-prose ol ul { margin-block-start: var(--space-2); }
 
@@ -8839,7 +9028,7 @@
   .ns-prose blockquote {
     margin: var(--stack-lg) 0 0 0; padding: var(--space-1) 0 var(--space-1) var(--space-5);
     border-inline-start: 2px solid var(--color-brand-500);
-    font-size: var(--size-body-lg); color: var(--color-ink);
+    font-size: var(--size-prose-lead); color: var(--color-ink);
   }
   .ns-prose blockquote p + p { margin-block-start: var(--space-3); }
   .ns-prose blockquote footer, .ns-prose blockquote cite {
@@ -8854,7 +9043,7 @@
                    padding: 0 var(--space-1); }
   .ns-prose pre { background: var(--color-surface-sunken); border: 1px solid var(--color-border);
                   border-radius: var(--radius-card); padding: var(--space-4);
-                  overflow-x: auto; font-size: var(--size-small); line-height: var(--leading-body); }
+                  overflow-x: auto; font-size: var(--size-prose-small); line-height: var(--leading-body); }
   .ns-prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
   .ns-prose kbd { font-family: var(--font-mono); font-size: var(--size-label);
                   background: var(--color-surface-raised); border: 1px solid var(--color-border);
@@ -8862,7 +9051,7 @@
 
   /* Rules & tables — hairlines only. */
   .ns-prose hr { border: 0; border-block-start: 1px solid var(--color-border); margin-block-start: var(--stack-xl); }
-  .ns-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-small); }
+  .ns-prose table { inline-size: 100%; border-collapse: collapse; font-size: var(--size-prose-small); }
   .ns-prose th { text-align: start; font-family: var(--font-mono); font-size: var(--size-label);
                  font-weight: var(--weight-label); letter-spacing: var(--tracking-label); text-transform: uppercase;
                  color: var(--color-label); padding: var(--space-2) var(--space-3);
@@ -8876,7 +9065,7 @@
                          letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
 
   /* Small print & highlights. */
-  .ns-prose small { font-size: var(--size-small); color: var(--color-muted); }
+  .ns-prose small { font-size: var(--size-prose-small); color: var(--color-muted); }
   .ns-prose mark { background: color-mix(in srgb, var(--color-brand-500) 18%, transparent); color: inherit; padding: 0 var(--space-0-5, 2px); }
 }
 /* NS Design System — content blocks.
@@ -11284,6 +11473,23 @@
     translate: 0 var(--space-2);
   }
   .ns-usermenu:has(> [aria-expanded="true"]) > .ns-askai { translate: 0 0; }
+  /* DOWNWARD, for everywhere that is not the foot of the lesson rail — a post
+     header, a share bar, an "explain this" affordance beside a heading. The
+     base panel already opens downward; this only undoes the upward flip
+     above, which is why it is four lines rather than a second panel.
+
+     The distinction is not cosmetic: a dropdown must open into space that
+     exists. Upward is right at the bottom of a rail and wrong under a post
+     title, where it would open through the top of the article. */
+  .ns-askai--down {
+    inset-block-start: 100%; inset-block-end: auto;
+    transform-origin: top left;
+    translate: 0 calc(var(--space-2) * -1);
+  }
+  .ns-usermenu:has(> [aria-expanded="true"]) > .ns-askai--down { translate: 0 0; }
+  /* Anchored to the start edge, because on a post these hang off a button on
+     the left of a row rather than the right of a navbar. */
+  .ns-askai--down { inset-inline-start: 0; inset-inline-end: auto; }
   .ns-askai__field {
     inline-size: 100%; margin-block-end: var(--space-2);
     font-size: var(--size-small); resize: vertical;

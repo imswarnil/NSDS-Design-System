@@ -299,6 +299,15 @@ const twLines = [
   `  --text-body-lg--line-height: ${lit("--ns-leading-body")};`,
   `  --text-body: ${lit("--size-body")};`,
   `  --text-body--line-height: ${lit("--ns-leading-body")};`,
+  /* The reading scale. Separate from body because they fork on the axis that
+     matters — scanned versus read — and a utility that silently gave an
+     article the app's size would defeat the point of forking them. */
+  `  --text-prose: ${lit("--size-prose")};`,
+  `  --text-prose--line-height: ${lit("--ns-leading-body")};`,
+  `  --text-prose-lead: ${lit("--size-prose-lead")};`,
+  `  --text-prose-lead--line-height: ${lit("--ns-leading-heading")};`,
+  `  --text-prose-small: ${lit("--size-prose-small")};`,
+  `  --text-prose-small--line-height: ${lit("--ns-leading-body")};`,
   `  --text-small: ${lit("--size-small")};`,
   `  --text-small--line-height: ${lit("--ns-leading-body")};`,
   `  --text-mono: ${lit("--size-mono")};`,

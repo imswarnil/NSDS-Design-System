@@ -806,4 +806,53 @@
   .ns-tposition b { color: var(--color-ink); font-weight: var(--weight-semibold); }
   .ns-tposition__sep { color: var(--color-border); }
 
+  /* ======================================================== Pace ====
+     "At 30 minutes a day you finish on 12 September."
+
+     A track page states hours, modules and lessons, and none of those is the
+     question the learner actually has. Forty-two hours is not a number
+     anybody can convert into a decision; a DATE is. This is the one element
+     on the page that turns the size of the commitment into something a
+     person can say yes or no to, which is why it is a component rather than
+     a sentence somebody remembers to write.
+
+     The date is the loud thing and the hours are the small print —
+     deliberately the reverse of how every course page does it. The control
+     is .ns-segmented from the form layer: the learner is choosing between
+     three named options, which is exactly what a segmented control is for,
+     and a slider here would invite a precision the estimate does not have.
+
+     It is honest about being an estimate: the meta line always says what the
+     figure assumes, because a finish date with no stated pace is a promise
+     rather than a projection. */
+  .ns-pace {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-pace__label {
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-pace__date {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight); color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-pace__meta {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+    display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3);
+  }
+  .ns-pace__meta b { color: var(--color-ink); font-weight: var(--weight-label); }
+  /* The control gets the full width in a rail and sits inline when there is
+     room — the track page puts this in an 18rem sidebar and the catalog page
+     puts it under a hero. */
+  .ns-pace__control .ns-segmented { inline-size: 100%; }
+  .ns-pace--inline { flex-direction: row; align-items: center; flex-wrap: wrap; gap: var(--space-4); }
+  .ns-pace--inline .ns-pace__control { margin-inline-start: auto; }
+  .ns-pace--inline .ns-pace__date { font-size: var(--size-h4); }
 }

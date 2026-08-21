@@ -33,7 +33,7 @@ the system it documents.
 
 [![Overview](docs/images/overview.jpg)](https://nsds.imswarnil.com/)
 
-257 tokens, 1,629 classes, 138 components. The sidebar collapses to the section
+260 tokens, 1,695 classes, 144 components. The sidebar collapses to the section
 you are in and scrolls it into view; every component page carries its own
 use / not-for / accessibility contract beside the demos.
 
@@ -48,7 +48,7 @@ and the private `--ns-*` source it follows.
 
 ![Typography](docs/images/typography.jpg)
 
-Two shipped faces. Reading copy is 14px.
+Two shipped faces. UI at 14px, reading copy at 17px.
 
 ### Dark mode
 
@@ -103,7 +103,7 @@ Governed by the five Design Principles above. In short:
 
 - **Color:** one working blue (`#0176D3`) carries every interactive/active signal. Status colors show as a dot + mono text, never a tinted background fill.
 - **Dark mode:** semantic role tokens (`--color-surface`, `--color-ink`, `--color-muted`, `--color-border`) flip under `[data-theme="dark"]` on `<html>`, resolving to the brand navy scale (`--color-brand-800`/`900`) rather than a generic slate — dark mode is *this brand's* console, not a GitHub reskin.
-- **Type:** Switzer for headings (700) and prose (**400 at 14px** — the compact scale, after [carapace](https://github.com/openclaw/carapace)); Roboto Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
+- **Type:** Switzer for headings (700) and prose (**400 at 17px on reading surfaces, 14px in the app** — a compact scale after [carapace](https://github.com/openclaw/carapace), forked once on scanned-versus-read); Roboto Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
 - **Geometry:** `--radius-card` 6px, `--radius-btn` 4px — sharp and specific, not "rounded because rounded." `--radius-pill` only for true pill tags.
 - **Elevation:** a `1px` hairline border is the primary structuring device; hover brightens the border to brand-blue (or draws a left/top accent line), it never lifts on a shadow.
 - **Spacing:** a 4px scale (`--space-*`) whose index matches Tailwind's 1:1, so `p-4` in a Handlebars template and `var(--space-4)` in a React component are the same 16px. Semantic aliases (`--pad-card`, `--gap-grid`, `--stack-lg`) carry the repeated structural relationships.
@@ -155,11 +155,20 @@ CVD types *and* normal vision, and ≥3:1 against the surface.
 
 ## Type scale
 
-Compact, after [openclaw/carapace](https://github.com/openclaw/carapace).
-Reading copy is **14px**, not 16 — this is a product with an app inside it, and
+Compact, after [openclaw/carapace](https://github.com/openclaw/carapace) — and
+it forks once, on the axis it actually forks on: **scanned versus read**.
+
+The UI base is **14px**, not 16. This is a product with an app inside it, and
 at 16 the player, admin and tables all had to fight the base size with
 `--size-small` everywhere, which is the tell that the base was wrong for most
 of the screens being built.
+
+But 14 is the wrong base for an *article*. A blog post or a written lesson is
+read continuously for eight minutes, and setting a 2,000-word essay at the same
+size as a table row is how a system ends up with an app that feels tight and a
+blog that feels cramped. So `.ns-prose` and everything built on it take a
+separate **reading scale** at 17px, and every other component keeps
+`--size-body`. Two tokens, one rule, and no component has to decide.
 
 | token | size | for |
 |---|---|---|
@@ -170,11 +179,25 @@ of the screens being built.
 | `--size-h3` | 1.5rem / 24px | |
 | `--size-h4` | 1.25rem / 20px | |
 | `--size-body-lg` | 1.0625rem / 17px | ledes, standfirsts |
-| `--size-body` | **0.875rem / 14px** | **reading copy** |
+| `--size-body` | **0.875rem / 14px** | **the UI base** |
 | `--size-small` | 0.8125rem / 13px | dense UI, meta |
 | `--size-fine` | 0.75rem / 12px | legal, captions |
 | `--size-label` | 0.6875rem / 11px | mono kickers and labels |
 | `--size-mono` | 0.8125rem / 13px | code, timestamps |
+
+The reading scale — `.ns-prose` only:
+
+| token | size | for |
+|---|---|---|
+| `--size-prose-lead` | 1.25rem / 20px | standfirsts, pull quotes, `.ns-lead` |
+| `--size-prose` | **1.0625rem / 17px** | **reading copy** |
+| `--size-prose-small` | 0.9375rem / 15px | tables, code and captions *inside* prose |
+
+15px is the step the UI scale never needed: dropping a code block inside an
+article to 13 would put it two full steps below the paragraph explaining it.
+Prose headings run 32 / 24 / 20 over the 17 body — `h4` used to be
+`--size-body`, which made it the same size as the paragraph under it and left
+weight doing all the work.
 
 Only the top two steps clamp: a hero has to survive a 360px phone, a paragraph
 does not. Everything is `rem`, because one `px` font-size is one piece of text

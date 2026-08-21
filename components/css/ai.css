@@ -862,6 +862,23 @@
     translate: 0 var(--space-2);
   }
   .ns-usermenu:has(> [aria-expanded="true"]) > .ns-askai { translate: 0 0; }
+  /* DOWNWARD, for everywhere that is not the foot of the lesson rail — a post
+     header, a share bar, an "explain this" affordance beside a heading. The
+     base panel already opens downward; this only undoes the upward flip
+     above, which is why it is four lines rather than a second panel.
+
+     The distinction is not cosmetic: a dropdown must open into space that
+     exists. Upward is right at the bottom of a rail and wrong under a post
+     title, where it would open through the top of the article. */
+  .ns-askai--down {
+    inset-block-start: 100%; inset-block-end: auto;
+    transform-origin: top left;
+    translate: 0 calc(var(--space-2) * -1);
+  }
+  .ns-usermenu:has(> [aria-expanded="true"]) > .ns-askai--down { translate: 0 0; }
+  /* Anchored to the start edge, because on a post these hang off a button on
+     the left of a row rather than the right of a navbar. */
+  .ns-askai--down { inset-inline-start: 0; inset-inline-end: auto; }
   .ns-askai__field {
     inline-size: 100%; margin-block-end: var(--space-2);
     font-size: var(--size-small); resize: vertical;

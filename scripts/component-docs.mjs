@@ -3228,6 +3228,86 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
+    id: "post-actions", title: "Share & Ask AI", family: "Blog",
+    summary: "The two things a reader does with a post that are not reading it: send it to someone, or ask a model about it. Both are dropdowns composed from <code>.ns-usermenu</code> and <code>.ns-menu__item</code> — there is no bespoke share widget and no bespoke AI panel, because a menu of links is a menu of links.",
+    use: ["A post header or footer bar", "Beside a section heading, seeded with that section rather than the whole article", "--down anywhere that is not the foot of the lesson rail"],
+    not: ["A row of eight network icons. Every one you add makes the whole row less likely to be used — three destinations and a copy-link is the whole set", "Share counts. A post showing &ldquo;2 shares&rdquo; is arguing against itself", "Anything that talks to a model from the page. Each row is a plain link that opens the reader's own assistant with the question pre-written; nothing here has an API key"],
+    a11y: [
+      "The trigger carries aria-expanded and aria-controls; the panel is a real menu of real links",
+      "Every row that leaves the site says so with the out-arrow, before it is clicked rather than after",
+      "The question field has a real label — visually hidden, because the button beside it already says Ask AI, but present, because a bare textarea is unusable to a screen reader",
+      "Copy-link reports success in text, not only by swapping an icon: an icon flip is invisible to a screen reader and to anyone not looking at the button they just pressed",
+    ],
+    variants: [
+      { name: "The actions bar", note: "Share, Ask AI, and the reading time. Sits under the post header or above the footer — one row, three affordances, and it composes the same <code>.ns-usermenu</code> the navbar account menu uses.", script: `document.querySelectorAll('[data-ns-copylink]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var out = btn.querySelector('[data-label]');
+    var was = out.textContent;
+    if (navigator.clipboard) navigator.clipboard.writeText(location.href);
+    out.textContent = 'Link copied';
+    setTimeout(function () { out.textContent = was; }, 1600);
+  });
+});`, html: `<div style="display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;max-inline-size:42rem;inline-size:100%">
+  <div class="ns-usermenu">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-ns-menu aria-expanded="false" aria-controls="share-menu">
+      <i class="ph ph-share-network" aria-hidden="true"></i> Share
+    </button>
+    <div class="ns-usermenu__panel ns-askai--down" id="share-menu" style="inline-size:14rem">
+      <span class="ns-menu__label">Send this post to</span>
+      <a class="ns-menu__item" href="#0" target="_blank" rel="noopener"><i class="ph ph-linkedin-logo" aria-hidden="true"></i> LinkedIn <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <a class="ns-menu__item" href="#0" target="_blank" rel="noopener"><i class="ph ph-x-logo" aria-hidden="true"></i> X <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <a class="ns-menu__item" href="#0"><i class="ph ph-envelope-simple" aria-hidden="true"></i> Email <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <hr class="ns-menu__sep">
+      <button type="button" class="ns-menu__item" data-ns-copylink><i class="ph ph-link-simple" aria-hidden="true"></i> <span data-label>Copy link</span></button>
+    </div>
+  </div>
+
+  <div class="ns-usermenu" data-ns-ask-prompt="%s">
+    <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-ns-menu aria-expanded="false" aria-controls="post-ask">
+      <i class="ph ph-sparkle" aria-hidden="true"></i> Ask AI
+    </button>
+    <div class="ns-usermenu__panel ns-askai ns-askai--down" id="post-ask">
+      <label class="ns-visually-hidden" for="post-ask-q">Your question about this post</label>
+      <textarea class="ns-textarea ns-askai__field" id="post-ask-q" rows="3" data-ns-ask-input>Explain "Why your trigger fails at 201 records" to me like I have never written Apex.</textarea>
+      <span class="ns-menu__label">Open this post in</span>
+      <a class="ns-menu__item" href="https://claude.ai/new" target="_blank" rel="noopener" data-ns-ask="https://claude.ai/new?q="><i class="ph ph-sparkle" aria-hidden="true"></i> Claude <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <a class="ns-menu__item" href="https://chatgpt.com/" target="_blank" rel="noopener" data-ns-ask="https://chatgpt.com/?q="><i class="ph ph-chat-circle-text" aria-hidden="true"></i> ChatGPT <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <a class="ns-menu__item" href="https://www.perplexity.ai/" target="_blank" rel="noopener" data-ns-ask="https://www.perplexity.ai/search?q="><i class="ph ph-magnifying-glass" aria-hidden="true"></i> Perplexity <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <hr class="ns-menu__sep">
+      <button type="button" class="ns-menu__item" data-ns-ask-copy><i class="ph ph-file-text" aria-hidden="true"></i> Copy the prompt</button>
+    </div>
+  </div>
+
+  <span class="ns-postmeta" style="margin-inline-start:auto"><span>6 min read</span></span>
+</div>` },
+      { name: "Inline, beside a section", note: "The same menu seeded with ONE section instead of the whole post — the question a reader actually has is about the paragraph in front of them, not about the article. Sits in the prose flow as a quiet row after the passage, so it never interrupts the reading line.", html: `<div class="ns-prose" style="max-inline-size:38rem;inline-size:100%">
+  <h3>Counting the wrong thing</h3>
+  <p>The 101-query error almost never means you wrote 101 queries. It means you wrote one, inside a loop, and the loop ran 101 times.</p>
+  <div class="ns-usermenu" data-ns-ask-prompt="%s" style="margin-block-start:var(--space-3)">
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" data-ns-menu aria-expanded="false" aria-controls="sec-ask">
+      <i class="ph ph-sparkle" aria-hidden="true"></i> Explain this section
+    </button>
+    <div class="ns-usermenu__panel ns-askai ns-askai--down" id="sec-ask">
+      <label class="ns-visually-hidden" for="sec-ask-q">Your question about this section</label>
+      <textarea class="ns-textarea ns-askai__field" id="sec-ask-q" rows="3" data-ns-ask-input>Explain "Counting the wrong thing" — why does one query inside a loop become 101?</textarea>
+      <span class="ns-menu__label">Open this section in</span>
+      <a class="ns-menu__item" href="https://claude.ai/new" target="_blank" rel="noopener" data-ns-ask="https://claude.ai/new?q="><i class="ph ph-sparkle" aria-hidden="true"></i> Claude <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <a class="ns-menu__item" href="https://chatgpt.com/" target="_blank" rel="noopener" data-ns-ask="https://chatgpt.com/?q="><i class="ph ph-chat-circle-text" aria-hidden="true"></i> ChatGPT <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i></a>
+      <hr class="ns-menu__sep">
+      <button type="button" class="ns-menu__item" data-ns-ask-copy><i class="ph ph-file-text" aria-hidden="true"></i> Copy the prompt</button>
+    </div>
+  </div>
+</div>` },
+      { name: "The share rail", note: "The vertical column beside a long post, for the reader who decides to share at paragraph forty rather than at the end. Same set, no menu — at this size the icons are the menu. It is the first thing dropped below 80rem.", html: `<div class="ns-share ns-share--rail" style="inline-size:3.5rem">
+  <span class="ns-share__label">Share</span>
+  <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#0" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+  <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#0" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></a>
+  <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+  <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save for later"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
+</div>` },
+    ],
+  },
+  {
     id: "comments", title: "Comments", family: "Blog",
     summary: "The thread under a post. The hard part is not the list — it is restraint: comments are user-generated, arrive at any length, and will out-scroll the article if the page lets them. So there are no cards, no shadows and no per-comment borders, just a hairline between siblings and one level of indentation for a reply.",
     use: ["Discussion under a post or a lesson", "--op to mark the author answering, so a reader can find the authoritative reply"],
@@ -4051,6 +4131,79 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <h1 class="ns-modulehead__title">Security and access</h1>
   <p class="ns-modulehead__lede">Profiles, permission sets, roles and sharing — in that order, because each one only makes sense given the last.</p>
 </header>` },
+    ],
+  },
+  {
+    id: "pace", title: "Pace planner", family: "Training",
+    summary: "&ldquo;At 30 minutes a day you finish on 12 September.&rdquo; A track page states hours, modules and lessons — and none of those is the question the learner actually has. Forty-two hours is not a number anybody can convert into a decision. A date is.",
+    use: ["The top of a track or course page, before the curriculum", "A track sidebar, where --inline keeps it to one row", "Anywhere the commitment is large enough that a learner hesitates"],
+    not: ["A short course. &ldquo;At 30 minutes a day you finish tomorrow&rdquo; is noise", "A progress bar — this is a projection about the future, not a report on the past", "A slider. Three named options is a choice; a continuous control invites a precision this estimate does not have, which is why it composes <code>.ns-segmented</code>"],
+    a11y: [
+      "The control is a real radio group with a legend, so it is announced as one choice with three options rather than three unrelated buttons",
+      "The date is text in a <code>&lt;time datetime&gt;</code>, not a rendered image or a bare string — it gets localised and it is readable out of context",
+      "The meta line always states the assumption. A finish date with no stated pace is a promise rather than a projection, and the design does not let you ship one without it",
+      "Tabular numerals, so the date does not reflow the block as it changes under the radio",
+    ],
+    variants: [
+      { name: "On a track page", note: "The date is the loud thing and the hours are the small print — deliberately the reverse of how every course page does it. Change the pace and watch the date move.", script: `document.querySelectorAll('[data-pace]').forEach(function (el) {
+  var out = el.querySelector('[data-pace-date]');
+  var meta = el.querySelector('[data-pace-rate]');
+  var hours = Number(el.getAttribute('data-pace'));
+  function render(mins) {
+    var days = Math.ceil((hours * 60) / mins);
+    var d = new Date();
+    d.setDate(d.getDate() + days);
+    out.textContent = d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+    out.setAttribute('datetime', d.toISOString().slice(0, 10));
+    meta.textContent = days + ' days at ' + (mins < 60 ? mins + ' min' : (mins / 60) + ' hr') + ' a day';
+  }
+  el.querySelectorAll('input[type=radio]').forEach(function (r) {
+    r.addEventListener('change', function () { render(Number(r.value)); });
+  });
+  render(Number(el.querySelector('input[type=radio]:checked').value));
+});`, html: `<div class="ns-pace" data-pace="42" style="max-inline-size:22rem;inline-size:100%">
+  <span class="ns-pace__label">Finish by</span>
+  <time class="ns-pace__date" data-pace-date>&mdash;</time>
+  <span class="ns-pace__meta"><b data-pace-rate>&mdash;</b><span>42 hours &middot; 8 modules</span></span>
+  <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0">
+    <legend class="ns-visually-hidden">How much time per day</legend>
+    <div class="ns-segmented">
+      <label class="ns-segmented__option"><input type="radio" name="pace-a" value="15"><span>15 min</span></label>
+      <label class="ns-segmented__option"><input type="radio" name="pace-a" value="30" checked><span>30 min</span></label>
+      <label class="ns-segmented__option"><input type="radio" name="pace-a" value="60"><span>1 hr</span></label>
+    </div>
+  </fieldset>
+</div>` },
+      { name: "Inline", note: "For a sidebar or a band where the page has already spent its vertical budget. Same parts, one row, smaller date.", script: `document.querySelectorAll('[data-pace-inline]').forEach(function (el) {
+  var out = el.querySelector('[data-pace-date]');
+  var meta = el.querySelector('[data-pace-rate]');
+  var hours = Number(el.getAttribute('data-pace-inline'));
+  function render(mins) {
+    var days = Math.ceil((hours * 60) / mins);
+    var d = new Date(); d.setDate(d.getDate() + days);
+    out.textContent = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+    out.setAttribute('datetime', d.toISOString().slice(0, 10));
+    meta.textContent = days + ' days';
+  }
+  el.querySelectorAll('input[type=radio]').forEach(function (r) {
+    r.addEventListener('change', function () { render(Number(r.value)); });
+  });
+  render(Number(el.querySelector('input[type=radio]:checked').value));
+});`, html: `<div class="ns-pace ns-pace--inline" data-pace-inline="18" style="inline-size:100%">
+  <div>
+    <span class="ns-pace__label">Finish by</span>
+    <time class="ns-pace__date" data-pace-date>&mdash;</time>
+    <span class="ns-pace__meta"><b data-pace-rate>&mdash;</b><span>18 hours</span></span>
+  </div>
+  <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0;max-inline-size:16rem">
+    <legend class="ns-visually-hidden">How much time per day</legend>
+    <div class="ns-segmented">
+      <label class="ns-segmented__option"><input type="radio" name="pace-b" value="15"><span>15 min</span></label>
+      <label class="ns-segmented__option"><input type="radio" name="pace-b" value="30" checked><span>30 min</span></label>
+      <label class="ns-segmented__option"><input type="radio" name="pace-b" value="60"><span>1 hr</span></label>
+    </div>
+  </fieldset>
+</div>` },
     ],
   },
   {
@@ -5302,41 +5455,138 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
   },
   {
     id: "video", title: "Video", family: "Media",
-    summary: "The 16:9 frame for an embed or a poster. The play control is the system's one allowed scale-pop; duration sits mono in the corner on a scrim.",
-    use: ["Lesson videos, promo embeds", "Poster + play where the player loads on demand"],
-    not: ["Ambient autoplay background video — this system does not do that"],
-    a11y: ["The play button names its video: aria-label=\"Play: What is an org?\"", "Embedded players keep captions on by default where the platform allows"],
+    summary: "The frame for an embed or a poster — 16:9 by default, vertical for a Short, square for a feed clip. The play control is the system's one allowed scale-pop; duration sits mono in one corner and the kind of clip in the other. Everything past the frame — chapters, the modal, the strip — is composed from parts that already exist rather than reinvented here.",
+    use: ["Lesson videos, promo embeds, an article's explainer", "Poster + play where the player loads on demand", "A chapter list under a long embed, so a reader can enter at the part they came for"],
+    not: ["Ambient autoplay background video — this system does not do that", "Letterboxing a 9:16 source into a 16:9 box to keep a grid tidy. That wastes two thirds of the frame and is the single most common way an embedded Short looks broken — use --9x16", "A carousel that auto-advances. The shorts strip scrolls when the reader scrolls it"],
+    a11y: [
+      "The play button names its video: aria-label=\"Play: What is an org?\"",
+      "Embedded players keep captions on by default where the platform allows",
+      "Chapter buttons are real buttons carrying a real timecode in text — a chapter list whose times are only visual is unusable to anyone who cannot see the scrubber",
+      "The hover preview also fires on :focus-within, so a keyboard user gets the same answer to \"is this the clip I mean\" that a mouse user gets",
+      "prefers-reduced-motion stops the preview and the zoom outright. A video that starts playing because a pointer passed over it is exactly the motion that setting exists to stop",
+    ],
     variants: [
       { name: "Poster + play", html: `<div class="ns-video" style="max-inline-size:26rem">
   <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
   <button class="ns-video__play" aria-label="Play: What is an org?"><i class="ph ph-play" aria-hidden="true"></i></button>
+  <span class="ns-video__tag">Lesson</span>
   <span class="ns-video__dur">08:12</span>
 </div>` },
       { name: "Embed frame", note: "Drop any iframe in — the frame owns ratio, border and radius.", html: `<div class="ns-video" style="max-inline-size:26rem">
   <iframe src="about:blank" title="Lesson video"></iframe>
 </div>` },
-      { name: "YouTube", note: "youtube-nocookie, no autoplay, title on the iframe. In content, pair it with a mono caption via Figure.", html: `<figure class="ns-figure" style="max-inline-size:26rem;inline-size:100%">
+      { name: "With a caption", note: "No caption element of its own: a captioned video is <code>.ns-figure</code> with a <code>.ns-video</code> inside it. The mono caption, the stacking and the spacing are already solved there, and a second implementation would drift from the one under every image on the site.", html: `<figure class="ns-figure" style="max-inline-size:26rem;inline-size:100%">
   <div class="ns-video">
     <iframe src="https://www.youtube-nocookie.com/embed/VIDEO_ID" title="Apex basics — lesson 01"
             allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe>
   </div>
   <figcaption>Lesson 01 · What is an org? · 08:12</figcaption>
 </figure>` },
-      { name: "Video modal", note: "A poster on the page; the player loads only inside the dialog when opened — the page never carries a hidden playing embed. Esc and the scrim close it, and closing empties the iframe to stop playback.", script: `document.querySelectorAll('[data-video-modal]').forEach(function (btn) {
+      { name: "Chapters and timestamps", note: "Composes <code>.ns-vchapters</code> — the same list the lesson player uses, which was never player-only CSS. A long embed without one makes a reader who came for the SOQL bit at 6:40 scrub for it, and a chapter list is also what a platform reads to draw markers on its own scrubber. Click a row: in the styleguide it just moves the mark and the readout; in product it sets <code>video.currentTime</code>, or appends <code>&amp;start=</code> to the embed URL.", script: `document.querySelectorAll('[data-chapters]').forEach(function (list) {
+  var out = document.querySelector(list.getAttribute('data-chapters'));
+  list.querySelectorAll('.ns-vchapters__btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      list.querySelectorAll('.ns-vchapters__item').forEach(function (i) { i.removeAttribute('aria-current'); });
+      btn.closest('.ns-vchapters__item').setAttribute('aria-current', 'true');
+      if (out) out.textContent = btn.querySelector('.ns-vchapters__time').textContent;
+    });
+  });
+});`, html: `<figure class="ns-figure" style="max-inline-size:30rem;inline-size:100%">
+  <div class="ns-video">
+    <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
+    <button class="ns-video__play" aria-label="Play: Governor limits"><i class="ph ph-play" aria-hidden="true"></i></button>
+    <span class="ns-video__dur">12:30</span>
+  </div>
+  <figcaption>Seeking to <span data-hook="at">00:00</span></figcaption>
+  <ul class="ns-vchapters" data-chapters="[data-hook='at']">
+    <li class="ns-vchapters__item" aria-current="true">
+      <button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">00:00</span><span class="ns-vchapters__title">What a governor limit is</span></button>
+    </li>
+    <li class="ns-vchapters__item">
+      <button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">02:14</span><span class="ns-vchapters__title">Per transaction, not per record</span></button>
+    </li>
+    <li class="ns-vchapters__item">
+      <button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">06:40</span><span class="ns-vchapters__title">The SOQL-in-a-loop failure</span></button>
+    </li>
+    <li class="ns-vchapters__item">
+      <button type="button" class="ns-vchapters__btn"><span class="ns-vchapters__time">09:58</span><span class="ns-vchapters__title">Bulkifying it</span></button>
+    </li>
+  </ul>
+</figure>` },
+      { name: "Ratios", note: "A video is 16:9 until the platform says otherwise, and the two that say otherwise are vertical and square. <code>--9x16</code> caps its own width at 22rem — about a phone at arm's length — because an uncapped vertical video is a two-metre column on a desktop.", html: `<div style="display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:flex-start">
+  <div class="ns-video ns-video--9x16" style="inline-size:9rem">
+    <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
+    <span class="ns-video__tag">Short</span><span class="ns-video__dur">0:42</span>
+  </div>
+  <div class="ns-video ns-video--1x1" style="inline-size:11rem">
+    <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
+    <span class="ns-video__tag">Clip</span><span class="ns-video__dur">1:05</span>
+  </div>
+  <div class="ns-video ns-video--21x9" style="inline-size:20rem">
+    <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
+    <span class="ns-video__dur">02:18</span>
+  </div>
+</div>` },
+      { name: "Effects", note: "Two, and both act on the POSTER — the frame and the controls stay still. Hover or tab to the left one and a muted loop crossfades in, which is the one genuinely useful motion on a thumbnail: it answers &ldquo;is this the clip I mean&rdquo; without a page load. The right one is a slow scale, clipped by the frame. Both stop dead under <code>prefers-reduced-motion</code>. With no <code>__preview</code> element the modifier does nothing, which is the correct failure.", html: `<div style="display:flex;flex-wrap:wrap;gap:var(--space-4)">
+  <div class="ns-video ns-video--hover" tabindex="0" style="inline-size:14rem">
+    <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
+    <span class="ns-video__preview" aria-hidden="true" style="background:var(--color-brand-600);display:grid;place-items:center;color:var(--color-on-dark);font-family:var(--font-mono);font-size:var(--size-label)">PREVIEW LOOP</span>
+    <span class="ns-video__dur">0:42</span>
+  </div>
+  <div class="ns-video ns-video--zoom" style="inline-size:14rem">
+    <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
+    <span class="ns-video__dur">1:05</span>
+  </div>
+</div>` },
+      { name: "Shorts strip", note: "Vertical video is the one format where a strip beats a grid: the clips are short, the decision is fast, and a grid of 9:16 tiles pushes everything else below two screens of thumbnails. Same scroll-snap mechanics as Carousel — a shaped instance of it, not a second scroller, so swipe, snap and scrollbar handling are inherited and cannot drift.", html: `<div class="ns-shorts" style="inline-size:100%">
+  <div class="ns-shorts__track" tabindex="0" aria-label="Shorts">
+    <a class="ns-shorts__item" href="#0">
+      <div class="ns-video ns-video--9x16"><span class="ns-video__poster ns-ph" aria-hidden="true"></span><span class="ns-video__tag">Short</span><span class="ns-video__dur">0:42</span></div>
+      <span class="ns-shorts__cap">The one SOQL mistake that crashes 40k records</span>
+      <span class="ns-shorts__meta">18k views</span>
+    </a>
+    <a class="ns-shorts__item" href="#0">
+      <div class="ns-video ns-video--9x16"><span class="ns-video__poster ns-ph" aria-hidden="true"></span><span class="ns-video__tag">Short</span><span class="ns-video__dur">0:55</span></div>
+      <span class="ns-shorts__cap">Profiles vs permission sets in 55 seconds</span>
+      <span class="ns-shorts__meta">31k views</span>
+    </a>
+    <a class="ns-shorts__item" href="#0">
+      <div class="ns-video ns-video--9x16"><span class="ns-video__poster ns-ph" aria-hidden="true"></span><span class="ns-video__tag">Short</span><span class="ns-video__dur">0:38</span></div>
+      <span class="ns-shorts__cap">Why your test passes and production fails</span>
+      <span class="ns-shorts__meta">9k views</span>
+    </a>
+    <a class="ns-shorts__item" href="#0">
+      <div class="ns-video ns-video--9x16"><span class="ns-video__poster ns-ph" aria-hidden="true"></span><span class="ns-video__tag">Short</span><span class="ns-video__dur">1:02</span></div>
+      <span class="ns-shorts__cap">Flow or Apex? Six questions</span>
+      <span class="ns-shorts__meta">24k views</span>
+    </a>
+  </div>
+</div>` },
+      { name: "Video modal", note: "A poster on the page; the player loads only inside the dialog when it opens, so the page never carries a hidden playing embed. <code>--video</code> widens the dialog to the video's shape and drops the card padding — a 16:9 embed inside a 32rem column with padding on both sides is a postage stamp with a title over it. Esc and the scrim close it, and closing empties the iframe to stop playback.", script: `document.querySelectorAll('[data-video-modal]').forEach(function (btn) {
   var dlg = document.getElementById(btn.getAttribute('data-video-modal'));
   var frame = dlg.querySelector('iframe');
   btn.addEventListener('click', function () { frame.src = frame.getAttribute('data-src'); dlg.showModal(); });
   dlg.addEventListener('close', function () { frame.src = 'about:blank'; });
   dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
-});`, html: `<div class="ns-video" style="max-inline-size:26rem">
+});`, html: `<p style="display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center">
+  <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-video-modal="vm-demo"><i class="ph ph-play-circle" aria-hidden="true"></i> Watch the walkthrough</button>
+  <span class="ns-shorts__meta">or the poster below — either opens it</span>
+</p>
+<div class="ns-video" style="max-inline-size:26rem">
   <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
   <button class="ns-video__play" data-video-modal="vm-demo" aria-label="Play: What is an org?"><i class="ph ph-play" aria-hidden="true"></i></button>
   <span class="ns-video__dur">08:12</span>
 </div>
-<dialog class="ns-modal" id="vm-demo" aria-label="What is an org? — video" style="max-inline-size:44rem;inline-size:90%">
-  <div class="ns-video" style="border:0;border-radius:0">
-    <iframe src="about:blank" data-src="https://www.youtube-nocookie.com/embed/VIDEO_ID?autoplay=1" title="What is an org?"
-            allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+<dialog class="ns-modal ns-modal--video" id="vm-demo" aria-label="What is an org? — video">
+  <div class="ns-modal__header">
+    <h2 class="ns-modal__title">What is an org?</h2>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-modal__close" aria-label="Close" onclick="this.closest('dialog').close()"><i class="ph ph-x" aria-hidden="true"></i></button>
+  </div>
+  <div class="ns-modal__body">
+    <div class="ns-video">
+      <iframe src="about:blank" data-src="https://www.youtube-nocookie.com/embed/VIDEO_ID?autoplay=1" title="What is an org?"
+              allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+    </div>
   </div>
 </dialog>` },
     ],

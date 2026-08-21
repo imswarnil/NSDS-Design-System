@@ -63,9 +63,35 @@
   --size-h3: 1.5rem;        /* 24 — carapace 2xl */
   --size-h4: 1.25rem;       /* 20 — carapace xl  */
   --size-body-lg: 1.0625rem;/* 17 — carapace lg — ledes and standfirsts */
-  --size-body: 0.875rem;    /* 14 — carapace base — THE READING SIZE */
+  --size-body: 0.875rem;    /* 14 — carapace base — THE UI SIZE */
   --size-small: 0.8125rem;  /* 13 — carapace sm */
   --size-fine: 0.75rem;     /* 12 — carapace xs — legal, footnotes, captions */
+
+  /* The READING scale — and why there are two.
+     =======================================================================
+     14px is the right base for the app. A curriculum rail, an admin table, a
+     player's chrome and a dashboard are scanned, not read, and at 16px every
+     one of them had to fight the base size with --size-small, which is the
+     tell that the base is wrong for those screens.
+
+     14px is the wrong base for an ARTICLE. A blog post and a written lesson
+     are read continuously for eight minutes, and the thing that makes that
+     comfortable — long descenders, open counters, a 68ch measure — needs the
+     size to go with it. Setting a 2,000-word essay at the same size as a
+     table row is how a design system ends up with an app that feels tight
+     and a blog that feels cramped.
+
+     So the scale forks once, here, on the axis it actually forks on: SCANNED
+     versus READ. .ns-prose and the surfaces built on it take these; every
+     other component keeps --size-body. Two tokens, one rule, and no
+     component has to decide.
+
+     15 is the step the UI scale never needed and prose does — it is what
+     sets a table or a code block INSIDE an article, where dropping to 13
+     would put the code two full steps below the paragraph it explains. */
+  --size-prose: 1.0625rem;      /* 17 — THE READING SIZE */
+  --size-prose-lead: 1.25rem;   /* 20 — standfirsts and ledes on a reading page */
+  --size-prose-small: 0.9375rem;/* 15 — tables, code and captions inside prose */
 
   /* Mono/label scale — the structural material. Every index, timestamp,
      duration, kicker and status runs through this, uppercase + tracked,
