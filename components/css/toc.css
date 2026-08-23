@@ -53,8 +53,19 @@
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
   }
   .ns-toc--collapsible > summary::-webkit-details-marker { display: none; }
-  .ns-toc--collapsible > summary i { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
-  .ns-toc--collapsible[open] > summary i { rotate: 180deg; }
+  /* THE CARET IS THE LAST CHILD, and saying so matters.
+     These two rules used to target every <i> in the summary, on the
+     assumption that the caret is the only one. The moment a summary carries a
+     LEADING glyph as well — which is the normal way to label a disclosure,
+     and what the training post does — the first icon also got
+     margin-inline-start: auto, so the icon and its label were shoved into the
+     middle of the box while the caret kept the end. The open state then
+     rotated both, spinning the leading glyph 180 degrees for no reason.
+
+     :last-child still matches a caret-only summary, so this is strictly the
+     more correct selector rather than a special case for two icons. */
+  .ns-toc--collapsible > summary > i:last-child { margin-inline-start: auto; transition: rotate var(--duration-fast) var(--ease-out); }
+  .ns-toc--collapsible[open] > summary > i:last-child { rotate: 180deg; }
 
   /* --- Reading progress ---------------------------------------------------
      A hairline that fills as the piece is read, at the top of the rail. It is

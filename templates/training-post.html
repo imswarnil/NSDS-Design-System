@@ -60,23 +60,18 @@
       <span class="ns-trainingnav__spine-label">Curriculum</span>
     </div>
 
-    <!-- THE RAIL'S HEAD, pinned. The track's identity and the filter, both
-         of which have to survive scrolling: "which curriculum is this" and
-         "find me the lesson about X" are the two questions asked from any
-         point in a 500-lesson list, and neither can be answered by something
-         that scrolled away 400 rows ago. -->
+    <!-- THE RAIL'S HEAD, pinned — and it is the FILTER, nothing else.
+         A track header sat here saying "Salesforce Administrator · Section 4
+         of 32 · 128 lessons". It went because every one of those facts is
+         already on screen: the topbar's crumb names the track and the
+         section, and its meter carries the position. The rail's job is the
+         list, and a header restating the page's own chrome spent three rows
+         of the narrowest column on the page to repeat it.
+
+         "Find me the lesson about X" is the one question that cannot be
+         answered by something that scrolled away 400 rows ago, so the filter
+         is what stays pinned. -->
     <div class="ns-trainingnav__head">
-      <a class="ns-trainingnav__track" href="#">
-        <i class="ph ph-graduation-cap" aria-hidden="true"></i>
-        <span class="ns-trainingnav__track-body">
-          <b>Salesforce Administrator</b>
-          <span><i class="ph ph-stack" aria-hidden="true"></i> Section 4 of 32 · 128 lessons</span>
-        </span>
-      </a>
-      <p class="ns-trainingnav__track-bar">
-        <progress class="ns-progress" value="19" max="128" aria-label="19 of 128 lessons complete"></progress>
-        <span class="ns-trainingnav__track-pct">15%</span>
-      </p>
       <form class="ns-trainingnav__search" role="search" action="#">
         <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
         <input class="ns-input" type="search" name="q" placeholder="Filter lessons" aria-label="Filter lessons" data-ns-trainingnav-filter>
@@ -300,29 +295,38 @@
     <div class="ns-training__reading">
 
       <header class="ns-modulehead">
+        <!-- THE KIND MARK. The header had no glyph at all, which left the
+             page's own masthead as the one surface in the whole system with
+             nothing but text — while every row in the rail beside it carried
+             an icon saying what kind of thing it was. It is the same glyph
+             the rail uses for this lesson, so the row you clicked and the
+             page you landed on are visibly the same object. -->
+        <p class="ns-modulehead__mark">
+          <!-- @strip:kind-video -->
+          <i class="ph ph-video" aria-hidden="true"></i><span>Video lesson</span>
+          <!-- /@strip:kind-video -->
+          <!-- @strip:kind-article -->
+          <i class="ph ph-article" aria-hidden="true"></i><span>Written lesson</span>
+          <!-- /@strip:kind-article -->
+        </p>
         <h1 class="ns-modulehead__title">Recalculation is asynchronous</h1>
         <p class="ns-modulehead__lede">Role hierarchy grants access upward, and that is the part everyone remembers. The part that causes the incident is what happens when a record moves.</p>
 
-        <!-- Every chip is a fact the reader would otherwise infer from the
-             body. The KIND chip is the one allowed to carry brand. -->
+        <!-- THREE CHIPS, NOT EIGHT. The row had grown to carry the kind, the
+             duration, the position, the difficulty, the read state, the
+             author and the last-updated date — eight facts wrapping to two
+             lines under the lede, which is a second lede made of metadata.
+
+             What stays is what a reader weighs BEFORE committing eleven
+             minutes: how long, where it sits, how hard. The kind moved up to
+             the mark above the title. Author and date moved into the rail
+             beside the article — they are provenance, looked up while reading
+             or afterwards, not part of the decision to start. -->
         <div class="ns-tmeta">
-          <!-- The KIND chip is the one fact that changes between the two
-               versions of this template, so it is marked the same way the
-               stage is: the styleguide renders each demo with the other
-               one cut, and neither version can claim to be something it is
-               not. -->
-          <!-- @strip:kind-video -->
-          <span class="ns-tmeta__item ns-tmeta__item--kind"><i class="ph ph-video" aria-hidden="true"></i>Video + notes</span>
-          <!-- /@strip:kind-video -->
-          <!-- @strip:kind-article -->
-          <span class="ns-tmeta__item ns-tmeta__item--kind"><i class="ph ph-article" aria-hidden="true"></i>Article</span>
-          <!-- /@strip:kind-article -->
           <span class="ns-tmeta__item"><i class="ph ph-clock" aria-hidden="true"></i>11 min</span>
           <span class="ns-tmeta__item"><i class="ph ph-stack" aria-hidden="true"></i>Lesson 2 of 6</span>
           <span class="ns-tmeta__item"><i class="ph ph-barbell" aria-hidden="true"></i>Intermediate</span>
           <span class="ns-tmeta__item ns-tmeta__item--done"><i class="ph ph-check-circle" aria-hidden="true"></i>Read</span>
-          <span class="ns-tmeta__item"><i class="ph ph-user" aria-hidden="true"></i>Ravi Kulkarni</span>
-          <span class="ns-tmeta__item"><i class="ph ph-clock-clockwise" aria-hidden="true"></i>Updated 14 Aug 2026</span>
         </div>
       </header>
 
@@ -332,12 +336,31 @@
            whole column. -->
       <div class="ns-tpost-body">
 
-      <!-- THE SKYSCRAPER SLOT — 160x600, the standard unit, from ads.css.
-           `ns-ad-rail` makes it sticky beside the reading. The article's own
-           metadata is NOT here: author, date and reading time belong with the
-           title, the same way the lesson player states its lesson in its
-           header. -->
-      <aside class="ns-tsky" aria-label="Advertisement">
+      <!-- THE READING RAIL — provenance, then the ad, in that order.
+           WHO AND WHEN LIVE HERE NOW. They were chips in the header, where
+           they competed with the three facts that actually gate the decision
+           to read. Author and last-updated are provenance: nobody checks who
+           wrote a lesson before starting it, and everybody checks after
+           hitting something surprising. That is a thing you reach for WHILE
+           reading, which is what a reading rail is for.
+
+           A <dl>, not a paragraph — these are label/value pairs and a screen
+           reader should hear them as pairs.
+
+           The ad sits BELOW them: 160x600, the standard unit from ads.css,
+           wrapped in `ns-ad-rail` so it sticks beside the reading. Below xl
+           this whole column becomes a scrollable row under the header. -->
+      <aside class="ns-tsky" aria-label="About this lesson">
+        <div class="ns-tsky__group">
+          <span class="ns-tsky__label">About</span>
+          <dl class="ns-tsky__meta">
+            <dt>Written by</dt>
+            <dd class="ns-tsky__who"><i class="ph ph-user-circle" aria-hidden="true"></i>Ravi Kulkarni</dd>
+            <dt>Updated</dt>
+            <dd><i class="ph ph-clock-clockwise" aria-hidden="true"></i> 14 Aug 2026</dd>
+          </dl>
+        </div>
+
         <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled">
           <span class="ns-ad__label">Advertisement</span>
           <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Skyscraper</span><span class="ns-ad__dummy-size">160x600</span></span></div>
@@ -374,7 +397,7 @@
            assets/js/toc.js fills it from the article's own headings, so it
            cannot drift from the text; with the script gone it is an empty
            disclosure, not a wrong one. -->
-      <details class="ns-tpost-toc">
+      <details class="ns-toc--collapsible ns-tpost-toc">
         <summary><i class="ph ph-list-bullets" aria-hidden="true"></i> On this page <i class="ph ph-caret-down" aria-hidden="true"></i></summary>
         <nav class="ns-toc" aria-label="On this page" data-toc-from="#post-body"></nav>
       </details>

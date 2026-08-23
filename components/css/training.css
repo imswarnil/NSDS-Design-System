@@ -205,23 +205,12 @@
     box-shadow: inset 0 0 0 1px var(--color-border);
     color: var(--color-brand-500); font-size: var(--size-small);
   }
-  /* The track's own meter. "Section 4 of 32" is a position and this is the
-     same fact as a shape — at 32 sections the number is readable and the bar
-     is glanceable, and at 100 the bar is the only one of the two that still
-     works. */
-  .ns-trainingnav__track-bar {
-    display: flex; align-items: center; gap: var(--space-2);
-    margin-block-start: var(--space-2);
-  }
-  /* flex: 1, NOT inline-size: 100%. At 100% the meter claims the whole row
-     and then the percentage is laid out after it, so the number was pushed
-     past the rail's padding and clipped by the column edge. A flex item that
-     should take the remaining space asks for the remaining space. */
-  .ns-trainingnav__track-bar .ns-progress { flex: 1; min-inline-size: 0; }
-  .ns-trainingnav__track-pct {
-    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
-    color: var(--color-label); font-variant-numeric: tabular-nums;
-  }
+  /* A TRACK METER USED TO LIVE HERE, under the rail's track header. Both are
+     gone: the topbar's crumb names the track and its meter carries the
+     position, so the rail was spending three rows of the narrowest column on
+     the page to restate the page's own chrome. .ns-trainingnav__track itself
+     stays — training-module.html and trainingnav.html still use it as a plain
+     caption, which is all it was before the --doc layout made it a card. */
   .ns-trainingnav__track-body { min-inline-size: 0; }
   /* The NAME is writing and the position is data — Principle 2, and the
      reason this is two selectors rather than one on the wrapper: scoping the
@@ -428,6 +417,20 @@
      a kind tile beside it. Every one of those is a fact the reader was
      otherwise going to have to infer from the body. */
   .ns-modulehead { padding-block-end: var(--space-5); border-block-end: 1px solid var(--color-border); }
+  /* THE KIND MARK — the line above the title that says what this is.
+     Label voice, brand-coloured, with the same glyph the rail uses for this
+     lesson, so the row you clicked and the page you landed on read as one
+     object. It replaces the kind CHIP that used to sit in the meta row: kind
+     is not a peer of "11 min" and "Intermediate" — those are measurements of
+     a thing whose identity this line has already established. */
+  .ns-modulehead__mark {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-modulehead__mark { color: var(--color-brand-300); }
   .ns-modulehead__crumb {
     display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -651,13 +654,18 @@
     .ns-training--doc .ns-trainingnav__collapse { display: inline-flex; }
   }
 
-  /* Same reason as the rail: a sticky child pins to its scroller's CONTENT
-     edge, so padding here would leave a see-through slot above the stuck
-     head with rows scrolling through it. */
-  .ns-training--doc .ns-trainingnav__head {
-    margin-inline: calc(-1 * var(--space-4));
-    padding-inline: var(--space-4);
-  }
+  /* A NEGATIVE MARGIN USED TO LIVE HERE and it was the reason the filter hung
+     out of the sidebar on both sides. It dates from when the head was a
+     sticky child INSIDE the scrolling list, where it had to span the
+     scroller's padding to avoid a see-through slot above itself. The head is
+     now its own grid row and spans the rail by construction, so the margin
+     had nothing left to cancel — it just pulled the head 16px wider than its
+     column at each edge, which is exactly what a reader sees as "the search
+     box is not inside the panel".
+
+     Two rules for one element is how it survived: the row above sets the
+     head's real padding, this one silently re-added a margin twenty lines
+     later and won on source order. */
   /* The article column keeps its measure INSIDE the scroller, so the
      scrollbar stays at the edge of the screen and the text stays at the
      measure. */
@@ -683,6 +691,25 @@
     max-inline-size: none;
     padding: var(--space-6) var(--gutter) var(--space-16);
   }
+  /* THE PARAGRAPH FILLS ITS COLUMN, and this is the one place the system
+     overrides its own reading measure on purpose.
+
+     .ns-prose caps paragraphs at --container-prose (672px). Inside this
+     layout the article column is ~900px, so the cap left ~226px of dead page
+     down the right of every paragraph while the table beside it ran full
+     width — which reads as a broken column rather than as a considered
+     measure, and it is the third time this page has been asked to stop
+     leaving space unused.
+
+     THE TRADE IS REAL and belongs in the diff rather than in a regret later:
+     ~900px of Switzer at --size-prose is ~92ch, above the 45-90 a single
+     column is usually held to. What buys it back is that this surface is not
+     a blog post — it is a lesson read beside a curriculum rail and an ad
+     column, both of which shorten the line the eye actually travels, and the
+     leading is already --leading-prose (1.7), which is what a long line
+     needs. If lessons ever read too wide, put the cap back HERE; do not
+     change --measure-prose, which is still correct for every other surface. */
+  .ns-training--doc .ns-training__reading .ns-prose { max-inline-size: none; }
 
   /* --- The training topbar ------------------------------------------------
      A LESSON HAS A CHROME, and the crumb alone was not it. The page had the
@@ -733,6 +760,23 @@
   .ns-tbar__meter .ns-progress { inline-size: 6rem; }
   .ns-tbar__count { color: var(--color-ink); }
   .ns-tbar__steps { display: flex; align-items: center; gap: var(--space-1); flex: none; }
+  /* THE TOOLTIPS ARE ANCHORED TO THE END, and that is a scroll fix rather
+     than a taste one. .ns-tooltip centres itself on its host with
+     translate: -50%. These hosts sit at the right of a sticky bar at the
+     right of the column, so a 210px tooltip reached ~57px past the column's
+     edge — and .ns-training__main is a scroll container, so it grew a
+     HORIZONTAL SCROLLBAR on a page that has nothing wide in it. The article
+     scrolled sideways because of a hover hint.
+
+     Same shape as the fix on .ns-lesson-nav__btn--next in lms.css: pin the
+     trailing edge and drop the centring translate. Clipping the bar instead
+     would have hidden the tooltip, and overflow-x: clip on the column would
+     have silently disarmed the horizontal scroll that a genuinely wide table
+     still needs. */
+  .ns-tbar__steps .ns-tooltip {
+    inset-inline-start: auto; inset-inline-end: 0;
+    translate: 0 0;
+  }
   /* Below md the meter and the step arrows go, in that order: on a phone the
      bar's job is the crumb and the way into the curriculum, and six controls
      in a 360px row is a toolbar nobody can hit. */
@@ -792,6 +836,11 @@
     line-height: var(--leading-snug);
   }
   .ns-tsky__who { display: flex; align-items: center; gap: var(--space-2); }
+  /* The glyphs sit with the VALUE, not the label: the label is already in
+     the mono label voice and a second mark on it would be two ways of saying
+     the same thing. Muted, because provenance is looked up rather than
+     scanned. */
+  .ns-tsky__meta dd i { color: var(--color-label); }
   /* A ROW, not the stacked --rail variant. Four icon buttons come to ~8rem
      and the column is 11rem, so stacking them spent four rows of a scarce
      vertical resource to save nothing — and centred them away from the
@@ -852,12 +901,30 @@
      display:none hack that leaves the caret lying about its own state, it is
      simply shut everywhere. One row until you want it, and the row says how
      many headings are behind it. */
-  .ns-tpost-toc { margin-block-end: var(--stack-md); }
+  /* IT IS .ns-toc--collapsible NOW, not a bespoke disclosure.
+     This block used to hand-build a <details> that reimplemented what
+     toc.css already ships as a documented variant — which is exactly the
+     "three copies of it is three places for the scroll-spy to drift" that
+     the TOC module's own header warns about. The template composes
+     `.ns-toc--collapsible .ns-tpost-toc`, so the summary's border, radius
+     and label voice come from the component and the rules below are only
+     the things that are true about THIS placement: the spacing around it,
+     and the fact that in an article it is a wide horizontal block rather
+     than a narrow rail.
+
+     Symmetric margins, which it did not have: it carried --stack-md below
+     and nothing above, so it sat hard against the video stage and then left
+     a 2rem hole before the lede. */
+  .ns-tpost-toc { margin-block: var(--stack-sm) var(--stack-md); }
   .ns-tpost-toc > summary { inline-size: 100%; }
   .ns-tpost-toc .ns-toc {
     position: static; max-block-size: none;
-    margin-block-start: var(--space-3);
-    padding-inline-start: 0; border-inline-start: 0;
+    /* The rail's leading hairline is a RAIL affordance — it says "this is a
+       column beside the text". In a full-width disclosure there is no column
+       for it to edge, so it goes and the links keep their own current-item
+       border. */
+    padding: var(--space-3) var(--space-2) var(--space-1);
+    border-inline-start: 0;
   }
   /* Two columns of headings when there is room — a single column of eight
      short links down a 60rem page is a stripe of whitespace beside it. */

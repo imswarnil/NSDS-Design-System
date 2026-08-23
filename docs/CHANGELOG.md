@@ -17,6 +17,76 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — the training post's header, rail head and reading rail
+
+The rail's head is now the **filter and nothing else**. A track header sat
+above it saying "Salesforce Administrator · Section 4 of 32 · 128 lessons",
+and every one of those facts is already on screen: the topbar's crumb names
+the track and the section, its meter carries the position. The rail's job is
+the list.
+
+The post header keeps only what gates the decision to read — duration,
+position, difficulty, read state. It had grown to eight chips wrapping to
+two lines, which is a second lede made of metadata. **Author and
+last-updated moved into the reading rail**: nobody checks who wrote a lesson
+before starting it and everybody checks after hitting something surprising,
+which makes them things you reach for while reading. The **kind** became a
+marked line above the title (`.ns-modulehead__mark`) with the same glyph the
+rail uses for that lesson, so the row you clicked and the page you landed on
+read as one object.
+
+### Changed — the outline is the real TOC component
+
+The training post hand-built a `<details>` that reimplemented what toc.css
+already ships as `--collapsible`. `toc.css` opens by warning that three
+copies of a TOC is three places for the scroll-spy to drift; this page was
+one of the copies. It now composes the variant and keeps only the rules true
+of this placement. Its margins are symmetric too — it had `--stack-md` below
+and nothing above, so it sat hard against the video stage.
+
+### Changed — paragraphs fill the training column
+
+`.ns-prose` caps paragraphs at `--container-prose` (672px), and the article
+column in this layout is ~900px, so every paragraph left ~226px of dead page
+down its right while the table beside it ran full width. The cap is lifted
+**for this surface only**. The trade is stated in the CSS: ~900px of Switzer
+at `--size-prose` is ~92ch, above the 45–90 a column is usually held to —
+bought back by the curriculum rail and ad column shortening the line the eye
+actually travels, and by `--leading-prose` already being 1.7. If lessons
+read too wide, restore the cap there; `--measure-prose` is still right
+everywhere else.
+
+### Fixed — the filter hung out of both sides of the sidebar
+
+Two rules described one element. The first set the head's real padding; a
+second, twenty lines later, re-added `margin-inline: calc(-1 * var(--space-4))`
+and won on source order. That margin dated from when the head was a sticky
+child inside the scrolling list and had to span the scroller's padding — the
+head is its own grid row now and spans the rail by construction, so the
+margin had nothing left to cancel and simply pulled the search box 16px
+wider than its column at each edge.
+
+### Fixed — the article scrolled sideways because of a hover hint
+
+`.ns-tooltip` centres on its host with `translate: -50%`. The topbar's
+prev/next hosts sit at the right of a sticky bar at the right of the column,
+so a 210px tooltip reached ~57px past the column edge — and
+`.ns-training__main` is a scroll container, so it grew a horizontal
+scrollbar on a page with nothing wide in it. The tooltips are now anchored to
+the trailing edge, the same fix `.ns-lesson-nav__btn--next` already carries.
+Clipping the bar would have hidden the tooltip; `overflow-x: clip` on the
+column would have disarmed the scroll a genuinely wide table still needs.
+
+### Fixed — `.ns-toc--collapsible` shoved a leading icon to the centre
+
+`> summary i` applied `margin-inline-start: auto` to **every** icon on the
+assumption the caret is the only one. Give the summary a leading glyph — the
+normal way to label a disclosure — and the icon and its label were pushed
+into the middle of the box while the caret kept the end, and the open state
+rotated both. Now `> summary > i:last-child`, which still matches a
+caret-only summary.
+
+
 ### Changed — the training rail, rebuilt for ~100 sections and ~500 lessons
 
 The target curriculum is end-to-end Salesforce: on the order of a hundred
