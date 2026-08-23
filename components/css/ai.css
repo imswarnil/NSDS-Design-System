@@ -879,6 +879,22 @@
   /* Anchored to the start edge, because on a post these hang off a button on
      the left of a row rather than the right of a navbar. */
   .ns-askai--down { inset-inline-start: 0; inset-inline-end: auto; }
+
+  /* ANCHORED TO THE TRAILING EDGE — for a panel hanging off a button in a
+     rail on the RIGHT of the page. The base panel opens from its start edge,
+     which is correct in the course player (rail on the left, panel opens
+     rightward over the lesson) and wrong in the training post, where the same
+     foot sits on the trailing edge: a 22rem panel opening rightward from a
+     button 2rem off the right of the viewport opens entirely off-screen.
+
+     A dropdown must open into space that EXISTS, which is the same rule
+     .ns-askai--down states for the vertical axis. This is that rule's
+     horizontal half, and the two compose. */
+  .ns-askai--end {
+    inset-inline-end: 0; inset-inline-start: auto;
+    transform-origin: bottom right;
+  }
+  .ns-askai--end.ns-askai--down { transform-origin: top right; }
   .ns-askai__field {
     inline-size: 100%; margin-block-end: var(--space-2);
     font-size: var(--size-small); resize: vertical;

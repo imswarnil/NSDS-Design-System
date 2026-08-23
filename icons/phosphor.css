@@ -66,6 +66,7 @@
 .ph.ph-caret-right:before { content: "\e13a"; }
 .ph.ph-caret-up:before { content: "\e13c"; }
 .ph.ph-chart-bar:before { content: "\e150"; }
+.ph.ph-chart-line-up:before { content: "\e156"; }
 .ph.ph-chat-centered-text:before { content: "\e166"; }
 .ph.ph-chat-circle:before { content: "\e168"; }
 .ph.ph-chat-circle-text:before { content: "\e16e"; }
@@ -86,6 +87,7 @@
 .ph.ph-crown-simple:before { content: "\e616"; }
 .ph.ph-cube:before { content: "\e1da"; }
 .ph.ph-database:before { content: "\e1de"; }
+.ph.ph-dot-outline:before { content: "\ece0"; }
 .ph.ph-dots-six-vertical:before { content: "\eae2"; }
 .ph.ph-dots-three:before { content: "\e1fe"; }
 .ph.ph-download-simple:before { content: "\e20c"; }
@@ -159,6 +161,7 @@
 .ph.ph-star:before { content: "\e46a"; }
 .ph.ph-strategy:before { content: "\ea3a"; }
 .ph.ph-sun:before { content: "\e472"; }
+.ph.ph-table:before { content: "\e476"; }
 .ph.ph-tag:before { content: "\e478"; }
 .ph.ph-terminal-window:before { content: "\eae8"; }
 .ph.ph-text-align-justify:before { content: "\e482"; }
@@ -227,6 +230,7 @@
 .ph-fill.ph-caret-right:before { content: "\e13a"; }
 .ph-fill.ph-caret-up:before { content: "\e13c"; }
 .ph-fill.ph-chart-bar:before { content: "\e150"; }
+.ph-fill.ph-chart-line-up:before { content: "\e156"; }
 .ph-fill.ph-chat-centered-text:before { content: "\e166"; }
 .ph-fill.ph-chat-circle:before { content: "\e168"; }
 .ph-fill.ph-chat-circle-text:before { content: "\e16e"; }
@@ -247,6 +251,7 @@
 .ph-fill.ph-crown-simple:before { content: "\e616"; }
 .ph-fill.ph-cube:before { content: "\e1da"; }
 .ph-fill.ph-database:before { content: "\e1de"; }
+.ph-fill.ph-dot-outline:before { content: "\ece0"; }
 .ph-fill.ph-dots-six-vertical:before { content: "\eae2"; }
 .ph-fill.ph-dots-three:before { content: "\e1fe"; }
 .ph-fill.ph-download-simple:before { content: "\e20c"; }
@@ -320,6 +325,7 @@
 .ph-fill.ph-star:before { content: "\e46a"; }
 .ph-fill.ph-strategy:before { content: "\ea3a"; }
 .ph-fill.ph-sun:before { content: "\e472"; }
+.ph-fill.ph-table:before { content: "\e476"; }
 .ph-fill.ph-tag:before { content: "\e478"; }
 .ph-fill.ph-terminal-window:before { content: "\eae8"; }
 .ph-fill.ph-text-align-justify:before { content: "\e482"; }

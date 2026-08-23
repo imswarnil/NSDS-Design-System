@@ -50,14 +50,33 @@
     var input = rail.querySelector("[data-ns-trainingnav-filter]");
     if (!input) return;
     var result = rail.querySelector("[data-ns-trainingnav-result]");
-    var sections = [].slice.call(rail.querySelectorAll(".ns-trainingnav__section"));
-    if (!sections.length) return;
+
+    /* QUERIED ON EVERY PASS, NOT CACHED ONCE.
+       This used to read the sections into an array at wire time. That is
+       correct for a server-rendered rail and silently wrong for a rail whose
+       sections arrive from data — which is the Next.js LMS, and which is how
+       a 100-section curriculum is actually going to be built. Sections added
+       after init were unknown to the filter, so they were never hidden, while
+       the result line counted only the ones present at startup: the rail
+       claimed "1 section" above ninety-two visible ones.
+
+       Re-querying costs one querySelectorAll per keystroke against a debounce
+       that already exists. At 100 sections that is not measurable, and it
+       removes a whole class of "works in the styleguide, breaks in the app". */
+    function all() {
+      return [].slice.call(rail.querySelectorAll(".ns-trainingnav__section"));
+    }
+    if (!all().length) return;
 
     /* The open/closed state the reader chose, remembered before the first
        search so clearing the box puts the rail back exactly as it was. A
        filter that leaves forty sections expanded behind it has not finished
-       the job it started. */
-    var restored = null;
+       the job it started.
+
+       Stored ON each section rather than in a positional array, because the
+       set is no longer fixed: an index into a snapshot points at the wrong
+       section the moment one is inserted. */
+    var restoring = false;
 
     function text(el) {
       return (el.textContent || "").toLowerCase();
@@ -65,19 +84,24 @@
 
     function apply(q) {
       q = q.trim().toLowerCase();
+      var sections = all();
 
       if (!q) {
-        sections.forEach(function (m, i) {
+        sections.forEach(function (m) {
           m.hidden = false;
           [].slice.call(m.querySelectorAll("li")).forEach(function (li) { li.hidden = false; });
-          if (restored) m.open = restored[i];
+          if (restoring && m.nsWasOpen !== undefined) { m.open = m.nsWasOpen; }
+          delete m.nsWasOpen;
         });
-        restored = null;
+        restoring = false;
         if (result) result.textContent = "";
         return;
       }
 
-      if (!restored) restored = sections.map(function (m) { return m.open; });
+      if (!restoring) {
+        restoring = true;
+        sections.forEach(function (m) { m.nsWasOpen = m.open; });
+      }
 
       var shownSections = 0;
       var shownLessons = 0;
@@ -186,11 +210,49 @@
     });
   }
 
+  /* SHOW THE READER WHERE THEY ARE, on load.
+     The curriculum this rail is built for runs to ~100 sections and ~500
+     lessons, and every section but the current one is shut — which is what
+     keeps it a list rather than a document. The cost is that the rail can
+     open scrolled to row 1 while the lesson being read is row 340, so it
+     opens on somebody else's curriculum.
+
+     So: open the section that owns [aria-current], then bring the current
+     lesson into view. Two details matter.
+
+     `block: "center"` rather than the default, because the useful thing is
+     the lesson WITH ITS NEIGHBOURS — what comes next is half the reason to
+     look at a curriculum, and a row scrolled to the top edge has no next.
+
+     `behavior: "auto"`, never smooth. This fires on load; a rail that visibly
+     races through 340 rows before settling is motion nobody asked for, and
+     tokens/effects.css is explicit that a response is not a gesture. It also
+     means prefers-reduced-motion needs no special case here — there is no
+     motion to reduce.
+
+     If the markup ships no [aria-current] — an index page, a preview — this
+     does nothing at all, which is the correct amount. */
+  function revealCurrent(rail) {
+    var current = rail.querySelector("[aria-current='page']");
+    if (!current) return;
+    var section = current.closest("details");
+    if (section) section.open = true;
+    var scroller = rail.querySelector(".ns-trainingnav__scroll") || rail;
+    /* Only scroll the RAIL, not the page. scrollIntoView walks every
+       scrollable ancestor, so on a phone — where the rail is a fixed drawer
+       over the article — it would drag the article down behind the drawer
+       too. Compute the offset against the scroller and set scrollTop. */
+    if (!scroller.scrollHeight || scroller.scrollHeight <= scroller.clientHeight) return;
+    var top = current.offsetTop - scroller.offsetTop;
+    scroller.scrollTop = Math.max(0, top - (scroller.clientHeight / 2) + (current.offsetHeight / 2));
+  }
+
   function init(scope) {
     (scope || doc).querySelectorAll("[data-ns-trainingnav]").forEach(function (rail) {
       if (rail.nsTrainingFilter) return;
       rail.nsTrainingFilter = true;
       wireFilter(rail);
+      revealCurrent(rail);
     });
     (scope || doc).querySelectorAll("[data-ns-training]").forEach(function (root) {
       if (root.nsTrainingDrawer) return;

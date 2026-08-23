@@ -17,6 +17,129 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — the training rail, rebuilt for ~100 sections and ~500 lessons
+
+The target curriculum is end-to-end Salesforce: on the order of a hundred
+sections and five hundred lessons. That number changes the design rather
+than just stressing it, and four rules follow from it.
+
+**Sections are closed by default, current one open.** Five hundred rows in
+one scroller is a document, not a navigation aid. Collapsed, the rail is
+~100 scannable rows. `assets/js/training.js` opens the section that owns
+`[aria-current]` and scrolls it into view on load, so the rail opens already
+showing where the reader is — `block: "center"`, because the useful thing is
+the lesson *with its neighbours*, and without smooth scrolling, since a rail
+that visibly races through 340 rows on load is motion nobody asked for.
+
+**Every section is numbered.** At 32 sections "Security and access" is
+recognisable; at 100 it is one phrase among a hundred, and the number is
+what makes "I am in 47" a position rather than a vibe. Tabular and
+zero-padded, in its own column, so the numbers form a straight edge.
+
+**Section summaries are sticky.** A 40-lesson section is taller than the
+viewport, so scrolling through one used to leave you among titles with no
+idea which section owned them.
+
+**Deliberately not virtualised.** 500 anchors is a trivial DOM, and
+virtualising breaks the browser's own find-in-page — the feature learners
+actually use to find a lesson.
+
+### Changed — the track is a header, not a card
+
+It was a bordered, raised card at the top of the scrolling list. A card is
+a thing you pick from a set of peers and there is exactly one track, so the
+affordance promised a choice that does not exist; it scrolled away by lesson
+three, taking with it the one question it existed to answer; and it spent
+~64px of the scarcest column on the page. It is now the rail's pinned title
+bar — mark, name, position, and a progress meter — and it never leaves.
+
+### Added — the training topbar (`.ns-tbar`)
+
+A lesson has a chrome and the crumb alone was not it. Sticky over the
+reading column, one row, label voice: crumb, a meter for how far through the
+section, prev/next, and the curriculum handle. Below md the meter goes and
+below lg the steps go — on a phone the bar is the crumb and the drawer
+handle, not six controls in a 360px row.
+
+### Changed — the reading column has no width cap
+
+It was capped at `--container-narrow`, then at `--container-page`, inside a
+cell already ~60rem wide. Each ceiling put the article back in a ribbon with
+dead page on both sides — the exact thing removing the third column was
+meant to reclaim. There is no cap now, and that is safe because the thing a
+cap protects is line length, which `.ns-prose` already handles by capping
+its own paragraphs at `--measure-prose`. Everything that is *not* a
+paragraph — tables, code, the video stage, the pager — has no business being
+clamped to a reading measure. Cap the paragraph, not the page.
+
+### Added — `.ns-askai--end`
+
+The horizontal half of the rule `.ns-askai--down` states for the vertical
+axis: a dropdown must open into space that exists. The base panel opens from
+its start edge, which is correct in the course player (rail on the left) and
+wrong in the training post, where the same foot sits on the trailing edge —
+a 22rem panel opening rightward from a button 2rem off the right of the
+viewport opened entirely off-screen.
+
+### Fixed — the phone drawer was in the document flow, and the page scrolled sideways
+
+`.ns-training > .ns-trainingnav` set `position: static` below 64rem for the
+base layout. A `--doc` page carries **both** classes, so that selector
+matched it too — at (0,2,0), exactly the specificity of the
+`.ns-training--doc > .ns-trainingnav` rule that makes the drawer
+`position: fixed`. Same specificity, later in the file, so it won: the
+drawer kept its `translate: 100%` but went back into flow, putting a 22rem
+column one full width off the right edge. Every phone scrolled sideways and
+the drawer was a strip of empty space instead of an overlay. The base rule
+is now `.ns-training:not(.ns-training--doc)` — the two rules describe
+different layouts and should never have been able to match the same element.
+
+### Fixed — the `--doc` drawer had no scrim
+
+`.ns-training--doc` ships a scrim element and wires the close handler to it,
+but only `.ns-training--fixed` could ever display it. On a phone the
+training post's drawer opened over an undimmed page with no tap-outside
+target, while the identical drawer on the course player dimmed correctly.
+The markup and the JS were both right; the selector had one arm. The scrim
+also moved before the rail in the markup, so the rail — also fixed at
+`--z-overlay` — paints above it on source order rather than by inventing a
+seventh elevation level.
+
+### Fixed — a duplicate breakpoint flipped the drawer to the wrong edge
+
+A second copy of the `max-width: 63.999rem` block, left over from when the
+rail was on the leading edge, re-declared the same breakpoint with
+`inset-inline-start` and `translate: -100%`. Being later in the file it won,
+so below 64rem the drawer flew in from the left — undoing the move to the
+trailing edge in the same stylesheet that made it.
+
+### Fixed — the lesson filter ignored anything rendered after init
+
+It read the sections into an array at wire time: correct for a
+server-rendered rail, silently wrong for one whose sections arrive from data
+— which is the Next.js LMS, and how a 100-section curriculum will actually
+be built. Sections added after init were never hidden while the result line
+counted only the startup set, so the rail claimed "1 section" above
+ninety-two visible ones. It now re-queries per pass and stores each
+section's restore state on the element rather than by index into a snapshot.
+
+### Fixed — the track meter clipped its own percentage
+
+`inline-size: 100%` on the `<progress>` claimed the whole flex row, so the
+percentage laid out after it was pushed past the rail's padding and clipped
+by the column edge. A flex item that should take the remaining space asks
+for the remaining space.
+
+### Changed — the pager is two rows, not three
+
+Direction / section / title stacked three deep made each card ~92px tall, so
+the pair took a sixth of a laptop viewport to say two lines. Direction and
+section are both label-voice one-liners and read as one caption, so they
+share a row; the title keeps its own, and now carries the KIND glyph — an
+arrow into a 20-minute lab and an arrow into a 6-question check are
+different decisions and used to look identical.
+
+
 ### Added — `--leading-prose`, and a real leading ramp for reading
 
 `1.7`, the tallest step, for exactly one surface: continuous prose at

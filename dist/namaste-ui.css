@@ -1012,6 +1012,7 @@
 .ph.ph-caret-right:before { content: "\e13a"; }
 .ph.ph-caret-up:before { content: "\e13c"; }
 .ph.ph-chart-bar:before { content: "\e150"; }
+.ph.ph-chart-line-up:before { content: "\e156"; }
 .ph.ph-chat-centered-text:before { content: "\e166"; }
 .ph.ph-chat-circle:before { content: "\e168"; }
 .ph.ph-chat-circle-text:before { content: "\e16e"; }
@@ -1032,6 +1033,7 @@
 .ph.ph-crown-simple:before { content: "\e616"; }
 .ph.ph-cube:before { content: "\e1da"; }
 .ph.ph-database:before { content: "\e1de"; }
+.ph.ph-dot-outline:before { content: "\ece0"; }
 .ph.ph-dots-six-vertical:before { content: "\eae2"; }
 .ph.ph-dots-three:before { content: "\e1fe"; }
 .ph.ph-download-simple:before { content: "\e20c"; }
@@ -1105,6 +1107,7 @@
 .ph.ph-star:before { content: "\e46a"; }
 .ph.ph-strategy:before { content: "\ea3a"; }
 .ph.ph-sun:before { content: "\e472"; }
+.ph.ph-table:before { content: "\e476"; }
 .ph.ph-tag:before { content: "\e478"; }
 .ph.ph-terminal-window:before { content: "\eae8"; }
 .ph.ph-text-align-justify:before { content: "\e482"; }
@@ -1173,6 +1176,7 @@
 .ph-fill.ph-caret-right:before { content: "\e13a"; }
 .ph-fill.ph-caret-up:before { content: "\e13c"; }
 .ph-fill.ph-chart-bar:before { content: "\e150"; }
+.ph-fill.ph-chart-line-up:before { content: "\e156"; }
 .ph-fill.ph-chat-centered-text:before { content: "\e166"; }
 .ph-fill.ph-chat-circle:before { content: "\e168"; }
 .ph-fill.ph-chat-circle-text:before { content: "\e16e"; }
@@ -1193,6 +1197,7 @@
 .ph-fill.ph-crown-simple:before { content: "\e616"; }
 .ph-fill.ph-cube:before { content: "\e1da"; }
 .ph-fill.ph-database:before { content: "\e1de"; }
+.ph-fill.ph-dot-outline:before { content: "\ece0"; }
 .ph-fill.ph-dots-six-vertical:before { content: "\eae2"; }
 .ph-fill.ph-dots-three:before { content: "\e1fe"; }
 .ph-fill.ph-download-simple:before { content: "\e20c"; }
@@ -1266,6 +1271,7 @@
 .ph-fill.ph-star:before { content: "\e46a"; }
 .ph-fill.ph-strategy:before { content: "\ea3a"; }
 .ph-fill.ph-sun:before { content: "\e472"; }
+.ph-fill.ph-table:before { content: "\e476"; }
 .ph-fill.ph-tag:before { content: "\e478"; }
 .ph-fill.ph-terminal-window:before { content: "\eae8"; }
 .ph-fill.ph-text-align-justify:before { content: "\e482"; }
@@ -6797,27 +6803,55 @@
     border-inline-end: 1px solid var(--color-border);
   }
 
-  /* The track: the one thing above every module, so it is a card rather than
-     a caption — it is where "which curriculum am I in" is answered and it is
-     the way back out. Plain text inside still renders correctly; the icon and
-     the position line are optional children. */
+  /* THE TRACK IS A HEADER, NOT A CARD — and that is a correction.
+     It used to be a bordered, raised, rounded card sitting at the top of the
+     scrolling list. Three things were wrong with it. A card is a thing you
+     pick from a set of peers, and there is exactly one track on this page, so
+     the affordance was promising a choice that does not exist. It scrolled
+     away with the list, so the answer to "which curriculum is this" — the one
+     question it existed to answer — was gone by lesson three. And it spent
+     ~64px of the scarcest column on the page to say two things.
+
+     Now it is the rail's title bar: pinned in the head, one row, with the
+     track's progress under it. Same three facts (mark, name, position), no
+     border, no card, and it never leaves the screen.
+
+     THIS MATTERS AT SCALE. The rail is built for a curriculum of ~100
+     sections and ~500 lessons, and every fixed row it spends is a row the
+     lesson list does not get. */
   .ns-trainingnav__track {
     display: flex; align-items: center; gap: var(--space-2-5);
-    padding: var(--space-2-5) var(--space-3);
-    margin-block-end: var(--space-4);
-    border: 1px solid var(--color-border); border-radius: var(--radius-card);
-    background: var(--color-surface-raised);
+    padding: 0; margin: 0;
+    background: none; border: 0;
     color: var(--color-ink); text-decoration: none;
     font-size: var(--size-small); font-weight: var(--weight-medium);
-    transition: border-color var(--duration-fast) var(--ease-out);
+    transition: color var(--duration-fast) var(--ease-out);
   }
-  a.ns-trainingnav__track:hover { border-color: var(--color-brand-500); }
+  a.ns-trainingnav__track:hover { color: var(--color-brand-600); }
+  [data-theme="dark"] a.ns-trainingnav__track:hover { color: var(--color-brand-300); }
   .ns-trainingnav__track > i {
     flex: none; display: grid; place-items: center;
-    inline-size: 1.75rem; block-size: 1.75rem;
+    inline-size: 1.5rem; block-size: 1.5rem;
     border-radius: var(--radius-sm);
     box-shadow: inset 0 0 0 1px var(--color-border);
-    color: var(--color-brand-500); font-size: var(--size-body);
+    color: var(--color-brand-500); font-size: var(--size-small);
+  }
+  /* The track's own meter. "Section 4 of 32" is a position and this is the
+     same fact as a shape — at 32 sections the number is readable and the bar
+     is glanceable, and at 100 the bar is the only one of the two that still
+     works. */
+  .ns-trainingnav__track-bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-block-start: var(--space-2);
+  }
+  /* flex: 1, NOT inline-size: 100%. At 100% the meter claims the whole row
+     and then the percentage is laid out after it, so the number was pushed
+     past the rail's padding and clipped by the column edge. A flex item that
+     should take the remaining space asks for the remaining space. */
+  .ns-trainingnav__track-bar .ns-progress { flex: 1; min-inline-size: 0; }
+  .ns-trainingnav__track-pct {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
   }
   .ns-trainingnav__track-body { min-inline-size: 0; }
   /* The NAME is writing and the position is data — Principle 2, and the
@@ -6836,16 +6870,61 @@
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
 
+  /* --- Sections, at curriculum scale ---------------------------------------
+     THE TARGET IS ~100 SECTIONS AND ~500 LESSONS, and that number changes the
+     design rather than just stressing it. Three rules follow from it, and all
+     three are in this block:
+
+       1. CLOSED BY DEFAULT, current one open. 500 rows in one scroller is not
+          a navigation aid, it is a document. Collapsed, the rail is ~100 rows
+          — a long but scannable list — and the only section expanded is the
+          one being read. assets/js/training.js scrolls that one into view on
+          load, so the rail opens already showing where you are.
+       2. THE SUMMARY IS STICKY. A 40-lesson section is taller than the
+          viewport, so scrolling through it used to leave you in a list of
+          titles with no idea which section they belonged to. The summary
+          pins to the top of the scroller while its own lessons pass under it.
+       3. EVERY SECTION IS NUMBERED. At 32 sections "Security and access" is
+          recognisable; at 100 it is one of a hundred phrases, and the number
+          is what makes "I am in 47" a position rather than a vibe.
+
+     None of this is a scroll virtualiser and it should not become one: 500
+     anchors is a trivial DOM, and the moment the list is virtualised the
+     browser's own find-in-page stops working — which is the feature learners
+     actually use to find a lesson. */
   .ns-trainingnav__section { border: 0; }
   .ns-trainingnav__section + .ns-trainingnav__section { margin-block-start: var(--space-0-5); }
   .ns-trainingnav__section > summary {
+    position: sticky; inset-block-start: 0; z-index: var(--z-raised);
     display: flex; align-items: center; gap: var(--space-2);
     padding: var(--space-2);
     border-radius: var(--radius-sm);
     list-style: none; cursor: pointer;
     font-size: var(--size-small); font-weight: var(--weight-medium);
     color: var(--color-ink);
+    /* Opaque: the rows it pins over must not show through it. */
+    background: var(--color-surface);
     transition: background var(--duration-fast) var(--ease-out);
+  }
+  /* The section INDEX. Tabular, zero-padded, its own column — so the numbers
+     form a straight edge down the rail at any count, and 07 sits under 06
+     rather than half a character to the left. */
+  .ns-trainingnav__num {
+    flex: none; min-inline-size: 1.5rem;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-variant-numeric: tabular-nums; color: var(--color-label);
+  }
+  .ns-trainingnav__section[data-state="done"] .ns-trainingnav__num { color: var(--color-success); }
+  .ns-trainingnav__section:has([aria-current="page"]) .ns-trainingnav__num { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__section:has([aria-current="page"]) .ns-trainingnav__num { color: var(--color-brand-300); }
+  /* The section being read is marked on its own row, not only by its colour:
+     a tinted slab survives being scrolled past at speed, which is how anyone
+     moves through a hundred of them. */
+  .ns-trainingnav__section:has([aria-current="page"]) > summary {
+    background: var(--color-brand-50);
+  }
+  [data-theme="dark"] .ns-trainingnav__section:has([aria-current="page"]) > summary {
+    background: color-mix(in srgb, var(--color-brand-500) 14%, transparent);
   }
   .ns-trainingnav__section > summary::-webkit-details-marker { display: none; }
   .ns-trainingnav__section > summary:hover { background: var(--color-surface-sunken); }
@@ -6871,6 +6950,15 @@
   }
   .ns-trainingnav__section[data-state="done"] .ns-trainingnav__section-icon { color: var(--color-success); }
   .ns-trainingnav__section[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
+  /* The name takes the slack and wraps to at most two lines. At 100 sections
+     a few titles WILL be long, and letting one run to four lines puts a hole
+     in an otherwise even column. */
+  .ns-trainingnav__section-name {
+    min-inline-size: 0; flex: 1;
+    line-height: var(--leading-snug);
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
   .ns-trainingnav__count {
     margin-inline-start: auto; flex: none;
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -7067,9 +7155,9 @@
        list. The article keeps the measure either way; this width comes out of
        the empty page beside it. */
     --ns-trail-w: 22rem;
-    /* The utility skyscraper: narrow and tall, on the leading edge. Wide
-       enough for a label and an icon on one line, and no wider — it holds
-       tools, not content. */
+    /* 160px is the skyscraper's own width; the column is that plus room for
+       the unit's label and hairline. Not a design choice — the creative is
+       the size it is. */
     --ns-tsky-w: 11rem;
     gap: 0;
     block-size: calc(100dvh - var(--navbar-h));
@@ -7080,14 +7168,82 @@
     block-size: 100%; min-block-size: 0;
     overflow-y: auto; max-inline-size: none;
   }
+  /* THREE ROWS, LIKE THE PLAYER'S RAIL: head / scrolling list / foot, and
+     only the middle one moves. The rail is FIXED — part of the locked grid
+     rather than a sticky block in a scrolling page — so the filter at its top
+     and the actions at its foot are on screen for the whole lesson, which is
+     the entire reason the player's rail is built this way.
+
+     No overflow:hidden on the rail itself. The list has its own overflow-y
+     and the grid row caps it, and hiding overflow here would slice the foot's
+     Ask AI panel down the middle — a dropdown is supposed to sit OVER the
+     column beside it. That exact bug is documented on .ns-player__side. */
   .ns-training--doc > .ns-trainingnav {
     grid-column: 2; grid-row: 1;
     position: static; inline-size: auto;
     max-block-size: none; block-size: 100%; min-block-size: 0;
-    overflow-y: auto;
+    /* head / scrolling list / foot / watermark. Four rows declared, not
+       three plus an implicit one — the watermark was landing in an auto row
+       the template never asked for, which works right up until somebody adds
+       a fifth child and wonders why it scrolls. */
+    display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto;
+    overflow: visible;
     border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
-    padding-block-start: 0; padding-inline: var(--space-4);
+    padding-block-start: 0; padding-inline: 0;
   }
+  /* The scrolling middle. It is the only part that moves, and it carries the
+     rail's inline padding so the scrollbar sits at the column's edge rather
+     than inside the padding. */
+  .ns-trainingnav__scroll {
+    min-block-size: 0; overflow-y: auto;
+    padding-inline: var(--space-4); padding-block-end: var(--space-4);
+  }
+  /* THE FILTER BELONGS TO THE RAIL, and until now it did not look like it:
+     the head sat on the page ground with no edge of its own, so the search
+     field read as floating above the column rather than being its top row.
+     It is the foot's opposite number — same sunken ground, same hairline,
+     mirrored — which is what makes the rail read as one object with a
+     scrolling middle rather than a list with two strays attached. */
+  .ns-training--doc .ns-trainingnav__head {
+    margin-inline: 0;
+    padding: var(--space-2-5) var(--space-3);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+
+  /* --- The rail's foot ----------------------------------------------------
+     Share and Ask AI, pinned. Same parts and same reasoning as
+     .ns-player__side-foot: four recognisable logos need no label, and the
+     assistant is asked ABOUT this page — the menu opens it in Claude,
+     ChatGPT or Perplexity with the prompt already written. */
+  .ns-trainingnav__foot {
+    display: flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+  }
+  .ns-trainingnav__foot .ns-share { gap: 0; min-inline-size: 0; }
+  .ns-trainingnav__foot .ns-share__label { display: none; }
+  .ns-trainingnav__foot .ns-usermenu { margin-inline-start: auto; flex: none; }
+  .ns-trainingnav__foot .ns-usermenu > .ns-btn { padding-inline: var(--space-2); gap: var(--space-1-5); }
+
+  /* --- The watermark ------------------------------------------------------
+     The last row, and the quietest thing on the screen. A learner four
+     lessons deep has forgotten which site they are on — the crumb says the
+     TRACK, not the publisher — and this is the one place a byline can sit
+     without competing with anything. It is a link, because the one thing
+     somebody reading it wants is the rest of the catalogue. */
+  .ns-trainingnav__brand {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2-5) var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-size: var(--size-label); color: var(--color-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-trainingnav__brand:hover { color: var(--color-ink); }
+  .ns-trainingnav__brand img { inline-size: 1rem; block-size: 1rem; opacity: 0.7; /* lint-ok: a watermark is dimmed art, not a token-fed surface */ }
   /* --- Collapsing the curriculum ------------------------------------------
      A 22rem rail is right while you are choosing what to read and wrong once
      you have chosen. data-rail="collapsed" takes the column out of the grid
@@ -7100,7 +7256,7 @@
      would be two things to keep in step. */
   .ns-training--doc[data-rail="collapsed"] { grid-template-columns: minmax(0, 1fr) var(--space-10); }
   .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav {
-    padding-inline: 0; overflow: hidden;
+    grid-template-rows: minmax(0, 1fr); padding-inline: 0; overflow: hidden;
   }
   /* Everything except the reopen control goes. `visibility` rather than
      display:none so the rail keeps its scroll position for when it returns. */
@@ -7141,36 +7297,101 @@
      space the aside was removed to reclaim. Paragraphs still get their measure
      — .ns-prose caps itself — but tables, code, the video stage and the pager
      now use the whole container, which is what they were always short of. */
-  /* THE CONTENT COLUMN, WIDENED. It was capped at --container-narrow (56rem)
-     and padded with --gutter-lg on both sides inside a cell that is already
-     ~60rem wide — so the article sat in a ribbon with a band of dead page on
-     each side and another 4rem of padding inside that. Three separate
-     constraints stacked, and the reader paid for all of them.
+  /* THE CONTENT COLUMN IS THE CELL — no ceiling, no centring.
+     It was capped at --container-narrow (56rem), then at --container-page
+     (72rem), inside a cell already ~60rem wide. Each ceiling put the article
+     back in a ribbon with dead page on both sides, which is the exact thing
+     the third column was removed to reclaim.
 
-     Now the cell IS the column: --container-page as a ceiling for very wide
-     screens, ordinary --gutter for the inset. .ns-prose still caps its own
-     paragraphs at the measure, so body copy is unchanged — what got wider is
-     everything that was always short of room: tables, code, the video stage,
-     the pager. */
+     There is no width cap here now. That is safe because the thing a cap
+     protects — line length — is already protected one level down: .ns-prose
+     caps its own paragraphs at --measure-prose, so a sentence never runs past
+     68ch no matter how wide this gets. Everything that is NOT a paragraph —
+     tables, code blocks, the video stage, the pager, the ad row — has no
+     business being clamped to a reading measure, and those are precisely the
+     blocks that were starved. Cap the paragraph, not the page. */
   .ns-training--doc .ns-training__reading {
-    max-inline-size: var(--container-page);
-    margin-inline: auto;
-    padding: var(--space-8) var(--gutter) var(--space-16);
+    max-inline-size: none;
+    padding: var(--space-6) var(--gutter) var(--space-16);
   }
 
-  /* --- The utility skyscraper ---------------------------------------------
-     A narrow sticky column on the leading edge of the article, holding the
-     things a reader reaches for WHILE reading rather than before: who wrote
-     it and when, how to share it, and how to ask the assistant about it.
+  /* --- The training topbar ------------------------------------------------
+     A LESSON HAS A CHROME, and the crumb alone was not it. The page had the
+     track name and nothing else pinned: how far through the section you are,
+     what is next, and the way back to the curriculum all lived somewhere down
+     the page or in a rail that can be collapsed shut.
+
+     So this is the post's own bar — sticky to the top of the scrolling
+     column, one row tall, in the label voice. It carries the four facts a
+     reader glances up for: WHERE (crumb), HOW FAR (a progress meter with its
+     count), and the two STEPS (prev / next), plus the curriculum toggle for
+     when the rail is collapsed. Nothing here is decoration; each item is a
+     control or a number.
+
+     It is --size-label mono throughout on purpose. This is chrome around a
+     document, and chrome that competes with the title it sits above is chrome
+     that has forgotten its job. */
+  .ns-tbar {
+    position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-2) var(--gutter);
+    border-block-end: 1px solid var(--color-border);
+    /* Opaque, not translucent. Code blocks, tables and the video stage all
+       scroll under this — a blurred backdrop turns a monospace line into
+       mush, and the bar is 2rem of chrome, not a hero. */
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .ns-tbar__crumb {
+    display: flex; align-items: center; gap: var(--space-1-5);
+    min-inline-size: 0; margin: 0;
+  }
+  .ns-tbar__crumb a {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    color: inherit; text-decoration: none;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-tbar__crumb a:hover { color: var(--color-ink); }
+  .ns-tbar__sep { color: var(--color-border); flex: none; }
+  /* HOW FAR THROUGH. A <progress> and its own count — the meter is the shape
+     of the answer and the number is the answer, and a learner wants both. */
+  .ns-tbar__meter {
+    display: flex; align-items: center; gap: var(--space-2);
+    margin-inline-start: auto; flex: none;
+  }
+  .ns-tbar__meter .ns-progress { inline-size: 6rem; }
+  .ns-tbar__count { color: var(--color-ink); }
+  .ns-tbar__steps { display: flex; align-items: center; gap: var(--space-1); flex: none; }
+  /* Below md the meter and the step arrows go, in that order: on a phone the
+     bar's job is the crumb and the way into the curriculum, and six controls
+     in a 360px row is a toolbar nobody can hit. */
+  @media (max-width: 47.999rem) {
+    .ns-tbar__meter { display: none; }
+    .ns-tbar { padding-inline: var(--gutter); }
+  }
+  @media (max-width: 63.999rem) {
+    .ns-tbar__steps { display: none; }
+  }
+
+  /* --- The skyscraper slot ------------------------------------------------
+     A SKYSCRAPER IS AN AD FORMAT — 160x600 — and this column is where one
+     goes: on the leading edge of the article, sticky, beside the reading.
+     It takes .ns-ad--skyscraper from ads.css rather than a training-specific
+     frame, because an ad slot that looks different per surface is an ad slot
+     the sales sheet cannot describe.
 
      It begins BELOW the header, not beside it. The header is the page's
-     title and it owns the full width; the skyscraper belongs to the body.
-     That is why the split is inside .ns-tpost-body rather than on the layout
-     grid — a column that started at the top would push the title into two
-     thirds of a page it should own outright.
+     title and it owns the full width; the slot belongs to the body. That is
+     why the split is inside .ns-tpost-body rather than on the layout grid —
+     a column that started at the top would push the title into two thirds of
+     a page it should own outright.
 
-     Narrow and tall on purpose. These are tools, and a tool column wide
-     enough to read paragraphs in invites paragraphs into it. */
+     The article's own metadata does NOT live here. Author, date and reading
+     time belong with the title, in .ns-tmeta, the same way the lesson
+     player states its lesson in its header. Facts about the page go in the
+     page's header; a rail is for what is beside it. */
   .ns-tpost-body {
     display: grid;
     grid-template-columns: var(--ns-tsky-w) minmax(0, 1fr);
@@ -7277,37 +7498,40 @@
   }
 
   /* The BASE (non-fixed, non-doc) training layout still collapses to one
-     column below lg — restored here because .ns-training is what
-     training-module.html uses, and it is not a --doc page. */
+     column below lg — .ns-training is what training-module.html uses, and it
+     is not a --doc page.
+
+     :not(.ns-training--doc) IS LOAD-BEARING, and its absence was a real bug.
+     A --doc page carries BOTH classes, so `.ns-training > .ns-trainingnav`
+     matched it too — at (0,2,0), exactly the specificity of the
+     `.ns-training--doc > .ns-trainingnav` rule sixty lines up that makes the
+     phone drawer `position: fixed`. Same specificity, and this block is
+     later, so it won: below 64rem the drawer kept its `translate: 100%` but
+     went back to `position: static`, which put a 22rem column in the document
+     flow shoved one full width off the right edge. The page scrolled
+     sideways on every phone, and the drawer was a strip of empty space
+     rather than an overlay.
+
+     Guarding by source order would have been the other fix and the wrong one
+     — the two rules describe different layouts, so they should not be able to
+     match the same element at all. */
   @media (max-width: 63.999rem) {
-    .ns-training { display: block; }
-    .ns-training > .ns-trainingnav {
+    .ns-training:not(.ns-training--doc) { display: block; }
+    .ns-training:not(.ns-training--doc) > .ns-trainingnav {
       position: static; inline-size: 100%; max-block-size: none;
       border-inline-end: 0; border-block-end: 1px solid var(--color-border);
       padding-inline-end: 0; margin-block-end: var(--space-5);
     }
-    .ns-training > .ns-training__main { max-inline-size: none; }
+    .ns-training:not(.ns-training--doc) > .ns-training__main { max-inline-size: none; }
   }
 
-  @media (max-width: 63.999rem) {
-    .ns-training--doc {
-      display: block; block-size: auto; overflow: visible;
-    }
-    .ns-training--doc > .ns-training__main { overflow: visible; block-size: auto; }
-    .ns-training--doc > .ns-trainingnav {
-      position: fixed; inset-block: 0; inset-inline-start: 0;
-      inline-size: min(22rem, 88vw); z-index: var(--z-overlay);
-      background: var(--color-surface);
-      border-inline-end: 1px solid var(--color-border);
-      transition: translate var(--duration-base) var(--ease-out);
-    }
-    /* Off-canvas from the LEADING edge, because that is the edge it lives on
-       above the breakpoint — a drawer that flies in from the side its column
-       was never on reads as a different object. */
-    .ns-training--doc > .ns-trainingnav { translate: -100% 0; }
-    .ns-training--doc[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
-    .ns-training--doc .ns-training__reading { padding: var(--space-6) var(--gutter) var(--space-12); }
-  }
+  /* A SECOND COPY OF THE BLOCK ABOVE USED TO SIT HERE, left over from when the
+     rail was on the leading edge. It re-declared the same breakpoint with
+     inset-inline-start and translate: -100%, and being later in the file it
+     WON — so below 64rem the drawer flew in from the left, off the edge the
+     rail does not live on, undoing the move in the same stylesheet that made
+     it. Deleted rather than corrected: the rule 60 lines up is the whole
+     behaviour, and two copies of a breakpoint is how this happened. */
 
   /* --- Track card ---------------------------------------------------------
      A track in an overview GRID — distinct from .ns-module, which is a track's
@@ -7784,16 +8008,30 @@
     .ns-training__reading { padding: var(--space-6) var(--gutter); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .ns-training--fixed > .ns-trainingnav { transition: none; }
+    .ns-training--fixed > .ns-trainingnav,
+    .ns-training--doc > .ns-trainingnav { transition: none; }
   }
-  /* The scrim behind the open drawer. */
+  /* The scrim behind the open drawer.
+     It sits BEFORE the rail in the markup, and that is the whole stacking
+     story: both are position:fixed at --z-overlay, so the one later in the
+     document paints on top. Scrim first, rail second — the rail is above its
+     own scrim, and the article is below both. Giving the rail
+     --z-overlay + 1 would do the same job by inventing a seventh elevation
+     level that tokens/layout.css deliberately does not have. */
   .ns-training__scrim {
     display: none;
     position: fixed; inset: 0; z-index: var(--z-overlay);
     background: var(--color-scrim);
   }
+  /* BOTH drawer layouts, and the --doc half was missing.
+     .ns-training--doc ships a scrim element and wires the close handler to
+     it, but only --fixed could ever display it — so on a phone the training
+     post's drawer opened over an undimmed page with no tap-outside target,
+     while the identical drawer on the course player dimmed correctly. The
+     markup and the JS were both right; the selector had one arm. */
   @media (max-width: 63.999rem) {
-    .ns-training--fixed[data-rail="open"] .ns-training__scrim { display: block; }
+    .ns-training--fixed[data-rail="open"] .ns-training__scrim,
+    .ns-training--doc[data-rail="open"] .ns-training__scrim { display: block; }
   }
 
   /* ================================================== END-TO-END PAGER ====
@@ -7813,9 +8051,15 @@
     padding-block-start: var(--space-5);
     border-block-start: 1px solid var(--color-border);
   }
+  /* TWO ROWS, NOT THREE. Direction / module / title stacked three deep with
+     --pad-card around them made each card ~92px tall, so the pair took a
+     sixth of a laptop viewport to say two lines of text. Direction and module
+     are both label-voice one-liners and belong on the SAME row — they read as
+     "← Previous · Security and access", which is one fact — leaving the title
+     its own line. Same information, two rows, --pad-card-sm of padding. */
   .ns-tpager__btn {
     display: grid; gap: var(--space-1);
-    padding: var(--pad-card);
+    padding: var(--space-3) var(--space-4);
     border: 1px solid var(--color-border); border-radius: var(--radius-card);
     color: inherit; text-decoration: none;
     box-shadow: inset 2px 0 0 transparent;
@@ -7831,9 +8075,30 @@
     text-transform: uppercase; color: var(--color-label);
   }
   .ns-tpager__btn--next .ns-tpager__dir { justify-content: flex-end; }
+  /* The label row: direction and module on one line, separated by a hairline
+     dot rather than a gap, so the pair reads as one caption. */
+  .ns-tpager__line {
+    display: flex; align-items: center; gap: var(--space-2);
+    min-inline-size: 0;
+  }
+  .ns-tpager__btn--next .ns-tpager__line { justify-content: flex-end; }
+  .ns-tpager__line .ns-tpager__where {
+    min-inline-size: 0; overflow: hidden;
+    text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ns-tpager__dot { color: var(--color-border); flex: none; }
   .ns-tpager__where { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-brand-600); letter-spacing: var(--tracking-label); text-transform: uppercase; }
   [data-theme="dark"] .ns-tpager__where { color: var(--color-brand-300); }
-  .ns-tpager__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); text-wrap: pretty; }
+  .ns-tpager__title {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-size: var(--size-body); font-weight: var(--weight-semibold);
+    color: var(--color-ink); text-wrap: pretty;
+  }
+  /* The KIND glyph, so the pair says what is next as well as its name — an
+     arrow into a 20-minute lab and an arrow into a 6-question check are
+     different decisions and used to look identical. */
+  .ns-tpager__title i { flex: none; color: var(--color-label); font-size: var(--size-small); }
+  .ns-tpager__btn--next .ns-tpager__title { flex-direction: row-reverse; }
   /* An end that says it is the end. A dead arrow at the last post of a 150
      module curriculum reads as a bug. */
   .ns-tpager__btn[aria-disabled="true"] { opacity: var(--opacity-disabled); pointer-events: none; }
@@ -12490,6 +12755,22 @@
   /* Anchored to the start edge, because on a post these hang off a button on
      the left of a row rather than the right of a navbar. */
   .ns-askai--down { inset-inline-start: 0; inset-inline-end: auto; }
+
+  /* ANCHORED TO THE TRAILING EDGE — for a panel hanging off a button in a
+     rail on the RIGHT of the page. The base panel opens from its start edge,
+     which is correct in the course player (rail on the left, panel opens
+     rightward over the lesson) and wrong in the training post, where the same
+     foot sits on the trailing edge: a 22rem panel opening rightward from a
+     button 2rem off the right of the viewport opens entirely off-screen.
+
+     A dropdown must open into space that EXISTS, which is the same rule
+     .ns-askai--down states for the vertical axis. This is that rule's
+     horizontal half, and the two compose. */
+  .ns-askai--end {
+    inset-inline-end: 0; inset-inline-start: auto;
+    transform-origin: bottom right;
+  }
+  .ns-askai--end.ns-askai--down { transform-origin: top right; }
   .ns-askai__field {
     inline-size: 100%; margin-block-end: var(--space-2);
     font-size: var(--size-small); resize: vertical;

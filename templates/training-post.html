@@ -43,6 +43,14 @@
 
 <div class="ns-training ns-training--doc" data-ns-training data-rail="closed">
 
+  <!-- The scrim comes FIRST so the rail, which is also fixed at --z-overlay,
+       paints above it — source order is the tie-breaker and the reason no
+       extra elevation level is needed. No `hidden` attribute: base.css makes
+       [hidden] display:none !important, which would beat the drawer CSS that
+       reveals it; the stylesheet hides it by default and data-rail="open"
+       shows it. -->
+  <div class="ns-training__scrim" data-ns-training-close></div>
+
   <!-- === 2 · The curriculum — the TRAILING edge ====================== -->
   <nav class="ns-trainingnav" data-ns-trainingnav aria-label="Curriculum">
     <!-- The collapsed rendering. One attribute — data-rail — drives all three
@@ -52,7 +60,23 @@
       <span class="ns-trainingnav__spine-label">Curriculum</span>
     </div>
 
+    <!-- THE RAIL'S HEAD, pinned. The track's identity and the filter, both
+         of which have to survive scrolling: "which curriculum is this" and
+         "find me the lesson about X" are the two questions asked from any
+         point in a 500-lesson list, and neither can be answered by something
+         that scrolled away 400 rows ago. -->
     <div class="ns-trainingnav__head">
+      <a class="ns-trainingnav__track" href="#">
+        <i class="ph ph-graduation-cap" aria-hidden="true"></i>
+        <span class="ns-trainingnav__track-body">
+          <b>Salesforce Administrator</b>
+          <span><i class="ph ph-stack" aria-hidden="true"></i> Section 4 of 32 · 128 lessons</span>
+        </span>
+      </a>
+      <p class="ns-trainingnav__track-bar">
+        <progress class="ns-progress" value="19" max="128" aria-label="19 of 128 lessons complete"></progress>
+        <span class="ns-trainingnav__track-pct">15%</span>
+      </p>
       <form class="ns-trainingnav__search" role="search" action="#">
         <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
         <input class="ns-input" type="search" name="q" placeholder="Filter lessons" aria-label="Filter lessons" data-ns-trainingnav-filter>
@@ -62,18 +86,12 @@
       <p class="ns-trainingnav__result" role="status" data-ns-trainingnav-result></p>
     </div>
 
-    <!-- The track as an object: mark, name, position. It is the way back
-         out, so it is a card and not a caption. -->
-    <a class="ns-trainingnav__track" href="#">
-      <i class="ph ph-graduation-cap" aria-hidden="true"></i>
-      <span class="ns-trainingnav__track-body">
-        <b>Salesforce Administrator</b>
-        <span>Section 4 of 32</span>
-      </span>
-    </a>
-
+    <!-- The scrolling middle: nothing but sections. Every fixed row above or
+         below this is a row the curriculum does not get, which is why the
+         track moved into the head rather than sitting here as a card. -->
+    <div class="ns-trainingnav__scroll">
     <details class="ns-trainingnav__section" data-state="done">
-      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__section-icon"><i class="ph ph-cube" aria-hidden="true"></i></span>Objects and fields<span class="ns-trainingnav__count"><i class="ph ph-check-circle" aria-hidden="true"></i></span></summary>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">01</span><span class="ns-trainingnav__section-icon"><i class="ph ph-cube" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Objects and fields</span><span class="ns-trainingnav__count"><i class="ph ph-check-circle" aria-hidden="true"></i></span></summary>
       <div class="ns-trainingnav__bar"><progress class="ns-progress" value="6" max="6" aria-label="6 of 6 posts read"></progress></div>
       <ul class="ns-trainingnav__list">
         <li><a class="ns-trainingnav__link" data-state="done" href="#">
@@ -85,8 +103,30 @@
       </ul>
     </details>
 
+    <details class="ns-trainingnav__section" data-state="done">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">02</span><span class="ns-trainingnav__section-icon"><i class="ph ph-table" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Records and layouts</span><span class="ns-trainingnav__count"><i class="ph ph-check-circle" aria-hidden="true"></i></span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Page layouts and compact layouts</span><span class="ns-trainingnav__time">9m</span></a></li>
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Record types in practice</span><span class="ns-trainingnav__time">14m</span></a></li>
+      </ul>
+    </details>
+    <details class="ns-trainingnav__section" data-state="done">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">03</span><span class="ns-trainingnav__section-icon"><i class="ph ph-users-three" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Users and licences</span><span class="ns-trainingnav__count"><i class="ph ph-check-circle" aria-hidden="true"></i></span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Licence types and what they cost</span><span class="ns-trainingnav__time">7m</span></a></li>
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-flask ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Provision a user end to end</span><span class="ns-trainingnav__time">18m</span></a></li>
+      </ul>
+    </details>
     <details class="ns-trainingnav__section" open>
-      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__section-icon"><i class="ph ph-shield-check" aria-hidden="true"></i></span>Security and access<span class="ns-trainingnav__count">8</span></summary>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">04</span><span class="ns-trainingnav__section-icon"><i class="ph ph-shield-check" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Security and access</span><span class="ns-trainingnav__count">8</span></summary>
       <div class="ns-trainingnav__bar"><progress class="ns-progress" value="2" max="8" aria-label="2 of 8 posts read"></progress></div>
       <ul class="ns-trainingnav__list">
         <li><a class="ns-trainingnav__link" data-state="done" href="#">
@@ -113,7 +153,7 @@
     </details>
 
     <details class="ns-trainingnav__section">
-      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__section-icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>Automation: Flow<span class="ns-trainingnav__count">9</span></summary>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">05</span><span class="ns-trainingnav__section-icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Automation: Flow</span><span class="ns-trainingnav__count">9</span></summary>
       <ul class="ns-trainingnav__list">
         <li><a class="ns-trainingnav__link" href="#">
           <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
@@ -122,28 +162,144 @@
     </details>
 
     <details class="ns-trainingnav__section">
-      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__section-icon"><i class="ph ph-code" aria-hidden="true"></i></span>Apex fundamentals<span class="ns-trainingnav__count">12</span></summary>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">06</span><span class="ns-trainingnav__section-icon"><i class="ph ph-code" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Apex fundamentals</span><span class="ns-trainingnav__count">12</span></summary>
       <ul class="ns-trainingnav__list">
         <li><a class="ns-trainingnav__link" href="#">
           <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
           <span>Governor limits as a budget</span><span class="ns-trainingnav__time">10m</span></a></li>
       </ul>
     </details>
+
+    <details class="ns-trainingnav__section">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">07</span><span class="ns-trainingnav__section-icon"><i class="ph ph-chart-bar" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Reports and dashboards</span><span class="ns-trainingnav__count">7</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Report types are the schema</span><span class="ns-trainingnav__time">11m</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Joined reports and bucketing</span><span class="ns-trainingnav__time">15m</span></a></li>
+      </ul>
+    </details>
+    <details class="ns-trainingnav__section">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">08</span><span class="ns-trainingnav__section-icon"><i class="ph ph-rocket-launch" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Deployment and change sets</span><span class="ns-trainingnav__count">6</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Change sets and their limits</span><span class="ns-trainingnav__time">10m</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-flask ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Deploy with the CLI</span><span class="ns-trainingnav__time">20m</span></a></li>
+      </ul>
+    </details>
+    <details class="ns-trainingnav__section">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__num">09</span><span class="ns-trainingnav__section-icon"><i class="ph ph-plugs" aria-hidden="true"></i></span><span class="ns-trainingnav__section-name">Integration basics</span><span class="ns-trainingnav__count">8</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>REST vs SOAP vs Bulk</span><span class="ns-trainingnav__time">13m</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-exam ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Check what you know</span><span class="ns-trainingnav__time">8q</span></a></li>
+      </ul>
+    </details>
+    </div>
+
+    <!-- THE RAIL'S FOOT, pinned. Same parts and same reasoning as the lesson
+         player's: four recognisable logos need no label, and Ask AI opens
+         this page in Claude, ChatGPT or Perplexity with the prompt already
+         written — assets/js/ai.js fills it from the page's own title. -->
+    <div class="ns-trainingnav__foot">
+      <div class="ns-share">
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" aria-label="Copy link to this lesson">
+          <i class="ph ph-link-simple" aria-hidden="true"></i><span class="ns-tooltip">Copy link</span>
+        </button>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="https://www.linkedin.com/sharing/share-offsite/" target="_blank" rel="noopener" aria-label="Share this lesson on LinkedIn">
+          <i class="ph ph-linkedin-logo" aria-hidden="true"></i><span class="ns-tooltip">LinkedIn</span>
+        </a>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="https://x.com/intent/post" target="_blank" rel="noopener" aria-label="Share this lesson on X">
+          <i class="ph ph-x-logo" aria-hidden="true"></i><span class="ns-tooltip">X</span>
+        </a>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="https://www.facebook.com/sharer/sharer.php" target="_blank" rel="noopener" aria-label="Share this lesson on Facebook">
+          <i class="ph ph-facebook-logo" aria-hidden="true"></i><span class="ns-tooltip">Facebook</span>
+        </a>
+      </div>
+
+      <div class="ns-usermenu" data-ns-ask-prompt="Explain this training lesson: Recalculation is asynchronous">
+        <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-ns-menu aria-expanded="false" aria-controls="t-ask-ai">
+          <i class="ph ph-sparkle" aria-hidden="true"></i> Ask AI
+        </button>
+        <div class="ns-usermenu__panel ns-askai ns-askai--end" id="t-ask-ai">
+          <label class="ns-visually-hidden" for="t-ask-q">Your question about this lesson</label>
+          <textarea class="ns-textarea ns-askai__field" id="t-ask-q" rows="3" data-ns-ask-input></textarea>
+          <span class="ns-menu__label">Open this page in</span>
+          <a class="ns-menu__item" href="https://claude.ai/new" target="_blank" rel="noopener" data-ns-ask="https://claude.ai/new?q=">
+            <i class="ph ph-sparkle" aria-hidden="true"></i> Claude <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i>
+          </a>
+          <a class="ns-menu__item" href="https://chatgpt.com/" target="_blank" rel="noopener" data-ns-ask="https://chatgpt.com/?q=">
+            <i class="ph ph-chat-circle-text" aria-hidden="true"></i> ChatGPT <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i>
+          </a>
+          <a class="ns-menu__item" href="https://www.perplexity.ai/" target="_blank" rel="noopener" data-ns-ask="https://www.perplexity.ai/search?q=">
+            <i class="ph ph-magnifying-glass" aria-hidden="true"></i> Perplexity <i class="ph ph-arrow-up-right ns-askai__cue" aria-hidden="true"></i>
+          </a>
+          <hr class="ns-menu__sep">
+          <button type="button" class="ns-menu__item" data-ns-ask-copy>
+            <i class="ph ph-file-text" aria-hidden="true"></i> Copy the prompt
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- The watermark: the quietest row on the screen, and the one place a
+         byline sits without competing. A link, because the thing anyone
+         reading it wants is the rest of the catalogue. -->
+    <a class="ns-trainingnav__brand" href="#">
+      <img src="../assets/logo/favicon.svg" alt="" width="16" height="16">
+      Namaste Salesforce
+    </a>
   </nav>
 
   <!-- === 1 · The post ================================================== -->
   <main class="ns-training__main">
+
+    <!-- === THE TOPBAR — the post's own chrome ==========================
+         Sticky to the top of the scrolling column, one row, label voice.
+         It carries what a reader glances UP for and nothing else: where they
+         are (crumb), how far through the section (meter + count), the two
+         steps either side, and the way into the curriculum when the rail is
+         collapsed or off-canvas. Every item is a control or a number.
+         It sits OUTSIDE .ns-training__reading so it spans the full column
+         and does not inherit the reading inset. -->
+    <div class="ns-tbar">
+      <p class="ns-tbar__crumb">
+        <a href="#"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Training</a>
+        <i class="ph ph-caret-right ns-tbar__sep" aria-hidden="true"></i>
+        <a href="#"><i class="ph ph-shield-check" aria-hidden="true"></i> Security and access</a>
+      </p>
+
+      <span class="ns-tbar__meter">
+        <i class="ph ph-chart-line-up" aria-hidden="true"></i>
+        <progress class="ns-progress" value="2" max="8" aria-label="Lesson 2 of 8 in this section"></progress>
+        <span class="ns-tbar__count">2 / 8</span>
+      </span>
+
+      <span class="ns-tbar__steps">
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="#" aria-label="Previous lesson: Profiles vs permission sets">
+          <i class="ph ph-arrow-left" aria-hidden="true"></i><span class="ns-tooltip">Profiles vs permission sets</span>
+        </a>
+        <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="#" aria-label="Next lesson: Sharing rules in practice">
+          <i class="ph ph-arrow-right" aria-hidden="true"></i><span class="ns-tooltip">Sharing rules in practice</span>
+        </a>
+      </span>
+
+      <button class="ns-btn ns-btn--sm ns-training__handle" type="button" data-ns-training-open>
+        <i class="ph ph-list-bullets" aria-hidden="true"></i> Curriculum
+      </button>
+    </div>
+
     <div class="ns-training__reading">
 
       <header class="ns-modulehead">
-        <p class="ns-modulehead__crumb">
-          <a href="#"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Training</a>
-          <i class="ph ph-caret-right" aria-hidden="true"></i>
-          <a href="#">Security and access</a>
-          <button class="ns-btn ns-btn--sm ns-training__handle" type="button" data-ns-training-open style="margin-inline-start:auto">
-            <i class="ph ph-list-bullets" aria-hidden="true"></i> Curriculum
-          </button>
-        </p>
         <h1 class="ns-modulehead__title">Recalculation is asynchronous</h1>
         <p class="ns-modulehead__lede">Role hierarchy grants access upward, and that is the part everyone remembers. The part that causes the incident is what happens when a record moves.</p>
 
@@ -165,6 +321,8 @@
           <span class="ns-tmeta__item"><i class="ph ph-stack" aria-hidden="true"></i>Lesson 2 of 6</span>
           <span class="ns-tmeta__item"><i class="ph ph-barbell" aria-hidden="true"></i>Intermediate</span>
           <span class="ns-tmeta__item ns-tmeta__item--done"><i class="ph ph-check-circle" aria-hidden="true"></i>Read</span>
+          <span class="ns-tmeta__item"><i class="ph ph-user" aria-hidden="true"></i>Ravi Kulkarni</span>
+          <span class="ns-tmeta__item"><i class="ph ph-clock-clockwise" aria-hidden="true"></i>Updated 14 Aug 2026</span>
         </div>
       </header>
 
@@ -174,43 +332,15 @@
            whole column. -->
       <div class="ns-tpost-body">
 
-      <!-- THE UTILITY SKYSCRAPER — narrow, sticky, on the leading edge of the
-           article. It holds what a reader reaches for WHILE reading: who
-           wrote this, how to share it, how to ask the assistant about it. It
-           starts below the header because the header owns the full width.
-           Below xl it becomes a scrollable row under the header instead. -->
-      <aside class="ns-tsky" aria-label="Article tools">
-        <dl class="ns-tsky__meta">
-          <dt>Written by</dt>
-          <dd><span class="ns-tsky__who"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">RK</span>Ravi Kulkarni</span></dd>
-          <dt>Updated</dt>
-          <dd><time datetime="2026-08-14">14 Aug 2026</time></dd>
-          <dt>Reading</dt>
-          <dd>11 min &middot; 1,900 words</dd>
-        </dl>
-
-        <div class="ns-tsky__group">
-          <span class="ns-tsky__label">Share</span>
-          <div class="ns-share">
-            <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" type="button" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
-            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#0" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
-            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#0" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></a>
-            <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" type="button" aria-label="Bookmark"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
-          </div>
-        </div>
-
-        <!-- Ask AI, as a real menu: the assistant is asked ABOUT this lesson,
-             so the prompts are seeded from it rather than opened blank. -->
-        <div class="ns-tsky__group ns-usermenu">
-          <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" data-ns-menu aria-expanded="false" aria-controls="tsky-ai">
-            <i class="ph ph-sparkle" aria-hidden="true"></i> Ask AI
-          </button>
-          <div class="ns-usermenu__panel ns-askai--down" id="tsky-ai" style="inline-size:15rem">
-            <span class="ns-menu__label">About this lesson</span>
-            <button class="ns-menu__item" type="button"><i class="ph ph-text-align-justify" aria-hidden="true"></i> Summarise it</button>
-            <button class="ns-menu__item" type="button"><i class="ph ph-code" aria-hidden="true"></i> Explain the Apex</button>
-            <button class="ns-menu__item" type="button"><i class="ph ph-question" aria-hidden="true"></i> Quiz me on it</button>
-          </div>
+      <!-- THE SKYSCRAPER SLOT — 160x600, the standard unit, from ads.css.
+           `ns-ad-rail` makes it sticky beside the reading. The article's own
+           metadata is NOT here: author, date and reading time belong with the
+           title, the same way the lesson player states its lesson in its
+           header. -->
+      <aside class="ns-tsky" aria-label="Advertisement">
+        <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled">
+          <span class="ns-ad__label">Advertisement</span>
+          <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Skyscraper</span><span class="ns-ad__dummy-size">160x600</span></span></div>
         </div>
       </aside>
 
@@ -336,22 +466,24 @@
            it is the more important of the two facts. -->
       <nav class="ns-tpager" aria-label="Post navigation">
         <a class="ns-tpager__btn" href="#">
-          <span class="ns-tpager__dir"><i class="ph ph-arrow-left" aria-hidden="true"></i>Previous</span>
-          <span class="ns-tpager__where">Security and access</span>
-          <span class="ns-tpager__title">Profiles vs permission sets</span>
+          <span class="ns-tpager__line">
+            <span class="ns-tpager__dir"><i class="ph ph-arrow-left" aria-hidden="true"></i>Previous</span>
+            <i class="ph ph-dot-outline ns-tpager__dot" aria-hidden="true"></i>
+            <span class="ns-tpager__where">Security and access</span>
+          </span>
+          <span class="ns-tpager__title"><i class="ph ph-article" aria-hidden="true"></i> Profiles vs permission sets</span>
         </a>
         <a class="ns-tpager__btn ns-tpager__btn--next" href="#">
-          <span class="ns-tpager__dir">Next<i class="ph ph-arrow-right" aria-hidden="true"></i></span>
-          <span class="ns-tpager__where">Security and access</span>
-          <span class="ns-tpager__title">Sharing rules in practice</span>
+          <span class="ns-tpager__line">
+            <span class="ns-tpager__where">Security and access</span>
+            <i class="ph ph-dot-outline ns-tpager__dot" aria-hidden="true"></i>
+            <span class="ns-tpager__dir">Next<i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+          </span>
+          <span class="ns-tpager__title"><i class="ph ph-article" aria-hidden="true"></i> Sharing rules in practice</span>
         </a>
       </nav>
 
     </div>
   </main>
 
-  <!-- No `hidden` attribute: base.css makes [hidden] display:none !important,
-       which would beat the drawer CSS that shows the scrim below lg. The
-       stylesheet hides it by default; data-rail="open" reveals it. -->
-  <div class="ns-training__scrim" data-ns-training-close></div>
 </div>
