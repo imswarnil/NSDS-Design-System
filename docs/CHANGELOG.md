@@ -41,6 +41,44 @@ telling — body beside a `.ns-hero__media` slot that holds real proof.
 Below lg the media drops under the words, so the headline never leaves the
 first screen.
 
+### Added — a utility skyscraper, and a collapsible curriculum
+
+**The skyscraper** (`.ns-tsky`) is a narrow sticky column on the leading edge
+of the article, holding what a reader reaches for *while* reading rather than
+before: who wrote it and when, how long it is, share, and an Ask-AI menu whose
+prompts are seeded from the lesson rather than opening blank.
+
+It starts **below the header**, not beside it — the header is the page's title
+and owns the full width — which is why the split lives inside `.ns-tpost-body`
+rather than on the layout grid. The video stage sits inside the split too, so
+the column runs beside the media as well as the prose.
+
+11rem wide and no wider: these are tools, and a tool column wide enough to
+read paragraphs in invites paragraphs into it. Below xl it stops being a
+column and becomes a scrollable row under the header — which is where it was
+always going to end up on a phone, so one rule serves both. Measured at 390px:
+a 49px row.
+
+**The curriculum collapses.** A 22rem rail is right while you are choosing what
+to read and wrong once you have chosen. `data-rail="collapsed"` takes the
+column out of the grid and leaves a 40px hairline spine with a vertical
+CURRICULUM label and the reopen control — measured: `1088px 352px` →
+`1400px 40px`. The rail never leaves the DOM, so the filter text and the scroll
+position survive the round trip (verified: type "apex", collapse, reopen, still
+filtered).
+
+One attribute carries all three states — column, spine, drawer — deliberately:
+two attributes would be two things to keep in step. The collapse control only
+exists at ≥64rem, because below that the same rail is a drawer and a drawer
+already has a close button.
+
+Also: lesson rows got roomier (`--space-2 --space-2-5`, and a gap between
+them) — the icon, a wrapping title and a time collided the moment a title ran
+to two lines, which in a 150-lesson curriculum is most of them. And the last
+of the module/post vocabulary is gone from `assets/js/training.js`, including
+its internal variable names and the filter's own result line, which was still
+counting "1 module · 1 post".
+
 ### Changed — the training rail is two levels, and the content got its width back
 
 Three problems, all of them about fit rather than looks.

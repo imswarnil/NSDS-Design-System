@@ -1,21 +1,26 @@
 /* NS Design System — training rail: filter and drawer.
    =========================================================================
    Two jobs, both progressive enhancement, both specific to a curriculum with
-   a hundred and fifty modules in it. The rail's OTHER behaviour — opening the
-   module that contains the current post and scrolling it into view — is in
+   a hundred and fifty sections in it. The rail's OTHER behaviour — opening the
+   section that contains the current post and scrolling it into view — is in
    assets/js/rail.js and is shared with the docs sidebar; it is not repeated
    here.
 
      1. FILTER. Type in the rail's search box and the tree reduces to the
         sections and lessons that match. This is the whole reason the box exists:
-        at fifteen modules a tree is navigable, and at a hundred and fifty it
+        at fifteen sections a tree is navigable, and at a hundred and fifty it
         is a filing cabinet you have to already know your way around.
 
         Matching a LESSON reveals its section. Matching a SECTION keeps all of its
         lessons, because "sharing" should show you everything in the Sharing
-        module rather than the one lesson whose title happens to repeat the word.
+        section rather than the one lesson whose title happens to repeat the word.
 
-     2. DRAWER. Below the lg breakpoint the fixed rail becomes an off-canvas
+     2. DRAWER, and COLLAPSE. One attribute, data-rail, carries three
+        states — "closed" (a normal column), "collapsed" (a hairline spine
+        with the reopen control on it, desktop only) and "open" (the phone
+        drawer). Two attributes would be two things to keep in step.
+
+        Below the lg breakpoint the fixed rail becomes an off-canvas
         drawer — the stylesheet does the sliding, this sets the state, traps
         nothing, and closes on Escape, on the scrim, and on choosing a post.
 
@@ -26,10 +31,12 @@
    Markup contract
      <div class="ns-training ns-training--fixed" data-ns-training data-rail="closed">
        <button data-ns-training-open>            the panel bar's handle
+       <button data-ns-training-collapse>        column -> spine (desktop)
+       <button data-ns-training-expand>          spine -> column
        <div class="ns-training__scrim" data-ns-training-close>
        <nav class="ns-trainingnav" data-ns-trainingnav>
          <input data-ns-trainingnav-filter>      the filter box
-         <p data-ns-trainingnav-result>          "6 of 150 modules" — written here
+         <p data-ns-trainingnav-result>          "6 sections · 21 lessons" — written here
          <details class="ns-trainingnav__section"> … </details>
 
    Include with: <script src="assets/js/training.js" defer></script> */
@@ -43,12 +50,12 @@
     var input = rail.querySelector("[data-ns-trainingnav-filter]");
     if (!input) return;
     var result = rail.querySelector("[data-ns-trainingnav-result]");
-    var modules = [].slice.call(rail.querySelectorAll(".ns-trainingnav__section"));
-    if (!modules.length) return;
+    var sections = [].slice.call(rail.querySelectorAll(".ns-trainingnav__section"));
+    if (!sections.length) return;
 
     /* The open/closed state the reader chose, remembered before the first
        search so clearing the box puts the rail back exactly as it was. A
-       filter that leaves forty modules expanded behind it has not finished
+       filter that leaves forty sections expanded behind it has not finished
        the job it started. */
     var restored = null;
 
@@ -60,7 +67,7 @@
       q = q.trim().toLowerCase();
 
       if (!q) {
-        modules.forEach(function (m, i) {
+        sections.forEach(function (m, i) {
           m.hidden = false;
           [].slice.call(m.querySelectorAll("li")).forEach(function (li) { li.hidden = false; });
           if (restored) m.open = restored[i];
@@ -70,40 +77,40 @@
         return;
       }
 
-      if (!restored) restored = modules.map(function (m) { return m.open; });
+      if (!restored) restored = sections.map(function (m) { return m.open; });
 
-      var shownModules = 0;
-      var shownPosts = 0;
+      var shownSections = 0;
+      var shownLessons = 0;
 
-      modules.forEach(function (m) {
+      sections.forEach(function (m) {
         var summary = m.querySelector("summary");
-        var moduleHit = summary ? text(summary).indexOf(q) !== -1 : false;
-        var posts = [].slice.call(m.querySelectorAll(".ns-trainingnav__list > li"));
+        var sectionHit = summary ? text(summary).indexOf(q) !== -1 : false;
+        var lessons = [].slice.call(m.querySelectorAll(".ns-trainingnav__list > li"));
         var hits = 0;
 
-        posts.forEach(function (li) {
-          /* A module-level match keeps everything under it — "sharing" should
-             open the Sharing module, not reduce it to the one post whose
+        lessons.forEach(function (li) {
+          /* A section-level match keeps everything under it — "sharing" should
+             open the Sharing section, not reduce it to the one post whose
              title repeats the word. */
-          var hit = moduleHit || text(li).indexOf(q) !== -1;
+          var hit = sectionHit || text(li).indexOf(q) !== -1;
           li.hidden = !hit;
           if (hit) hits++;
         });
 
-        var keep = moduleHit || hits > 0;
+        var keep = sectionHit || hits > 0;
         m.hidden = !keep;
         /* Everything that survives is opened: the point of searching is to
-           see the results, and a match hidden inside a collapsed module is a
+           see the results, and a match hidden inside a collapsed section is a
            match the reader has to go looking for twice. */
-        if (keep) { m.open = true; shownModules++; shownPosts += hits; }
+        if (keep) { m.open = true; shownSections++; shownLessons += hits; }
       });
 
       /* Say what happened. A rail showing three of a hundred and fifty
-         modules with no explanation looks broken rather than filtered — and
+         sections with no explanation looks broken rather than filtered — and
          zero results has to be a sentence, never an empty column. */
       if (result) {
-        result.textContent = shownModules
-          ? shownModules + " module" + (shownModules === 1 ? "" : "s") + " · " + shownPosts + " post" + (shownPosts === 1 ? "" : "s")
+        result.textContent = shownSections
+          ? shownSections + " section" + (shownSections === 1 ? "" : "s") + " · " + shownLessons + " lesson" + (shownLessons === 1 ? "" : "s")
           : "Nothing matches “" + input.value.trim() + "”";
       }
     }
@@ -147,7 +154,23 @@
       }
     }
 
+    /* COLLAPSE is the desktop state and OPEN is the phone state, and they are
+       the same attribute on purpose: a rail is a column, a spine or a drawer,
+       never two of those at once. Collapsing keeps the rail in the DOM, so
+       the filter text and the scroll position survive the round trip. */
+    function collapse(on) {
+      root.setAttribute("data-rail", on ? "collapsed" : "closed");
+      var reopen = root.querySelector("[data-ns-training-expand]");
+      if (on && reopen) reopen.focus();
+      else {
+        var back = root.querySelector("[data-ns-training-collapse]");
+        if (back) back.focus();
+      }
+    }
+
     doc.addEventListener("click", function (e) {
+      if (e.target.closest("[data-ns-training-collapse]")) { collapse(true); return; }
+      if (e.target.closest("[data-ns-training-expand]")) { collapse(false); return; }
       if (e.target.closest("[data-ns-training-open]")) { set(root.getAttribute("data-rail") !== "open"); return; }
       if (e.target.closest("[data-ns-training-close]")) { set(false); return; }
       /* Choosing a post closes the drawer: the reader asked to go somewhere,

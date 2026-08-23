@@ -271,15 +271,19 @@
      against it, which frees the row itself to take a tinted slab when it is
      current — a shape the eye finds without reading. */
   .ns-trainingnav__list {
-    list-style: none; margin: 0 0 var(--space-2);
+    list-style: none; margin: 0 0 var(--space-3);
     padding: 0; margin-inline-start: var(--space-4);
     border-inline-start: 1px solid var(--color-border);
   }
+  .ns-trainingnav__list > li + li { margin-block-start: var(--space-0-5); }
   .ns-trainingnav__link {
     display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
     gap: var(--space-2); align-items: center;
     margin-inline-start: -1px;
-    padding: var(--space-1-5) var(--space-2);
+    /* Roomier than it was. A lesson row carries an icon, a wrapping title and
+       a time, and at --space-1-5 the three collided at the moment a title ran
+       to two lines — which in a 150-lesson curriculum is most of them. */
+    padding: var(--space-2) var(--space-2-5);
     border-inline-start: 2px solid transparent;
     border-start-end-radius: var(--radius-sm); border-end-end-radius: var(--radius-sm);
     font-size: var(--size-small); line-height: var(--leading-snug);
@@ -437,7 +441,11 @@
        wrapped to two lines and the column read as ragged prose instead of a
        list. The article keeps the measure either way; this width comes out of
        the empty page beside it. */
-    --ns-trail-w: 20rem;
+    --ns-trail-w: 22rem;
+    /* The utility skyscraper: narrow and tall, on the leading edge. Wide
+       enough for a label and an icon on one line, and no wider — it holds
+       tools, not content. */
+    --ns-tsky-w: 11rem;
     gap: 0;
     block-size: calc(100dvh - var(--navbar-h));
     overflow: hidden;
@@ -455,6 +463,44 @@
     border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
     padding-block-start: 0; padding-inline: var(--space-4);
   }
+  /* --- Collapsing the curriculum ------------------------------------------
+     A 22rem rail is right while you are choosing what to read and wrong once
+     you have chosen. data-rail="collapsed" takes the column out of the grid
+     and leaves a hairline spine with the reopen control on it — so the page
+     reflows to full width without the rail ever leaving the DOM, which is
+     what keeps the filter's state and the scroll position.
+
+     The SAME attribute drives the phone drawer below lg, deliberately: one
+     piece of state, three renderings (column, spine, drawer). Two attributes
+     would be two things to keep in step. */
+  .ns-training--doc[data-rail="collapsed"] { grid-template-columns: minmax(0, 1fr) var(--space-10); }
+  .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav {
+    padding-inline: 0; overflow: hidden;
+  }
+  /* Everything except the reopen control goes. `visibility` rather than
+     display:none so the rail keeps its scroll position for when it returns. */
+  .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > :not(.ns-trainingnav__spine) { display: none; }
+  .ns-trainingnav__spine { display: none; }
+  .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > .ns-trainingnav__spine {
+    display: grid; justify-items: center; gap: var(--space-3);
+    padding-block: var(--space-4);
+  }
+  /* The vertical label is the whole affordance: a bare chevron on a 40px
+     strip is a mystery meat control, and the word costs nothing sideways. */
+  .ns-trainingnav__spine-label {
+    writing-mode: vertical-rl; rotate: 180deg;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  /* The collapse control itself only exists where there is a column to
+     collapse — below lg the same rail is a drawer, and a drawer already has
+     a close button. */
+  .ns-trainingnav__collapse { display: none; }
+  @media (min-width: 64rem) {
+    .ns-training--doc .ns-trainingnav__collapse { display: inline-flex; }
+  }
+
   /* Same reason as the rail: a sticky child pins to its scroller's CONTENT
      edge, so padding here would leave a see-through slot above the stuck
      head with rows scrolling through it. */
@@ -485,6 +531,74 @@
     max-inline-size: var(--container-page);
     margin-inline: auto;
     padding: var(--space-8) var(--gutter) var(--space-16);
+  }
+
+  /* --- The utility skyscraper ---------------------------------------------
+     A narrow sticky column on the leading edge of the article, holding the
+     things a reader reaches for WHILE reading rather than before: who wrote
+     it and when, how to share it, and how to ask the assistant about it.
+
+     It begins BELOW the header, not beside it. The header is the page's
+     title and it owns the full width; the skyscraper belongs to the body.
+     That is why the split is inside .ns-tpost-body rather than on the layout
+     grid — a column that started at the top would push the title into two
+     thirds of a page it should own outright.
+
+     Narrow and tall on purpose. These are tools, and a tool column wide
+     enough to read paragraphs in invites paragraphs into it. */
+  .ns-tpost-body {
+    display: grid;
+    grid-template-columns: var(--ns-tsky-w) minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .ns-tsky {
+    position: sticky; inset-block-start: var(--space-8);
+    display: grid; gap: var(--space-5);
+    min-inline-size: 0;
+  }
+  .ns-tsky__group { display: grid; gap: var(--space-2); }
+  .ns-tsky__label {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  /* The meta list: one fact per row, the value under its own label. A
+     definition list rather than a paragraph, because these are pairs and a
+     screen reader should hear them as pairs. */
+  .ns-tsky__meta { display: grid; gap: var(--space-3); margin: 0; }
+  .ns-tsky__meta dt {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-tsky__meta dd {
+    margin: 0; font-size: var(--size-small); color: var(--color-ink);
+    line-height: var(--leading-snug);
+  }
+  .ns-tsky__who { display: flex; align-items: center; gap: var(--space-2); }
+  /* A ROW, not the stacked --rail variant. Four icon buttons come to ~8rem
+     and the column is 11rem, so stacking them spent four rows of a scarce
+     vertical resource to save nothing — and centred them away from the
+     labels above while it was at it. */
+  .ns-tsky .ns-share { gap: var(--space-1); margin-inline-start: calc(-1 * var(--space-2)); }
+
+  /* Below xl the tools stop being a column and become a ROW under the
+     header — which is where they were always going to end up on a phone, so
+     the same rule serves both. `position: static` is load-bearing: a sticky
+     row is a banner nobody asked for. */
+  @media (max-width: 79.999rem) {
+    .ns-tpost-body { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    .ns-tsky {
+      position: static;
+      grid-auto-flow: column; grid-auto-columns: max-content;
+      align-items: center; gap: var(--space-6);
+      padding-block-end: var(--space-4);
+      border-block-end: 1px solid var(--color-border);
+      overflow-x: auto; scrollbar-width: thin;
+    }
+    .ns-tsky__meta { grid-auto-flow: column; grid-auto-columns: max-content; gap: var(--space-5); align-items: center; }
+    .ns-tsky__group { grid-auto-flow: column; grid-auto-columns: max-content; align-items: center; gap: var(--space-2); }
   }
 
   @media (max-width: 63.999rem) {
