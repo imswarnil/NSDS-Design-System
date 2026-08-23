@@ -32,7 +32,7 @@ const codeBodyPlain = (src, lang, marks) => `  <div class="ns-code__body">
     <pre class="ns-code__pre"><code>${highlightLines(src, lang, marks)}</code></pre>
   </div>`;
 
-export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Teaching", "Training", "Blog", "AI", "Content blocks", "Monetization", "CMS", "Sections"];
+export const FAMILIES = ["Components", "Forms", "Form patterns", "Feedback", "Progress & data", "Navigation", "Overlays", "Surfaces", "Media", "LMS", "Teaching", "Training", "Blog", "AI", "Content blocks", "Monetization", "CMS", "Ghost", "Sections"];
 
 export const COMPONENTS = [
 
@@ -4581,7 +4581,128 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "gate", title: "Content gate", family: "Training",
+    id: "ghost-plans", title: "Membership tiers", family: "Ghost",
+    summary: "Ghost's tiers, as a real price table: three columns, a monthly/yearly switch, and a price that changes when you flip it. Distinct from <a href=\"./c-tiers.html\">Free vs Pro</a> in Training — that one is a two-column argument on a curriculum page with no prices and no billing period. This is the publication's checkout.",
+    use: ["A pricing page, or the membership section of an about page", "Three tiers at most — a fourth column is a spreadsheet", "With the yearly saving stated as a NUMBER"],
+    not: ["Inside a post. A post that stops to show a price table has become a landing page", "&ldquo;Save up to 20%&rdquo; — a percentage the reader has to apply to a figure they have not seen is a discount nobody can evaluate", "Selling a member the tier they are already on"],
+    a11y: [
+      "The billing switch is a real radio group with a legend, so it is announced as one choice with two options rather than two unrelated buttons",
+      "Prices are tabular-figured, so flipping the period does not reflow the row",
+      "The recommended tier is marked by its leading edge — the system's standing &ldquo;this one&rdquo; device — not by a fill, a scale-up or a shadow, so it survives forced-colours",
+      "A tier the member already holds sets <code>data-state=\"current\"</code>, which disables its action rather than hiding it: the column still reads as a column",
+    ],
+    variants: [
+      { name: "Three tiers", stack: true, html: `<div class="ns-plans">
+  <fieldset class="ns-plans__switch" style="border:0;padding:0;margin:0">
+    <legend class="ns-visually-hidden">Billing period</legend>
+    <div class="ns-segmented">
+      <label class="ns-segmented__option"><input type="radio" name="period" value="monthly" checked><span>Monthly</span></label>
+      <label class="ns-segmented__option"><input type="radio" name="period" value="yearly"><span>Yearly</span></label>
+    </div>
+  </fieldset>
+  <div class="ns-plans__grid">
+    <div class="ns-plan" data-state="current">
+      <span class="ns-plan__name">Free</span>
+      <span class="ns-plan__price">&pound;0<span class="ns-plan__period">/ month</span></span>
+      <p class="ns-plan__text">Every training module and the weekly post.</p>
+      <ul class="ns-plan__list">
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>120 of 150 modules</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>The newsletter</span></li>
+      </ul>
+      <div class="ns-plan__foot"><a class="ns-btn" href="#0">Your current plan</a></div>
+    </div>
+    <div class="ns-plan ns-plan--featured">
+      <span class="ns-plan__name"><i class="ph ph-crown-simple" aria-hidden="true"></i>Pro</span>
+      <span class="ns-plan__price">&pound;9<span class="ns-plan__period">/ month</span></span>
+      <span class="ns-plan__save">&pound;22 off when billed yearly</span>
+      <p class="ns-plan__text">The architecture and AI tracks, plus certification practice.</p>
+      <ul class="ns-plan__list">
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>All 150 modules</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Practice sets</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Downloadable orgs</span></li>
+      </ul>
+      <div class="ns-plan__foot"><a class="ns-btn ns-btn--primary" href="#0">Go Pro</a></div>
+    </div>
+    <div class="ns-plan">
+      <span class="ns-plan__name">Team</span>
+      <span class="ns-plan__price">&pound;79<span class="ns-plan__period">/ month</span></span>
+      <p class="ns-plan__text">Ten seats, shared progress, one invoice.</p>
+      <ul class="ns-plan__list">
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Everything in Pro</span></li>
+        <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Seat management</span></li>
+      </ul>
+      <div class="ns-plan__foot"><a class="ns-btn" href="#0">Talk to us</a></div>
+    </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "ghost-member", title: "Member status", family: "Ghost",
+    summary: "The strip that says who Ghost thinks you are and what that gets you. A bar rather than a card, because it is chrome <em>about</em> the page rather than content <em>in</em> it — the same reason a banner is a bar.",
+    use: ["The top of a members area or an account page", "Above a gated post, so the reader knows why it is gated", "Three states and no more: signed out, free, paid"],
+    not: ["Every page. A reader who is signed in does not need telling on each load", "Six gradations of standing — that is a billing system talking to itself", "Anything actionable beyond one link"],
+    a11y: [
+      "The tier name is real text in the mono voice, not a coloured dot: &ldquo;PRO&rdquo; is the fact, and colour is the decoration on top of it",
+      "One action at most, so the bar never competes with the page's own primary action",
+      "The icon is decorative — the status is spelled out beside it",
+    ],
+    variants: [
+      { name: "Free member", stack: true, html: `<div class="ns-memberbar">
+  <span class="ns-memberbar__icon"><i class="ph ph-user" aria-hidden="true"></i></span>
+  <span class="ns-memberbar__body">
+    <span class="ns-memberbar__who">Signed in as priya@example.com</span>
+    <span class="ns-memberbar__what">Free member &middot; 120 of 150 modules</span>
+  </span>
+  <a class="ns-btn ns-btn--sm" href="#0">See Pro</a>
+</div>` },
+      { name: "Paid member", stack: true, html: `<div class="ns-memberbar ns-memberbar--paid">
+  <span class="ns-memberbar__icon"><i class="ph ph-crown-simple" aria-hidden="true"></i></span>
+  <span class="ns-memberbar__body">
+    <span class="ns-memberbar__who">Signed in as ravi@example.com</span>
+    <span class="ns-memberbar__what">Pro &middot; renews 14 October</span>
+  </span>
+  <a class="ns-btn ns-btn--sm" href="#0">Billing</a>
+</div>` },
+    ],
+  },
+  {
+    id: "ghost-button", title: "Button card", family: "Ghost",
+    summary: "Koenig's standalone call to action. Centred and alone on its line — which is the entire difference between it and a link in a paragraph: the author has stopped the prose to point at something.",
+    use: ["Once in a post, where the reader is meant to act", "--start when it sits under a left-aligned block and centring would look accidental"],
+    not: ["Twice in a post", "A link the reader should follow while reading — that stays inline", "A row of three. Three button cards is a menu, and a menu is not a paragraph"],
+    a11y: ["A real link or button, sized at the system's default — a card wrapper does not change what the control is", "Alone on its line, so the hit area cannot be confused with the text above it"],
+    variants: [
+      { name: "Centred", stack: true, html: `<div class="ns-buttoncard"><a class="ns-btn ns-btn--primary ns-btn--lg" href="#0">Start the roadmap</a></div>` },
+      { name: "Left-aligned", stack: true, html: `<div class="ns-buttoncard ns-buttoncard--start"><a class="ns-btn" href="#0">Download the cheat sheet</a></div>` },
+    ],
+  },
+  {
+    id: "ghost-audio", title: "Audio card", family: "Ghost",
+    summary: "Koenig's audio card: a podcast or a recorded answer dropped into a post. The duration is printed rather than discovered on play, because &ldquo;is this two minutes or forty&rdquo; is the question that decides whether anyone presses the button.",
+    use: ["A recorded answer inside a written post", "A podcast episode the post is about"],
+    not: ["Music", "A video with the picture removed — that is a video card", "Autoplay, ever"],
+    a11y: [
+      "A real <code>&lt;button&gt;</code> with an accessible name that includes the track title, not just &ldquo;play&rdquo;",
+      "Progress is a real <code>&lt;progress&gt;</code>, so the position is exposed rather than painted",
+      "Both times are printed and tabular-figured, so the row does not reflow as it plays",
+    ],
+    variants: [
+      { name: "In a post", stack: true, html: `<div class="ns-audio">
+  <button class="ns-audio__play" type="button" aria-label="Play — Why recalculation is asynchronous"><i class="ph ph-play" aria-hidden="true"></i></button>
+  <span class="ns-audio__body">
+    <span class="ns-audio__title">Why recalculation is asynchronous</span>
+    <span class="ns-audio__track">
+      <span class="ns-audio__time">02:14</span>
+      <progress class="ns-progress" value="27" max="100" aria-label="27% played"></progress>
+      <span class="ns-audio__time">08:11</span>
+    </span>
+  </span>
+</div>` },
+    ],
+  },
+  {
+    id: "gate", title: "Members gate", family: "Ghost",
     summary: "A locked post shows the BEGINNING of the real thing rather than a wall. The mask is on the teaser, not an overlay on top of it, so the text underneath is genuinely truncated in the DOM rather than covered by a div a reader can delete in devtools.",
     use: ["A Pro post, below the fold of its own opening", "--inline inside a card or a rail", "Where the titles around it stay visible — a curriculum that hides its Pro posts cannot be evaluated before you pay for it"],
     not: ["An overlay over full content. That is not a gate, it is a paywall with the answer in the page source", "The top of a post. Let them start it", "A benefits list. A gate that lists nine things is a pricing page that appeared in the middle of a sentence"],
@@ -5092,7 +5213,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "ghost-product", title: "Product card", family: "Content blocks",
+    id: "ghost-product", title: "Product card", family: "Ghost",
     summary: "Koenig's product card: a thing being recommended, with a rating and a way to get it. Ghost ships this with its own default styling — a rounded, shadowed object that lands in a Namaste post like a visitor from another design system. This is the same card, rebuilt on the hairline.",
     use: ["A book, a tool or a course a post recommends", "A review that ends in a verdict the reader can act on", "Without the image — a recommendation with no cover should not render a grey hole"],
     not: ["A shop. Three product cards in a row is a catalogue, and a catalogue is a page, not a block", "Anything the publication sells itself — that is the members CTA", "A comparison. Two products side by side is <code>.ns-compare</code>"],
@@ -5131,7 +5252,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "ghost-bookmark", title: "Bookmark card", family: "Content blocks",
+    id: "ghost-bookmark", title: "Bookmark card", family: "Ghost",
     summary: "Koenig's bookmark card: a link, previewed. Ghost fetches the title, description, publisher and thumbnail; this restyles the result so an embedded link reads as a signpost in the hairline vocabulary rather than as a floating panel.",
     use: ["A source worth showing rather than footnoting", "A related post, mid-article", "A doc page the reader is about to need"],
     not: ["Every link in a post — an inline link the reader should follow now stays inline", "A stack of five. Two bookmarks in a row is a reading list, and a reading list is <code>.ns-related</code>", "A link with no preview data — that is a plain link"],
@@ -5163,7 +5284,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "ghost-file", title: "File card", family: "Content blocks",
+    id: "ghost-file", title: "File card", family: "Ghost",
     summary: "Koenig's file card: a download. The size and the extension are printed rather than hidden, because those two facts are what decide whether somebody taps a link on a phone — and Ghost already collects both.",
     use: ["A lab file, a cheat sheet, a sample org", "Anything the post asks the reader to open in another application"],
     not: ["An image — that is a figure", "A link to a page. A file card promises a download, and a reader who gets a web page instead has been lied to"],
@@ -5184,7 +5305,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "ghost-header", title: "Header card", family: "Content blocks",
+    id: "ghost-header", title: "Header card", family: "Ghost",
     summary: "Koenig's header card: a full-width statement inside a post. It is the one block allowed to break the reading measure, because that <em>is</em> its job — it is a chapter break, not a paragraph.",
     use: ["The break between two halves of a long post", "The opening statement of a series instalment", "--dark for the one that closes a post"],
     not: ["More than one per post. Two chapter breaks in a 1,500-word article is a page that cannot decide what it is", "A heading — <code>&lt;h2&gt;</code> is a heading, and prose styles it", "Carrying the post's own title"],
@@ -5211,7 +5332,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "ghost-cta", title: "Members CTA", family: "Content blocks",
+    id: "ghost-cta", title: "Members CTA", family: "Ghost",
     summary: "Koenig's email-CTA card: the members prompt that interrupts a post. A leading-edge block rather than a boxed panel — it is an aside from the <em>publication</em> rather than part of the argument, so it uses the same device as the takeaway in the accent that means membership.",
     use: ["Once per post, after the first real section", "The point where a free reader has had enough value to believe the paid half exists"],
     not: ["The top of a post. Asking before giving is how a reader leaves", "Two per post", "A paywall — that is <code>.ns-gate</code>, and it has content behind it"],

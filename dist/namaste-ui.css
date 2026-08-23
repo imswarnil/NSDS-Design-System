@@ -7255,57 +7255,6 @@
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
 
-  /* =================================================== ACCESS: THE GATE ====
-     Training is mostly open and some of it is Pro. That asymmetry decides the
-     whole treatment: a locked row is DIMMED but readable, never hidden, and a
-     locked page shows the beginning of the real thing rather than a wall.
-
-     The titles are the argument. A curriculum that hides its Pro posts is a
-     curriculum that cannot be evaluated before you pay for it, and a reader
-     who cannot evaluate it does not buy it — they leave.
-
-     .ns-gate wraps a teaser: real content, faded out under a mask, with the
-     upgrade panel below it. The mask is on the TEASER, not an overlay on top
-     of it, so the text underneath is genuinely truncated in the DOM rather
-     than covered by a div a reader can delete in devtools. */
-  .ns-gate { position: relative; display: grid; gap: var(--space-5); }
-  .ns-gate__teaser {
-    position: relative;
-    max-block-size: 16rem;
-    overflow: hidden;
-    mask-image: linear-gradient(var(--color-ink) 0%, var(--color-ink) 45%, transparent 100%); /* lint-ok: mask alpha ramp, any opaque color works; ink keeps it token-fed */
-  }
-  /* The panel. One primary action and one line of what you get — a gate that
-     lists nine benefits is a pricing page that appeared in the middle of a
-     sentence. */
-  .ns-gate__panel {
-    display: grid; justify-items: center; gap: var(--space-3);
-    padding: var(--pad-card-lg);
-    text-align: center;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface-sunken);
-  }
-  .ns-gate__icon {
-    display: flex; align-items: center; justify-content: center;
-    inline-size: 2.75rem; block-size: 2.75rem;
-    border-radius: var(--radius-pill);
-    box-shadow: inset 0 0 0 1px var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-featured-ink); font-size: var(--size-h4);
-  }
-  .ns-gate__title { font-size: var(--size-h4); font-weight: var(--weight-heading); color: var(--color-ink); text-wrap: balance; }
-  .ns-gate__text { font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-narrow); text-wrap: pretty; }
-  .ns-gate__note {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
-    color: var(--color-label);
-  }
-  /* The compact form, for a card or a rail rather than a page body. */
-  .ns-gate--inline .ns-gate__panel { padding: var(--pad-card); gap: var(--space-2); }
-  .ns-gate--inline .ns-gate__icon { inline-size: 2rem; block-size: 2rem; font-size: var(--size-body); }
-  .ns-gate--inline .ns-gate__title { font-size: var(--size-body); }
-
   /* --- Free vs Pro, stated once -------------------------------------------
      The home page has to answer "what do I get for nothing" before it asks
      for anything. Two columns, both concrete, the free one FIRST — leading
@@ -9835,6 +9784,38 @@
     overflow-wrap: anywhere;
   }
   .ns-refs :target { color: var(--color-ink); }
+}
+/* NS Design System — Ghost: the CMS's own vocabulary.
+   =========================================================================
+   Everything here exists because GHOST does, not because a designer wanted
+   another card. Two groups:
+
+     KOENIG CARDS   the editor lets an author drop a product, a bookmark, a
+                    file, a header or a members CTA into a post. Ghost ships
+                    each with its own default styling — rounded, shadowed,
+                    16px radii — which lands in a Namaste post like a visitor
+                    from another design system. These are the same cards on
+                    the hairline.
+     MEMBERSHIP     tiers, prices, the member's own status, and the trailer
+                    gate that shows a paid post's opening for free.
+
+   The class names track Koenig's data model and Ghost's members API rather
+   than inventing new words — product, bookmark, file, header, cta, tier,
+   paywall — so the theme's rendering layer maps card → class with no
+   translation table in between.
+
+   WHY ITS OWN FILE. These were briefly spread across content.css (the cards)
+   and training.css (the gate), which put CMS concerns inside two families
+   that have nothing to do with the CMS: content.css is "things that
+   interrupt prose" and training.css is "a curriculum". The gate in
+   particular was written as a TRAINING idea — Pro modules — when it is
+   really Ghost's members gate wearing a curriculum's clothes. One file, one
+   subject, and the Ghost theme now has a single place to look.
+
+   Every block here sits INSIDE .ns-prose or replaces a post's body, so body
+   copy takes --size-prose-small and labels take --size-label — the same rule
+   content.css states for its own blocks. */
+@layer ns-components {
 
   /* ======================================================= GHOST CARDS ====
      The Koenig editor's own card set, in this system's voice.
@@ -10036,6 +10017,192 @@
   .ns-cta-card__fine {
     font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
+
+  /* =================================================== THE TRAILER GATE ====
+     Ghost's members-only post, and the shape this system takes for it: the
+     publication is mostly open and some of it is paid. That asymmetry decides
+     the whole treatment: a locked row is DIMMED but readable, never hidden, and a
+     locked page shows the beginning of the real thing rather than a wall.
+
+     The titles are the argument. A curriculum that hides its Pro posts is a
+     curriculum that cannot be evaluated before you pay for it, and a reader
+     who cannot evaluate it does not buy it — they leave.
+
+     .ns-gate wraps a teaser: real content, faded out under a mask, with the
+     upgrade panel below it. The mask is on the TEASER, not an overlay on top
+     of it, so the text underneath is genuinely truncated in the DOM rather
+     than covered by a div a reader can delete in devtools. */
+  .ns-gate { position: relative; display: grid; gap: var(--space-5); }
+  .ns-gate__teaser {
+    position: relative;
+    max-block-size: 16rem;
+    overflow: hidden;
+    mask-image: linear-gradient(var(--color-ink) 0%, var(--color-ink) 45%, transparent 100%); /* lint-ok: mask alpha ramp, any opaque color works; ink keeps it token-fed */
+  }
+  /* The panel. One primary action and one line of what you get — a gate that
+     lists nine benefits is a pricing page that appeared in the middle of a
+     sentence. */
+  .ns-gate__panel {
+    display: grid; justify-items: center; gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    text-align: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+  }
+  .ns-gate__icon {
+    display: flex; align-items: center; justify-content: center;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-pill);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-featured-ink); font-size: var(--size-h4);
+  }
+  .ns-gate__title { font-size: var(--size-h4); font-weight: var(--weight-heading); color: var(--color-ink); text-wrap: balance; }
+  .ns-gate__text { font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-narrow); text-wrap: pretty; }
+  .ns-gate__note {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  /* The compact form, for a card or a rail rather than a page body. */
+  .ns-gate--inline .ns-gate__panel { padding: var(--pad-card); gap: var(--space-2); }
+  .ns-gate--inline .ns-gate__icon { inline-size: 2rem; block-size: 2rem; font-size: var(--size-body); }
+  .ns-gate--inline .ns-gate__title { font-size: var(--size-body); }
+
+  /* ==================================================== MEMBERSHIP TIERS ====
+     Ghost's tiers, as a real price table. Distinct from .ns-tiers in
+     training.css, and the difference is not cosmetic: that one is a
+     two-column FREE-vs-PRO argument on a curriculum page, with no prices and
+     no billing period. This is the publication's checkout — three tiers, a
+     monthly/yearly switch, and a price that changes when you flip it.
+
+     The yearly saving is stated as a NUMBER, never as "save up to 20%": a
+     percentage the reader has to apply to a figure they have not seen yet is
+     a discount nobody can evaluate. */
+  .ns-plans { display: grid; gap: var(--space-5); margin-block: var(--stack-md); }
+  /* align-items: center, not the default stretch — the switch is a flex ITEM
+     here, and a stretched fieldset drags the segmented control to the full
+     height of the row, which renders the two options as tall columns. */
+  .ns-plans__switch { display: flex; justify-content: center; align-items: center; }
+  .ns-plans__grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+  .ns-plan {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  /* The recommended tier is marked by its leading edge — the system's
+     standing "this one" device — not by a fill, a scale-up or a shadow. */
+  .ns-plan--featured { border-inline-start: 3px solid var(--color-featured-ink); }
+  .ns-plan__name {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-plan--featured .ns-plan__name { color: var(--color-featured-ink); }
+  .ns-plan__price {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    font-family: var(--font-heading); font-size: var(--size-h2);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    color: var(--color-ink); font-variant-numeric: tabular-nums;
+  }
+  .ns-plan__period {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-regular); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-plan__save {
+    align-self: flex-start;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-success-ink);
+  }
+  .ns-plan__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); text-wrap: pretty; }
+  .ns-plan__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--size-prose-small); }
+  .ns-plan__list li { display: flex; gap: var(--space-2); align-items: flex-start; color: var(--color-muted); }
+  .ns-plan__list i { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-success); }
+  .ns-plan__foot { margin-block-start: auto; padding-block-start: var(--space-2); }
+  /* The tier a member is already on states it instead of selling it. A
+     checkout that offers to sell you what you have bought is a bug. */
+  .ns-plan[data-state="current"] { border-color: var(--color-success); }
+  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn { pointer-events: none; opacity: var(--opacity-disabled); }
+
+  /* ====================================================== MEMBER STATUS ====
+     The strip that says who Ghost thinks you are, and what that gets you. It
+     is a BAR rather than a card because it is chrome about the page rather
+     than content in it — the same reason .ns-banner is a bar.
+
+     Three states and no more: signed out, free, paid. A publication that
+     shows a member six gradations of their own standing has confused its
+     billing system for its reader's interest. */
+  .ns-memberbar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+    margin-block: var(--stack-md);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    font-size: var(--size-prose-small);
+  }
+  .ns-memberbar__icon {
+    display: grid; place-items: center; flex: none;
+    inline-size: 2rem; block-size: 2rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-label); font-size: var(--size-body);
+  }
+  .ns-memberbar__body { flex: 1; min-inline-size: 12rem; }
+  .ns-memberbar__who { display: block; color: var(--color-ink); font-weight: var(--weight-medium); }
+  .ns-memberbar__what {
+    display: block; margin-block-start: var(--space-0-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-memberbar--paid { border-color: var(--color-featured-ink); }
+  .ns-memberbar--paid .ns-memberbar__icon { color: var(--color-featured-ink); }
+  .ns-memberbar--paid .ns-memberbar__what { color: var(--color-featured-ink); }
+
+  /* ======================================================= KOENIG: MORE ====
+     Two more cards from the editor that had no home.
+
+     BUTTON CARD — Koenig's standalone call to action. It is centred and it
+     is alone on its line, which is the entire difference between it and a
+     link in a paragraph: the author has stopped the prose to point. */
+  .ns-buttoncard { display: flex; justify-content: center; margin-block: var(--stack-md); }
+  .ns-buttoncard--start { justify-content: flex-start; }
+
+  /* AUDIO CARD — a podcast or a recorded answer, dropped into a post. The
+     duration is printed rather than discovered on play, because "is this two
+     minutes or forty" is the question that decides whether anyone presses
+     the button at all. */
+  .ns-audio {
+    display: flex; align-items: center; gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-audio__play {
+    display: grid; place-items: center; flex: none;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border: 0; border-radius: var(--radius-pill); cursor: pointer;
+    background: var(--color-brand-500); color: var(--color-on-brand);
+    font-size: var(--size-body-lg);
+  }
+  .ns-audio__body { flex: 1; min-inline-size: 0; display: grid; gap: var(--space-2); }
+  .ns-audio__title { font-size: var(--size-body); font-weight: var(--weight-medium); color: var(--color-ink); }
+  .ns-audio__track { display: flex; align-items: center; gap: var(--space-3); }
+  .ns-audio__track .ns-progress { flex: 1; }
+  .ns-audio__time {
+    flex: none; font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
   }
 }
 /* NS Design System — syntax highlighter / code block.

@@ -41,6 +41,42 @@ telling — body beside a `.ns-hero__media` slot that holds real proof.
 Below lg the media drops under the words, so the headline never leaves the
 first screen.
 
+### Added — a Ghost family, in its own file
+
+The CMS-side components now live together in `components/css/ghost.css` and a
+new **Ghost** family in the styleguide — ten pages. They were briefly spread
+across two files that have nothing to do with the CMS: `content.css` is
+"things that interrupt prose" and `training.css` is "a curriculum". The gate
+in particular was written as a *training* idea (Pro modules) when it is really
+Ghost's members gate wearing a curriculum's clothes; it moved and was retitled
+**Members gate**.
+
+New alongside the moved cards:
+
+- **Membership tiers** (`.ns-plans`) — three columns, a monthly/yearly switch,
+  and a price that changes when you flip it. Distinct from Training's Free-vs-Pro,
+  which is a two-column argument with no prices and no billing period. The
+  yearly saving is a *number*, never "save up to 20%" — a percentage the
+  reader has to apply to a figure they have not seen is a discount nobody can
+  evaluate. A tier the member already holds sets `data-state="current"`, which
+  disables its action rather than hiding it.
+- **Member status** (`.ns-memberbar`) — who Ghost thinks you are and what that
+  gets you. A bar, not a card, because it is chrome *about* the page. Three
+  states and no more: signed out, free, paid.
+- **Button card** and **Audio card** — the two remaining Koenig cards that had
+  no home. The audio card prints its duration rather than making you press
+  play to find out, because "is this two minutes or forty" is what decides
+  whether anyone presses it.
+
+The trailer gate keeps its argument: the mask is on the teaser, not an overlay
+over it, so the withheld text is genuinely absent from the DOM rather than
+covered by a div a reader can delete in devtools.
+
+One bug fixed on the way: `.ns-plans__switch` is a flex container, and the
+fieldset inside it inherited `align-items: stretch` — which dragged the
+segmented control to the full height of the row and rendered the two options
+as tall columns.
+
 ### Added — the Ghost Koenig card set, restyled
 
 Ghost's editor lets an author drop a **product**, a **bookmark**, a **file**, a

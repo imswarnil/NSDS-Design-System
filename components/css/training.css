@@ -630,57 +630,6 @@
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
 
-  /* =================================================== ACCESS: THE GATE ====
-     Training is mostly open and some of it is Pro. That asymmetry decides the
-     whole treatment: a locked row is DIMMED but readable, never hidden, and a
-     locked page shows the beginning of the real thing rather than a wall.
-
-     The titles are the argument. A curriculum that hides its Pro posts is a
-     curriculum that cannot be evaluated before you pay for it, and a reader
-     who cannot evaluate it does not buy it — they leave.
-
-     .ns-gate wraps a teaser: real content, faded out under a mask, with the
-     upgrade panel below it. The mask is on the TEASER, not an overlay on top
-     of it, so the text underneath is genuinely truncated in the DOM rather
-     than covered by a div a reader can delete in devtools. */
-  .ns-gate { position: relative; display: grid; gap: var(--space-5); }
-  .ns-gate__teaser {
-    position: relative;
-    max-block-size: 16rem;
-    overflow: hidden;
-    mask-image: linear-gradient(var(--color-ink) 0%, var(--color-ink) 45%, transparent 100%); /* lint-ok: mask alpha ramp, any opaque color works; ink keeps it token-fed */
-  }
-  /* The panel. One primary action and one line of what you get — a gate that
-     lists nine benefits is a pricing page that appeared in the middle of a
-     sentence. */
-  .ns-gate__panel {
-    display: grid; justify-items: center; gap: var(--space-3);
-    padding: var(--pad-card-lg);
-    text-align: center;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface-sunken);
-  }
-  .ns-gate__icon {
-    display: flex; align-items: center; justify-content: center;
-    inline-size: 2.75rem; block-size: 2.75rem;
-    border-radius: var(--radius-pill);
-    box-shadow: inset 0 0 0 1px var(--color-border);
-    background: var(--color-surface);
-    color: var(--color-featured-ink); font-size: var(--size-h4);
-  }
-  .ns-gate__title { font-size: var(--size-h4); font-weight: var(--weight-heading); color: var(--color-ink); text-wrap: balance; }
-  .ns-gate__text { font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-narrow); text-wrap: pretty; }
-  .ns-gate__note {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
-    color: var(--color-label);
-  }
-  /* The compact form, for a card or a rail rather than a page body. */
-  .ns-gate--inline .ns-gate__panel { padding: var(--pad-card); gap: var(--space-2); }
-  .ns-gate--inline .ns-gate__icon { inline-size: 2rem; block-size: 2rem; font-size: var(--size-body); }
-  .ns-gate--inline .ns-gate__title { font-size: var(--size-body); }
-
   /* --- Free vs Pro, stated once -------------------------------------------
      The home page has to answer "what do I get for nothing" before it asks
      for anything. Two columns, both concrete, the free one FIRST — leading

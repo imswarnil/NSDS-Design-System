@@ -43,6 +43,7 @@
 @import "./media.css";
 @import "./prose.css";
 @import "./content.css";
+@import "./ghost.css";
 @import "./code.css";
 @import "./type-fx.css";
 @import "./motion.css";
