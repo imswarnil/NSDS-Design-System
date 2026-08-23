@@ -6836,9 +6836,9 @@
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
 
-  .ns-trainingnav__module { border: 0; }
-  .ns-trainingnav__module + .ns-trainingnav__module { margin-block-start: var(--space-0-5); }
-  .ns-trainingnav__module > summary {
+  .ns-trainingnav__section { border: 0; }
+  .ns-trainingnav__section + .ns-trainingnav__section { margin-block-start: var(--space-0-5); }
+  .ns-trainingnav__section > summary {
     display: flex; align-items: center; gap: var(--space-2);
     padding: var(--space-2);
     border-radius: var(--radius-sm);
@@ -6847,30 +6847,30 @@
     color: var(--color-ink);
     transition: background var(--duration-fast) var(--ease-out);
   }
-  .ns-trainingnav__module > summary::-webkit-details-marker { display: none; }
-  .ns-trainingnav__module > summary:hover { background: var(--color-surface-sunken); }
-  .ns-trainingnav__module > summary:focus-visible {
+  .ns-trainingnav__section > summary::-webkit-details-marker { display: none; }
+  .ns-trainingnav__section > summary:hover { background: var(--color-surface-sunken); }
+  .ns-trainingnav__section > summary:focus-visible {
     outline: var(--focus-ring-width) solid var(--color-brand-500);
     outline-offset: calc(-1 * var(--focus-ring-width));
   }
   /* The module a reader is inside stays marked while its posts are on screen,
      so scrolling the rail never loses "which module is this". */
-  .ns-trainingnav__module:has([aria-current="page"]) > summary { color: var(--color-brand-600); }
-  [data-theme="dark"] .ns-trainingnav__module:has([aria-current="page"]) > summary { color: var(--color-brand-300); }
+  .ns-trainingnav__section:has([aria-current="page"]) > summary { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__section:has([aria-current="page"]) > summary { color: var(--color-brand-300); }
   .ns-trainingnav__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
   /* The module's own glyph. It was the last level of the rail with no mark —
      "Objects and fields" sat as bare text between a track that had a tile and
      posts that each had an icon, which made the module read as a gap in the
      column rather than as its top level. */
-  .ns-trainingnav__mod-icon {
+  .ns-trainingnav__section-icon {
     flex: none; display: grid; place-items: center;
     inline-size: 1.25rem; block-size: 1.25rem;
     border-radius: var(--radius-sm);
     box-shadow: inset 0 0 0 1px var(--color-border);
     color: var(--color-brand-500); font-size: var(--size-small);
   }
-  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__mod-icon { color: var(--color-success); }
-  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
+  .ns-trainingnav__section[data-state="done"] .ns-trainingnav__section-icon { color: var(--color-success); }
+  .ns-trainingnav__section[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
   .ns-trainingnav__count {
     margin-inline-start: auto; flex: none;
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -6878,37 +6878,17 @@
   }
   /* A module that is finished says so with a tick instead of a count — the
      number has done its job and the state is the more useful fact. */
-  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__count { color: var(--color-success); }
+  .ns-trainingnav__section[data-state="done"] .ns-trainingnav__count { color: var(--color-success); }
 
-  /* --- Post sections inside a module --------------------------------------
-     THE STRUCTURAL DIFFERENCE BETWEEN TRAINING AND A COURSE. A course is a
-     flat list of lessons (see .ns-curriculum--flat). A training module is a
-     body of writing that genuinely has parts — "the sharing model" has a
-     concept post, two walkthroughs and a lab — so the module's rail groups
-     its posts under section labels rather than running them as one list.
+  /* --- Lessons inside a section -------------------------------------------
+     TWO LEVELS AND NO MORE: a track holds SECTIONS, a section holds LESSONS.
 
-     One sidebar, three levels: track → module → section → post. Any deeper
-     and the rail is a file tree, which is what this is designed not to be. */
-  .ns-trainingnav__section {
-    display: flex; align-items: center; gap: var(--space-2);
-    padding: var(--space-3) var(--space-2) var(--space-1);
-    margin-inline-start: var(--space-4);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-  }
-  /* The section takes a glyph too. It is the one level of the rail that was
-     still text-only, and in a column where every other row leads with a mark
-     the bare label read as a gap rather than as a heading. The icon is the
-     section's JOB — concepts, practice, reference — so the three sections of
-     a module are told apart before the words are read. */
-  .ns-trainingnav__section > i { flex: none; font-size: var(--size-small); color: var(--color-label); }
-  /* The rule runs from the label to the rail's edge. It is what makes a
-     section read as a band across the column rather than three more words in
-     a column of words — and it costs no markup. */
-  .ns-trainingnav__section::after {
-    content: ""; flex: 1; block-size: 1px; background: var(--color-border);
-  }
+     This used to be three — module, then a sub-heading inside it, then the
+     posts under that. It read as "a section, and inside it more sections",
+     which is one level of nesting past what anybody holds in their head while
+     reading, and it pushed every lesson title into ~11rem of column. The
+     sub-heading is gone. A section that genuinely needs grouping is two
+     sections. */
 
   /* THE SPINE MOVED. It used to be a 2px border on every row, which meant
      forty rows all drawing the same line and the current one distinguished
@@ -6952,13 +6932,6 @@
     flex: none; font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
-  /* Every section opens with its own OVERVIEW — the page that introduces the
-     section before its posts. It is set apart from them because it is about
-     them: italic-free, quieter icon, and no time, since "how long is the
-     introduction" is not a question anybody has. */
-  .ns-trainingnav__link--overview { color: var(--color-ink); }
-  .ns-trainingnav__link--overview .ns-trainingnav__icon { color: var(--color-brand-500); }
-  .ns-trainingnav__link--overview[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
 
   /* Module-level progress, under the module's own summary: a training track
      is long enough that "how far into THIS module" is a different and more
@@ -7122,10 +7095,21 @@
      space the aside was removed to reclaim. Paragraphs still get their measure
      — .ns-prose caps itself — but tables, code, the video stage and the pager
      now use the whole container, which is what they were always short of. */
+  /* THE CONTENT COLUMN, WIDENED. It was capped at --container-narrow (56rem)
+     and padded with --gutter-lg on both sides inside a cell that is already
+     ~60rem wide — so the article sat in a ribbon with a band of dead page on
+     each side and another 4rem of padding inside that. Three separate
+     constraints stacked, and the reader paid for all of them.
+
+     Now the cell IS the column: --container-page as a ceiling for very wide
+     screens, ordinary --gutter for the inset. .ns-prose still caps its own
+     paragraphs at the measure, so body copy is unchanged — what got wider is
+     everything that was always short of room: tables, code, the video stage,
+     the pager. */
   .ns-training--doc .ns-training__reading {
-    max-inline-size: var(--container-narrow);
+    max-inline-size: var(--container-page);
     margin-inline: auto;
-    padding: var(--space-8) var(--gutter-lg) var(--space-16);
+    padding: var(--space-8) var(--gutter) var(--space-16);
   }
 
   @media (max-width: 63.999rem) {
@@ -7144,6 +7128,38 @@
     .ns-training--doc > .ns-trainingnav { translate: 100% 0; }
     .ns-training--doc[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
     .ns-training--doc .ns-training__reading { padding: var(--space-6) var(--gutter) var(--space-12); }
+  }
+
+  /* --- On this page, inside the article ------------------------------------
+     WHERE THE TABLE OF CONTENTS WENT. It was a third column, and a third
+     column is the first thing to lose on a laptop and impossible on a phone —
+     which meant on the two viewports most people read on, there was no
+     outline at all.
+
+     So it is a DISCLOSURE at the top of the article instead. It costs one row
+     when closed, it is in the reading column so it exists at every width, and
+     it is the same <details> on a phone as on a desktop — one implementation,
+     not a column plus a fallback that drifts apart.
+
+     CLOSED BY DEFAULT, at every width, and that is a correction rather than a
+     preference: the first version shipped `open` and this comment claimed it
+     closed below md, which CSS cannot do — `open` is an attribute, and there
+     is no media query that removes one. Rather than reach for a script or a
+     display:none hack that leaves the caret lying about its own state, it is
+     simply shut everywhere. One row until you want it, and the row says how
+     many headings are behind it. */
+  .ns-tpost-toc { margin-block-end: var(--stack-md); }
+  .ns-tpost-toc > summary { inline-size: 100%; }
+  .ns-tpost-toc .ns-toc {
+    position: static; max-block-size: none;
+    margin-block-start: var(--space-3);
+    padding-inline-start: 0; border-inline-start: 0;
+  }
+  /* Two columns of headings when there is room — a single column of eight
+     short links down a 60rem page is a stripe of whitespace beside it. */
+  @media (min-width: 48rem) {
+    .ns-tpost-toc .ns-toc { columns: 2 16rem; column-gap: var(--space-6); }
+    .ns-tpost-toc .ns-toc__link { break-inside: avoid; }
   }
 
   /* The BASE (non-fixed, non-doc) training layout still collapses to one
@@ -7600,7 +7616,7 @@
     letter-spacing: var(--tracking-label); text-transform: uppercase;
     color: var(--color-label);
   }
-  .ns-trainingnav__module[hidden],
+  .ns-trainingnav__section[hidden],
   .ns-trainingnav__list li[hidden] { display: none; }
 
   /* --- The rail as a drawer, below lg -------------------------------------

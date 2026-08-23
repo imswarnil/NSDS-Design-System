@@ -11376,13 +11376,13 @@
     color: var(--color-label);
     font-variant-numeric: tabular-nums;
   }
-  .ns-trainingnav__module {
+  .ns-trainingnav__section {
     border: 0;
   }
-  .ns-trainingnav__module + .ns-trainingnav__module {
+  .ns-trainingnav__section + .ns-trainingnav__section {
     margin-block-start: var(--space-0-5);
   }
-  .ns-trainingnav__module > summary {
+  .ns-trainingnav__section > summary {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -11395,20 +11395,20 @@
     color: var(--color-ink);
     transition: background var(--duration-fast) var(--ease-out);
   }
-  .ns-trainingnav__module > summary::-webkit-details-marker {
+  .ns-trainingnav__section > summary::-webkit-details-marker {
     display: none;
   }
-  .ns-trainingnav__module > summary:hover {
+  .ns-trainingnav__section > summary:hover {
     background: var(--color-surface-sunken);
   }
-  .ns-trainingnav__module > summary:focus-visible {
+  .ns-trainingnav__section > summary:focus-visible {
     outline: var(--focus-ring-width) solid var(--color-brand-500);
     outline-offset: calc(-1 * var(--focus-ring-width));
   }
-  .ns-trainingnav__module:has([aria-current="page"]) > summary {
+  .ns-trainingnav__section:has([aria-current="page"]) > summary {
     color: var(--color-brand-600);
   }
-  [data-theme="dark"] .ns-trainingnav__module:has([aria-current="page"]) > summary {
+  [data-theme="dark"] .ns-trainingnav__section:has([aria-current="page"]) > summary {
     color: var(--color-brand-300);
   }
   .ns-trainingnav__twist {
@@ -11416,7 +11416,7 @@
     color: var(--color-label);
     transition: rotate var(--duration-fast) var(--ease-out);
   }
-  .ns-trainingnav__mod-icon {
+  .ns-trainingnav__section-icon {
     flex: none;
     display: grid;
     place-items: center;
@@ -11427,10 +11427,10 @@
     color: var(--color-brand-500);
     font-size: var(--size-small);
   }
-  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__mod-icon {
+  .ns-trainingnav__section[data-state="done"] .ns-trainingnav__section-icon {
     color: var(--color-success);
   }
-  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist {
+  .ns-trainingnav__section[open] > summary .ns-trainingnav__twist {
     rotate: 90deg;
   }
   .ns-trainingnav__count {
@@ -11441,32 +11441,8 @@
     color: var(--color-label);
     font-variant-numeric: tabular-nums;
   }
-  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__count {
+  .ns-trainingnav__section[data-state="done"] .ns-trainingnav__count {
     color: var(--color-success);
-  }
-  .ns-trainingnav__section {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-3) var(--space-2) var(--space-1);
-    margin-inline-start: var(--space-4);
-    font-family: var(--font-mono);
-    font-size: var(--size-label);
-    font-weight: var(--weight-label);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--color-label);
-  }
-  .ns-trainingnav__section > i {
-    flex: none;
-    font-size: var(--size-small);
-    color: var(--color-label);
-  }
-  .ns-trainingnav__section::after {
-    content: "";
-    flex: 1;
-    block-size: 1px;
-    background: var(--color-border);
   }
   .ns-trainingnav__list {
     list-style: none;
@@ -11512,15 +11488,6 @@
     font-size: var(--size-label);
     color: var(--color-label);
     font-variant-numeric: tabular-nums;
-  }
-  .ns-trainingnav__link--overview {
-    color: var(--color-ink);
-  }
-  .ns-trainingnav__link--overview .ns-trainingnav__icon {
-    color: var(--color-brand-500);
-  }
-  .ns-trainingnav__link--overview[aria-current="page"] .ns-trainingnav__icon {
-    color: var(--color-brand-600);
   }
   .ns-trainingnav__bar {
     margin: var(--space-1) var(--space-2) var(--space-2) var(--space-4);
@@ -11697,9 +11664,9 @@
     padding-inline: var(--space-4);
   }
   .ns-training--doc .ns-training__reading {
-    max-inline-size: var(--container-narrow);
+    max-inline-size: var(--container-page);
     margin-inline: auto;
-    padding: var(--space-8) var(--gutter-lg) var(--space-16);
+    padding: var(--space-8) var(--gutter) var(--space-16);
   }
   @media (max-width: 63.999rem) {
     .ns-training--doc {
@@ -11728,6 +11695,30 @@
     .ns-training--doc .ns-training__reading {
       padding: var(--space-6) var(--gutter) var(--space-12);
     }
+  }
+  .ns-tpost-toc {
+    margin-block-end: var(--stack-md);
+  }
+  .ns-tpost-toc > summary {
+    inline-size: 100%;
+  }
+  .ns-tpost-toc .ns-toc {
+    position: static;
+    max-block-size: none;
+    margin-block-start: var(--space-3);
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+  @media (min-width: 48rem) {
+    .ns-tpost-toc .ns-toc {
+      columns: 2 16rem;
+      column-gap: var(--space-6);
+    }
+    .ns-tpost-toc .ns-toc__link {
+      break-inside: avoid;
+    }
+  }
+  @media (max-width: 63.999rem) {
     .ns-training {
       display: block;
     }
@@ -12346,7 +12337,7 @@
     text-transform: uppercase;
     color: var(--color-label);
   }
-  .ns-trainingnav__module[hidden], .ns-trainingnav__list li[hidden] {
+  .ns-trainingnav__section[hidden], .ns-trainingnav__list li[hidden] {
     display: none;
   }
   .ns-trainingnav__close {

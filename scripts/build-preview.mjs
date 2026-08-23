@@ -1949,7 +1949,7 @@ const DEMOS = [
      the layout to the viewport and both columns scroll inside it, exactly
      like the course player. training.js wires the rail filter and the
      below-lg drawer; resize under 64rem and use the Curriculum handle. */
-  { out: "demo-training-post.html", tpl: "training-post.html", strip: "kind-article", title: "Training post, video — full page demo", back: "c-training-layout.html", note: "the post at full width, the curriculum beside it. Every rail level carries its mark; each section opens with its overview. Resize below 64rem for the drawer", lock: true },
+  { out: "demo-training-post.html", tpl: "training-post.html", strip: "kind-article", title: "Training post, video — full page demo", back: "c-training-layout.html", note: "the post at full width, the curriculum beside it. Two levels — sections hold lessons. The outline is a disclosure in the article, so it survives a phone. Resize below 64rem for the drawer", lock: true },
   /* The SAME template with its stage cut. This is the article-based post, and
      rendering it from one file is the point: the claim "a training post is
      video or article, and the difference is one block" is either true of the

@@ -41,6 +41,41 @@ telling — body beside a `.ns-hero__media` slot that holds real proof.
 Below lg the media drops under the words, so the headline never leaves the
 first screen.
 
+### Changed — the training rail is two levels, and the content got its width back
+
+Three problems, all of them about fit rather than looks.
+
+**The nesting was one level too deep.** The rail went track → module →
+sub-heading → post, which reads as "a section, and inside it more sections" —
+past what anyone holds in their head while reading, and it squeezed every
+lesson title into ~11rem of column. It is now **sections holding lessons**,
+two levels, and the sub-heading is gone. A section that genuinely needs
+grouping is two sections. `.ns-trainingnav__module` is renamed
+`__section` throughout — CSS, both templates, the docs demos and
+`assets/js/training.js`, whose own prose now says sections and lessons too.
+
+**The content was paying for three constraints at once.** The reading column
+was capped at `--container-narrow` (56rem), centred inside a cell already
+~60rem wide, *and* padded with `--gutter-lg` on both sides. Measured before:
+~150px of dead page on each side. Now the cell is the column —
+`--container-page` as a ceiling, ordinary `--gutter` for the inset — and the
+dead space is **25px a side**. Body copy is unchanged, because `.ns-prose`
+caps its own paragraphs at the measure; what got wider is everything that was
+always short of room.
+
+**The table of contents did not exist on the two viewports most people read
+on.** It had been a third column, which is the first thing lost on a laptop
+and impossible on a phone. It is now a disclosure at the top of the article:
+one row closed, in the reading column, so it exists at every width — the same
+`<details>` on a phone as on a desktop rather than a column plus a fallback
+that drifts. Verified at 390px: 22px closed, 158px open with every heading.
+
+The first version of that shipped `open` with a comment claiming it closed
+below md. CSS cannot do that — `open` is an attribute and no media query
+removes one — so rather than reach for a script or a `display:none` hack that
+leaves the caret lying about its own state, it is closed everywhere and the
+comment now says so.
+
 ### Added — a Ghost family, in its own file
 
 The CMS-side components now live together in `components/css/ghost.css` and a

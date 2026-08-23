@@ -7,13 +7,13 @@
    here.
 
      1. FILTER. Type in the rail's search box and the tree reduces to the
-        modules and posts that match. This is the whole reason the box exists:
+        sections and lessons that match. This is the whole reason the box exists:
         at fifteen modules a tree is navigable, and at a hundred and fifty it
         is a filing cabinet you have to already know your way around.
 
-        Matching a POST reveals its module. Matching a MODULE keeps all of its
-        posts, because "sharing" should show you everything in the Sharing
-        module rather than the one post whose title happens to repeat the word.
+        Matching a LESSON reveals its section. Matching a SECTION keeps all of its
+        lessons, because "sharing" should show you everything in the Sharing
+        module rather than the one lesson whose title happens to repeat the word.
 
      2. DRAWER. Below the lg breakpoint the fixed rail becomes an off-canvas
         drawer — the stylesheet does the sliding, this sets the state, traps
@@ -30,7 +30,7 @@
        <nav class="ns-trainingnav" data-ns-trainingnav>
          <input data-ns-trainingnav-filter>      the filter box
          <p data-ns-trainingnav-result>          "6 of 150 modules" — written here
-         <details class="ns-trainingnav__module"> … </details>
+         <details class="ns-trainingnav__section"> … </details>
 
    Include with: <script src="assets/js/training.js" defer></script> */
 (function () {
@@ -43,7 +43,7 @@
     var input = rail.querySelector("[data-ns-trainingnav-filter]");
     if (!input) return;
     var result = rail.querySelector("[data-ns-trainingnav-result]");
-    var modules = [].slice.call(rail.querySelectorAll(".ns-trainingnav__module"));
+    var modules = [].slice.call(rail.querySelectorAll(".ns-trainingnav__section"));
     if (!modules.length) return;
 
     /* The open/closed state the reader chose, remembered before the first

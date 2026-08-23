@@ -4301,14 +4301,14 @@ Map<Id, Account> byId = new Map<Id, Account>(
     variants: [
       { name: "Rail with the current module open", stack: true, html: `<nav class="ns-trainingnav" data-ns-trainingnav aria-label="Curriculum" style="position:static;max-block-size:22rem;inline-size:100%">
   <a class="ns-trainingnav__track" href="#0">Salesforce Administrator</a>
-  <details class="ns-trainingnav__module" open>
+  <details class="ns-trainingnav__section" open>
     <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Objects and fields<span class="ns-trainingnav__count">6</span></summary>
     <ul class="ns-trainingnav__list">
       <li><a class="ns-trainingnav__link" data-state="done" href="#0">Standard vs custom objects</a></li>
       <li><a class="ns-trainingnav__link" data-state="done" href="#0">Field types</a></li>
     </ul>
   </details>
-  <details class="ns-trainingnav__module" open>
+  <details class="ns-trainingnav__section" open>
     <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Security and access<span class="ns-trainingnav__count">8</span></summary>
     <ul class="ns-trainingnav__list">
       <li><a class="ns-trainingnav__link" data-state="done" href="#0">Profiles vs permission sets</a></li>
@@ -4316,21 +4316,20 @@ Map<Id, Account> byId = new Map<Id, Account>(
       <li><a class="ns-trainingnav__link" href="#0">Sharing rules in practice</a></li>
     </ul>
   </details>
-  <details class="ns-trainingnav__module" open>
+  <details class="ns-trainingnav__section" open>
     <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Automation: Flow<span class="ns-trainingnav__count">9</span></summary>
     <ul class="ns-trainingnav__list"><li><a class="ns-trainingnav__link" href="#0">Record-triggered flows</a></li></ul>
   </details>
 </nav>` },
       { name: "Modules, sections and posts", note: "THE STRUCTURAL DIFFERENCE BETWEEN TRAINING AND A COURSE. A course is a flat list of lessons; a training module is a body of writing with parts, so its posts group under section labels. One sidebar, three levels — track → module → section → post. Any deeper and it is a file tree, which is what this is designed not to be. Every row carries its kind as an icon, with the word on hover or focus.", html: `<nav class="ns-trainingnav" style="position:static;max-block-size:none;inline-size:100%;max-inline-size:19rem" aria-label="Training">
   <a class="ns-trainingnav__track" href="#0">// Admin track</a>
-  <details class="ns-trainingnav__module" open>
+  <details class="ns-trainingnav__section" open>
     <summary>
       <i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>
       <span>Security and access</span>
       <span class="ns-trainingnav__count">4</span>
     </summary>
     <div class="ns-trainingnav__bar"><progress class="ns-progress" value="2" max="4" aria-label="2 of 4 posts read"></progress></div>
-    <p class="ns-trainingnav__section">Concepts</p>
     <ul class="ns-trainingnav__list">
       <li><a class="ns-trainingnav__link" href="#0" data-state="done">
         <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
@@ -4339,7 +4338,6 @@ Map<Id, Account> byId = new Map<Id, Account>(
         <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
         <span>The role hierarchy</span><span class="ns-trainingnav__time">14m</span></a></li>
     </ul>
-    <p class="ns-trainingnav__section">Practice</p>
     <ul class="ns-trainingnav__list">
       <li><a class="ns-trainingnav__link" href="#0">
         <i class="ph ph-flask ns-trainingnav__icon" aria-hidden="true"></i>
@@ -4349,7 +4347,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
         <span>Check what you know</span><span class="ns-trainingnav__time">6q</span></a></li>
     </ul>
   </details>
-  <details class="ns-trainingnav__module">
+  <details class="ns-trainingnav__section">
     <summary>
       <i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>
       <span>Automation</span>
@@ -4868,13 +4866,14 @@ Map<Id, Account> byId = new Map<Id, Account>(
   },
   {
     id: "training-layout", title: "Training layout", family: "Training",
-    summary: "The reading shell for a curriculum: the post at <strong>full width</strong>, the curriculum beside it on the trailing edge. The rail goes there — not on the leading edge like the course player — because a training post is a document you landed on, so the edge where the eye starts every line belongs to the writing, and the curriculum is the place you go <em>next</em>.",
+    summary: "The reading shell for a curriculum: the post at <strong>full width</strong>, the curriculum beside it on the trailing edge, and the outline as a disclosure inside the article rather than a third column. The rail goes there — not on the leading edge like the course player — because a training post is a document you landed on, so the edge where the eye starts every line belongs to the writing, and the curriculum is the place you go <em>next</em>.",
     use: ["A training post, where the rail has 150 modules in it", "--doc for the document layout: content full width, curriculum on the trailing edge", "--fixed for the older two-column form with the rail sticky rather than pinned"],
     not: ["A short course. A rail that fits on screen does not need to scroll on its own", "A marketing page", "A third column of in-page outline — a post carries its structure in its headings, and that column cost the tables, code and video stage the width they actually needed"],
     a11y: [
       "The reading column keeps its measure INSIDE the scrolling cell, so the scrollbar stays at the edge of the screen and the text stays at the measure",
-      "Every section of a module opens with its own OVERVIEW row — the page that introduces the section before its posts — set apart by a quieter icon and no time, since &ldquo;how long is the introduction&rdquo; is not a question anybody has",
-      "Each level of the rail carries a mark: a tile on the track, a glyph on the module, an icon on the section divider, a KIND icon on the post",
+      "The rail is TWO levels — a track holds sections, a section holds lessons. Three levels read as &ldquo;a section, and inside it more sections&rdquo;, which is one past what anyone holds in their head while reading",
+      "Each level carries a mark: a tile on the track, a glyph on the section, a KIND icon on the lesson",
+      "The outline is a disclosure INSIDE the article, not a third column — a column is the first thing lost on a laptop and impossible on a phone, so the two viewports most people read on had no outline at all. Closed by default at every width — one row until you want it",
       "Below lg the rail becomes a drawer from the TRAILING edge — the edge its column lives on — closed by the ✕, the scrim and Escape",
       "The drawer's slide is dropped under prefers-reduced-motion; the rail still opens, it just arrives",
     ],
@@ -4917,7 +4916,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
       </div>
       <p class="ns-trainingnav__result" role="status">150 modules</p>
     </div>
-    <details class="ns-trainingnav__module" open>
+    <details class="ns-trainingnav__section" open>
       <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Sharing &amp; visibility<span class="ns-trainingnav__count">6</span></summary>
       <ul class="ns-trainingnav__list">
         <li><a class="ns-trainingnav__link" href="#0" data-state="done"><i class="ph ph-check-circle ns-trainingnav__icon" aria-hidden="true"></i>The sharing model, end to end<span class="ns-trainingnav__time">8 min</span></a></li>
