@@ -58,6 +58,36 @@ If a value genuinely cannot be a token, append a CSS comment starting
 `lint-ok:` and the reason, on that line. The exception then has to be argued
 for in the diff rather than buried in a config file.
 
+**Do not write a `var()` fallback for a token that exists.** `var(--space-0-5,
+2px)` is a second place for the value to drift and the linter reads inside the
+fallback anyway. Use the token bare. Fallbacks are only for genuinely
+per-instance variables the component receives from markup — `--ns-bar`,
+`--fx-progress`, `--ns-toc-progress`.
+
+### Two more annotations the checks understand
+
+| Annotation | Where | What it means |
+|---|---|---|
+| `lint-ok: <reason>` | `components/css/` | this raw value cannot be a token, and here is why |
+| `used-by: <product>` | `components/css/`, on the rule | this class is rendered by the Ghost theme or the LMS, not by anything here, so `check-markup.mjs` should not report it as undemoed |
+| `px-ok: <reason>` | line 2 of a `.card.html` | this card draws miniatures of real 1920px frames, so the px font sizes inside its tiles are scaled artwork rather than UI copy |
+
+`used-by:` is not a way to silence the undemoed report. If the class is
+rendered anywhere in this repo, give it a demo instead — a component with no
+demo is a component nobody can see, which is the failure the check exists to
+catch.
+
+### The icon subset
+
+`icons/phosphor.css` and both `.woff2` files are **generated** by
+`scripts/subset-icons.py` from the `@phosphor-icons/web` devDependency. Adding
+an icon is: write the class, run `python3 scripts/subset-icons.py` (needs
+`pip install fonttools brotli`), commit the regenerated `icons/`.
+
+`check-icons.mjs` fails the build on a `ph-` class with no glyph, because a
+missing glyph does not render a box — it renders empty space the width of a
+character, which ships as an invisible control.
+
 ## Accessibility floor
 
 Not aspirations — a component missing any of these is unfinished:
@@ -119,3 +149,8 @@ If it fails, re-step the offending hue until it passes. Do not lower the bar.
 - [ ] Checked at 320px wide
 - [ ] `.d.ts` doc comments say *why*, not just *what*
 - [ ] `docs/CHANGELOG.md` updated
+- [ ] `node scripts/check-markup.mjs` and `node scripts/check-icons.mjs` pass —
+      neither is in the seven gates' fast path but both fail on real defects
+- [ ] If you touched a `.card.html`, its `viewport="WxH"` still matches what it
+      renders to. Measure it; a card framed at the wrong height gets a
+      scrollbar or a band of dead space, and nothing else will tell you

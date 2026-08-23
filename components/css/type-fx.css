@@ -376,7 +376,7 @@
      hover and, because it is infinite, it is the one effect on this page
      that must never carry information. */
   .ns-kinetic { display: flex; overflow: hidden; mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); } /* lint-ok: a mask's black is an alpha stop, not a colour — a theme token here would make the edges fade wrongly */
-  .ns-kinetic__track { display: flex; flex: none; gap: var(--space-6); padding-inline-end: var(--space-6); animation: marquee 28s linear infinite; } /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+  .ns-kinetic__track { display: flex; flex: none; gap: var(--space-6); padding-inline-end: var(--space-6); animation: ns-marquee-scroll 28s linear infinite; } /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
   .ns-kinetic:hover .ns-kinetic__track { animation-play-state: paused; }
   .ns-kinetic__item { font-family: var(--font-heading); font-size: var(--size-h1); font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight); white-space: nowrap; color: var(--color-ink); }
   .ns-kinetic__item--outline { color: transparent; -webkit-text-stroke: 1px var(--color-brand-500); }

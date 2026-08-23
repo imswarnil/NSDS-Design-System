@@ -52,6 +52,11 @@
   --stack-xs: var(--space-2);        /* vertical rhythm, tight */
   --stack-sm: var(--space-4);
   --stack-md: var(--space-8);        /* between subsections */
+  /* --stack-lg is also what a BAND spends on its own padding-block
+     (components/css/sections.css) — a band's vertical padding is what puts
+     the gap between one page section and the next, so it is the same
+     relationship seen from inside rather than a second scale that happens to
+     match. If page rhythm ever changes, it changes here, once. */
   --stack-lg: var(--space-16);       /* between page sections */
   --stack-xl: var(--space-24);       /* between major page bands */
 

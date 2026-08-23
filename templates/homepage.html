@@ -1,0 +1,442 @@
+<!--
+  Namaste UI template — the learning-site homepage
+  =====================================================================
+  Framework-agnostic markup: the canonical composition for the PRODUCT's
+  own home page, as opposed to templates/sections-home.html, which is the
+  generic marketing-band catalogue. The difference is the middle: this page
+  sells a curriculum, so between the hero and the closer it shows the
+  actual merchandise — the path, the courses, the training tiers and the
+  finish date — rather than abstract feature copy.
+
+  The order is an argument, and each band answers the next question a
+  visitor actually has:
+
+    01 hero (split)     what is this, and what do I do first
+    02 logo marquee     who else trusts it            (borrowed credibility)
+    03 features         why this instead of YouTube   (the method)
+    04 learning path    where do I enter              (the curriculum's shape)
+    05 courses          what exactly do I get         (the merchandise)
+    06 training tracks  what is free                  (the open half)
+    07 stats            how big / how real            (concrete numbers only)
+    08 pace             how long will it take         (a date, not hours)
+    09 testimonials     did it work for someone like me
+    10 FAQ              the last three objections
+    11 CTA              the one closer
+
+  Cut from the bottom, never the middle: a homepage without testimonials
+  still works, a homepage without the merchandise is a brochure.
+
+    Ghost   → paste bands into partials/, swap copy for Ghost helpers.
+    Next.js → compose from components/sections/ + course/ + training/.
+-->
+
+<!-- 01 · Hero: split — the one page where showing beats telling, and the
+     thing being shown is the system itself. --grid-live drifts the hairline
+     motif one cell every twenty seconds: slow enough that nobody reading the
+     headline notices it moving, fast enough that the band is not a flat
+     image. A hero that animates faster than a reader reads is an advert. -->
+<section class="ns-band ns-hero ns-hero--split ns-hero--flush ns-band--dark ns-band--grid ns-band--grid-live">
+  <div class="ns-band__inner">
+    <div>
+      <span class="ns-kicker">Learn Salesforce, properly</span>
+      <h1 class="ns-hero__title">From your first org to Apex you can defend</h1>
+      <p class="ns-hero__lede">Courses, a step-by-step training roadmap and working code — in the order the platform actually makes sense.</p>
+      <div class="ns-hero__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="#">Start learning free</a>
+        <a class="ns-btn ns-btn--ghost ns-btn--lg" href="#">Browse the roadmap</a>
+      </div>
+      <span class="ns-hero__proof">12 courses · 150 training modules · most of it free</span>
+    </div>
+    <!-- The media slot holds the ASSEMBLY: this system's own primitives
+         arranged into a miniature of the product they build, animated
+         arriving. It is not drawn art — change a radius token and the
+         illustration changes with it, which is the only kind of "our
+         components make this" picture that cannot go stale. -->
+    <div class="ns-hero__media">
+      <div class="ns-assembly" aria-hidden="true">
+        <div class="ns-assembly__window">
+          <div class="ns-assembly__chrome">
+            <span class="ns-assembly__dot"></span>
+            <span class="ns-assembly__dot"></span>
+            <span class="ns-assembly__dot"></span>
+            <span class="ns-assembly__url">namastesalesforce.com</span>
+          </div>
+
+          <!-- Every slot holds TWO layers in the same box: the component's
+               file name, and the thing that file renders. They cross-fade on
+               one shared timeline, so each label becomes its own component in
+               the exact place that component lives on the page. -->
+          <div class="ns-assembly__page">
+            <div class="ns-assembly__slot ns-assembly__slot--nav">
+              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>nav.cmp</span>
+              <div class="ns-assembly__render">
+                <span class="ns-assembly__bar">
+                  <span class="ns-assembly__mark"></span>
+                  <span class="ns-assembly__line ns-assembly__line--short"></span>
+                  <span class="ns-assembly__line"></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="ns-assembly__slot ns-assembly__slot--hero">
+              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>hero.cmp</span>
+              <div class="ns-assembly__render">
+                <span class="ns-assembly__stack">
+                  <span class="ns-assembly__line ns-assembly__line--wide"></span>
+                  <span class="ns-assembly__line ns-assembly__line--mid"></span>
+                </span>
+              </div>
+            </div>
+
+            <div class="ns-assembly__slot ns-assembly__slot--image">
+              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>image.cmp</span>
+              <div class="ns-assembly__render">
+                <span class="ns-assembly__media"><i class="ph ph-image" aria-hidden="true"></i></span>
+              </div>
+            </div>
+
+            <div class="ns-assembly__slot ns-assembly__slot--button">
+              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>button.cmp</span>
+              <div class="ns-assembly__render">
+                <span class="ns-assembly__actions">
+                  <span class="ns-assembly__chip">Start</span>
+                  <span class="ns-assembly__chip ns-assembly__chip--quiet">Browse</span>
+                </span>
+              </div>
+            </div>
+
+            <div class="ns-assembly__slot ns-assembly__slot--card">
+              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>card.cmp</span>
+              <div class="ns-assembly__render">
+                <span class="ns-assembly__cards">
+                  <span class="ns-assembly__mini-card">
+                    <span class="ns-assembly__line ns-assembly__line--short"></span>
+                    <span class="ns-assembly__line"></span>
+                  </span>
+                  <span class="ns-assembly__mini-card">
+                    <span class="ns-assembly__line ns-assembly__line--short"></span>
+                    <span class="ns-assembly__line"></span>
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            <div class="ns-assembly__slot ns-assembly__slot--chart">
+              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>chart.cmp</span>
+              <div class="ns-assembly__render">
+                <span class="ns-assembly__bars"><i style="block-size:40%"></i><i style="block-size:70%"></i><i style="block-size:52%"></i><i style="block-size:90%"></i><i style="block-size:64%"></i></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · Trust: a windowed marquee of employer names. Text marks, not logo
+     images, until real permission-cleared logos exist — a fake logo wall
+     is worse than a quiet one. -->
+<section class="ns-band ns-band--tight ns-band--sunken">
+  <div class="ns-band__inner">
+    <div class="ns-marquee ns-marquee--window ns-marquee--slow">
+      <div class="ns-marquee__track">
+        <span class="ns-marquee__item">Learners at <b>Acme Cloud</b></span>
+        <span class="ns-marquee__item"><b>Northwind</b></span>
+        <span class="ns-marquee__item"><b>Globex</b></span>
+        <span class="ns-marquee__item"><b>Initech</b></span>
+        <span class="ns-marquee__item"><b>Umbrella Ops</b></span>
+      </div>
+      <div class="ns-marquee__track" aria-hidden="true">
+        <span class="ns-marquee__item">Learners at <b>Acme Cloud</b></span>
+        <span class="ns-marquee__item"><b>Northwind</b></span>
+        <span class="ns-marquee__item"><b>Globex</b></span>
+        <span class="ns-marquee__item"><b>Initech</b></span>
+        <span class="ns-marquee__item"><b>Umbrella Ops</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 · The method: why a curriculum beats a pile of videos. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">Why this works</span>
+      <h2 class="ns-band__title">A curriculum, not a pile of videos</h2>
+      <p class="ns-band__lede">Every lesson follows the same shape: a plain-English concept, a concrete example in your own org, then a bridge to the next step.</p>
+    </header>
+    <div class="ns-features">
+      <article class="ns-feature">
+        <div class="ns-feature__top">
+          <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+          <span class="ns-feature__num">01</span>
+        </div>
+        <h3 class="ns-feature__name">One roadmap</h3>
+        <p class="ns-feature__text">Admin to developer in an explicit order — every course knows what comes before and after it.</p>
+      </article>
+      <article class="ns-feature">
+        <div class="ns-feature__top">
+          <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-lesson-lab"/></svg>
+          <span class="ns-feature__num">02</span>
+        </div>
+        <h3 class="ns-feature__name">Hands-on labs</h3>
+        <p class="ns-feature__text">Every section ends in your own free org: create the object, load the data, break the trigger, fix it.</p>
+      </article>
+      <article class="ns-feature">
+        <div class="ns-feature__top">
+          <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-certificate"/></svg>
+          <span class="ns-feature__num">03</span>
+        </div>
+        <h3 class="ns-feature__name">Cert-aligned</h3>
+        <p class="ns-feature__text">Courses map to the certification outlines — Admin, App Builder, Platform Developer I — so studying here counts twice.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · The path: the curriculum's shape, as a journey with an entrance.
+     The reader is choosing where to ENTER, which is why every stop links. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">The learning path</span>
+      <h2 class="ns-band__title">Four stages, in order</h2>
+      <p class="ns-band__lede">Start anywhere you already are. Each stage ends where the next begins.</p>
+    </header>
+    <ol class="ns-path" style="list-style:none;margin:0;padding:0">
+      <li class="ns-path__stop">
+        <span class="ns-path__node">01</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-cube" aria-hidden="true"></i></span>
+          <span class="ns-path__title">Foundations</span>
+          <span class="ns-path__text">Objects, fields, relationships — the data model everything else sits on.</span>
+          <span class="ns-path__meta"><span>18 modules</span><span>Free</span></span>
+        </a>
+      </li>
+      <li class="ns-path__stop">
+        <span class="ns-path__node">02</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
+          <span class="ns-path__title">Automation</span>
+          <span class="ns-path__text">Flow, validation, approvals — and when to reach for code instead.</span>
+          <span class="ns-path__meta"><span>24 modules</span><span>Free</span></span>
+        </a>
+      </li>
+      <li class="ns-path__stop">
+        <span class="ns-path__node">03</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span class="ns-path__title">Development</span>
+          <span class="ns-path__text">Apex, LWC, testing and the governor limits that shape all of it.</span>
+          <span class="ns-path__meta"><span>31 modules</span><span>Mixed</span></span>
+        </a>
+      </li>
+      <li class="ns-path__stop">
+        <span class="ns-path__node">04</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-sparkle" aria-hidden="true"></i></span>
+          <span class="ns-path__title">AI on the platform</span>
+          <span class="ns-path__text">Prompt templates, grounding, and what Agentforce actually does.</span>
+          <span class="ns-path__meta"><span>12 modules</span><span>Pro</span></span>
+        </a>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 05 · The merchandise: three courses, and the way to the rest. The head
+     puts "View all" on the band's own baseline — a homepage section shows
+     the best three of a thing, never the whole catalogue. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Courses</span>
+        <h2 class="ns-band__title">Start with one of these</h2>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">View all 12 courses</a>
+      </div>
+    </header>
+    <div class="ns-grid">
+      <div class="ns-card ns-ccard">
+        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Beginner</span></span>
+        <div class="ns-card__body">
+          <span class="ns-card__kicker">// Course</span>
+          <a class="ns-card__link" href="#"><span class="ns-card__title">Admin fundamentals</span></a>
+          <p class="ns-card__text">Users, profiles, permission sets — run the org with confidence.</p>
+          <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>14 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>4h 05m</span></span>
+        </div>
+      </div>
+      <div class="ns-card ns-ccard">
+        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Beginner</span></span>
+        <div class="ns-card__body">
+          <span class="ns-card__kicker">// Course</span>
+          <a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a>
+          <p class="ns-card__text">The platform's own language, from zero to your first defensible deploy.</p>
+          <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>12 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>3h 40m</span></span>
+        </div>
+      </div>
+      <div class="ns-card ns-ccard">
+        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Intermediate</span></span>
+        <div class="ns-card__body">
+          <span class="ns-card__kicker">// Course</span>
+          <a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a>
+          <p class="ns-card__text">Declarative automation from a blank canvas to approvals in production.</p>
+          <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>9 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>2h 51m</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 · The open half: the training, told through its tracks. This band is
+     what separates a learning site from a course shop — most of the
+     curriculum is free and the homepage says so with the merchandise, not
+     with a badge. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Training · free</span>
+        <h2 class="ns-band__title">150 modules of written training</h2>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">Browse the training</a>
+      </div>
+    </header>
+    <div class="ns-grid">
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-cube" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">01</span>
+        </span>
+        <span class="ns-trackcard__title">Platform foundations</span>
+        <span class="ns-trackcard__text">The org, the data model, and the words everything else is defined in.</span>
+        <span class="ns-trackcard__meta"><span>18 modules</span><span>6h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-shield-check" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">02</span>
+        </span>
+        <span class="ns-trackcard__title">Security &amp; sharing</span>
+        <span class="ns-trackcard__text">Who sees what, why, and what happens when a record is reparented.</span>
+        <span class="ns-trackcard__meta"><span>12 modules</span><span>5h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">03</span>
+        </span>
+        <span class="ns-trackcard__title">Apex fundamentals</span>
+        <span class="ns-trackcard__text">Governor limits as a budget, bulkification as a habit, tests as proof.</span>
+        <span class="ns-trackcard__meta"><span>22 modules</span><span>9h</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 07 · Concrete numbers only — a stat earns its cell by being checkable. -->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <dl class="ns-statband">
+      <div class="ns-statband__cell"><dd class="ns-statband__value">12</dd><dt class="ns-statband__label">Courses</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">150</dd><dt class="ns-statband__label">Training modules</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">1,482</dd><dt class="ns-statband__label">Learners</dt></div>
+      <div class="ns-statband__cell"><dd class="ns-statband__value">74%</dd><dt class="ns-statband__label">Completion</dt></div>
+    </dl>
+  </div>
+</section>
+
+<!-- 08 · The commitment, as a date. Static values here; in product the pace
+     control recomputes the date (see the Pace planner component page). -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">How long?</span>
+      <h2 class="ns-band__title">Pick a pace, get a date</h2>
+      <p class="ns-band__lede">Forty-two hours is not a number anyone can say yes to. A finish date is.</p>
+    </header>
+    <div class="ns-pace ns-pace--inline">
+      <div>
+        <span class="ns-pace__label">Finish by</span>
+        <time class="ns-pace__date" datetime="2026-11-30">30 November 2026</time>
+        <span class="ns-pace__meta"><b>100 days at 30 min a day</b><span>42 hours · 8 modules</span></span>
+      </div>
+      <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0">
+        <legend class="ns-visually-hidden">How much time per day</legend>
+        <div class="ns-segmented">
+          <label class="ns-segmented__option"><input type="radio" name="home-pace" value="15"><span>15 min</span></label>
+          <label class="ns-segmented__option"><input type="radio" name="home-pace" value="30" checked><span>30 min</span></label>
+          <label class="ns-segmented__option"><input type="radio" name="home-pace" value="60"><span>1 hr</span></label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</section>
+
+<!-- 09 · Testimonials: one voice set large, then a strip read in passing.
+     The quote is the argument; the marquee is the crowd behind it. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <figure class="ns-quote">
+      <blockquote>I passed Platform Developer I after the Apex course — but the real win is that my triggers stopped scaring me.</blockquote>
+      <figcaption>Priya S. · Salesforce Developer · batch 2025</figcaption>
+    </figure>
+  </div>
+  <div class="ns-band__inner" style="margin-block-start:var(--space-8)">
+    <div class="ns-marquee ns-marquee--window ns-marquee--slow">
+      <div class="ns-marquee__track">
+        <span class="ns-marquee__item">&ldquo;The labs are the reason it stuck.&rdquo; <b>Ravi K.</b></span>
+        <span class="ns-marquee__item">&ldquo;Passed PD1 in nine weeks.&rdquo; <b>Anita M.</b></span>
+        <span class="ns-marquee__item">&ldquo;Short lessons, no filler, no intro music.&rdquo; <b>Dev N.</b></span>
+        <span class="ns-marquee__item">&ldquo;Explained governor limits like a budget.&rdquo; <b>Priya J.</b></span>
+      </div>
+      <div class="ns-marquee__track" aria-hidden="true">
+        <span class="ns-marquee__item">&ldquo;The labs are the reason it stuck.&rdquo; <b>Ravi K.</b></span>
+        <span class="ns-marquee__item">&ldquo;Passed PD1 in nine weeks.&rdquo; <b>Anita M.</b></span>
+        <span class="ns-marquee__item">&ldquo;Short lessons, no filler, no intro music.&rdquo; <b>Dev N.</b></span>
+        <span class="ns-marquee__item">&ldquo;Explained governor limits like a budget.&rdquo; <b>Priya J.</b></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · The last three objections, as native details rows. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--center">
+      <span class="ns-kicker">Questions</span>
+      <h2 class="ns-band__title">Before you start</h2>
+    </header>
+    <div class="ns-faq">
+      <details class="ns-faq__item">
+        <summary>Do I need a Salesforce license?</summary>
+        <div class="ns-faq__body"><p>No — every lab runs in a free Developer Edition org. Lesson one walks you through creating it.</p></div>
+      </details>
+      <details class="ns-faq__item" open>
+        <summary>What is free and what is Pro?</summary>
+        <div class="ns-faq__body"><p>120 of 150 training modules and every course's first section are free, in full, with no account. Pro adds the architecture and AI tracks, certification practice sets, and downloadable orgs for every lab.</p></div>
+      </details>
+      <details class="ns-faq__item">
+        <summary>Where should I start?</summary>
+        <div class="ns-faq__body"><p>The roadmap. It begins at &ldquo;what is an org&rdquo; and tells you exactly which course is next at every step.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · The closer. One action; the fine print removes the last excuse. -->
+<section class="ns-band ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <div class="ns-cta">
+      <h2 class="ns-band__title">Create your free org. Start lesson one.</h2>
+      <div class="ns-cta__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="#">Start the roadmap</a>
+      </div>
+      <span class="ns-cta__fine">No card. No install. A browser is enough.</span>
+    </div>
+  </div>
+</section>

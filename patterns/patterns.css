@@ -14,6 +14,57 @@
    ink to black hairlines at a slightly higher alpha (thin white lines need
    more presence on white than on navy). */
 
+/* --- The hairline grid, as a value -------------------------------------
+   The house motif — a square hairline grid — was hand-copied into about
+   twenty specimen cards, and it drifted exactly the way hand-copied things
+   do: four alphas (.05 / .06 / .07 / .09) and six cell sizes (14–26px) for
+   what everybody involved believed was one grid. Softening it meant twenty
+   edits, so nobody ever softened it.
+
+   It is exposed as a VALUE rather than only as a class because most of those
+   copies live in a `::before`, and you cannot put a class on a pseudo
+   element. `--ns-gridlines-image` composes `--ns-gridlines-ink`, and custom
+   property substitution resolves in the context of the element that USES it,
+   so overriding the ink locally re-tints the grid with nothing else changed:
+
+     .tile::before {
+       --ns-gridlines-cell: 16px;
+       background-image: var(--ns-gridlines-image);
+       background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+     }
+
+   Two inks and that is the whole vocabulary: white hairlines for the navy
+   console ground, near-black for a light one. Thin white lines need less
+   alpha on navy than black lines need on white, which is why the two are not
+   the same number.
+
+   .ns-pattern--grid is the other thing and stays: that one is a full-bleed
+   BAND treatment with a vignette mask, drawn in its own layer. This is the
+   raw material. */
+:root {
+  --ns-gridlines-ink-dark: rgb(255 255 255 / 0.07);
+  --ns-gridlines-ink-light: rgb(0 0 30 / 0.06);
+  --ns-gridlines-ink: var(--ns-gridlines-ink-dark);
+  --ns-gridlines-cell: 22px;
+  --ns-gridlines-image:
+    linear-gradient(to right, var(--ns-gridlines-ink) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ns-gridlines-ink) 1px, transparent 1px);
+  /* Vertical rules only — a column guide rather than a grid. */
+  --ns-gridlines-image-cols:
+    linear-gradient(to right, var(--ns-gridlines-ink) 1px, transparent 1px);
+}
+/* The convenience class, for the common case where the grid is the element's
+   own background rather than a layer under its content. */
+.ns-gridlines {
+  background-image: var(--ns-gridlines-image);
+  background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+}
+.ns-gridlines--on-light { --ns-gridlines-ink: var(--ns-gridlines-ink-light); }
+.ns-gridlines--cols {
+  background-image: var(--ns-gridlines-image-cols);
+  background-size: var(--ns-gridlines-cell) 100%;
+}
+
 .ns-pattern { position: relative; }
 .ns-pattern > * { position: relative; }
 .ns-pattern::before {

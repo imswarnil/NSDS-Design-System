@@ -16,6 +16,15 @@
    again, the hairline does the structuring, and a wash of colour across the
    reading column is the loudest thing a page can do.
 
+   THE SIZE RULE FOR EVERY BLOCK HERE: body copy in these takes
+   --size-prose-small (15), never --size-small (13). They sit inside a 17px
+   reading column, and 13 is two steps down — far enough that the eye reads it
+   as a footnote and skips it, which defeats a block whose whole job is to
+   interrupt. --size-small is for SCANNED surfaces: card excerpts, meta rows,
+   archive lists, rails, admin. The mono LABEL on each block stays at
+   --size-label, because a label is not body copy. Scanned versus read is the
+   axis the type scale forks on; see tokens/typography.css.
+
    Callout (blog.css) and Figure (media.css) already exist and are not
    duplicated here: a callout is an aside about the paragraph beside it, a
    figure is an image with a caption. These are the nine other shapes —
@@ -41,7 +50,11 @@
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
-  .ns-takeaway__text { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
+  /* --size-prose, not --size-body-lg. They are the same 17px today, and that
+     is exactly why the name has to be the right one: this block is the
+     article's own argument said faster, so it belongs to the reading scale
+     and should move if the reading scale moves. */
+  .ns-takeaway__text { font-size: var(--size-prose); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
   .ns-takeaway ul { margin-block-start: var(--space-2); padding-inline-start: var(--space-5); }
 
   /* --- Stat block ---------------------------------------------------------
@@ -96,7 +109,7 @@
     text-transform: uppercase; color: var(--color-label);
     margin-block-end: var(--space-2);
   }
-  .ns-compare__side ul { margin: 0; padding-inline-start: var(--space-5); font-size: var(--size-small); }
+  .ns-compare__side ul { margin: 0; padding-inline-start: var(--space-5); font-size: var(--size-prose-small); }
   .ns-compare__side li { margin-block-end: var(--space-1); }
   .ns-compare__side--verdict { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
   .ns-compare__side--verdict .ns-compare__title { color: var(--color-brand-600); }
@@ -112,7 +125,7 @@
     display: flex; align-items: flex-start; gap: var(--space-3);
     padding-block: var(--space-2);
     border-block-start: 1px solid var(--color-border);
-    font-size: var(--size-small);
+    font-size: var(--size-prose-small);
   }
   .ns-checklist li:last-child { border-block-end: 1px solid var(--color-border); }
   /* An optical nudge onto the first line's cap height, not spacing: it is a
@@ -167,8 +180,8 @@
     text-transform: uppercase; color: var(--color-label);
   }
   .ns-terms dl { display: grid; grid-template-columns: minmax(0, 10rem) minmax(0, 1fr); gap: var(--space-2) var(--space-4); margin: 0; }
-  .ns-terms dt { font-family: var(--font-mono); font-size: var(--size-small); color: var(--color-ink); }
-  .ns-terms dd { margin: 0; font-size: var(--size-small); color: var(--color-muted); }
+  .ns-terms dt { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-ink); }
+  .ns-terms dd { margin: 0; font-size: var(--size-prose-small); color: var(--color-muted); }
   @media (max-width: 47.999rem) {
     .ns-terms dl { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
     .ns-terms dd { margin-block-end: var(--space-2); }
@@ -221,7 +234,10 @@
     margin-block: var(--stack-md);
     padding-block: var(--space-3);
     border-block: 1px solid var(--color-border);
-    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-muted);
+    /* Inside the article, so the reading scale — see the note on .ns-callout
+       in blog.css. A notice the reader is meant to act on cannot be the
+       smallest thing on the page. */
+    font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-muted);
   }
   .ns-notice > i { color: var(--color-label); font-size: var(--size-body-lg); }
   .ns-notice__date {
@@ -274,7 +290,9 @@
   .ns-refs li {
     display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: var(--space-2);
     padding-block: var(--space-2);
-    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-muted);
+    /* A reference list is a reading block by definition — titles and sources
+       in sentence case, at the foot of an article. The reading scale. */
+    font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-muted);
   }
   .ns-refs li + li { border-block-start: 1px solid var(--color-border); }
   .ns-refs li::before {
@@ -295,4 +313,206 @@
     overflow-wrap: anywhere;
   }
   .ns-refs :target { color: var(--color-ink); }
+
+  /* ======================================================= GHOST CARDS ====
+     The Koenig editor's own card set, in this system's voice.
+
+     Ghost's editor lets an author drop a product, a bookmark, a file, a
+     header or a members CTA into a post. Those cards ship with Ghost's
+     default styling, which is a different design system — so a Namaste post
+     that used one got a rounded, shadowed, 16px-radius object sitting in a
+     page built from hairlines. These are the same cards, restyled to
+     Principle 1: a 1px border does the structuring, the mono voice carries
+     every piece of metadata, and one signal colour marks the one action.
+
+     The class names match Koenig's data model rather than inventing new
+     words, so the Ghost theme's rendering layer maps card → class with no
+     translation table: product, bookmark, file, header, cta.
+
+     Every one is a block INSIDE prose, so body copy takes the reading scale
+     (--size-prose-small) and labels take --size-label — same rule as the
+     content blocks above. */
+
+  /* --- Product ------------------------------------------------------------
+     A thing being recommended, with a rating and a way to get it. The image
+     is optional and the card works without it — a book recommendation with no
+     cover should not render a grey hole. */
+  .ns-product {
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-product:not(:has(.ns-product__media)) { grid-template-columns: minmax(0, 1fr); }
+  .ns-product__media {
+    inline-size: 8rem; block-size: 8rem; flex: none;
+    border-radius: var(--radius-sm); overflow: hidden;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-product__media img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  .ns-product__body { min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-product__title { font-size: var(--size-body-lg); font-weight: var(--weight-semibold); color: var(--color-ink); text-wrap: balance; }
+  .ns-product__text { font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-muted); text-wrap: pretty; }
+  /* The rating is stars PLUS the number. Five glyphs alone is a value nobody
+     can read out, and a screen reader gets the number rather than "star star
+     star" — which is why the figure is real text and not an aria-label. */
+  .ns-product__rating { display: flex; align-items: center; gap: var(--space-2); }
+  .ns-product__stars { display: inline-flex; gap: var(--space-0-5); color: var(--color-warning); font-size: var(--size-small); }
+  .ns-product__stars i.ph-star { color: var(--color-border); }
+  .ns-product__score {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-product__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-block-start: auto; padding-block-start: var(--space-2); }
+  .ns-product__price {
+    font-family: var(--font-mono); font-size: var(--size-body);
+    font-weight: var(--weight-semibold); color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 47.999rem) {
+    .ns-product { grid-template-columns: minmax(0, 1fr); }
+    .ns-product__media { inline-size: 100%; block-size: 10rem; }
+  }
+
+  /* --- Bookmark -----------------------------------------------------------
+     A link, previewed. The whole card is ONE link — a bookmark with a
+     separate clickable title and thumbnail is two tab stops to the same URL.
+     The publisher line carries a favicon because that is the fastest way a
+     reader answers "do I trust this domain". */
+  .ns-bookmark {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    margin-block: var(--stack-md);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: inherit; text-decoration: none; overflow: hidden;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  a.ns-bookmark:hover { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-bookmark__body { min-inline-size: 0; padding: var(--pad-card); display: grid; gap: var(--space-2); }
+  .ns-bookmark__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  /* Two lines and no more: a bookmark is a signpost, and a four-line excerpt
+     is the article arriving early. */
+  .ns-bookmark__text {
+    font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ns-bookmark__meta {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
+  /* The favicon slot carries its own frame rather than borrowing .ns-ph:
+     that placeholder is built for MEDIA and sets min-block-size: --space-12,
+     which stretched a 1rem favicon into a 48px bar. A 16px square needs a
+     16px placeholder. */
+  .ns-bookmark__icon {
+    inline-size: 1rem; block-size: 1rem; flex: none;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    object-fit: cover;
+  }
+  .ns-bookmark__media { inline-size: 12rem; flex: none; background: var(--color-surface-sunken); }
+  .ns-bookmark__media img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  @media (max-width: 47.999rem) {
+    .ns-bookmark { grid-template-columns: minmax(0, 1fr); }
+    .ns-bookmark__media { inline-size: 100%; block-size: 9rem; order: -1; }
+  }
+
+  /* --- File ---------------------------------------------------------------
+     A download. The SIZE and the extension are not decoration — they are the
+     two things that decide whether someone taps a link on a phone, and Ghost
+     collects both, so they are printed rather than hidden in a tooltip. */
+  .ns-file {
+    display: flex; align-items: center; gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-file:hover { border-color: var(--color-brand-500); }
+  .ns-file__icon {
+    display: grid; place-items: center; flex: none;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-file__body { min-inline-size: 0; flex: 1; display: grid; gap: var(--space-1); }
+  .ns-file__name { font-size: var(--size-body); font-weight: var(--weight-medium); color: var(--color-ink); overflow-wrap: anywhere; }
+  .ns-file__meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-file__action { flex: none; }
+
+  /* --- Header -------------------------------------------------------------
+     Koenig's header card: a full-width statement inside a post. It is the one
+     card allowed to break the reading measure, because that IS its job — it
+     is a chapter break, not a paragraph. --dark takes the console navy, the
+     same band treatment sections.css uses, so a header card in a post and a
+     band on a marketing page are visibly the same object. */
+  .ns-headercard {
+    margin-block: var(--stack-lg);
+    padding: var(--space-10) var(--space-8);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    text-align: center;
+  }
+  .ns-headercard--dark {
+    background: var(--color-brand-900); border-color: var(--color-brand-900);
+    color: var(--color-on-dark);
+  }
+  .ns-headercard__kicker {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-headercard--dark .ns-headercard__kicker { color: var(--color-on-dark-border-hover); }
+  .ns-headercard__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+  .ns-headercard__text {
+    font-size: var(--size-prose); line-height: var(--leading-snug);
+    color: var(--color-muted); margin-block-start: var(--space-3);
+    margin-inline: auto; max-inline-size: var(--measure-narrow); text-wrap: pretty;
+  }
+  .ns-headercard--dark .ns-headercard__text { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
+  .ns-headercard__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-block-start: var(--space-6); }
+
+  /* --- Members CTA --------------------------------------------------------
+     Ghost's email-CTA card: the members prompt that interrupts a post. It is
+     a LEADING-EDGE block rather than a boxed panel, because it is an aside
+     from the publication rather than part of the argument — the same device
+     .ns-takeaway uses, in the accent that means membership. */
+  .ns-cta-card {
+    display: grid; gap: var(--space-3);
+    margin-block: var(--stack-md);
+    padding: var(--space-5) var(--space-6);
+    border-inline-start: 3px solid var(--color-featured-ink);
+    border-radius: 0 var(--radius-card) var(--radius-card) 0;
+    background: var(--color-surface-sunken);
+  }
+  .ns-cta-card__label {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-featured-ink);
+  }
+  .ns-cta-card__text { font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
+  .ns-cta-card__form { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .ns-cta-card__form .ns-input { flex: 1; min-inline-size: 12rem; }
+  .ns-cta-card__fine {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
 }

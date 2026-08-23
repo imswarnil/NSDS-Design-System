@@ -94,7 +94,7 @@
     border-radius: var(--radius-card);
     background: var(--color-surface-raised);
     box-shadow: var(--shadow-raised);
-    animation: ns-fade-up var(--duration-base) var(--ease-out);
+    animation: ns-anim-rise var(--duration-base) var(--ease-out);
   }
   .ns-toast--success { border-inline-start-color: var(--color-success); }
   .ns-toast--error { border-inline-start-color: var(--color-error); }

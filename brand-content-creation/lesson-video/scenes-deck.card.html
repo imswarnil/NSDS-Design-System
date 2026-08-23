@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x1230" name="Lesson Video — Slides & Code" subtitle="Four scenes in both themes: a slide alone, a slide with camera, full-frame code, and code beside its result" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -22,8 +26,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 
 .bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
 .pat{position:absolute;inset:0;
-  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
-  background-size:16px 16px}
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
   letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
 .idx{position:absolute;inset-inline-end:5%;top:8%;font-family:var(--font-mono);font-size:6px;

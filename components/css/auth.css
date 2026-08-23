@@ -97,7 +97,7 @@
   .ns-auth__sent p { font-size: var(--size-small); color: var(--color-muted); }
   /* The address the link went to, in mono — it is data, and showing it back
      is what lets the user catch their own typo. */
-  .ns-auth__sent code { font-family: var(--font-mono); font-size: var(--size-small); color: var(--color-ink); }
+  .ns-auth__sent code { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-ink); }
 
   /* Password strength — a Steps-style tick row, not a rainbow meter. Wire the
      ticks with data-state="done" as rules pass; the text names what is

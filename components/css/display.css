@@ -68,7 +68,7 @@
      aria-pressed marks a selected filter. */
   .ns-tag {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border: 1px solid var(--color-border); border-radius: var(--radius-sm);
     background: var(--color-surface);
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
@@ -95,7 +95,7 @@
   .ns-badge {
     --_dot: var(--color-brand-500);
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border-radius: var(--radius-sm);
     box-shadow: inset 0 0 0 1px var(--color-border);
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -257,7 +257,7 @@
     border-radius: var(--radius-sm);
     background: var(--color-surface-raised);
     font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); line-height: 1.6;
+    font-weight: var(--weight-label); line-height: var(--leading-body);
     color: var(--color-ink); white-space: nowrap;
   }
   /* A chord (Cmd+K) versus a sequence (G then D) — the separator says which,
@@ -278,7 +278,7 @@
      button that only changes colour tells a screen-reader user nothing. */
   .ns-copy {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border: 1px solid var(--color-border); border-radius: var(--radius-sm);
     background: none; cursor: pointer;
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -355,7 +355,7 @@
   .ns-marquee__track {
     display: flex; flex: none; align-items: center;
     gap: var(--ns-marquee-gap); padding-inline-end: var(--ns-marquee-gap);
-    animation: marquee var(--ns-marquee-speed) linear infinite; /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+    animation: ns-marquee-scroll var(--ns-marquee-speed) linear infinite; /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
     min-inline-size: 100%;
   }
   .ns-marquee:hover .ns-marquee__track,
@@ -371,7 +371,7 @@
      of partner names or certifications actually is. */
   .ns-marquee__item {
     flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     letter-spacing: var(--tracking-label); text-transform: uppercase;
     color: var(--color-label); white-space: nowrap;
     transition: color var(--duration-fast) var(--ease-out);

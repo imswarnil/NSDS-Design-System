@@ -1,11 +1,11 @@
 <!-- @dsCard group="Foundations" viewport="700x150" name="Motion" subtitle="120–180ms plain ease-out only — no spring, no bounce, no hover-lift" -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css"><title>Motion</title>
 <style>
-  .demo-fade  { animation: fade-up 1.8s ease infinite alternate; }
+  .demo-fade  { animation: ns-anim-rise 1.8s ease infinite alternate; }
   .demo-float { animation: ns-float 3.5s ease-in-out infinite; }
 </style></head>
 <body class="m-0 p-5 bg-surface flex gap-6 items-center font-sans text-small text-muted">
-<div class="flex flex-col items-center gap-2.5"><div class="w-14 h-14 rounded-card bg-brand-500 demo-fade"></div>fade-up (entrance)</div>
+<div class="flex flex-col items-center gap-2.5"><div class="w-14 h-14 rounded-card bg-brand-500 demo-fade"></div>ns-anim-rise (entrance)</div>
 <div class="flex flex-col items-center gap-2.5"><div class="w-14 h-14 rounded-card bg-brand-500 demo-float"></div>ns-float (illustrations only)</div>
 <div class="flex flex-col items-center gap-2.5 max-w-[230px]">Everything else — hover, press, focus — resolves in <code class="font-mono">120–180ms ease-out</code>. No spring easing, no bounce, no translateY lift.</div>
 </body></html>

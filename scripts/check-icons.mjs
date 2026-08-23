@@ -14,12 +14,16 @@
    So this walks every ph-* reference in the markup and the components and
    checks it against the glyphs the stylesheet actually defines.
 
-   IT DOES NOT FAIL THE BUILD, and that is a deliberate, temporary choice:
-   the repo inherited 40-odd of these, the subsetter named in the generated
-   header (scripts/subset-icons.py) is not in the tree, and failing on debt
-   nobody can currently fix would just get the check deleted. It prints the
-   list, loudly, every build. When the subsetter is restored — or the list
-   reaches zero — flip EXIT_ON_MISSING and it becomes a real gate.
+   IT FAILS THE BUILD. It did not always: the repo inherited 37 of these and
+   the subsetter named in the generated header was missing, so failing on debt
+   nobody could fix would just have got the check deleted. scripts/subset-icons.py
+   is now in the tree and the list is at zero, so this is a real gate again.
+   Add a ph-* class, run `python3 scripts/subset-icons.py`, commit the
+   regenerated icons/.
+
+   `--list` prints the referenced glyph names, one per line, and exits 0. That
+   is how subset-icons.py decides what to keep: the gate and the generator read
+   "what is used" from exactly one implementation.
 
    Run: node scripts/check-icons.mjs */
 import { readFileSync, readdirSync } from "node:fs";
@@ -27,7 +31,12 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const EXIT_ON_MISSING = false;
+const EXIT_ON_MISSING = true;
+const LIST_ONLY = process.argv.includes("--list");
+
+/* Weight modifiers, not glyphs — `.ph-fill` selects the filled face the same
+   way `.ph` selects the regular one. */
+const WEIGHTS = new Set(["ph-fill", "ph-bold", "ph-thin", "ph-light", "ph-duotone"]);
 
 const css = readFileSync(join(ROOT, "icons/phosphor.css"), "utf8");
 /* The rules are `.ph.ph-name:before` / `.ph-fill.ph-name:before`; the name we
@@ -44,18 +53,31 @@ const walk = (dir) => {
   return out;
 };
 
+/* This file documents the `.ph.ph-name` selector shape in its own header and
+   prints glyph names in its own error text, so scanning itself reports
+   placeholders as missing icons. */
+const SELF = "check-icons.mjs";
+
 const used = new Map();
 for (const file of walk(".")) {
+  if (file.endsWith(SELF)) continue;
   const src = readFileSync(join(ROOT, file), "utf8");
-  /* Only inside a class attribute or a className string — prose that happens
-     to mention a glyph name is not a reference. */
-  for (const m of src.matchAll(/\bph-[a-z0-9-]+/g)) {
+  /* The lookbehind is the whole trick: `ns-ph--sm` is a SIZE MODIFIER on the
+     .ns-ph placeholder, not an icon called `ph--sm`. Requiring that nothing
+     word-ish or hyphen-ish precedes `ph-` keeps the report to real glyph
+     names — every genuine reference is either its own class (`class="ph
+     ph-x"`) or its own string (`icon: "ph-x"`), so it always starts clean. */
+  for (const m of src.matchAll(/(?<![\w-])ph-[a-z0-9-]+/g)) {
     const name = m[0];
-    /* .ph-fill is the weight modifier, not a glyph. */
-    if (name === "ph-fill") continue;
+    if (WEIGHTS.has(name)) continue;
     if (!used.has(name)) used.set(name, new Set());
     used.get(name).add(file);
   }
+}
+
+if (LIST_ONLY) {
+  console.log([...used.keys()].sort().join("\n"));
+  process.exit(0);
 }
 
 const missing = [...used].filter(([name]) => !defined.has(name)).sort();
@@ -71,7 +93,7 @@ for (const [name, files] of missing) {
   const where = [...files].map((f) => f.split(/[\\/]/).pop()).sort();
   console.error(`  ${name.padEnd(28)} ${where.slice(0, 4).join(", ")}${where.length > 4 ? ` +${where.length - 4}` : ""}`);
 }
-console.error("\n  Fix by using a glyph the subset carries, or by regenerating the subset");
-console.error("  (scripts/subset-icons.py, per the header in icons/phosphor.css — not currently in this tree).\n");
+console.error("\n  Fix by regenerating the subset — `python3 scripts/subset-icons.py` — or,");
+console.error("  if the name is a typo, by using a glyph Phosphor actually carries.\n");
 
 process.exit(EXIT_ON_MISSING ? 1 : 0);

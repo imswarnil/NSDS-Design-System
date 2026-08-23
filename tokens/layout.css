@@ -13,11 +13,34 @@
   --breakpoint-xl: 80rem;  /* 1280px — desktop */
   --breakpoint-2xl: 96rem; /* 1536px — wide desktop */
 
-  /* Content widths. --container-prose is the reading measure: ~68 characters
-     of Inter at --size-body, which is where lesson and blog copy stays
-     comfortable. Never widen a paragraph past it just because the viewport
-     allows it. */
+  /* Content widths. --container-prose is the layout twin of --measure-prose:
+     672px set in Switzer at --size-prose (17px) is 68.6ch, which is what
+     tokens/typography.css declares the measure to be. Measured, not guessed —
+     Switzer's "0" advances 0.576em, and 672 / (0.576 x 17) = 68.6.
+
+     This pairing only became true at the type fork. When reading copy was
+     --size-body (14px) the same 42rem ran to 83ch, and the comment here still
+     claimed 68 characters of INTER, a face this system no longer ships. Both
+     halves were stale; the number survived by luck when the size moved.
+
+     One caveat worth carrying, because ch is a proxy and not the thing itself:
+     68ch of Switzer is ~88 REAL characters of running English, since the
+     average lowercase letter advances 0.45em against the digit's 0.576em.
+     That is at the loose end of the 45-90 a single column can hold. If
+     articles ever read too wide, this is the token — and 40rem (~84
+     characters) is the next step down, not a nudge to --measure-prose. Never
+     widen a paragraph past this just because the viewport allows it. */
   --container-prose: 42rem;  /*  672px — lesson/blog body copy */
+  /* READ THE NUMBERS, NOT THE NAMES. The ramp is
+       prose 42 < narrow 56 < page 72 < wide 88 (rem)
+     so --container-prose is the NARROWEST of the four despite --narrow
+     existing, because prose is named for its job and the other three are
+     named for their width. The names are not renamed because both products
+     write them on every template and .ns-page--narrow is public API; this
+     comment is the fix. If you want the reading measure, you want
+     --container-prose. --narrow is the FORM width: wide enough for a
+     two-column field row, narrow enough that a settings page does not
+     stretch a label away from its input. */
   --container-narrow: 56rem; /*  896px — forms, auth, settings */
   --container-page: 72rem;   /* 1152px — the standard page shell */
   --container-wide: 88rem;   /* 1408px — catalog grids, dashboards */

@@ -1,4 +1,8 @@
-<!-- @dsCard group="Content Creation" viewport="700x600" name="Instagram Story / Reel — Dark + Light" subtitle="1080×1920 · blueprint pattern, safe zone marked" -->
+<!-- @dsCard group="Content Creation" viewport="700x650" name="Instagram Story / Reel — Dark + Light" subtitle="1080×1920 · blueprint pattern, safe zone marked" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 <style>body{margin:0;padding:16px;background:var(--color-surface);display:flex;gap:14px}
 .wrap{flex:1}
@@ -15,8 +19,8 @@
 .light .kick{color:var(--color-brand-600)}
 .title{position:absolute;left:9%;right:9%;top:24%;font-family:var(--font-heading);font-weight:800;font-size:30px;line-height:1.14;letter-spacing:-.01em}
 .cta{position:absolute;left:9%;bottom:9%;font-family:var(--font-mono);font-weight:700;font-size:12px;background:var(--color-brand-500);color:#fff;padding:8px 14px;border-radius:2px;display:flex;align-items:center;gap:6px;width:fit-content}
-.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+.label{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
 </style></head><body>
-<div class="wrap"><div class="label">Dark — blueprint pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="background-image:linear-gradient(to right,rgb(255 255 255/.09) 1px,transparent 1px);background-size:14px 100%;-webkit-mask-image:linear-gradient(to bottom,#000,transparent)"></div><div class="safe"></div><div class="kick"><i class="ph ph-flow-arrow"></i>New lesson</div><div class="title">Record-Triggered<br/>Flows, in 60 seconds</div><div class="cta"><i class="ph ph-arrow-up-right"></i>SWIPE UP</div></div></div>
-<div class="wrap"><div class="label">Light — blueprint pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="background-image:linear-gradient(to right,rgb(0 0 30/.07) 1px,transparent 1px);background-size:14px 100%;-webkit-mask-image:linear-gradient(to bottom,#000,transparent)"></div><div class="safe"></div><div class="kick"><i class="ph ph-flow-arrow"></i>New lesson</div><div class="title">Record-Triggered<br/>Flows, in 60 seconds</div><div class="cta"><i class="ph ph-arrow-up-right"></i>SWIPE UP</div></div></div>
+<div class="wrap"><div class="label">Dark — blueprint pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="--ns-gridlines-cell:14px;background-image:var(--ns-gridlines-image-cols);background-size:var(--ns-gridlines-cell) 100%;-webkit-mask-image:linear-gradient(to bottom,#000,transparent)"></div><div class="safe"></div><div class="kick"><i class="ph ph-flow-arrow"></i>New lesson</div><div class="title">Record-Triggered<br/>Flows, in 60 seconds</div><div class="cta"><i class="ph ph-arrow-up-right"></i>SWIPE UP</div></div></div>
+<div class="wrap"><div class="label">Light — blueprint pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="--ns-gridlines-ink:var(--ns-gridlines-ink-light);--ns-gridlines-cell:14px;background-image:var(--ns-gridlines-image-cols);background-size:var(--ns-gridlines-cell) 100%;-webkit-mask-image:linear-gradient(to bottom,#000,transparent)"></div><div class="safe"></div><div class="kick"><i class="ph ph-flow-arrow"></i>New lesson</div><div class="title">Record-Triggered<br/>Flows, in 60 seconds</div><div class="cta"><i class="ph ph-arrow-up-right"></i>SWIPE UP</div></div></div>
 </body></html>

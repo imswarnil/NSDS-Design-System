@@ -117,6 +117,37 @@
   .ns-anim-stagger > :nth-child(5) { animation-delay: 160ms; }
   .ns-anim-stagger > :nth-child(n+6) { animation-delay: 200ms; }
 
+  /* --- Loops --------------------------------------------------------------
+     Not entrances: these run forever, which is why they are held to two and
+     why both are for DECORATION. Nothing that carries meaning may loop —
+     a reader cannot re-read a moving sentence, and a control that never
+     settles never looks ready. Both stop dead under prefers-reduced-motion
+     via the global guard in tokens/effects.css.
+
+     They live here, with the entrances, because a keyframe name is global and
+     unlayered. Keeping every one of them in one file with one prefix is the
+     only thing standing between this system and a silent collision with a
+     consuming app's own `float` or `marquee`. */
+
+  /* Illustration float. 8px, six seconds — slow enough to read as breathing
+     rather than as a thing trying to get your attention. Illustrations and
+     empty-state art only, never a control or a card. */
+  @keyframes ns-float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -8px; }
+  }
+
+  /* The marquee track. Named for the mechanism (scroll) rather than the
+     component, because .ns-marquee is a class and a keyframe sharing a name
+     with a class reads like a relationship the CSS does not actually have.
+     The -50% is load-bearing: .ns-marquee__track ships its content twice, so
+     translating exactly half a track lands on an identical frame and the loop
+     has no seam. */
+  @keyframes ns-marquee-scroll {
+    from { translate: 0 0; }
+    to { translate: -50% 0; }
+  }
+
   /* --- Scroll-triggered ---------------------------------------------------
      --onview runs the animation as the block scrolls into view rather than on
      load. Native scroll-driven animations: no observer, no JS, no layout

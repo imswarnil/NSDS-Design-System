@@ -750,7 +750,7 @@
      --roomy is for the syllabus on a marketing page, where the row is the
      content rather than the navigation. */
   .ns-lesson--compact { padding-block: var(--space-1-5); min-block-size: 0; font-size: var(--size-fine); }
-  .ns-lesson--roomy { padding-block: var(--space-3-5, var(--space-4)); }
+  .ns-lesson--roomy { padding-block: var(--space-3-5); }
   .ns-lesson__time {
     font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-muted); font-variant-numeric: tabular-nums;

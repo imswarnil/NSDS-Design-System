@@ -303,7 +303,7 @@ const twLines = [
      matters — scanned versus read — and a utility that silently gave an
      article the app's size would defeat the point of forking them. */
   `  --text-prose: ${lit("--size-prose")};`,
-  `  --text-prose--line-height: ${lit("--ns-leading-body")};`,
+  `  --text-prose--line-height: ${lit("--ns-leading-prose")};`,
   `  --text-prose-lead: ${lit("--size-prose-lead")};`,
   `  --text-prose-lead--line-height: ${lit("--ns-leading-heading")};`,
   `  --text-prose-small: ${lit("--size-prose-small")};`,
@@ -337,9 +337,11 @@ const twLines = [
   `  --text-data: ${lit("--size-label")};`,
   "  --text-data--line-height: 1.4;",
   "",
-  /* 450 (Book) is the READING weight — see fonts/README.md for why 400 is
-     not. It was unreachable as a utility, which meant any component built in
-     Tailwind silently rendered body copy a half-step light. */
+  /* 400 is the READING weight — Switzer's Regular is properly fitted and does
+     not render grey, which is why the 450 ("Book") step the previous cut
+     needed did not survive the font migration. See fonts/README.md § "Why
+     body copy is 400". Bridged because it was unreachable as a utility, which
+     meant any component built in Tailwind fell back to Preflight's own value. */
   `  --font-weight-body: ${lit("--weight-body")};`,
   `  --font-weight-body-strong: ${lit("--weight-body-strong")};`,
   `  --font-weight-label: ${lit("--weight-label")};`,
@@ -349,7 +351,9 @@ const twLines = [
   `  --font-weight-heading: ${lit("--weight-heading")};`,
   `  --leading-tight: ${lit("--ns-leading-tight")};`,
   `  --leading-heading: ${lit("--ns-leading-heading")};`,
+  `  --leading-snug: ${lit("--ns-leading-snug")};`,
   `  --leading-body: ${lit("--ns-leading-body")};`,
+  `  --leading-prose: ${lit("--ns-leading-prose")};`,
   `  --leading-mega: ${lit("--ns-leading-mega")};`,
   /* The whole tracking scale. Only --label was bridged, so every other
      tracked run in the styleguide was an arbitrary value — tracking-[.06em],
@@ -389,7 +393,12 @@ const twLines = [
   "  /* One curve only. ease-in / ease-in-out are intentionally absent —",
   "     Principle 5 allows no springy or decelerating alternative. */",
   `  --ease-out: ${lit("--ns-ease-out")};`,
-  "  --animate-fade-up: fade-up var(--duration-base) var(--ease-out) both;",
+  /* Both name keyframes defined in components/css/motion.css, not in tokens/ —
+     a keyframe is not a value, and an unprefixed one is a global name a
+     consuming app can collide with. `animate-fade-up` keeps its utility name
+     (renaming it would break consumers) but now resolves to the canonical
+     ns-anim-rise, which is the same gesture .ns-anim--rise applies. */
+  "  --animate-fade-up: ns-anim-rise var(--duration-base) var(--ease-out) both;",
   "  --animate-float: ns-float 6s var(--ease-out) infinite;",
   "}",
   "",

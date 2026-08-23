@@ -90,7 +90,7 @@
   .ns-breadcrumb__item { display: flex; align-items: center; gap: var(--space-2); }
   .ns-breadcrumb__item + .ns-breadcrumb__item::before {
     content: "/"; color: var(--color-border);
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
   }
   .ns-breadcrumb__link {
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -109,7 +109,7 @@
     min-inline-size: var(--target-comfy); min-block-size: var(--target-comfy);
     padding-inline: var(--space-2);
     border: 1px solid transparent; border-radius: var(--radius-btn);
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     color: var(--color-muted); text-decoration: none;
     transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
   }

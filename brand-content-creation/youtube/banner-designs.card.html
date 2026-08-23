@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x2480" name="YouTube Banner — Namaste Salesforce" subtitle="Three banners, each with the phone crop underneath it — dark, light, and a course launch" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -21,8 +25,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 .l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
    --dim:var(--color-muted);--accent:var(--color-brand-500);--grid:rgb(0 26 62/.06)}
 .pat{position:absolute;inset:0;
-  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
-  background-size:22px 22px}
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:22px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500);z-index:4}
 /* The guide only shows on the full canvas, never in the crop — the crop IS
    the safe area, so an outline on it would be drawing the frame twice. */

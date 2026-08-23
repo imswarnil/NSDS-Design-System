@@ -1,21 +1,21 @@
-<!-- @dsCard group="Foundations" viewport="700x440" name="Interaction States" subtitle="Rest, hover, focus, active, disabled, invalid, loading — specified once, for every control" -->
+<!-- @dsCard group="Foundations" viewport="700x555" name="Interaction States" subtitle="Rest, hover, focus, active, disabled, invalid, loading — specified once, for every control" -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 </head><body class="m-0 p-5 bg-surface text-ink font-sans text-small">
 
 <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Button</p>
 <div class="grid grid-cols-4 gap-3.5 mb-[22px]">
-  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary">Rest</button><span class="font-mono text-[10px] tracking-wide uppercase text-muted">rest</span></div>
-  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary" style="background:var(--color-brand-600);border-color:var(--color-brand-600)">Hover</button><span class="font-mono text-[10px] tracking-wide uppercase text-muted">hover &middot; darken</span></div>
-  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary" style="outline:2px solid var(--color-brand-500);outline-offset:2px">Focus</button><span class="font-mono text-[10px] tracking-wide uppercase text-muted">focus-visible</span></div>
-  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary" disabled>Disabled</button><span class="font-mono text-[10px] tracking-wide uppercase text-muted">disabled &middot; 45%</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary">Rest</button><span class="font-mono text-data tracking-wide uppercase text-muted">rest</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary" style="background:var(--color-brand-600);border-color:var(--color-brand-600)">Hover</button><span class="font-mono text-data tracking-wide uppercase text-muted">hover &middot; darken</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary" style="outline:2px solid var(--color-brand-500);outline-offset:2px">Focus</button><span class="font-mono text-data tracking-wide uppercase text-muted">focus-visible</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><button class="ns-btn ns-btn--primary" disabled>Disabled</button><span class="font-mono text-data tracking-wide uppercase text-muted">disabled &middot; 45%</span></div>
 </div>
 
 <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Input</p>
 <div class="grid grid-cols-4 gap-3.5 mb-[22px]">
-  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Rest"><span class="font-mono text-[10px] tracking-wide uppercase text-muted">rest</span></div>
-  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Focus" style="border-color:var(--color-brand-500);box-shadow:var(--shadow-focus)"><span class="font-mono text-[10px] tracking-wide uppercase text-muted">focus-visible</span></div>
-  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Invalid" aria-invalid="true"><span class="font-mono text-[10px] tracking-wide uppercase text-muted">aria-invalid</span></div>
-  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Disabled" disabled><span class="font-mono text-[10px] tracking-wide uppercase text-muted">disabled</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Rest"><span class="font-mono text-data tracking-wide uppercase text-muted">rest</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Focus" style="border-color:var(--color-brand-500);box-shadow:var(--shadow-focus)"><span class="font-mono text-data tracking-wide uppercase text-muted">focus-visible</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Invalid" aria-invalid="true"><span class="font-mono text-data tracking-wide uppercase text-muted">aria-invalid</span></div>
+  <div class="flex flex-col gap-[7px] items-start"><input class="ns-input" value="Disabled" disabled><span class="font-mono text-data tracking-wide uppercase text-muted">disabled</span></div>
 </div>
 
 <p class="font-mono text-label uppercase text-label-ink m-0 mb-2">Status &mdash; a dot and a word, never a background wash</p>
@@ -33,12 +33,12 @@
     <div class="ns-skeleton ns-skeleton--title" style="margin-bottom:10px"></div>
     <div class="ns-skeleton ns-skeleton--text"></div>
     <div class="ns-skeleton ns-skeleton--text" style="width:70%"></div>
-    <span class="font-mono text-[10px] tracking-wide uppercase text-muted" style="display:block;margin-top:8px">skeleton &middot; &gt;1s waits</span>
+    <span class="font-mono text-data tracking-wide uppercase text-muted" style="display:block;margin-top:8px">skeleton &middot; &gt;1s waits</span>
   </div>
   <div class="ns-empty" style="padding:18px 12px">
-    <i class="ph ph-folder-open ns-empty__icon" style="font-size:22px" aria-hidden="true"></i>
-    <p class="ns-empty__title" style="font-size:14px">No courses yet</p>
-    <p class="ns-empty__text" style="font-size:11px">What is missing, why, and one thing to do &mdash; all three are required.</p>
+    <i class="ph ph-folder-open ns-empty__icon" style="font-size:var(--size-h3)" aria-hidden="true"></i>
+    <p class="ns-empty__title" style="font-size:var(--size-body)">No courses yet</p>
+    <p class="ns-empty__text" style="font-size:var(--size-fine)">What is missing, why, and one thing to do &mdash; all three are required.</p>
   </div>
 </div>
 

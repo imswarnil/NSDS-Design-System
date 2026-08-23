@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x1155" name="Live Stream — Overlay Kit" subtitle="Every graphic allowed on a live frame, with its position, size and how long it stays" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -6,8 +10,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 .item{display:flex;flex-direction:column;gap:6px}
 .tile{position:relative;background:var(--color-brand-900);padding:14px;display:flex;align-items:center;justify-content:center;min-height:74px;overflow:hidden}
 .tile::before{content:"";position:absolute;inset:0;opacity:.5;
-  background-image:linear-gradient(to right,rgb(255 255 255/.06) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.06) 1px,transparent 1px);
-  background-size:16px 16px}
+  --ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .tile>*{position:relative}
 .meta{display:flex;gap:8px;align-items:flex-start}
 .meta code{font-family:var(--font-mono);font-size:9px;color:var(--color-brand-500);flex:none;padding-top:1px}

@@ -57,7 +57,7 @@
   /* Two lines of excerpt, clamped. An index whose cards are different heights
      because one post has a longer summary is an index that reads as broken. */
   .ns-bcard__excerpt {
-    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body);
+    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-snug);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
 
@@ -265,7 +265,12 @@
     border-inline-start: 3px solid var(--color-brand-500);
     border-radius: 0 var(--radius-card) var(--radius-card) 0;
     background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
-    font-size: var(--size-small); line-height: var(--leading-body);
+    /* --size-prose-small, not --size-small: a callout sits INSIDE the article
+       it interrupts. At 13 against a 17 paragraph it drops two full steps and
+       reads as a footnote the eye skips — which is the opposite of what an
+       aside marked "warning" is for. 15 is the step that exists for content
+       inside prose; it is quieter than the paragraph without ducking under it. */
+    font-size: var(--size-prose-small); line-height: var(--leading-body);
   }
   .ns-callout > i { color: var(--color-brand-500); font-size: var(--size-body-lg); }
   .ns-callout__label {
@@ -327,7 +332,8 @@
     font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
   }
-  .ns-authorbox__bio { margin-block-start: var(--space-2); font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-prose); }
+  /* Also a reading block, and it says so by carrying --measure-prose. */
+  .ns-authorbox__bio { margin-block-start: var(--space-2); font-size: var(--size-prose-small); color: var(--color-muted); max-inline-size: var(--measure-prose); }
   .ns-authorbox__links { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-3); }
   .ns-authorbox--stack { grid-template-columns: minmax(0, 1fr); }
   .ns-authorboxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: var(--space-4); }
@@ -471,9 +477,15 @@
     color: var(--color-brand-600); font-weight: var(--weight-label);
   }
   [data-theme="dark"] .ns-comment__badge { color: var(--color-brand-300); }
+  /* A comment is READ, not scanned — it is prose by another author under an
+     article, capped at the same --measure-prose. Setting it at the UI size
+     while the post above runs at 17 said the reader's writing mattered less
+     than the author's, in the one place a design system can say that. */
   .ns-comment__text {
     margin-block-start: var(--space-2);
-    font-size: var(--size-small); line-height: var(--leading-body);
+    /* The reading leading, not the UI's — a comment runs at the full
+       --measure-prose, and leading follows the measure. */
+    font-size: var(--size-prose-small); line-height: var(--leading-prose);
     color: var(--color-ink); max-inline-size: var(--measure-prose); text-wrap: pretty;
   }
   .ns-comment__text > * + * { margin-block-start: var(--space-3); }
@@ -593,7 +605,7 @@
     font-variant-numeric: tabular-nums;
   }
   .ns-tagcard__desc {
-    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body);
+    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-snug);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   /* A row of tags as filters — on the index, in a post footer, under a tag

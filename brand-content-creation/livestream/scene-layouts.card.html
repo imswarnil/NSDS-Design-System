@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x1165" name="Live Stream — The Eight Scenes" subtitle="The full scene list a teaching stream is allowed to use, and when each one is on screen" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -7,8 +11,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 .f{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:var(--color-brand-900);color:#fff}
 .bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500);z-index:6}
 .pat{position:absolute;inset:0;opacity:.55;
-  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
-  background-size:18px 18px}
+  --ns-gridlines-cell:18px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 /* --- shared furniture, identical in every scene ------------------------- */
 .kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:7px;letter-spacing:.1em;color:var(--color-brand-300);text-transform:uppercase}
 .live{position:absolute;inset-inline-end:5%;top:7%;display:flex;align-items:center;gap:3px;font-family:var(--font-mono);font-size:6.5px;font-weight:700;letter-spacing:.08em;background:var(--color-error);color:#fff;padding:2px 5px}

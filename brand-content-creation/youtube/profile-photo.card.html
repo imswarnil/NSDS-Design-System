@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x885" name="YouTube Profile Photo" subtitle="800×800 square, shown as a circle — and it has to survive being 24px in a comment" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -9,8 +13,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 /* The 800×800 source, with the circle YouTube crops out of it. */
 .src{position:relative;width:150px;height:150px;flex:none;background:var(--color-brand-900);overflow:hidden}
 .src .pat{position:absolute;inset:0;opacity:.5;
-  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
-  background-size:18px 18px}
+  --ns-gridlines-cell:18px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .src .ring{position:absolute;inset:0;border-radius:50%;border:1px dashed var(--color-brand-400);z-index:3}
 /* Inside the circle, a further margin: the mark never touches the crop edge. */
 .src .clear{position:absolute;inset:18%;border-radius:50%;border:1px dashed rgb(255 255 255/.28);z-index:3}

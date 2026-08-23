@@ -74,7 +74,7 @@
   .ns-topnav {
     position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
     display: flex; align-items: center; gap: var(--space-4);
-    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-4);
+    block-size: var(--navbar-h); padding-inline: var(--space-4);
     background: var(--color-surface); border-block-end: 1px solid var(--color-border);
   }
   /* The optional width-capping wrapper. Same flex row, centred, so a bar on a
@@ -117,7 +117,7 @@
   .ns-topnav__links { flex: none; display: flex; align-items: center; gap: var(--space-0-5); margin: 0; padding: 0; list-style: none; }
   .ns-topnav__links > li > a, .ns-topnav__link, .ns-topnav__trigger {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    block-size: var(--navbar-h, 3.5rem);
+    block-size: var(--navbar-h);
     padding-inline: var(--space-2-5);
     border: 0; background: transparent; cursor: pointer;
     font-family: var(--font-sans); font-size: var(--size-small); color: var(--color-muted);
@@ -875,7 +875,7 @@
     inline-size: 100vw; max-inline-size: 100vw;
     block-size: 100dvh; max-block-size: 100dvh;
     background: var(--color-surface); color: var(--color-ink);
-    animation: ns-fade-in var(--duration-fast) var(--ease-out);
+    animation: ns-anim-fade var(--duration-fast) var(--ease-out);
   }
   /* The display switch is on [open], NOT on the base rule. An author
      `display: flex` beats the UA's `dialog:not([open]) { display: none }`
@@ -885,7 +885,7 @@
   .ns-navsheet::backdrop { background: var(--color-scrim); }
   .ns-navsheet__head {
     flex: none; display: flex; align-items: center; gap: var(--space-3);
-    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-6);
+    block-size: var(--navbar-h); padding-inline: var(--space-6);
     border-block-end: 1px solid var(--color-border);
   }
   .ns-navsheet__close { margin-inline-start: auto; }

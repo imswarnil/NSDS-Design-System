@@ -39,10 +39,24 @@
   --ease-out: var(--ns-ease-out); /* @kind cubicBezier */
   --duration-fast: 120ms; /* @kind other */
   --duration-base: 180ms; /* @kind other */
-  /* Two longer steps, and they exist for ONE job each: a typographic effect
-     that draws itself (a highlighter sweep, a circle, a rule) has to be slow
-     enough to read as a gesture. Nothing interactive may use these — a
-     control that takes 700ms to respond is a broken control. */
+  /* Two longer steps, and the line they draw is GESTURE versus RESPONSE, not
+     hover versus not-hover.
+
+     A gesture is watched: a highlighter sweep, a circle drawing itself, a
+     rule extending, a poster easing into a slow zoom. Nothing is waiting on
+     it, and rushing it destroys the only thing it was for — at 180ms a zoom
+     is a pop, which Principle 5 forbids outright.
+
+     A response is awaited: a menu opening, a button dimming, a panel sliding,
+     a value changing. Those take --duration-fast or --duration-base, always.
+     A control that takes 700ms to answer is a broken control, and no amount
+     of it being "decorative" changes that the reader is now waiting.
+
+     So: --duration-slow / --duration-draw are legal on a hover-triggered
+     DECORATION of a non-interactive surface (see .ns-video--zoom in
+     components/css/media.css, the one such call site). They are never legal on
+     anything that reports state. If you are unsure which one you have, ask
+     whether a reader would notice it missing or notice it being slow. */
   --duration-slow: 420ms;   /* @kind other */
   --duration-draw: 700ms;   /* @kind other */
   /* The draw eases differently from the UI: a marker stroke starts fast and
@@ -51,18 +65,22 @@
   --ease-draw: var(--ns-ease-draw); /* @kind cubicBezier */
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes ns-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+/* THREE @keyframes USED TO LIVE HERE, and they were the only declarations in
+   this file that were not custom properties. Two of them — `fade-up` and
+   `marquee` — carried no ns- prefix, and a keyframe name is GLOBAL and
+   unlayered: a consuming app with its own `fade-up` silently won or lost
+   depending on source order, with no cascade rule to appeal to. `fade-up` was
+   additionally a byte-for-byte duplicate of a properly-namespaced keyframe in
+   the component layer.
+
+   All three now live in components/css/motion.css, which is the file that
+   already owns page motion. A token file carries vocabulary — values a
+   component reaches for — and an animation is not a value. tokens/base.css
+   makes the same argument for keeping `color-scheme` out of tokens/colors.css.
+
+   Consequence worth knowing: the Tailwind bridge's `animate-*` utilities name
+   those keyframes, so they need the component layer loaded. Every consumer
+   imports styles.css, which loads it. */
 /* In @layer base, not unlayered. The !important is what makes this work and it
    keeps working from here: an important declaration beats a normal one from any
    layer, so this still overrides a Tailwind `transition-duration` utility. Being

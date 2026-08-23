@@ -8,13 +8,20 @@
    Shared grammar:
      - every band opens with the code-comment kicker + a balanced heading;
      - the container is --container-page, gutters from --gutter;
-     - vertical rhythm is --space-16/--space-20 (spacing-section scale);
+     - vertical rhythm comes from the SEMANTIC scale, not from raw --space-N:
+       a band's padding-block is --stack-lg, which tokens/spacing.css defines
+       as the step "between page sections" — because that is exactly what a
+       band's padding is doing. Two variants sit deliberately off it and say
+       so at the call site;
      - dark bands use the navy console surface + the hairline grid motif,
        never a gradient. */
 @layer ns-components {
 
   /* --- Band + head --------------------------------------------------------- */
-  .ns-band { padding-block: var(--space-16); }
+  .ns-band { padding-block: var(--stack-lg); }
+  /* Off the stack scale on purpose: --stack-md (32px) is subsection spacing
+     and reads as a row rather than a band, --stack-lg is what this variant
+     exists to be tighter than. 40px is the one step between them. */
   .ns-band--tight { padding-block: var(--space-10); }
   .ns-band__inner { max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
   .ns-band--sunken { background: var(--color-surface-sunken); border-block: 1px solid var(--color-border); }
@@ -43,6 +50,195 @@
   .ns-band__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
   .ns-band__lede { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
+
+  /* --- Assembly: the components rendering the product ---------------------
+     The hero illustration, told in two acts on one loop, inside a browser
+     window:
+
+       ACT 1  six component FILES — nav.cmp, hero.cmp, button.cmp, image.cmp,
+              card.cmp, chart.cmp — each sitting in THE SLOT IT WILL RENDER
+              INTO. nav.cmp is where the navbar goes, card.cmp is where the
+              cards go. Nothing is scattered decoratively.
+       ACT 2  each file cross-fades into the thing it renders, in place. The
+              page assembles where you were already looking.
+
+     That placement is the whole point. A version where the files drift in
+     from the corners says "components exist"; this one says "THIS component
+     becomes THAT part of the page", which is the actual claim.
+
+     The window is deliberately LIGHT on the navy band — it is a picture of a
+     website, and websites in this system are white. --color-on-dark is a
+     fixed #fff in both themes (see tokens/colors.css), so the window stays a
+     white website in dark mode instead of quietly becoming a navy one.
+
+     Both acts share ONE timeline, so a file and its rendering can never be on
+     screen together. Each keyframe's 0% is its RESTING state, so under
+     prefers-reduced-motion the global guard leaves the rendered page with its
+     labels at rest on top — a legible still, not a blank stage. */
+  .ns-assembly {
+    position: relative; aspect-ratio: 4 / 3; inline-size: 100%;
+    display: grid; place-items: center;
+    --ns-gridlines-cell: 8%;
+    background-image: var(--ns-gridlines-image);
+    background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+    mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, var(--color-ink) 62%, transparent 100%); /* lint-ok: mask alpha ramp, any opaque colour works; ink keeps it token-fed */
+  }
+
+  /* --- The window --------------------------------------------------------- */
+  .ns-assembly__window {
+    inline-size: 100%; block-size: 92%;
+    display: grid; grid-template-rows: auto 1fr;
+    border-radius: var(--radius-card); overflow: hidden;
+    background: var(--color-on-dark);
+    box-shadow: var(--shadow-raised);
+  }
+  /* The chrome: three dots and an address pill. It is what makes the thing
+     below read as a WEBSITE rather than as a card — one row, and the whole
+     picture is unambiguous. */
+  .ns-assembly__chrome {
+    display: flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1-5) var(--space-2-5);
+    background: var(--color-surface-sunken);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-assembly__dot { inline-size: 6px; block-size: 6px; flex: none; border-radius: var(--radius-pill); background: var(--color-border); }
+  .ns-assembly__url {
+    flex: 1; margin-inline-start: var(--space-1-5);
+    padding: 2px var(--space-2); /* lint-ok: 2px of chrome padding on a miniature address bar; the scale starts at 2px only as --space-0-5, which is 2px */
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); text-align: center;
+  }
+
+  /* --- The page inside it -------------------------------------------------
+     A real grid, so every slot has a real place — which is what lets the
+     labels sit exactly where their component renders. */
+  .ns-assembly__page {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: var(--space-2-5);
+    background: var(--color-on-dark);
+  }
+  .ns-assembly__slot { position: relative; min-inline-size: 0; }
+  .ns-assembly__slot--nav    { grid-column: 1 / -1; grid-row: 1; }
+  .ns-assembly__slot--hero   { grid-column: 1 / 3;  grid-row: 2; }
+  .ns-assembly__slot--image  { grid-column: 3;      grid-row: 2 / 4; }
+  .ns-assembly__slot--button { grid-column: 1 / 3;  grid-row: 3; }
+  .ns-assembly__slot--card   { grid-column: 1 / 3;  grid-row: 4; }
+  .ns-assembly__slot--chart  { grid-column: 3;      grid-row: 4; }
+
+  /* The label sits centred in its own slot and fades out as the render
+     fades in — same slot, same instant, so the swap reads as one thing
+     becoming another rather than two things trading places. */
+  .ns-assembly__cmp {
+    position: absolute; inset: 0; z-index: var(--z-raised);
+    display: flex; align-items: center; justify-content: center; gap: var(--space-1-5);
+    border: 1px dashed var(--color-brand-500); border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--color-on-dark));
+    color: var(--color-brand-600);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); white-space: nowrap;
+    animation: ns-asm-collect 11s var(--ease-out) infinite; /* lint-ok: an illustration loop is a duration in seconds, not a UI response */
+    animation-delay: var(--_d, 0ms);
+  }
+  .ns-assembly__cmp i { font-size: var(--size-small); }
+  .ns-assembly__slot--nav    .ns-assembly__cmp { --_d: 0ms; }
+  .ns-assembly__slot--hero   .ns-assembly__cmp { --_d: 110ms; }
+  .ns-assembly__slot--button .ns-assembly__cmp { --_d: 220ms; }
+  .ns-assembly__slot--image  .ns-assembly__cmp { --_d: 330ms; }
+  .ns-assembly__slot--card   .ns-assembly__cmp { --_d: 440ms; }
+  .ns-assembly__slot--chart  .ns-assembly__cmp { --_d: 550ms; }
+
+  /* What renders, on the light page. */
+  .ns-assembly__render {
+    block-size: 100%;
+    animation: ns-asm-render 11s var(--ease-out) infinite; /* lint-ok: same loop as the labels above */
+  }
+  .ns-assembly__bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-assembly__mark { inline-size: 10px; block-size: 10px; flex: none; border-radius: var(--radius-sm); background: var(--color-brand-500); }
+  .ns-assembly__line { display: block; block-size: 5px; border-radius: var(--radius-pill); background: var(--color-border); flex: 1; }
+  .ns-assembly__line--short { flex: none; inline-size: 22%; }
+  .ns-assembly__line--wide  { inline-size: 82%; block-size: 10px; background: var(--color-ink); flex: none; }
+  .ns-assembly__line--mid   { inline-size: 54%; block-size: 10px; background: var(--color-ink); flex: none; }
+  .ns-assembly__stack { display: grid; gap: var(--space-1-5); align-content: center; }
+  .ns-assembly__actions { display: flex; gap: var(--space-2); align-items: center; }
+  .ns-assembly__chip {
+    display: inline-flex; align-items: center;
+    padding: var(--space-1) var(--space-2-5);
+    border-radius: var(--radius-btn);
+    background: var(--color-brand-500); color: var(--color-on-brand);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .ns-assembly__chip--quiet { background: transparent; color: var(--color-muted); box-shadow: inset 0 0 0 1px var(--color-border); }
+  /* The image slot: the system's own empty-media frame, at miniature scale. */
+  .ns-assembly__media {
+    block-size: 100%; display: grid; place-items: center;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-border); font-size: var(--size-h3);
+  }
+  .ns-assembly__cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+  .ns-assembly__mini-card {
+    display: grid; gap: var(--space-1-5); align-content: start;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  }
+  .ns-assembly__bars {
+    display: flex; align-items: flex-end; gap: 3px; /* lint-ok: a 3px gap between five miniature bars; the spacing scale steps 2px → 4px */
+    block-size: 100%; min-block-size: 1.75rem;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  }
+  .ns-assembly__bars > i { flex: 1; border-radius: 2px 2px 0 0; background: var(--color-brand-500); } /* lint-ok: a 2px cap on a 4px-wide miniature bar; --radius-sm would round it away entirely */
+
+  /* Act 1 rests visible, in place. */
+  @keyframes ns-asm-collect {
+    0%, 22%   { opacity: 1; scale: 1; }
+    38%, 78%  { opacity: 0; scale: 0.94; }
+    94%, 100% { opacity: 1; scale: 1; }
+  }
+  /* Act 2 is the answer to it: absent while the labels are up, held while
+     they are gone. */
+  @keyframes ns-asm-render {
+    0%, 26%   { opacity: 0; }
+    42%, 76%  { opacity: 1; }
+    90%, 100% { opacity: 0; }
+  }
+
+  /* --- The living grid ----------------------------------------------------
+     .ns-band--grid draws the motif; --grid-live drifts it. One cell every
+     twenty seconds, which is slow enough that nobody watching the headline
+     notices it moving and just enough that the band is not a flat image.
+     A hero that animates faster than a reader reads is an advert. */
+  .ns-band--grid-live::before {
+    animation: ns-grid-drift 20s linear infinite; /* lint-ok: a drift is distance-per-second, not a UI timing */
+  }
+  @keyframes ns-grid-drift {
+    from { background-position: 0 0; }
+    to   { background-position: var(--space-8) var(--space-8); }
+  }
+
+  /* --- Flush hero ---------------------------------------------------------
+     A hero that opens a page under a fixed bar should START at the bar, not
+     an inch below it: the gap reads as a rendering mistake, and on a short
+     viewport it costs the fold. --flush drops the top padding to the bar's
+     own breathing room and squares the corners, so the band runs edge to
+     edge. Only ever on the FIRST band of a page. */
+  .ns-hero--flush {
+    padding-block-start: var(--space-12);
+    border-radius: 0;
+    margin-block-start: 0;
+  }
 
   /* --- The actions slot ----------------------------------------------------
      A band does NOT define its own action. It leaves a slot and the page
@@ -100,7 +296,11 @@
      The page opener. Text-first: kicker, display heading, lede, two actions,
      one mono proof line. The dark variant carries the hairline-grid motif
      dissolving under a radial mask — the only decorative background allowed. */
-  .ns-hero { padding-block: var(--space-20) var(--space-16); }
+  /* Asymmetric, and the bottom is the band step: a hero opens a page, so it
+     wants more air above than a band gets, and exactly a band's worth below
+     so the next section lands on the page's rhythm. --space-20 is the one
+     nudge — there is no stack step between lg (64) and xl (96). */
+  .ns-hero { padding-block: var(--space-20) var(--stack-lg); }
   .ns-hero__title { font-size: var(--size-display); line-height: var(--leading-heading); letter-spacing: var(--tracking-tight); text-wrap: balance; max-inline-size: 22ch; }
   .ns-hero__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-4); max-inline-size: var(--container-prose); text-wrap: pretty; }
   .ns-band--dark .ns-hero__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: same on-dark dimming as the lede */ }
@@ -113,6 +313,43 @@
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
   .ns-band--dark .ns-hero__proof { color: var(--color-on-dark-border-hover); }
+
+  /* --- Hero variants -------------------------------------------------------
+     Three heroes and no more, because a hero answers exactly one question —
+     "what is this page and what do I do first" — and the variants differ only
+     in WHERE the eye enters:
+
+       (default)   left-aligned, text-first. The workhorse: the reader is
+                   here on purpose and wants the action, not a ceremony.
+       --center    centred, for a LAUNCH surface — a campaign page, a course
+                   announcement — where the headline is the event and there
+                   is nothing beside it competing for the first glance.
+       --split     body beside a media slot, for the one page where showing
+                   beats telling: the product homepage, where a real
+                   screenshot or illustration is the proof the words claim.
+
+     A fourth hero is a page that has not decided what it is for. */
+  .ns-hero--center .ns-band__inner { display: grid; justify-items: center; text-align: center; }
+  .ns-hero--center .ns-hero__title { max-inline-size: 24ch; }
+  .ns-hero--center .ns-hero__lede { max-inline-size: var(--measure-narrow); }
+  .ns-hero--center .ns-hero__actions { justify-content: center; }
+
+  .ns-hero--split .ns-band__inner {
+    display: grid; align-items: center; gap: var(--space-10);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+  }
+  /* The media slot. Contains whatever the page gives it — a framed
+     screenshot, an SVG, a video poster — and never grows the hero: the words
+     set the height, the picture fits. */
+  .ns-hero__media { min-inline-size: 0; }
+  .ns-hero__media > img, .ns-hero__media > svg, .ns-hero__media > video { inline-size: 100%; block-size: auto; display: block; }
+  @media (max-width: 63.999rem) {
+    /* Words first, picture after, smaller — the art supports the headline,
+       and a panel that pushes the headline off the first screen has
+       inverted that. Same rule as .ns-thero__art. */
+    .ns-hero--split .ns-band__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    .ns-hero--split .ns-hero__media { max-inline-size: 24rem; }
+  }
   /* The dissolving hairline grid, drawn from the grid token. */
   .ns-band--grid::before {
     content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -230,7 +467,7 @@
   .ns-logorow { display: flex; align-items: center; justify-content: center; gap: var(--space-10); flex-wrap: wrap; }
   .ns-logorow > * { color: var(--color-label); transition: color var(--duration-fast) var(--ease-out); }
   .ns-logorow > *:hover { color: var(--color-ink); }
-  .ns-logorow__mark { font-family: var(--font-mono); font-size: var(--size-small); letter-spacing: var(--tracking-label); text-transform: uppercase; }
+  .ns-logorow__mark { font-family: var(--font-mono); font-size: var(--size-mono); letter-spacing: var(--tracking-label); text-transform: uppercase; }
 
   /* --- Footer -------------------------------------------------------------
      Link columns over a mono bottom bar. One hairline on top; column heads

@@ -8,17 +8,24 @@
   [data-theme="dark"] { color-scheme: dark; }
   html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  /* The shorthand cannot carry font-weight AND line-height in the form we
-     want, so weight is its own declaration: 450 (Book) is the reading weight
-     — see tokens/typography.css and fonts/README.md for why 400 is not. */
+  /* The `font:` shorthand cannot carry font-weight alongside the size/leading
+     pair in the form we want, so the weight is its own declaration. It is
+     --weight-body = 400: Switzer's Regular is properly fitted and does not
+     render grey, which is why the 450 ("Book") step the previous
+     Nunito-derived cut needed did not survive the font migration. See
+     fonts/README.md § "Why body copy is 400" and the note beside
+     --weight-body in tokens/typography.css. */
   body { background-color: var(--color-surface); color: var(--color-ink); font: var(--size-body)/var(--leading-body) var(--font-sans); font-weight: var(--weight-body); transition: background-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out); margin: 0; }
   /* Greyscale antialiasing in BOTH modes, which is a reversal.
      The old rule kept subpixel smoothing on in light mode deliberately: it
      adds roughly a quarter-step of apparent weight, and the previous
      Nunito-derived cut needed it because its Regular read thin. Switzer does
-     not — it is a properly fitted grotesque, and at the 14px reading size that
-     borrowed weight is what makes body copy look semi-bold on macOS.
-     The compensation outlived the face it was compensating for. */
+     not — it is a properly fitted grotesque, and at the 14px UI size this
+     rule sets, that borrowed weight is what makes body copy look semi-bold on
+     macOS. (The scale forks: 14 is the UI size, 17 is the reading size. This
+     declaration sets the UI one, which is the smaller and therefore the more
+     exposed of the two.) The compensation outlived the face it compensated
+     for. */
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: var(--weight-heading); margin: 0; text-wrap: balance; line-height: var(--leading-heading); }
   /* Tighten only the sizes where Switzer's metrics run loose. h4+ stays

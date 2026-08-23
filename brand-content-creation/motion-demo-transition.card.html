@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="700x420" name="Motion Demo — Bar-Wipe Transition" subtitle="Live loop: brand-500 bar sweeps full-frame to reveal the next scene" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 <style>body{margin:0;padding:16px;background:var(--color-surface)}
 .card{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;background:var(--color-brand-900)}
@@ -7,7 +11,7 @@
 .s2{background:var(--color-brand-700)}
 .sweep{position:absolute;inset:0;background:var(--color-brand-500);transform:translateX(-100%);animation:sweep 4s infinite}
 @keyframes sweep{0%{transform:translateX(-100%)}22%{transform:translateX(0)}38%{transform:translateX(0)}60%{transform:translateX(100%)}100%{transform:translateX(100%)}}
-.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+.label{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
 </style></head><body>
 <div class="label">Loops every 4s — hard cut, then a full-bleed bar wipes across on-beat</div>
 <div class="card"><div class="scene s1">Lesson 04</div><div class="sweep"></div><div class="scene s2">Bulkification &amp; Limits</div></div>

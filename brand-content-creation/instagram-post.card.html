@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="440x900" name="Instagram Post — Dark + Light" subtitle="1080×1080 · concentric-circle pattern" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
 <style>body{margin:0;padding:16px;background:var(--color-surface);display:flex;flex-direction:column;gap:14px}
 .card{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden}
@@ -14,7 +18,7 @@
 .dark .tag{color:rgb(255 255 255/.6)}
 .light .tag{color:var(--color-muted)}
 .logo{position:absolute;right:26px;bottom:28px;font-family:var(--font-mono);font-weight:700;font-size:12px;color:var(--color-brand-500)}
-.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
+.label{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px}
 </style></head><body>
 <div><div class="label">Dark — concentric pattern</div><div class="card dark"><div class="bar"></div><div class="pat" style="background-image:radial-gradient(circle,transparent 0 8px,rgb(255 255 255/.09) 9px 10px,transparent 11px),radial-gradient(circle,transparent 0 16px,rgb(255 255 255/.06) 17px 18px,transparent 19px);background-position:80% 15%;background-size:90px 90px"></div><div class="kick"><i class="ph ph-lightbulb"></i>Tip of the day</div><div class="title">3 SOQL mistakes killing your governor limits</div><div class="tag">@namastesalesforce</div><div class="logo">NSF</div></div></div>
 <div><div class="label">Light — concentric pattern</div><div class="card light"><div class="bar"></div><div class="pat" style="background-image:radial-gradient(circle,transparent 0 8px,rgb(0 0 30/.08) 9px 10px,transparent 11px),radial-gradient(circle,transparent 0 16px,rgb(0 0 30/.05) 17px 18px,transparent 19px);background-position:80% 15%;background-size:90px 90px"></div><div class="kick"><i class="ph ph-lightbulb"></i>Tip of the day</div><div class="title">3 SOQL mistakes killing your governor limits</div><div class="tag">@namastesalesforce</div><div class="logo">NSF</div></div></div>

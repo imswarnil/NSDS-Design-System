@@ -1,8 +1,12 @@
 <!-- @dsCard group="Content Creation" viewport="760x1200" name="Live Stream — The 16:9 Scene Grid" subtitle="One canvas, one safe area, seven named zones — every scene is built on this" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
-.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.label{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
 .label:first-child{margin-top:0}
 .frame{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
 .dark{background:var(--color-brand-900);color:#fff}

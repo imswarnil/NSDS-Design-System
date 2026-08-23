@@ -221,7 +221,7 @@ ${PROSE}
     <p class="sub">Everything else</p>
     <p class="variant-note">Chart colors live in the <a href="./chart-intro.html">Charts section</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
     ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
-  { id: "type", title: "Typography", lede: "Two self-hosted faces. <strong>Switzer</strong> is the whole interface AND the reading layer \u2014 one grotesque separated by weight and size rather than a display/text pair, and it sets the quotations too; <strong>Roboto Mono</strong> is the data voice, and it is shipped rather than borrowed from the OS because it sets every index, duration, tag and status on every screen. Switzer is an Indian Type Foundry cut from <a href=\"https://www.fontshare.com\">Fontshare</a>, Roboto Mono is under the SIL OFL \u2014 <strong>67&thinsp;KB for the pair</strong>, licences in <code>fonts/</code>. Reading copy is <strong>14&nbsp;px</strong>: this is a product with an app inside it, and the compact scale is after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
+  { id: "type", title: "Typography", lede: "Two self-hosted faces. <strong>Switzer</strong> is the whole interface AND the reading layer \u2014 one grotesque separated by weight and size rather than a display/text pair, and it sets the quotations too; <strong>Roboto Mono</strong> is the data voice, and it is shipped rather than borrowed from the OS because it sets every index, duration, tag and status on every screen. Switzer is an Indian Type Foundry cut from <a href=\"https://www.fontshare.com\">Fontshare</a>, Roboto Mono is under the SIL OFL \u2014 <strong>67&thinsp;KB for the pair</strong>, licences in <code>fonts/</code>. The scale <strong>forks</strong> on the axis that matters: scanned versus read. UI copy \u2014 rails, tables, admin, player chrome \u2014 is <strong>14&nbsp;px</strong> on the compact scale after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>, because this is a product with an app inside it; an <em>article</em> reads at <strong>17&nbsp;px</strong> with its own 1.7 leading, because a 2,000-word essay is not a table row. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
     <p class="sub">The pairing</p>
     <div class="demo demo--stack" style="gap:var(--space-2)">
       <span class="ns-label">// Switzer 700 &middot; heading</span>
@@ -325,16 +325,29 @@ ${PROSE}
       <p><span class="ns-frame">Governor limits</span> &nbsp; <span class="ns-frame ns-frame--brackets">RunLocalTests</span> &nbsp; <span class="ns-frame ns-frame--quiet">optional</span></p>
       <p class="ns-scan ns-scan--lines" style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:var(--weight-heading)">Developer Console</p>
       <p class="ns-scramble" style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:var(--weight-heading)">Metadata deploy complete</p>
+      <p>The second colour on each device, for when a page has to mark two different kinds of wrong: <s class="ns-strike ns-strike--error">hard delete the records</s> is a mistake, and <span class="ns-circle ns-circle--accent">check the recycle bin<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 C216,42 150,54 92,52 C40,50 4,42 8,28 C11,16 60,6 130,8"/></svg></span> is the caution.</p>
+      <p class="ns-hanging">&ldquo;<code>.ns-hanging</code> turns on <code>hanging-punctuation</code>, so an opening quote sits in the margin and the first real letter lines up with the paragraph below it. It is one property and it is the difference between a pull-quote that looks set and one that looks indented.&rdquo;</p>
     </div>
     <details class="code"><summary>markup</summary><pre><code>${esc(`<mark class="ns-mark ns-mark--animate">a highlighter marks a phrase</mark>
 <s class="ns-strike ns-strike--animate ns-strike--muted">one record at a time</s>
 <span class="ns-circle ns-circle--animate">every trigger<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 …"/></svg></span>
 <span class="ns-frame ns-frame--animate">Governor limits</span>
 <h2 class="ns-scan ns-scan--lines">Developer Console</h2>
-<h2 class="ns-scramble">Metadata deploy complete</h2>`)}</code></pre></details>
+<h2 class="ns-scramble">Metadata deploy complete</h2>
+
+<!-- The one looping variant, and it is printed rather than rendered on this
+     page on purpose: rule 2 above says an effect draws once. .ns-scan--loop
+     is for a standalone poster or an OBS scene title, where the type IS the
+     content and nobody is trying to read a paragraph beside it. -->
+<h2 class="ns-scan ns-scan--lines ns-scan--loop">Live in 5</h2>`)}</code></pre></details>
 
     <p class="sub">Responsive shift — why the scramble exists</p>
     <p class="variant-note">The scrambler's real job is not the entrance; it is the <strong>break</strong>. When a breakpoint re-wraps a heading, the text normally teleports to its new position. <code>assets/js/type-fx.js</code> listens to the breakpoint media queries — not to <code>resize</code>, which would fire on every frame — and re-settles the characters, so a reflow reads as deliberate rather than as a jump. For the layout half of the same problem, <code>.ns-shift-group</code> hands the browser <code>interpolate-size</code> and transitions on <code>font-size</code>, <code>line-height</code>, <code>letter-spacing</code> and <code>max-inline-size</code>, and <code>.ns-shift</code> takes a <code>view-transition-name</code>. Both degrade to nothing where unsupported, which is the right failure mode for a nicety. <em>Resize this page across 40rem or 64rem to watch the heading above re-settle.</em></p>
+
+    <div class="demo demo--stack ns-shift-group" style="gap:var(--space-4)">
+      <p class="ns-shift" style="--fx-shift-name:fx-shift-demo;font-family:var(--font-heading);font-size:var(--size-h3);font-weight:var(--weight-heading);margin:0">This heading re-settles rather than teleporting when the layout breaks.</p>
+      <p class="variant-note" style="margin:0">Above: <code>.ns-shift-group</code> on the container, <code>.ns-shift</code> plus a <code>--fx-shift-name</code> on the element that should keep its identity across the change. Both are inert where the features are unsupported.</p>
+    </div>
 
     ${spec(["guidelines/type-effects.card.html"])}
 
@@ -345,6 +358,10 @@ ${PROSE}
         <span>Build on</span><span class="ns-display--outline ns-display--outline-brand">the platform</span>
       </p>
       <p class="ns-display ns-display--gradient" style="font-size:var(--size-display)">One signal colour, two steps of it</p>
+      <p class="ns-display ns-display--stack ns-display--center" style="font-size:var(--size-h2)">
+        <span>Centred</span><span>with <code>--center</code></span>
+      </p>
+      <p style="font-size:var(--size-h3);font-weight:var(--weight-heading)">Hover this: <a class="ns-link--fill" href="#0">the text fills</a> — display sizes only, because at 16px the half-filled state is unreadable.</p>
       <blockquote class="ns-pullquote">The hairline is the structure. Everything else is negotiable.</blockquote>
     </div>
     ${spec(["guidelines/type-display.card.html"])}
@@ -455,6 +472,14 @@ ${PROSE}
     <p class="sub icon-group-head">Bespoke sprite — LMS vocabulary · ${spriteIds.length} · icons/namaste-icons.svg</p>
     <div class="sw-grid icon-group">${spriteCells}</div>
     ${phGroups}
+    <p class="sub">Sprite size steps — the type scale, not an icon scale</p>
+    <div class="row" style="align-items:baseline">
+      <svg class="ns-icon ns-icon--sm" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+      <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+      <svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+      <svg class="ns-icon ns-icon--xl" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
+      <code class="sw__name" style="padding:0">--sm · (default, 1em) · --lg · --xl</code>
+    </div>
     <p class="sub">Mixing the sets — same row, same color rules</p>
     <div class="row">
       <button class="ns-btn ns-btn--primary"><svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-publish"/></svg> Publish</button>
@@ -518,6 +543,36 @@ ${PROSE}
     <p class="sub">On light surfaces</p>
     <div class="sw-grid">${names.map((n, i) => tile(n, i, true)).join("")}</div>
 
+    <p class="sub">The hairline grid, on its own</p>
+    <p class="variant-note">The house motif is also exposed as raw material, because most of the places that want it are drawing it in a <code>::before</code> — and you cannot put a class on a pseudo element. <code>--ns-gridlines-image</code> composes <code>--ns-gridlines-ink</code>, and custom-property substitution resolves against the element that <em>uses</em> the value, so overriding the ink or the cell locally re-tints or re-scales the grid with nothing else changed. <code>.ns-gridlines</code> is the convenience class for the common case; <code>--cols</code> drops the horizontal rules for a column guide. Distinct from <code>ns-pattern--grid</code>, which is a full-bleed band treatment with a vignette mask.</p>
+    <div class="sw-grid">
+      <div class="sw">
+        <div class="ns-gridlines" style="aspect-ratio:16/10;background:var(--color-brand-900)"></div>
+        <code class="sw__name">ns-gridlines</code>
+        <span class="sw__val">default ink · 22px cell</span>
+      </div>
+      <div class="sw">
+        <div class="ns-gridlines ns-gridlines--on-light" style="aspect-ratio:16/10;background:#fff;--ns-gridlines-cell:14px">
+        </div>
+        <code class="sw__name">ns-gridlines--on-light</code>
+        <span class="sw__val">+ --ns-gridlines-cell: 14px</span>
+      </div>
+      <div class="sw">
+        <div class="ns-gridlines ns-gridlines--cols" style="aspect-ratio:16/10;background:var(--color-brand-900);--ns-gridlines-cell:32px"></div>
+        <code class="sw__name">ns-gridlines--cols</code>
+        <span class="sw__val">vertical rules only</span>
+      </div>
+    </div>
+    <details class="code"><summary>markup</summary><pre><code>${esc(`<!-- as a class -->
+<div class="ns-gridlines" style="--ns-gridlines-cell: 16px"></div>
+
+<!-- as a value, which is what most call sites need -->
+.tile::before {
+  --ns-gridlines-cell: 16px;
+  background-image: var(--ns-gridlines-image);
+  background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+}`)}</code></pre></details>
+
     <p class="sub">Shapes</p>
     <p style="max-inline-size:46rem;margin-block-end:var(--space-4)">The platform's own marks as CSS rather than image files, so a band, a card or an empty state can carry a piece of the brand's geometry without commissioning art — and so the same shape can be animated or blended rather than pasted. Size with <code>inline-size</code>; colour comes from <code>background</code>, so a shape inherits whatever the surface wants.</p>
     <div class="sw-grid">${shapes.map(([n, why]) => `
@@ -540,6 +595,60 @@ ${PROSE}
       </div>
     </div>`;
   } },
+  { id: "homepage", title: "Homepage & pages", lede: "How full pages are composed from the section vocabulary — the canonical band orders for the learning site's front doors, with every band linked to its component contract and every composition rendered as a real full-page demo. A page here is an <em>argument</em>: each band answers the next question a visitor actually has, and the order is the argument's structure.", body: () => `
+    <p class="sub">The three front doors, rendered whole</p>
+    <div class="row" style="margin-block-end:var(--space-6)">
+      <a class="ns-btn ns-btn--primary" href="./demo-homepage.html">Learning-site homepage ↗</a>
+      <a class="ns-btn" href="./demo-training-index.html">Training index ↗</a>
+      <a class="ns-btn" href="./demo-course-listing.html">Course listing ↗</a>
+      <a class="ns-btn ns-btn--quiet" href="./demo-sections.html">Generic band catalogue ↗</a>
+    </div>
+
+    <p class="sub">Three heroes, one rule</p>
+    <p class="variant-note">A hero answers exactly one question — <em>what is this page and what do I do first</em> — and the three variants differ only in where the eye enters: the <strong>default</strong> is left-aligned and text-first (the reader is here on purpose), <strong>--center</strong> is for a launch surface where the headline is the event, <strong>--split</strong> is for the one page where showing beats telling and the media slot holds real proof. A fourth hero is a page that has not decided what it is for. All three are rendered with their markup on the <a href="./c-hero-section.html">Hero page</a>.</p>
+
+    <p class="sub">The homepage, band by band</p>
+    <p class="variant-note">This is the composition <code>templates/homepage.html</code> ships and <a href="./demo-homepage.html">demo-homepage</a> renders. Cut from the bottom, never the middle — a homepage without testimonials still works; a homepage without the merchandise is a brochure.</p>
+    <div class="ns-table-wrap"><table class="ns-table ns-table--compact">
+      <thead><tr><th scope="col" class="ns-table__num">#</th><th scope="col">Band</th><th scope="col">The question it answers</th><th scope="col">Component</th></tr></thead>
+      <tbody>
+        <tr><td class="ns-table__num">01</td><td class="ns-table__strong">Hero, split</td><td class="ns-table__quiet">What is this, and what do I do first</td><td><a href="./c-hero-section.html">Hero</a></td></tr>
+        <tr><td class="ns-table__num">02</td><td class="ns-table__strong">Trust marquee</td><td class="ns-table__quiet">Who else trusts it</td><td><a href="./c-marquee.html">Marquee</a></td></tr>
+        <tr><td class="ns-table__num">03</td><td class="ns-table__strong">Feature grid</td><td class="ns-table__quiet">Why this instead of YouTube</td><td><a href="./c-feature-grid.html">Feature grid</a></td></tr>
+        <tr><td class="ns-table__num">04</td><td class="ns-table__strong">Learning path</td><td class="ns-table__quiet">Where do I enter</td><td><a href="./c-learning-path.html">Learning path</a></td></tr>
+        <tr><td class="ns-table__num">05</td><td class="ns-table__strong">Course grid</td><td class="ns-table__quiet">What exactly do I get</td><td><a href="./c-course-card.html">Course card</a></td></tr>
+        <tr><td class="ns-table__num">06</td><td class="ns-table__strong">Training tracks</td><td class="ns-table__quiet">What is free</td><td><a href="./c-training-hero.html">Training family</a></td></tr>
+        <tr><td class="ns-table__num">07</td><td class="ns-table__strong">Stat band</td><td class="ns-table__quiet">How big, how real</td><td><a href="./c-stat-band.html">Stat band</a></td></tr>
+        <tr><td class="ns-table__num">08</td><td class="ns-table__strong">Pace planner</td><td class="ns-table__quiet">How long will it take</td><td><a href="./c-pace.html">Pace planner</a></td></tr>
+        <tr><td class="ns-table__num">09</td><td class="ns-table__strong">Quote + voices</td><td class="ns-table__quiet">Did it work for someone like me</td><td><a href="./c-testimonials.html">Testimonials</a></td></tr>
+        <tr><td class="ns-table__num">10</td><td class="ns-table__strong">FAQ</td><td class="ns-table__quiet">The last three objections</td><td><a href="./c-faq.html">FAQ</a></td></tr>
+        <tr><td class="ns-table__num">11</td><td class="ns-table__strong">CTA band</td><td class="ns-table__quiet">The one closer</td><td><a href="./c-cta-band.html">CTA band</a></td></tr>
+      </tbody>
+    </table></div>
+
+    <p class="sub">The training index, band by band</p>
+    <p class="variant-note"><code>templates/training-index.html</code> → <a href="./demo-training-index.html">demo-training-index</a>. The search is the most important control on the page — a visitor arriving at a 150-module curriculum has a <em>question</em> far more often than a place to start, and every band below the hero is for the visitor the search did not satisfy. The reading itself happens one level down: the <a href="./demo-training.html">module page</a> lists a module's posts, and the <a href="./demo-training-post.html">post page</a> is the article — the post at full width with the curriculum beside it on the trailing edge. Resize it below 64rem to watch the rail become a drawer.</p>
+    <div class="ns-table-wrap"><table class="ns-table ns-table--compact">
+      <thead><tr><th scope="col" class="ns-table__num">#</th><th scope="col">Band</th><th scope="col">The question it answers</th><th scope="col">Component</th></tr></thead>
+      <tbody>
+        <tr><td class="ns-table__num">01</td><td class="ns-table__strong">Training hero + search</td><td class="ns-table__quiet">What is this, and how big</td><td><a href="./c-training-hero.html">Training hero</a></td></tr>
+        <tr><td class="ns-table__num">02</td><td class="ns-table__strong">Learning path</td><td class="ns-table__quiet">What shape is it</td><td><a href="./c-learning-path.html">Learning path</a></td></tr>
+        <tr><td class="ns-table__num">03</td><td class="ns-table__strong">Track cards</td><td class="ns-table__quiet">What is in each stage</td><td><a href="./c-tiers.html">Training family</a></td></tr>
+        <tr><td class="ns-table__num">04</td><td class="ns-table__strong">Free vs Pro</td><td class="ns-table__quiet">What does it cost</td><td><a href="./c-tiers.html">Free vs Pro</a></td></tr>
+        <tr><td class="ns-table__num">05</td><td class="ns-table__strong">Pace planner</td><td class="ns-table__quiet">How long will it take</td><td><a href="./c-pace.html">Pace planner</a></td></tr>
+        <tr><td class="ns-table__num">06</td><td class="ns-table__strong">Contributors</td><td class="ns-table__quiet">Who maintains this</td><td><a href="./c-training-people.html">Contributors</a></td></tr>
+        <tr><td class="ns-table__num">07</td><td class="ns-table__strong">CTA band</td><td class="ns-table__quiet">The one closer — into module 01</td><td><a href="./c-cta-band.html">CTA band</a></td></tr>
+      </tbody>
+    </table></div>
+
+    <p class="sub">Rules of composition</p>
+    <div class="use-grid"><div><ul>
+      <li><strong>One dark band opens, one dark band closes.</strong> The console navy is the brand's strongest material; hero and CTA get it, and everything between alternates surface and sunken so bands separate without borders.</li>
+      <li><strong>The middle is merchandise.</strong> Between hero and closer, show the actual thing — path, courses, tracks, a date — not adjectives about it. Feature copy earns at most one band.</li>
+      <li><strong>Every stat is checkable.</strong> A number a visitor could verify (courses, modules, learners) earns a cell; a marketing number (&ldquo;10x faster&rdquo;) does not.</li>
+      <li><strong>One CTA band per page, always last.</strong> A page with two closers has none. Section-level actions live in band heads (<code>--between</code>), sized quiet.</li>
+      <li><strong>Cut from the bottom.</strong> A shorter page drops voices, then FAQ, then stats — never the path or the merchandise.</li>
+    </ul></div></div>` },
   { id: "accessibility", title: "Accessibility", lede: "The contract every component ships with: focus is always visible, motion collapses under reduced-motion, status never relies on color alone, and every icon-only control has a name.", body: () => spec(["guidelines/accessibility.card.html"]) },
   { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
     <p class="sub">${esc(file)}.css — ${list.length}</p>
@@ -549,7 +658,7 @@ ${PROSE}
 /* Foundations in teaching order: what it looks like (color, surfaces),
    what it reads as (type), how it is spaced and laid out, its shape and
    motion, its glyphs, its data — and the class index as the appendix. */
-const SECTION_ORDER = ["intro", "elements", "color", "type", "surfaces", "spacing", "layout", "geometry", "icons", "patterns", "accessibility", "classes"];
+const SECTION_ORDER = ["intro", "elements", "color", "type", "surfaces", "spacing", "layout", "geometry", "icons", "patterns", "homepage", "accessibility", "classes"];
 SECTIONS.sort((a, b) => SECTION_ORDER.indexOf(a.id) - SECTION_ORDER.indexOf(b.id));
 
 /* ---- Brand & Content creation docs --------------------------------------
@@ -1401,7 +1510,7 @@ const CSS = `
                 border-block-end: 1px solid var(--color-border); }
   .toc nav { display: flex; flex-direction: column; gap: var(--space-1); }
   .toc nav a { display: block; padding: var(--space-1-5) 0 var(--space-1-5) var(--space-3);
-               font-size: var(--size-small); line-height: var(--leading-snug, 1.4);
+               font-size: var(--size-small); line-height: var(--leading-snug);
                color: var(--color-muted); text-decoration: none;
                border-inline-start: 2px solid var(--color-border);
                overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -1426,9 +1535,9 @@ const CSS = `
          margin: var(--space-6) 0 var(--space-3); }
   .row { display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center; margin-block-end: var(--space-4); }
 
-  /* Entrance: one quiet fade-up per page block, lightly staggered. The
+  /* Entrance: one quiet rise per page block, lightly staggered. The
      bundle's prefers-reduced-motion guard collapses it to nothing. */
-  .colmain > *, main > .top, main > .ns-band, main > .ns-statband { animation: fade-up var(--duration-base) var(--ease-out) both; }
+  .colmain > *, main > .top, main > .ns-band, main > .ns-statband { animation: ns-anim-rise var(--duration-base) var(--ease-out) both; }
   .colmain > *:nth-child(2) { animation-delay: 40ms; }
   .colmain > *:nth-child(3) { animation-delay: 80ms; }
   .colmain > *:nth-child(4) { animation-delay: 120ms; }
@@ -1500,7 +1609,7 @@ const CSS = `
   /* A bar wider than the doc column scrolls rather than spilling over the
      rail — except when it carries a panel, which must be free to overhang. */
   .demo--flush { padding: 0; display: block; overflow-x: auto; }
-  /* The fade-up entrance leaves an identity transform on every .colmain
+  /* The rise entrance leaves an identity transform on every .colmain
      child, and that is a stacking context — so an open panel would be
      trapped under the next block. Lift the whole demo instead. */
   .demo--flush:has(.ns-navmenu, .ns-megamenu, .ns-usermenu__panel) {
@@ -1763,6 +1872,7 @@ ${sidebar(page.file)}
 <script src="../assets/js/type-fx.js" defer></script>
 <script src="../assets/js/lms.js" defer></script>
 <script src="../assets/js/rail.js" defer></script>
+<script src="../assets/js/training.js" defer></script>
 <script src="../assets/js/calendar.js" defer></script>
 <script src="../assets/js/tabs.js" defer></script>
 <script src="../assets/js/video.js" defer></script>
@@ -1784,6 +1894,84 @@ ${sidebar(page.file)}
    us; three attempts 100ms apart has been enough every time. */
 rmSync(OUT, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
 mkdirSync(OUT, { recursive: true });
+
+/* Declared above the page loop, not beside the demo writer: component pages
+   read this to render their own "see it whole" link, so the list has to
+   exist before the first page is written. */
+const DEMOS = [
+  /* The two lesson kinds LINK TO EACH OTHER: the prev/next controls in these
+     two files point at the other demo, so the pair is walkable and the
+     cross-document view transition (motion.css) is visible in place. */
+  { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "curriculum · lesson · chapters — press next to cross-fade to the written lesson", lock: true, realHeader: { back: "Apex fundamentals", kicker: "Lesson 07 / 12", title: "SOQL joins: relationships in queries", pct: 50, done: "6 / 12" },
+    links: { prev: "./demo-player-article.html", next: "./demo-player-article.html" } },
+  { out: "demo-player-article.html", tpl: "course-player-article.html", title: "Course player, article lesson — full layout demo", back: "c-player.html", note: "the same three columns with no stage — press prev to cross-fade back to the video", lock: true, realHeader: { back: "Apex fundamentals", kicker: "Lesson 08 / 12", title: "What is Salesforce?", pct: 58, done: "7 / 12" },
+    links: { prev: "./demo-player.html", next: "./demo-player.html" } },
+  { out: "demo-admin-dashboard.html", tpl: "admin-dashboard.html", title: "Admin dashboard — full screen demo", back: "c-admin-shell.html", note: "shell + nav + stats + drafts" },
+  /* The two editor surfaces are the CONTENT of an admin screen — in product
+     they render inside the shell's <main>, so the demo wraps them in one.
+     `interactive` layers on the demo-only wiring (add/reorder/remove
+     lessons, tags, uploads, publish state) so the flows are testable with
+     no backend — in product this behaviour comes from the React components. */
+  { out: "demo-admin-course-new.html", tpl: "admin-course-new.html", title: "Create a course — full screen demo", back: "c-admin-shell.html", note: "interactive — build the curriculum, tag it, publish", wrap: "ns-admin__main", interactive: true },
+  { out: "demo-admin-lesson-editor.html", tpl: "admin-lesson-editor.html", title: "Lesson editor — full screen demo", back: "c-admin-shell.html", note: "interactive — write, format, upload, publish", wrap: "ns-admin__main", interactive: true },
+  { out: "demo-navbar.html", tpl: "navbar.html", title: "Site navbar — full width demo", back: "c-topnav.html", note: "open the menus; resize below 64rem for the hamburger and the sheet", extras: ["search-modal.html"] },
+  { out: "demo-navbar-blog.html", tpl: "navbar-blog.html", title: "Blog navbar — full width demo", back: "c-topnav.html", note: "signed-in bar: account menu, reading progress on scroll", extras: ["search-modal.html"] },
+  /* The player comes along because the bar's curriculum toggle targets
+     aria-controls="player-rail", which lives in course-player.html. Rendered
+     alone the button announces a relationship to nothing — same reason the
+     navbars above pull in search-modal.html. */
+  { out: "demo-training.html", tpl: "training-module.html", wrap: "ns-page ns-page--demo", title: "Training module — full page", back: "c-trainingnav.html", note: "the rail collapses to the active module on load and scrolls it into view; open the others freely" },
+  { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed", extras: ["course-player.html"] },
+  { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
+  { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
+  { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
+  /* The tag pages are the index with its header swapped and its featured
+     card dropped — which is the claim worth being able to check side by
+     side, so they get their own demos rather than a note saying so. */
+  { out: "demo-tag-page.html", tpl: "tag-page.html", title: "Tag page — full page", back: "c-tag-page.html", note: "the index with a tag header and no featured card; resize to watch the rail drop below the grid" },
+  { out: "demo-tag-index.html", tpl: "tag-index.html", title: "All tags — full page", back: "c-tag-page.html", note: "sorted, equal weight, count on the right — deliberately not a tag cloud" },
+  /* The same post, monetized. It carries EVERY ad format at once, which no
+     real page should — it is a catalogue of placements, and the template says
+     so at the top and names the three worth keeping. The slots start in
+     `loading` and flip to `filled` after a beat, so the skeleton is visible
+     instead of being gone before the page paints. */
+  { out: "demo-blog-ads.html", tpl: "blog-post-ads.html", title: "Blog post with ads — full page", back: "c-adunit.html", note: "every placement in situ — watch the skeletons fill, scroll for the parallax, dismiss the anchor, open the interstitial" },
+  { out: "demo-type-specimen.html", tpl: "type-specimen.html", title: "Type specimen — full page", back: "type.html", note: "the whole family in place: scale, weights, measure, effects" },
+  { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
+  /* The two landing pages. sections-home above is the generic band CATALOGUE;
+     these are the product's own front doors, and the difference is the
+     middle — both show the actual merchandise (path, courses, tracks, tiers)
+     where the catalogue shows abstract feature copy. */
+  { out: "demo-homepage.html", tpl: "homepage.html", title: "Learning-site homepage — full page demo", back: "homepage.html", note: "the canonical composition: split hero → trust → method → path → courses → training → stats → pace → voices → FAQ → CTA" },
+  { out: "demo-training-index.html", tpl: "training-index.html", title: "Training index — full page demo", back: "homepage.html", note: "the curriculum's front door: hero + search → path → tracks → free vs Pro → pace → contributors → CTA" },
+  /* The single-post reading page — the third training surface, after the
+     index (orient) and the module page (list). `lock` because --fixed pins
+     the layout to the viewport and both columns scroll inside it, exactly
+     like the course player. training.js wires the rail filter and the
+     below-lg drawer; resize under 64rem and use the Curriculum handle. */
+  { out: "demo-training-post.html", tpl: "training-post.html", strip: "kind-article", title: "Training post, video — full page demo", back: "c-training-layout.html", note: "the post at full width, the curriculum beside it. Every rail level carries its mark; each section opens with its overview. Resize below 64rem for the drawer", lock: true },
+  /* The SAME template with its stage cut. This is the article-based post, and
+     rendering it from one file is the point: the claim "a training post is
+     video or article, and the difference is one block" is either true of the
+     markup or it is a sentence in a comment. */
+  { out: "demo-training-article.html", tpl: "training-post.html", strip: ["stage", "kind-video"], title: "Training post, article — full page demo", back: "c-training-layout.html", note: "the same template with the video stage stripped — the article-based post, straight into the lede", lock: true },
+  { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
+  { out: "demo-course-listing.html", tpl: "course-listing.html", title: "Course listing — full page demo", back: "c-course-listing.html", note: "live filters — the tags actually filter the grid" },
+  /* The assistant. `lock` sets overflow:hidden on <html>: the shell is one
+     locked viewport and the document behind it must not scroll too, exactly
+     as the fixed course player does. The chat demo is interactive through
+     assets/js/ai.js — send a question and a canned answer comes back with
+     the real thinking, tool-chip, attachment and error states. */
+  { out: "demo-ai-chat.html", tpl: "ai-chat.html", title: "AI assistant — full screen demo", back: "c-ai-shell.html", note: "interactive — ask something; every third answer fails on purpose", lock: true },
+  { out: "demo-ai-signin.html", tpl: "ai-signin.html", title: "AI assistant, signed out — full screen demo", back: "c-ai-settings.html", note: "gate + empty state + disabled composer", lock: true },
+  { out: "demo-ai-settings.html", tpl: "ai-settings.html", title: "AI assistant settings — full page demo", back: "c-ai-settings.html", note: "how it teaches, what it reads, what it remembers" },
+  /* The deck. No `lock` — unlike the player, the deck locks the viewport from
+     assets/js/deck.js, because its own toggle switches to the scrolling
+     handout and a lock stamped into the page could not be undone. `bare`
+     because a demo strip would be a second bar competing with the presenter
+     bar the deck already ships; the docs link rides in the corner instead. */
+  { out: "demo-deck.html", tpl: "deck.html", title: "Teaching deck — 25 reusable slides", back: "c-deck.html", note: "arrow keys, G for the overview, N for the notes, F for full screen", bare: true },
+];
 
 for (const page of PAGES) {
   let inner = "";
@@ -1839,7 +2027,19 @@ for (const page of PAGES) {
     const c = page.comp;
     page.lede = c.summary;
     const list = (items, cls) => items.map((x) => `<li>${x}</li>`).join("");
+    /* THE WAY OUT TO THE REAL THING, derived rather than written. Every DEMOS
+       entry already names the component page it belongs to (`back`), so the
+       forward link is that relationship read the other way round — and it
+       therefore exists on EVERY page that has a demo, not just the three
+       where somebody remembered to hand-write one. Add a DEMOS entry and the
+       link appears; delete it and the link goes. */
+    const demos = DEMOS.filter((d) => d.back === page.file);
     inner = `
+  ${demos.length ? `<p class="sub">See it whole</p>
+  <p class="variant-note">The component below, rendered in place at full size from <code>templates/${esc(demos[0].tpl)}</code> — the same markup the two products adapt, with the real stylesheet and the real scripts.</p>
+  <div class="row" style="margin-block-end:var(--space-6)">
+    ${demos.map((d) => `<a class="ns-btn ns-btn--outline ns-btn--sm" href="./${d.out}" target="_blank" rel="noopener">${esc(d.title.replace(/ — .*$/, ""))} <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>`).join("\n    ")}
+  </div>` : ""}
   ${(c.use || c.not) ? `<div class="use-grid">
     ${c.use ? `<div><p class="sub k-do">Use it for</p><ul>${list(c.use)}</ul></div>` : ""}
     ${c.not ? `<div><p class="sub k-dont">Not for</p><ul>${list(c.not)}</ul></div>` : ""}
@@ -1865,63 +2065,6 @@ ${v.html}
    no stylesheet of their own — correct for their job, but opened bare they
    render unstyled. The docs links point here instead: the real template
    body, wrapped with the real stylesheet. */
-const DEMOS = [
-  /* The two lesson kinds LINK TO EACH OTHER: the prev/next controls in these
-     two files point at the other demo, so the pair is walkable and the
-     cross-document view transition (motion.css) is visible in place. */
-  { out: "demo-player.html", tpl: "course-player.html", title: "Course player — full layout demo", back: "c-player.html", note: "curriculum · lesson · chapters — press next to cross-fade to the written lesson", lock: true, realHeader: { back: "Apex fundamentals", kicker: "Lesson 07 / 12", title: "SOQL joins: relationships in queries", pct: 50, done: "6 / 12" },
-    links: { prev: "./demo-player-article.html", next: "./demo-player-article.html" } },
-  { out: "demo-player-article.html", tpl: "course-player-article.html", title: "Course player, article lesson — full layout demo", back: "c-player.html", note: "the same three columns with no stage — press prev to cross-fade back to the video", lock: true, realHeader: { back: "Apex fundamentals", kicker: "Lesson 08 / 12", title: "What is Salesforce?", pct: 58, done: "7 / 12" },
-    links: { prev: "./demo-player.html", next: "./demo-player.html" } },
-  { out: "demo-admin-dashboard.html", tpl: "admin-dashboard.html", title: "Admin dashboard — full screen demo", back: "c-admin-shell.html", note: "shell + nav + stats + drafts" },
-  /* The two editor surfaces are the CONTENT of an admin screen — in product
-     they render inside the shell's <main>, so the demo wraps them in one.
-     `interactive` layers on the demo-only wiring (add/reorder/remove
-     lessons, tags, uploads, publish state) so the flows are testable with
-     no backend — in product this behaviour comes from the React components. */
-  { out: "demo-admin-course-new.html", tpl: "admin-course-new.html", title: "Create a course — full screen demo", back: "c-admin-shell.html", note: "interactive — build the curriculum, tag it, publish", wrap: "ns-admin__main", interactive: true },
-  { out: "demo-admin-lesson-editor.html", tpl: "admin-lesson-editor.html", title: "Lesson editor — full screen demo", back: "c-admin-shell.html", note: "interactive — write, format, upload, publish", wrap: "ns-admin__main", interactive: true },
-  { out: "demo-navbar.html", tpl: "navbar.html", title: "Site navbar — full width demo", back: "c-topnav.html", note: "open the menus; resize below 64rem for the hamburger and the sheet", extras: ["search-modal.html"] },
-  { out: "demo-navbar-blog.html", tpl: "navbar-blog.html", title: "Blog navbar — full width demo", back: "c-topnav.html", note: "signed-in bar: account menu, reading progress on scroll", extras: ["search-modal.html"] },
-  /* The player comes along because the bar's curriculum toggle targets
-     aria-controls="player-rail", which lives in course-player.html. Rendered
-     alone the button announces a relationship to nothing — same reason the
-     navbars above pull in search-modal.html. */
-  { out: "demo-training.html", tpl: "training-module.html", wrap: "ns-page ns-page--demo", title: "Training module — full page", back: "c-trainingnav.html", note: "the rail collapses to the active module on load and scrolls it into view; open the others freely" },
-  { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed", extras: ["course-player.html"] },
-  { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
-  { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
-  { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
-  /* The tag pages are the index with its header swapped and its featured
-     card dropped — which is the claim worth being able to check side by
-     side, so they get their own demos rather than a note saying so. */
-  { out: "demo-tag-page.html", tpl: "tag-page.html", title: "Tag page — full page", back: "c-tag-page.html", note: "the index with a tag header and no featured card; resize to watch the rail drop below the grid" },
-  { out: "demo-tag-index.html", tpl: "tag-index.html", title: "All tags — full page", back: "c-tag-page.html", note: "sorted, equal weight, count on the right — deliberately not a tag cloud" },
-  /* The same post, monetized. It carries EVERY ad format at once, which no
-     real page should — it is a catalogue of placements, and the template says
-     so at the top and names the three worth keeping. The slots start in
-     `loading` and flip to `filled` after a beat, so the skeleton is visible
-     instead of being gone before the page paints. */
-  { out: "demo-blog-ads.html", tpl: "blog-post-ads.html", title: "Blog post with ads — full page", back: "c-adunit.html", note: "every placement in situ — watch the skeletons fill, scroll for the parallax, dismiss the anchor, open the interstitial" },
-  { out: "demo-type-specimen.html", tpl: "type-specimen.html", title: "Type specimen — full page", back: "type.html", note: "the whole family in place: scale, weights, measure, effects" },
-  { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
-  { out: "demo-course-detail.html", tpl: "course-detail.html", title: "Course detail — full page demo", back: "c-course-detail.html", note: "hero → description → curriculum + sticky rail" },
-  { out: "demo-course-listing.html", tpl: "course-listing.html", title: "Course listing — full page demo", back: "c-course-listing.html", note: "live filters — the tags actually filter the grid" },
-  /* The assistant. `lock` sets overflow:hidden on <html>: the shell is one
-     locked viewport and the document behind it must not scroll too, exactly
-     as the fixed course player does. The chat demo is interactive through
-     assets/js/ai.js — send a question and a canned answer comes back with
-     the real thinking, tool-chip, attachment and error states. */
-  { out: "demo-ai-chat.html", tpl: "ai-chat.html", title: "AI assistant — full screen demo", back: "c-ai-shell.html", note: "interactive — ask something; every third answer fails on purpose", lock: true },
-  { out: "demo-ai-signin.html", tpl: "ai-signin.html", title: "AI assistant, signed out — full screen demo", back: "c-ai-settings.html", note: "gate + empty state + disabled composer", lock: true },
-  { out: "demo-ai-settings.html", tpl: "ai-settings.html", title: "AI assistant settings — full page demo", back: "c-ai-settings.html", note: "how it teaches, what it reads, what it remembers" },
-  /* The deck. No `lock` — unlike the player, the deck locks the viewport from
-     assets/js/deck.js, because its own toggle switches to the scrolling
-     handout and a lock stamped into the page could not be undone. `bare`
-     because a demo strip would be a second bar competing with the presenter
-     bar the deck already ships; the docs link rides in the corner instead. */
-  { out: "demo-deck.html", tpl: "deck.html", title: "Teaching deck — 25 reusable slides", back: "c-deck.html", note: "arrow keys, G for the overview, N for the notes, F for full screen", bare: true },
-];
 /* Demo-only wiring for the admin editors. In product this behaviour lives in
    the React components (components/admin/); here it is vanilla JS over the
    same markup, so the flows — build a curriculum, tag, upload, publish —
@@ -2097,9 +2240,24 @@ const ADMIN_DEMO_JS = `
    the demo page still shows every image. Used for the main template AND its
    extras: a fragment pulled in as an extra needs exactly the same treatment,
    which is the bug that put a broken cover image on demo-navbar-course. */
-const fragment = (name) => readFileSync(join(ROOT, `templates/${name}`), "utf8")
-  .replace(/<!--[\s\S]*?-->\n?/, "")                       // adaptation header
-  .replace(/(\s(?:src|href|poster)=")\/assets\//g, "$1../assets/");
+const fragment = (name, strip) => {
+  let src = readFileSync(join(ROOT, `templates/${name}`), "utf8")
+    .replace(/<!--[\s\S]*?-->\n?/, "")                     // adaptation header
+    .replace(/(\s(?:src|href|poster)=")\/assets\//g, "$1../assets/");
+  /* An OPTIONAL region, cut by name. templates/training-post.html says a
+     training post is video or article and that the difference is one block;
+     `strip: "stage"` is how the styleguide renders the second version from
+     the first template rather than shipping a near-duplicate of 250 lines
+     that would immediately start drifting. The markers are HTML comments, so
+     the template still reads as one file. */
+  for (const region of [strip].flat().filter(Boolean)) {
+    const re = new RegExp(`[ \\t]*<!--\\s*@strip:${region}\\s*-->[\\s\\S]*?<!--\\s*/@strip:${region}\\s*-->\\n?`, "g");
+    const out = src.replace(re, "");
+    if (out === src) throw new Error(`fragment("${name}"): no @strip:${region} region found`);
+    src = out;
+  }
+  return src;
+};
 
 /* ---- the responsive proof ------------------------------------------------
    Every layout claim in this system is a claim about a viewport, and the only
@@ -2295,7 +2453,7 @@ const realHeader = (d) => `<nav class="ns-coursenav" aria-label="Course">
 </nav>`;
 
 for (const d of DEMOS) {
-  let body = fragment(d.tpl);
+  let body = fragment(d.tpl, d.strip);
   /* The templates ship #prev / #next: they are framework-agnostic markup and
      have no business knowing the name of a styleguide page. The DEMO is what
      knows, so the two lesson pages are wired to each other HERE — which is
@@ -2334,6 +2492,7 @@ ${body}
 <script src="../assets/js/type-fx.js" defer></script>
 <script src="../assets/js/lms.js" defer></script>
 <script src="../assets/js/rail.js" defer></script>
+<script src="../assets/js/training.js" defer></script>
 <script src="../assets/js/calendar.js" defer></script>
 <script src="../assets/js/tabs.js" defer></script>
 <script src="../assets/js/video.js" defer></script>
@@ -2350,6 +2509,17 @@ ${body}
    site build reads it to write the homepage's link list and sitemap.xml — so
    a new page appears in both the moment it appears here, and neither can be
    forgotten in a separate list. */
+/* The full-page demos, listed separately from PAGES because they are not
+   styleguide pages — they are the templates rendered whole, with no rail and
+   no docs chrome. scripts/build-home.mjs reads this to build the homepage's
+   "Demos" menu, so adding a DEMOS entry puts it in the site navigation with
+   nothing else to remember. */
+writeFileSync(join(OUT, "demos.json"), `${JSON.stringify(DEMOS.map((d) => ({
+  file: d.out,
+  title: d.title.replace(/ — .*$/, ""),
+  note: d.note || "",
+})), null, 2)}\n`);
+
 writeFileSync(join(OUT, "pages.json"), `${JSON.stringify(PAGES.map((p) => ({
   file: p.file,
   title: p.title,

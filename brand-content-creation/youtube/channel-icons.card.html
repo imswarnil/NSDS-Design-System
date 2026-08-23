@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x1225" name="YouTube Channel Icons" subtitle="Playlist covers, the 150×150 video watermark, and the link row — one glyph family, one tile" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -15,8 +19,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 .tile{position:relative;aspect-ratio:16/9;background:var(--color-brand-900);overflow:hidden;
   display:flex;flex-direction:column;justify-content:flex-end;padding:9px}
 .tile .pat{position:absolute;inset:0;opacity:.55;
-  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
-  background-size:16px 16px}
+  --ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .tile .bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500)}
 .tile i{position:absolute;inset-inline-end:8px;top:9px;font-size:26px;color:var(--color-brand-400);opacity:.9}
 .tile .n{position:relative;font-family:var(--font-mono);font-size:8px;font-weight:700;
@@ -35,8 +38,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 /* In situ — the corner of a playing video. */
 .frame{position:relative;width:250px;aspect-ratio:16/9;background:var(--color-brand-900);overflow:hidden;flex:none}
 .frame .pat{position:absolute;inset:0;opacity:.5;
-  background-image:linear-gradient(to right,rgb(255 255 255/.06) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.06) 1px,transparent 1px);
-  background-size:18px 18px}
+  --ns-gridlines-cell:18px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .frame .wm{position:absolute;inset-inline-end:9px;bottom:9px;width:22px;height:22px;opacity:.72}
 .frame .cue{position:absolute;inset-inline-start:9px;bottom:9px;font-family:var(--font-mono);
   font-size:7px;color:rgb(255 255 255/.5);letter-spacing:.08em;text-transform:uppercase}

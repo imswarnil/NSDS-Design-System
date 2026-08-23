@@ -58,20 +58,20 @@
      The page shell, spelled once. Both products write this on every template;
      without it they each invent their own max-width and the two drift. */
   .ns-page { inline-size: 100%; max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
-  .ns-page--prose { max-inline-size: var(--container-prose); }
+  .ns-page--prose { max-inline-size: var(--container-prose); } /* used-by: ghost-theme, lms */
   .ns-page--narrow { max-inline-size: var(--container-narrow); }
-  .ns-page--wide { max-inline-size: var(--container-wide); }
+  .ns-page--wide { max-inline-size: var(--container-wide); } /* used-by: ghost-theme, lms */
   /* The gutter is inline only, because a page's vertical rhythm belongs to the
      sections inside it. --demo adds the block padding for a standalone page
      that has no band wrapping it. */
-  .ns-page--demo { padding-block: var(--space-8); }
+  .ns-page--demo { padding-block: var(--space-8); } /* used-by: ghost-theme, lms */
 
   /* Vertical rhythm between sections, as a class rather than a margin on
      every heading — margins on headings collapse unpredictably next to
      grids and cards. */
   .ns-stack > * + * { margin-block-start: var(--stack-sm); }
-  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); }
-  .ns-stack--md > * + * { margin-block-start: var(--stack-md); }
+  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); } /* used-by: ghost-theme, lms */
+  .ns-stack--md > * + * { margin-block-start: var(--stack-md); } /* used-by: ghost-theme, lms */
   .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
 
   /* Auto-fitting card grid. `min()` keeps the track from overflowing the
@@ -80,13 +80,13 @@
     display: grid; gap: var(--gap-grid);
     grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
   }
-  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
+  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
 
   /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
      column below lg, where the sidebar becomes a drawer. */
-  .ns-docs-layout { display: flex; gap: var(--space-10); align-items: flex-start; }
-  .ns-docs-layout__main { flex: 1; min-inline-size: 0; }
-  .ns-docs-layout__toc {
+  .ns-docs-layout { display: flex; gap: var(--space-10); align-items: flex-start; } /* used-by: ghost-theme, lms */
+  .ns-docs-layout__main { flex: 1; min-inline-size: 0; } /* used-by: ghost-theme, lms */
+  .ns-docs-layout__toc { /* used-by: ghost-theme, lms */
     position: sticky; inset-block-start: var(--navbar-h);
     inline-size: var(--toc-w); flex: none;
     max-block-size: calc(100dvh - var(--navbar-h));

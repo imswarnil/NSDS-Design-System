@@ -405,6 +405,11 @@
   --stack-xs: var(--space-2);        /* vertical rhythm, tight */
   --stack-sm: var(--space-4);
   --stack-md: var(--space-8);        /* between subsections */
+  /* --stack-lg is also what a BAND spends on its own padding-block
+     (components/css/sections.css) — a band's vertical padding is what puts
+     the gap between one page section and the next, so it is the same
+     relationship seen from inside rather than a second scale that happens to
+     match. If page rhythm ever changes, it changes here, once. */
   --stack-lg: var(--space-16);       /* between page sections */
   --stack-xl: var(--space-24);       /* between major page bands */
 
@@ -429,11 +434,34 @@
   --breakpoint-xl: 80rem;  /* 1280px — desktop */
   --breakpoint-2xl: 96rem; /* 1536px — wide desktop */
 
-  /* Content widths. --container-prose is the reading measure: ~68 characters
-     of Inter at --size-body, which is where lesson and blog copy stays
-     comfortable. Never widen a paragraph past it just because the viewport
-     allows it. */
+  /* Content widths. --container-prose is the layout twin of --measure-prose:
+     672px set in Switzer at --size-prose (17px) is 68.6ch, which is what
+     tokens/typography.css declares the measure to be. Measured, not guessed —
+     Switzer's "0" advances 0.576em, and 672 / (0.576 x 17) = 68.6.
+
+     This pairing only became true at the type fork. When reading copy was
+     --size-body (14px) the same 42rem ran to 83ch, and the comment here still
+     claimed 68 characters of INTER, a face this system no longer ships. Both
+     halves were stale; the number survived by luck when the size moved.
+
+     One caveat worth carrying, because ch is a proxy and not the thing itself:
+     68ch of Switzer is ~88 REAL characters of running English, since the
+     average lowercase letter advances 0.45em against the digit's 0.576em.
+     That is at the loose end of the 45-90 a single column can hold. If
+     articles ever read too wide, this is the token — and 40rem (~84
+     characters) is the next step down, not a nudge to --measure-prose. Never
+     widen a paragraph past this just because the viewport allows it. */
   --container-prose: 42rem;  /*  672px — lesson/blog body copy */
+  /* READ THE NUMBERS, NOT THE NAMES. The ramp is
+       prose 42 < narrow 56 < page 72 < wide 88 (rem)
+     so --container-prose is the NARROWEST of the four despite --narrow
+     existing, because prose is named for its job and the other three are
+     named for their width. The names are not renamed because both products
+     write them on every template and .ns-page--narrow is public API; this
+     comment is the fix. If you want the reading measure, you want
+     --container-prose. --narrow is the FORM width: wide enough for a
+     two-column field row, narrow enough that a settings page does not
+     stretch a label away from its input. */
   --container-narrow: 56rem; /*  896px — forms, auth, settings */
   --container-page: 72rem;   /* 1152px — the standard page shell */
   --container-wide: 88rem;   /* 1408px — catalog grids, dashboards */
@@ -605,8 +633,16 @@
      The two fluid steps at the top are the only clamps: a hero has to survive
      a 360px phone, a paragraph does not. */
   --size-mega: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);   /* poster / campaign only */
-  --size-display: clamp(2rem, 1.55rem + 2.2vw, 3.25rem);
-  --size-h1: 2.5rem;        /* 40 */
+  /* The floor is 2.5rem and it is not a rounding of 2 — it is --size-h1.
+     Below a 690px viewport the fluid term (1.55rem + 2.2vw) falls under 40px,
+     so with the old 2rem floor a 360px phone rendered display at 32.7px:
+     SMALLER than the fixed h1 beside it, and level with h2. A hero that
+     shrinks past the heading it outranks inverts the page's own hierarchy,
+     and it did so on every phone, not an edge case. Floor display at h1 and
+     the order holds at every width. If display ever needs to go smaller on a
+     phone, h1 has to become fluid in the same commit — they are one ramp. */
+  --size-display: clamp(2.5rem, 1.55rem + 2.2vw, 3.25rem);
+  --size-h1: 2.5rem;        /* 40 — display's floor; see the clamp above */
   --size-h2: 2rem;          /* 32 — carapace 3xl */
   --size-h3: 1.5rem;        /* 24 — carapace 2xl */
   --size-h4: 1.25rem;       /* 20 — carapace xl  */
@@ -669,14 +705,31 @@
 
   --ns-leading-tight: 1.15;
   --ns-leading-heading: 1.3;
+  /* The step between a heading and a paragraph, and the one the ramp was
+     missing. It is for MULTI-LINE UI TEXT that is scanned rather than read —
+     card excerpts, TOC entries, tooltip bodies, notes. 1.6 is drawn for a
+     68ch measure and goes airy in a 2-line clamp inside a card; 1.3 is drawn
+     for a single line and clips descenders once the text wraps. Neither is
+     right for three lines in a 20rem column, which is what this is. */
+  --ns-leading-snug: 1.45;
   --ns-leading-body: 1.6;
+  /* THE READING LEADING — the tallest step, and it exists for one surface:
+     continuous prose at --size-prose on the full --measure-prose. Leading has
+     to grow with the measure — the eye's return sweep across 68ch needs more
+     vertical separation to land on the right line than a 40ch card excerpt
+     does — and 1.6 was drawn for the UI's 14px at card widths. At 17px x 1.7
+     a prose line advances ~29px, which is where a 68ch column stops shimmering.
+     UI text never takes this: at 14px in a table it reads as double-spacing. */
+  --ns-leading-prose: 1.7;
   /* Mega display sets solid — descenders and ascenders are allowed to touch,
      which is the point of setting type that large. */
   --ns-leading-mega: 0.94;
 
   --leading-tight: var(--ns-leading-tight);
   --leading-heading: var(--ns-leading-heading);
+  --leading-snug: var(--ns-leading-snug);
   --leading-body: var(--ns-leading-body);
+  --leading-prose: var(--ns-leading-prose);
   --leading-mega: var(--ns-leading-mega);
 
   /* Switzer has a real 500, which the previous family did not — so the ramp
@@ -699,9 +752,39 @@
 
   /* Reading measure, as a character count rather than a width — this is the
      one place ch is the honest unit, because the constraint IS characters
-     per line. --container-prose (42rem) is the layout twin of it. */
+     per line. --container-prose (42rem) is the layout twin: at --size-prose
+     in Switzer the two resolve to the same line, 68.6ch, which is why they
+     may not drift apart. Change one, recompute the other — the arithmetic and
+     the caveat about ch-versus-real-characters are in tokens/layout.css. */
   --measure-prose: 68ch;
   --measure-narrow: 46ch;   /* ledes, pull-quotes, callouts */
+
+  /* THREE PAIRS SHARE A VALUE ON PURPOSE. Do not "clean them up" by merging —
+     a token names a ROLE, and two roles that agree today are still two roles.
+     Merging them is how a system loses the ability to move one without the
+     other, which is the only reason to have tokens at all.
+
+       --size-body-lg  == --size-prose        both 17px
+         The UI scale's large step (a marketing band's lede, an instructor
+         name, a price) versus THE READING SIZE (a paragraph in an article).
+         If reading copy ever moves to 18, a hero lede should not follow.
+
+       --size-small    == --size-mono         both 13px
+         Proportional small text (a card excerpt, a meta row) versus MONO
+         DATA (an index, a duration, a timestamp). Every mono run takes
+         --size-mono; the two would diverge the moment the mono face
+         changed, because a mono 13 does not sit optically with a
+         proportional 13 in every family.
+
+       --weight-body   == --weight-regular    both 400
+         The reading weight, argued for above, versus the ramp's own name
+         for its lightest step — which is what a rule reaches for when it is
+         UNDOING a weight (resetting a bold heading, quieting a nav sub-link)
+         rather than setting body copy.
+
+     The naming convention behind all three: a ROLE name (body, prose, mono,
+     label) says what the text IS; a SCALE name (small, lg, regular, medium)
+     says where it sits. Prefer the role name — it survives a redesign. */
 }
 :root {
   /* Geometry — sharp and specific, not the generic 12px-everywhere/pill-everywhere
@@ -744,10 +827,24 @@
   --ease-out: var(--ns-ease-out); /* @kind cubicBezier */
   --duration-fast: 120ms; /* @kind other */
   --duration-base: 180ms; /* @kind other */
-  /* Two longer steps, and they exist for ONE job each: a typographic effect
-     that draws itself (a highlighter sweep, a circle, a rule) has to be slow
-     enough to read as a gesture. Nothing interactive may use these — a
-     control that takes 700ms to respond is a broken control. */
+  /* Two longer steps, and the line they draw is GESTURE versus RESPONSE, not
+     hover versus not-hover.
+
+     A gesture is watched: a highlighter sweep, a circle drawing itself, a
+     rule extending, a poster easing into a slow zoom. Nothing is waiting on
+     it, and rushing it destroys the only thing it was for — at 180ms a zoom
+     is a pop, which Principle 5 forbids outright.
+
+     A response is awaited: a menu opening, a button dimming, a panel sliding,
+     a value changing. Those take --duration-fast or --duration-base, always.
+     A control that takes 700ms to answer is a broken control, and no amount
+     of it being "decorative" changes that the reader is now waiting.
+
+     So: --duration-slow / --duration-draw are legal on a hover-triggered
+     DECORATION of a non-interactive surface (see .ns-video--zoom in
+     components/css/media.css, the one such call site). They are never legal on
+     anything that reports state. If you are unsure which one you have, ask
+     whether a reader would notice it missing or notice it being slow. */
   --duration-slow: 420ms;   /* @kind other */
   --duration-draw: 700ms;   /* @kind other */
   /* The draw eases differently from the UI: a marker stroke starts fast and
@@ -756,18 +853,22 @@
   --ease-draw: var(--ns-ease-draw); /* @kind cubicBezier */
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(0.5rem); }
-  to { opacity: 1; transform: none; }
-}
-@keyframes ns-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+/* THREE @keyframes USED TO LIVE HERE, and they were the only declarations in
+   this file that were not custom properties. Two of them — `fade-up` and
+   `marquee` — carried no ns- prefix, and a keyframe name is GLOBAL and
+   unlayered: a consuming app with its own `fade-up` silently won or lost
+   depending on source order, with no cascade rule to appeal to. `fade-up` was
+   additionally a byte-for-byte duplicate of a properly-namespaced keyframe in
+   the component layer.
+
+   All three now live in components/css/motion.css, which is the file that
+   already owns page motion. A token file carries vocabulary — values a
+   component reaches for — and an animation is not a value. tokens/base.css
+   makes the same argument for keeping `color-scheme` out of tokens/colors.css.
+
+   Consequence worth knowing: the Tailwind bridge's `animate-*` utilities name
+   those keyframes, so they need the component layer loaded. Every consumer
+   imports styles.css, which loads it. */
 /* In @layer base, not unlayered. The !important is what makes this work and it
    keeps working from here: an important declaration beats a normal one from any
    layer, so this still overrides a Tailwind `transition-duration` utility. Being
@@ -787,17 +888,24 @@
   [data-theme="dark"] { color-scheme: dark; }
   html { overflow-x: clip; scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-  /* The shorthand cannot carry font-weight AND line-height in the form we
-     want, so weight is its own declaration: 450 (Book) is the reading weight
-     — see tokens/typography.css and fonts/README.md for why 400 is not. */
+  /* The `font:` shorthand cannot carry font-weight alongside the size/leading
+     pair in the form we want, so the weight is its own declaration. It is
+     --weight-body = 400: Switzer's Regular is properly fitted and does not
+     render grey, which is why the 450 ("Book") step the previous
+     Nunito-derived cut needed did not survive the font migration. See
+     fonts/README.md § "Why body copy is 400" and the note beside
+     --weight-body in tokens/typography.css. */
   body { background-color: var(--color-surface); color: var(--color-ink); font: var(--size-body)/var(--leading-body) var(--font-sans); font-weight: var(--weight-body); transition: background-color var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out); margin: 0; }
   /* Greyscale antialiasing in BOTH modes, which is a reversal.
      The old rule kept subpixel smoothing on in light mode deliberately: it
      adds roughly a quarter-step of apparent weight, and the previous
      Nunito-derived cut needed it because its Regular read thin. Switzer does
-     not — it is a properly fitted grotesque, and at the 14px reading size that
-     borrowed weight is what makes body copy look semi-bold on macOS.
-     The compensation outlived the face it was compensating for. */
+     not — it is a properly fitted grotesque, and at the 14px UI size this
+     rule sets, that borrowed weight is what makes body copy look semi-bold on
+     macOS. (The scale forks: 14 is the UI size, 17 is the reading size. This
+     declaration sets the UI one, which is the smaller and therefore the more
+     exposed of the two.) The compensation outlived the face it compensated
+     for. */
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: var(--weight-heading); margin: 0; text-wrap: balance; line-height: var(--leading-heading); }
   /* Tighten only the sizes where Switzer's metrics run loose. h4+ stays
@@ -828,26 +936,33 @@
   code, kbd, .ns-label { font-family: var(--font-mono); }
 }
 
-/* Layered at the import site, not inside the files: phosphor.css is generated
+/* Layered at the import site, not inside the file: phosphor.css is generated
    by scripts/subset-icons.py, so a regeneration would drop an edit made in it.
-   Both icon files must land in the SAME layer — icons-gap.css overrides
-   phosphor.css purely by source order at equal specificity. */
+   There used to be a second import here — icons-gap.css, 31 glyphs redrawn as
+   inline-SVG masks because the subset was missing them and the subsetter was
+   missing too. Both are back; one file is the icon source again. */
 
 @layer ns-components{
 
 /* ============================================================================
-   icons.css — GENERATED by scripts/subset-icons.py. Do not edit by hand.
+   phosphor.css — GENERATED by scripts/subset-icons.py. Do not edit by hand.
    ----------------------------------------------------------------------------
-   Phosphor v2.1.2, subsetted to only the glyphs this theme uses and
-   served from our own origin. Re-run the script after adding a new ph-* class.
+   Phosphor v2.1.2, subsetted to only the glyphs this repo references and
+   served from our own origin. The glyph list comes from
+   `node scripts/check-icons.mjs --list`, so it is the same list the build
+   gate checks against.
 
-   TWO HAND-EDITS survive here and must be re-applied after regeneration
-   (scripts/lint-principles.mjs fails the build if they are lost):
-   the `font-family: ... !important` on .ph and .ph-fill is DELETED. An
-   !important in a lower layer beats a normal declaration in a higher one, so
-   it defeated every font-* utility. It is also unnecessary: .ph and .ph-fill
-   are never used on the same element (.ph-fill carries its own
-   .ph-fill.ph-*:before glyph rules), so they never compete.
+   To add an icon: use the class, then re-run `python3 scripts/subset-icons.py`
+   and commit the regenerated icons/. check-icons.mjs FAILS the build on a
+   `ph-` class with no glyph, because a missing glyph renders as empty space —
+   an invisible control, not a broken one.
+
+   ONE HAND-EDIT IS BAKED IN, not applied afterwards: upstream sets
+   `font-family: ... !important` on .ph and .ph-fill. An !important in a lower
+   layer beats a normal declaration in a higher one, so it defeated every
+   font-* utility a consuming app wrote. It is also unnecessary — .ph and
+   .ph-fill are never used on the same element, so they never compete. The
+   generator below simply does not emit it.
    ========================================================================== */
 
 @font-face {
@@ -870,16 +985,20 @@
   -moz-osx-font-smoothing: grayscale;
   display: inline-block;
 }
-
+.ph.ph-app-window:before { content: "\e5da"; }
+.ph.ph-arrow-counter-clockwise:before { content: "\e038"; }
 .ph.ph-arrow-down:before { content: "\e03e"; }
 .ph.ph-arrow-left:before { content: "\e058"; }
 .ph.ph-arrow-right:before { content: "\e06c"; }
+.ph.ph-arrow-square-out:before { content: "\e5de"; }
 .ph.ph-arrow-up-right:before { content: "\e092"; }
 .ph.ph-arrows-clockwise:before { content: "\e094"; }
+.ph.ph-arrows-left-right:before { content: "\e0a0"; }
 .ph.ph-article:before { content: "\e0a8"; }
 .ph.ph-barbell:before { content: "\e0b6"; }
+.ph.ph-bell:before { content: "\e0ce"; }
 .ph.ph-bell-ringing:before { content: "\e5e8"; }
-.ph.ph-book-bookmark:before { content: "\e0e4"; }
+.ph.ph-book-open:before { content: "\e0e6"; }
 .ph.ph-book-open-text:before { content: "\e8f2"; }
 .ph.ph-bookmark-simple:before { content: "\e0ea"; }
 .ph.ph-books:before { content: "\e758"; }
@@ -889,89 +1008,90 @@
 .ph.ph-calendar:before { content: "\e108"; }
 .ph.ph-calendar-blank:before { content: "\e10a"; }
 .ph.ph-caret-down:before { content: "\e136"; }
+.ph.ph-caret-left:before { content: "\e138"; }
 .ph.ph-caret-right:before { content: "\e13a"; }
+.ph.ph-caret-up:before { content: "\e13c"; }
 .ph.ph-chart-bar:before { content: "\e150"; }
-.ph.ph-chart-donut:before { content: "\eaa6"; }
-.ph.ph-chart-line:before { content: "\e154"; }
-.ph.ph-chart-line-up:before { content: "\e156"; }
+.ph.ph-chat-centered-text:before { content: "\e166"; }
 .ph.ph-chat-circle:before { content: "\e168"; }
 .ph.ph-chat-circle-text:before { content: "\e16e"; }
 .ph.ph-chats-circle:before { content: "\e17e"; }
+.ph.ph-check:before { content: "\e182"; }
 .ph.ph-check-circle:before { content: "\e184"; }
 .ph.ph-circle:before { content: "\e18a"; }
+.ph.ph-circle-half:before { content: "\e18c"; }
 .ph.ph-circle-notch:before { content: "\eb44"; }
 .ph.ph-clock:before { content: "\e19a"; }
 .ph.ph-clock-clockwise:before { content: "\e19e"; }
-.ph.ph-clock-countdown:before { content: "\ed2c"; }
+.ph.ph-closed-captioning:before { content: "\e1a4"; }
 .ph.ph-cloud:before { content: "\e1aa"; }
 .ph.ph-code:before { content: "\e1bc"; }
-.ph.ph-coffee:before { content: "\e1c2"; }
 .ph.ph-compass:before { content: "\e1c8"; }
+.ph.ph-copy:before { content: "\e1ca"; }
 .ph.ph-credit-card:before { content: "\e1d2"; }
-.ph.ph-crosshair:before { content: "\e1d6"; }
 .ph.ph-crown-simple:before { content: "\e616"; }
 .ph.ph-cube:before { content: "\e1da"; }
-.ph.ph-currency-circle-dollar:before { content: "\e54c"; }
 .ph.ph-database:before { content: "\e1de"; }
+.ph.ph-dots-six-vertical:before { content: "\eae2"; }
+.ph.ph-dots-three:before { content: "\e1fe"; }
+.ph.ph-download-simple:before { content: "\e20c"; }
 .ph.ph-envelope-simple:before { content: "\e218"; }
 .ph.ph-exam:before { content: "\e742"; }
-.ph.ph-eye:before { content: "\e220"; }
 .ph.ph-facebook-logo:before { content: "\e226"; }
+.ph.ph-file:before { content: "\e230"; }
 .ph.ph-file-text:before { content: "\e23a"; }
-.ph.ph-film-strip:before { content: "\e792"; }
+.ph.ph-file-video:before { content: "\ea22"; }
 .ph.ph-flag:before { content: "\e244"; }
 .ph.ph-flag-banner-fold:before { content: "\ecf2"; }
 .ph.ph-flag-checkered:before { content: "\ea38"; }
 .ph.ph-flask:before { content: "\e79e"; }
 .ph.ph-flow-arrow:before { content: "\e6ec"; }
 .ph.ph-folder-open:before { content: "\e256"; }
-.ph.ph-folders:before { content: "\e260"; }
-.ph.ph-funnel:before { content: "\e266"; }
 .ph.ph-gauge:before { content: "\e628"; }
+.ph.ph-gear:before { content: "\e270"; }
 .ph.ph-gear-six:before { content: "\e272"; }
-.ph.ph-gift:before { content: "\e276"; }
 .ph.ph-git-branch:before { content: "\e278"; }
-.ph.ph-git-fork:before { content: "\e27e"; }
+.ph.ph-github-logo:before { content: "\e576"; }
 .ph.ph-globe:before { content: "\e288"; }
-.ph.ph-globe-hemisphere-east:before { content: "\e28a"; }
 .ph.ph-graduation-cap:before { content: "\e62c"; }
-.ph.ph-handshake:before { content: "\e582"; }
-.ph.ph-hash:before { content: "\e2a2"; }
-.ph.ph-headset:before { content: "\e584"; }
+.ph.ph-hammer:before { content: "\e80e"; }
 .ph.ph-heart:before { content: "\e2a8"; }
-.ph.ph-house:before { content: "\e2c2"; }
 .ph.ph-image:before { content: "\e2ca"; }
 .ph.ph-infinity:before { content: "\e634"; }
 .ph.ph-info:before { content: "\e2ce"; }
+.ph.ph-lifebuoy:before { content: "\e63a"; }
 .ph.ph-lightbulb:before { content: "\e2dc"; }
 .ph.ph-lightning:before { content: "\e2de"; }
+.ph.ph-link:before { content: "\e2e2"; }
 .ph.ph-link-simple:before { content: "\e2e6"; }
 .ph.ph-linkedin-logo:before { content: "\e2ee"; }
 .ph.ph-list:before { content: "\e2f0"; }
+.ph.ph-list-bullets:before { content: "\e2f2"; }
 .ph.ph-list-checks:before { content: "\eadc"; }
+.ph.ph-list-numbers:before { content: "\e2f6"; }
 .ph.ph-lock:before { content: "\e2fa"; }
-.ph.ph-lock-open:before { content: "\e306"; }
 .ph.ph-lock-simple:before { content: "\e308"; }
 .ph.ph-lock-simple-open:before { content: "\e30a"; }
 .ph.ph-magnifying-glass:before { content: "\e30c"; }
-.ph.ph-map-pin:before { content: "\e316"; }
 .ph.ph-map-trifold:before { content: "\e31a"; }
 .ph.ph-medal:before { content: "\e320"; }
 .ph.ph-megaphone:before { content: "\e324"; }
 .ph.ph-microphone:before { content: "\e326"; }
+.ph.ph-moon:before { content: "\e330"; }
 .ph.ph-newspaper:before { content: "\e344"; }
 .ph.ph-note:before { content: "\e348"; }
 .ph.ph-paper-plane-tilt:before { content: "\e398"; }
+.ph.ph-paperclip:before { content: "\e39a"; }
 .ph.ph-pen-nib:before { content: "\e3ac"; }
-.ph.ph-phone-call:before { content: "\e3ba"; }
+.ph.ph-pencil-simple:before { content: "\e3b4"; }
 .ph.ph-play:before { content: "\e3d0"; }
 .ph.ph-play-circle:before { content: "\e3d2"; }
 .ph.ph-plugs:before { content: "\eb56"; }
+.ph.ph-plus:before { content: "\e3d4"; }
 .ph.ph-presentation-chart:before { content: "\e656"; }
 .ph.ph-projector-screen:before { content: "\e658"; }
 .ph.ph-question:before { content: "\e3e8"; }
 .ph.ph-quotes:before { content: "\e660"; }
-.ph.ph-robot:before { content: "\e762"; }
 .ph.ph-rocket-launch:before { content: "\e3fe"; }
 .ph.ph-rows:before { content: "\e5a2"; }
 .ph.ph-rss-simple:before { content: "\e402"; }
@@ -983,14 +1103,18 @@
 .ph.ph-squares-four:before { content: "\e464"; }
 .ph.ph-stack:before { content: "\e466"; }
 .ph.ph-star:before { content: "\e46a"; }
-.ph.ph-steps:before { content: "\ecbe"; }
 .ph.ph-strategy:before { content: "\ea3a"; }
+.ph.ph-sun:before { content: "\e472"; }
 .ph.ph-tag:before { content: "\e478"; }
-.ph.ph-target:before { content: "\e47c"; }
 .ph.ph-terminal-window:before { content: "\eae8"; }
+.ph.ph-text-align-justify:before { content: "\e482"; }
+.ph.ph-text-b:before { content: "\e5be"; }
+.ph.ph-text-h-three:before { content: "\e6c0"; }
+.ph.ph-text-h-two:before { content: "\e6be"; }
+.ph.ph-text-italic:before { content: "\e5c0"; }
 .ph.ph-timer:before { content: "\e492"; }
-.ph.ph-toolbox:before { content: "\eca0"; }
-.ph.ph-twitter-logo:before { content: "\e4ba"; }
+.ph.ph-trash:before { content: "\e4a6"; }
+.ph.ph-upload-simple:before { content: "\e4c0"; }
 .ph.ph-user:before { content: "\e4c2"; }
 .ph.ph-user-circle:before { content: "\e4c4"; }
 .ph.ph-users-three:before { content: "\e68e"; }
@@ -998,7 +1122,6 @@
 .ph.ph-video-camera:before { content: "\e4da"; }
 .ph.ph-warning:before { content: "\e4e0"; }
 .ph.ph-warning-circle:before { content: "\e4e2"; }
-.ph.ph-wrench:before { content: "\e5d4"; }
 .ph.ph-x:before { content: "\e4f6"; }
 .ph.ph-x-circle:before { content: "\e4f8"; }
 .ph.ph-x-logo:before { content: "\e4bc"; }
@@ -1023,16 +1146,20 @@
   -moz-osx-font-smoothing: grayscale;
   display: inline-block;
 }
-
+.ph-fill.ph-app-window:before { content: "\e5da"; }
+.ph-fill.ph-arrow-counter-clockwise:before { content: "\e038"; }
 .ph-fill.ph-arrow-down:before { content: "\e03e"; }
 .ph-fill.ph-arrow-left:before { content: "\e058"; }
 .ph-fill.ph-arrow-right:before { content: "\e06c"; }
+.ph-fill.ph-arrow-square-out:before { content: "\e5de"; }
 .ph-fill.ph-arrow-up-right:before { content: "\e092"; }
 .ph-fill.ph-arrows-clockwise:before { content: "\e094"; }
+.ph-fill.ph-arrows-left-right:before { content: "\e0a0"; }
 .ph-fill.ph-article:before { content: "\e0a8"; }
 .ph-fill.ph-barbell:before { content: "\e0b6"; }
+.ph-fill.ph-bell:before { content: "\e0ce"; }
 .ph-fill.ph-bell-ringing:before { content: "\e5e8"; }
-.ph-fill.ph-book-bookmark:before { content: "\e0e4"; }
+.ph-fill.ph-book-open:before { content: "\e0e6"; }
 .ph-fill.ph-book-open-text:before { content: "\e8f2"; }
 .ph-fill.ph-bookmark-simple:before { content: "\e0ea"; }
 .ph-fill.ph-books:before { content: "\e758"; }
@@ -1042,89 +1169,90 @@
 .ph-fill.ph-calendar:before { content: "\e108"; }
 .ph-fill.ph-calendar-blank:before { content: "\e10a"; }
 .ph-fill.ph-caret-down:before { content: "\e136"; }
+.ph-fill.ph-caret-left:before { content: "\e138"; }
 .ph-fill.ph-caret-right:before { content: "\e13a"; }
+.ph-fill.ph-caret-up:before { content: "\e13c"; }
 .ph-fill.ph-chart-bar:before { content: "\e150"; }
-.ph-fill.ph-chart-donut:before { content: "\eaa6"; }
-.ph-fill.ph-chart-line:before { content: "\e154"; }
-.ph-fill.ph-chart-line-up:before { content: "\e156"; }
+.ph-fill.ph-chat-centered-text:before { content: "\e166"; }
 .ph-fill.ph-chat-circle:before { content: "\e168"; }
 .ph-fill.ph-chat-circle-text:before { content: "\e16e"; }
 .ph-fill.ph-chats-circle:before { content: "\e17e"; }
+.ph-fill.ph-check:before { content: "\e182"; }
 .ph-fill.ph-check-circle:before { content: "\e184"; }
 .ph-fill.ph-circle:before { content: "\e18a"; }
+.ph-fill.ph-circle-half:before { content: "\e18c"; }
 .ph-fill.ph-circle-notch:before { content: "\eb44"; }
 .ph-fill.ph-clock:before { content: "\e19a"; }
 .ph-fill.ph-clock-clockwise:before { content: "\e19e"; }
-.ph-fill.ph-clock-countdown:before { content: "\ed2c"; }
+.ph-fill.ph-closed-captioning:before { content: "\e1a4"; }
 .ph-fill.ph-cloud:before { content: "\e1aa"; }
 .ph-fill.ph-code:before { content: "\e1bc"; }
-.ph-fill.ph-coffee:before { content: "\e1c2"; }
 .ph-fill.ph-compass:before { content: "\e1c8"; }
+.ph-fill.ph-copy:before { content: "\e1ca"; }
 .ph-fill.ph-credit-card:before { content: "\e1d2"; }
-.ph-fill.ph-crosshair:before { content: "\e1d6"; }
 .ph-fill.ph-crown-simple:before { content: "\e616"; }
 .ph-fill.ph-cube:before { content: "\e1da"; }
-.ph-fill.ph-currency-circle-dollar:before { content: "\e54c"; }
 .ph-fill.ph-database:before { content: "\e1de"; }
+.ph-fill.ph-dots-six-vertical:before { content: "\eae2"; }
+.ph-fill.ph-dots-three:before { content: "\e1fe"; }
+.ph-fill.ph-download-simple:before { content: "\e20c"; }
 .ph-fill.ph-envelope-simple:before { content: "\e218"; }
 .ph-fill.ph-exam:before { content: "\e742"; }
-.ph-fill.ph-eye:before { content: "\e220"; }
 .ph-fill.ph-facebook-logo:before { content: "\e226"; }
+.ph-fill.ph-file:before { content: "\e230"; }
 .ph-fill.ph-file-text:before { content: "\e23a"; }
-.ph-fill.ph-film-strip:before { content: "\e792"; }
+.ph-fill.ph-file-video:before { content: "\ea22"; }
 .ph-fill.ph-flag:before { content: "\e244"; }
 .ph-fill.ph-flag-banner-fold:before { content: "\ecf2"; }
 .ph-fill.ph-flag-checkered:before { content: "\ea38"; }
 .ph-fill.ph-flask:before { content: "\e79e"; }
 .ph-fill.ph-flow-arrow:before { content: "\e6ec"; }
 .ph-fill.ph-folder-open:before { content: "\e256"; }
-.ph-fill.ph-folders:before { content: "\e260"; }
-.ph-fill.ph-funnel:before { content: "\e266"; }
 .ph-fill.ph-gauge:before { content: "\e628"; }
+.ph-fill.ph-gear:before { content: "\e270"; }
 .ph-fill.ph-gear-six:before { content: "\e272"; }
-.ph-fill.ph-gift:before { content: "\e276"; }
 .ph-fill.ph-git-branch:before { content: "\e278"; }
-.ph-fill.ph-git-fork:before { content: "\e27e"; }
+.ph-fill.ph-github-logo:before { content: "\e576"; }
 .ph-fill.ph-globe:before { content: "\e288"; }
-.ph-fill.ph-globe-hemisphere-east:before { content: "\e28a"; }
 .ph-fill.ph-graduation-cap:before { content: "\e62c"; }
-.ph-fill.ph-handshake:before { content: "\e582"; }
-.ph-fill.ph-hash:before { content: "\e2a2"; }
-.ph-fill.ph-headset:before { content: "\e584"; }
+.ph-fill.ph-hammer:before { content: "\e80e"; }
 .ph-fill.ph-heart:before { content: "\e2a8"; }
-.ph-fill.ph-house:before { content: "\e2c2"; }
 .ph-fill.ph-image:before { content: "\e2ca"; }
 .ph-fill.ph-infinity:before { content: "\e634"; }
 .ph-fill.ph-info:before { content: "\e2ce"; }
+.ph-fill.ph-lifebuoy:before { content: "\e63a"; }
 .ph-fill.ph-lightbulb:before { content: "\e2dc"; }
 .ph-fill.ph-lightning:before { content: "\e2de"; }
+.ph-fill.ph-link:before { content: "\e2e2"; }
 .ph-fill.ph-link-simple:before { content: "\e2e6"; }
 .ph-fill.ph-linkedin-logo:before { content: "\e2ee"; }
 .ph-fill.ph-list:before { content: "\e2f0"; }
+.ph-fill.ph-list-bullets:before { content: "\e2f2"; }
 .ph-fill.ph-list-checks:before { content: "\eadc"; }
+.ph-fill.ph-list-numbers:before { content: "\e2f6"; }
 .ph-fill.ph-lock:before { content: "\e2fa"; }
-.ph-fill.ph-lock-open:before { content: "\e306"; }
 .ph-fill.ph-lock-simple:before { content: "\e308"; }
 .ph-fill.ph-lock-simple-open:before { content: "\e30a"; }
 .ph-fill.ph-magnifying-glass:before { content: "\e30c"; }
-.ph-fill.ph-map-pin:before { content: "\e316"; }
 .ph-fill.ph-map-trifold:before { content: "\e31a"; }
 .ph-fill.ph-medal:before { content: "\e320"; }
 .ph-fill.ph-megaphone:before { content: "\e324"; }
 .ph-fill.ph-microphone:before { content: "\e326"; }
+.ph-fill.ph-moon:before { content: "\e330"; }
 .ph-fill.ph-newspaper:before { content: "\e344"; }
 .ph-fill.ph-note:before { content: "\e348"; }
 .ph-fill.ph-paper-plane-tilt:before { content: "\e398"; }
+.ph-fill.ph-paperclip:before { content: "\e39a"; }
 .ph-fill.ph-pen-nib:before { content: "\e3ac"; }
-.ph-fill.ph-phone-call:before { content: "\e3ba"; }
+.ph-fill.ph-pencil-simple:before { content: "\e3b4"; }
 .ph-fill.ph-play:before { content: "\e3d0"; }
 .ph-fill.ph-play-circle:before { content: "\e3d2"; }
 .ph-fill.ph-plugs:before { content: "\eb56"; }
+.ph-fill.ph-plus:before { content: "\e3d4"; }
 .ph-fill.ph-presentation-chart:before { content: "\e656"; }
 .ph-fill.ph-projector-screen:before { content: "\e658"; }
 .ph-fill.ph-question:before { content: "\e3e8"; }
 .ph-fill.ph-quotes:before { content: "\e660"; }
-.ph-fill.ph-robot:before { content: "\e762"; }
 .ph-fill.ph-rocket-launch:before { content: "\e3fe"; }
 .ph-fill.ph-rows:before { content: "\e5a2"; }
 .ph-fill.ph-rss-simple:before { content: "\e402"; }
@@ -1136,14 +1264,18 @@
 .ph-fill.ph-squares-four:before { content: "\e464"; }
 .ph-fill.ph-stack:before { content: "\e466"; }
 .ph-fill.ph-star:before { content: "\e46a"; }
-.ph-fill.ph-steps:before { content: "\ecbe"; }
 .ph-fill.ph-strategy:before { content: "\ea3a"; }
+.ph-fill.ph-sun:before { content: "\e472"; }
 .ph-fill.ph-tag:before { content: "\e478"; }
-.ph-fill.ph-target:before { content: "\e47c"; }
 .ph-fill.ph-terminal-window:before { content: "\eae8"; }
+.ph-fill.ph-text-align-justify:before { content: "\e482"; }
+.ph-fill.ph-text-b:before { content: "\e5be"; }
+.ph-fill.ph-text-h-three:before { content: "\e6c0"; }
+.ph-fill.ph-text-h-two:before { content: "\e6be"; }
+.ph-fill.ph-text-italic:before { content: "\e5c0"; }
 .ph-fill.ph-timer:before { content: "\e492"; }
-.ph-fill.ph-toolbox:before { content: "\eca0"; }
-.ph-fill.ph-twitter-logo:before { content: "\e4ba"; }
+.ph-fill.ph-trash:before { content: "\e4a6"; }
+.ph-fill.ph-upload-simple:before { content: "\e4c0"; }
 .ph-fill.ph-user:before { content: "\e4c2"; }
 .ph-fill.ph-user-circle:before { content: "\e4c4"; }
 .ph-fill.ph-users-three:before { content: "\e68e"; }
@@ -1151,126 +1283,9 @@
 .ph-fill.ph-video-camera:before { content: "\e4da"; }
 .ph-fill.ph-warning:before { content: "\e4e0"; }
 .ph-fill.ph-warning-circle:before { content: "\e4e2"; }
-.ph-fill.ph-wrench:before { content: "\e5d4"; }
 .ph-fill.ph-x:before { content: "\e4f6"; }
 .ph-fill.ph-x-circle:before { content: "\e4f8"; }
 .ph-fill.ph-x-logo:before { content: "\e4bc"; }
-}
-
-@layer ns-components{
-
-/* NS Design System — Phosphor subset gap-fill.
-   =========================================================================
-   The self-hosted Phosphor woff2 was subsetted upstream to the glyphs the
-   Ghost theme's CONTENT uses — but the component layer, templates and
-   styleguide reference ~28 more (carets, plus, pencil, upload, the text-
-   formatting set…). Those classes had no rule, so every one rendered as an
-   empty box.
-
-   Until the subset is regenerated upstream (scripts/subset-icons.py — see
-   readme "Iconography"), this file fills each gap with an inline-SVG mask
-   drawn to Phosphor's own grid: 24px box, 1.7 stroke, round caps — the same
-   spec as the bespoke sprite, so all three sources read as one set. Each
-   glyph paints with currentColor and sizes with font-size, exactly like a
-   font glyph, so no markup changes anywhere.
-
-   If the real subset gains one of these glyphs, its font rule (.ph.ph-x)
-   wins nothing — delete the matching block here; the markup stays the same.
-
-   Generated-by-hand; keep alphabetical. */
-
-.ph.ph-arrow-counter-clockwise:before, .ph.ph-arrow-square-out:before,
-.ph.ph-bell:before, .ph.ph-caret-left:before, .ph.ph-cards:before,
-.ph.ph-check:before, .ph.ph-dots-six-vertical:before,
-.ph.ph-download-simple:before, .ph.ph-file:before, .ph.ph-file-video:before,
-.ph.ph-gear:before, .ph.ph-github-logo:before, .ph.ph-lifebuoy:before, .ph.ph-link:before,
-.ph.ph-list-bullets:before, .ph.ph-list-numbers:before, .ph.ph-moon:before,
-.ph.ph-palette:before, .ph.ph-paperclip:before, .ph.ph-pencil-simple:before,
-.ph.ph-caret-up:before, .ph.ph-copy:before, .ph.ph-plus:before,
-.ph.ph-sun:before, .ph.ph-text-align-justify:before, .ph.ph-text-b:before,
-.ph.ph-text-h-three:before, .ph.ph-text-h-two:before,
-.ph.ph-text-italic:before, .ph.ph-trash:before, .ph.ph-upload-simple:before {
-  content: "";
-  display: inline-block;
-  inline-size: 1em; block-size: 1em;
-  vertical-align: -0.125em;
-  background: currentColor;
-  mask-position: center; mask-repeat: no-repeat; mask-size: contain;
-  -webkit-mask-position: center; -webkit-mask-repeat: no-repeat; -webkit-mask-size: contain;
-}
-
-.ph.ph-arrow-counter-clockwise:before { mask-image: var(--phgap-arrow-counter-clockwise); -webkit-mask-image: var(--phgap-arrow-counter-clockwise); }
-.ph.ph-arrow-square-out:before { mask-image: var(--phgap-arrow-square-out); -webkit-mask-image: var(--phgap-arrow-square-out); }
-.ph.ph-bell:before { mask-image: var(--phgap-bell); -webkit-mask-image: var(--phgap-bell); }
-.ph.ph-caret-left:before { mask-image: var(--phgap-caret-left); -webkit-mask-image: var(--phgap-caret-left); }
-.ph.ph-caret-up:before { mask-image: var(--phgap-caret-up); -webkit-mask-image: var(--phgap-caret-up); }
-.ph.ph-cards:before { mask-image: var(--phgap-cards); -webkit-mask-image: var(--phgap-cards); }
-.ph.ph-check:before { mask-image: var(--phgap-check); -webkit-mask-image: var(--phgap-check); }
-.ph.ph-copy:before { mask-image: var(--phgap-copy); -webkit-mask-image: var(--phgap-copy); }
-.ph.ph-dots-six-vertical:before { mask-image: var(--phgap-dots-six-vertical); -webkit-mask-image: var(--phgap-dots-six-vertical); }
-.ph.ph-download-simple:before { mask-image: var(--phgap-download-simple); -webkit-mask-image: var(--phgap-download-simple); }
-.ph.ph-file:before { mask-image: var(--phgap-file); -webkit-mask-image: var(--phgap-file); }
-.ph.ph-file-video:before { mask-image: var(--phgap-file-video); -webkit-mask-image: var(--phgap-file-video); }
-.ph.ph-gear:before { mask-image: var(--phgap-gear); -webkit-mask-image: var(--phgap-gear); }
-.ph.ph-github-logo:before { mask-image: var(--phgap-github-logo); -webkit-mask-image: var(--phgap-github-logo); }
-.ph.ph-lifebuoy:before { mask-image: var(--phgap-lifebuoy); -webkit-mask-image: var(--phgap-lifebuoy); }
-.ph.ph-link:before { mask-image: var(--phgap-link); -webkit-mask-image: var(--phgap-link); }
-.ph.ph-list-bullets:before { mask-image: var(--phgap-list-bullets); -webkit-mask-image: var(--phgap-list-bullets); }
-.ph.ph-list-numbers:before { mask-image: var(--phgap-list-numbers); -webkit-mask-image: var(--phgap-list-numbers); }
-.ph.ph-moon:before { mask-image: var(--phgap-moon); -webkit-mask-image: var(--phgap-moon); }
-.ph.ph-palette:before { mask-image: var(--phgap-palette); -webkit-mask-image: var(--phgap-palette); }
-.ph.ph-paperclip:before { mask-image: var(--phgap-paperclip); -webkit-mask-image: var(--phgap-paperclip); }
-.ph.ph-pencil-simple:before { mask-image: var(--phgap-pencil-simple); -webkit-mask-image: var(--phgap-pencil-simple); }
-.ph.ph-plus:before { mask-image: var(--phgap-plus); -webkit-mask-image: var(--phgap-plus); }
-.ph.ph-sun:before { mask-image: var(--phgap-sun); -webkit-mask-image: var(--phgap-sun); }
-.ph.ph-text-align-justify:before { mask-image: var(--phgap-text-align-justify); -webkit-mask-image: var(--phgap-text-align-justify); }
-.ph.ph-text-b:before { mask-image: var(--phgap-text-b); -webkit-mask-image: var(--phgap-text-b); }
-.ph.ph-text-h-three:before { mask-image: var(--phgap-text-h-three); -webkit-mask-image: var(--phgap-text-h-three); }
-.ph.ph-text-h-two:before { mask-image: var(--phgap-text-h-two); -webkit-mask-image: var(--phgap-text-h-two); }
-.ph.ph-text-italic:before { mask-image: var(--phgap-text-italic); -webkit-mask-image: var(--phgap-text-italic); }
-.ph.ph-trash:before { mask-image: var(--phgap-trash); -webkit-mask-image: var(--phgap-trash); }
-.ph.ph-upload-simple:before { mask-image: var(--phgap-upload-simple); -webkit-mask-image: var(--phgap-upload-simple); }
-
-/* The drawings. One custom property per glyph so the rule table above stays
-   readable. SVG: 24px box, stroke 1.7, round caps/joins, currentColor via
-   mask (the fill color inside the data URI is irrelevant — only alpha). */
-:root {
-  --phgap-arrow-counter-clockwise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 10.5a7 7 0 1 1-.6 5'/%3E%3Cpath d='M5.2 5.5v5h5'/%3E%3C/svg%3E");
-  --phgap-arrow-square-out: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.5 10V4.5H14M19.3 4.7 12 12'/%3E%3Cpath d='M19.5 14v4a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 18V6A1.5 1.5 0 0 1 6 4.5h4'/%3E%3C/svg%3E");
-  --phgap-bell: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 10a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6H4c.5-.5 2-2 2-6Z'/%3E%3Cpath d='M9.5 19.5a2.5 2.5 0 0 0 5 0'/%3E%3C/svg%3E");
-  --phgap-caret-up: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 15 12 7.5l7.5 7.5'/%3E%3C/svg%3E");
-  --phgap-copy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='8.5' y='8.5' width='11.5' height='11.5' rx='1.5'/%3E%3Cpath d='M15.5 8.5v-3a1.5 1.5 0 0 0-1.5-1.5H5.5A1.5 1.5 0 0 0 4 5.5v8.5a1.5 1.5 0 0 0 1.5 1.5h3'/%3E%3C/svg%3E");
-  --phgap-text-align-justify: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.5 6h17M3.5 10.5h17M3.5 15h17M3.5 19.5h17'/%3E%3C/svg%3E");
-  --phgap-caret-left: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 4.5 7.5 12l7.5 7.5'/%3E%3C/svg%3E");
-  --phgap-cards: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='7.5' width='13' height='12' rx='1.5'/%3E%3Cpath d='M8 4.5h10.5A1.5 1.5 0 0 1 20 6v10'/%3E%3C/svg%3E");
-  --phgap-check: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4.5 13 5 5L19.5 6.5'/%3E%3C/svg%3E");
-  --phgap-dots-six-vertical: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'%3E%3Ccircle cx='9.2' cy='5.5' r='1.4'/%3E%3Ccircle cx='14.8' cy='5.5' r='1.4'/%3E%3Ccircle cx='9.2' cy='12' r='1.4'/%3E%3Ccircle cx='14.8' cy='12' r='1.4'/%3E%3Ccircle cx='9.2' cy='18.5' r='1.4'/%3E%3Ccircle cx='14.8' cy='18.5' r='1.4'/%3E%3C/svg%3E");
-  --phgap-download-simple: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.5v10M8.2 10.8 12 14.6l3.8-3.8'/%3E%3Cpath d='M4.5 15.5v3A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-3'/%3E%3C/svg%3E");
-  --phgap-file: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8.5Z'/%3E%3Cpath d='M13.5 3.5v5h5'/%3E%3C/svg%3E");
-  --phgap-file-video: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 3.5H7A1.5 1.5 0 0 0 5.5 5v14A1.5 1.5 0 0 0 7 20.5h10a1.5 1.5 0 0 0 1.5-1.5V8.5Z'/%3E%3Cpath d='M13.5 3.5v5h5'/%3E%3Cpath d='M10.4 12.4l4 2.3-4 2.3Z'/%3E%3C/svg%3E");
-  --phgap-gear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3.2'/%3E%3Cpath d='M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7'/%3E%3C/svg%3E");
-  /* The GitHub mark, filled — a logo, so it is reproduced as drawn rather
-     than restroked to match the set. Sized down slightly (inset viewBox) so
-     its solid mass reads at the same optical weight as the stroked glyphs
-     beside it. */
-  --phgap-github-logo: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-1.2 -1.2 26.4 26.4'%3E%3Cpath fill='black' d='M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7 0-.7 0-.7 1.2 0 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 0-.8.4-1.3.7-1.6-2.6-.3-5.4-1.3-5.4-5.9 0-1.3.4-2.4 1.2-3.2-.2-.3-.6-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.2 4.8 18.2 5.1 18.2 5.1c.7 1.7.3 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.5.4.8 1.1.8 2.2v3.3c0 .3.2.7.9.6A12 12 0 0 0 12 .3'/%3E%3C/svg%3E");
-  --phgap-lifebuoy: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Ccircle cx='12' cy='12' r='3.5'/%3E%3Cpath d='M6 6l3.5 3.5M18 6l-3.5 3.5M18 18l-3.5-3.5M6 18l3.5-3.5'/%3E%3C/svg%3E");
-  --phgap-link: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 14a4 4 0 0 0 6 .4l3-3a4 4 0 0 0-5.6-5.6l-1.7 1.7'/%3E%3Cpath d='M14 10a4 4 0 0 0-6-.4l-3 3a4 4 0 0 0 5.6 5.6l1.7-1.7'/%3E%3C/svg%3E");
-  --phgap-list-bullets: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9.5 6h10M9.5 12h10M9.5 18h10'/%3E%3Ccircle cx='5' cy='6' r='1.2' fill='black' stroke='none'/%3E%3Ccircle cx='5' cy='12' r='1.2' fill='black' stroke='none'/%3E%3Ccircle cx='5' cy='18' r='1.2' fill='black' stroke='none'/%3E%3C/svg%3E");
-  --phgap-list-numbers: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.5 6h9M10.5 12h9M10.5 18h9'/%3E%3Cpath d='M4.3 4.8 5.8 4v4M4.2 10.7a1.5 1.5 0 0 1 2.6 1c0 1-1.6 1.6-2.6 2.3h2.9M4.3 16.3h2.2l-1.3 1.6a1.4 1.4 0 1 1-1 2.4'/%3E%3C/svg%3E");
-  --phgap-moon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19.5 14.5A8 8 0 1 1 9.5 4.5a6.5 6.5 0 0 0 10 10Z'/%3E%3C/svg%3E");
-  --phgap-palette: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.5a8.5 8.5 0 1 0 0 17c1.4 0 2-.8 2-1.7 0-1.5-1.5-2 0-3.3 1-1 6.5.6 6.5-3.5A8.7 8.7 0 0 0 12 3.5Z'/%3E%3Ccircle cx='8' cy='9' r='.4' fill='black'/%3E%3Ccircle cx='12.5' cy='7' r='.4' fill='black'/%3E%3Ccircle cx='16.5' cy='9.5' r='.4' fill='black'/%3E%3Ccircle cx='7.5' cy='13.5' r='.4' fill='black'/%3E%3C/svg%3E");
-  --phgap-paperclip: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m16.5 8.5-6.8 6.8a1.9 1.9 0 0 0 2.7 2.7l6.8-6.9a3.8 3.8 0 0 0-5.4-5.4l-6.8 6.9a5.7 5.7 0 0 0 8 8l5.5-5.4'/%3E%3C/svg%3E");
-  --phgap-pencil-simple: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m15 5 4 4L8 20H4v-4Z'/%3E%3Cpath d='M13 7l4 4'/%3E%3C/svg%3E");
-  --phgap-plus: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4.5v15M4.5 12h15'/%3E%3C/svg%3E");
-  --phgap-sun: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4'/%3E%3C/svg%3E");
-  --phgap-text-b: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.5 4.5h6a3.5 3.5 0 0 1 0 7h-6ZM7.5 11.5h7a4 4 0 0 1 0 8h-7Z'/%3E%3C/svg%3E");
-  --phgap-text-h-three: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6v12M12 6v12M4 12h8'/%3E%3Cpath d='M16.5 9.5a2.3 2.3 0 1 1 2.3 3 2.5 2.5 0 1 1-2.5 3.2'/%3E%3C/svg%3E");
-  --phgap-text-h-two: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6v12M12 6v12M4 12h8'/%3E%3Cpath d='M16 10.3a2.5 2.5 0 0 1 4.4 1.6c0 2.2-4.4 3.4-4.4 6.1h4.5'/%3E%3C/svg%3E");
-  --phgap-text-italic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 4.5h9M5 19.5h9M14.5 4.5l-5 15'/%3E%3C/svg%3E");
-  --phgap-trash: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 6.5h15M9.5 6.5v-2h5v2M6.5 6.5l1 13.5a1 1 0 0 0 1 .9h7a1 1 0 0 0 1-.9l1-13.5'/%3E%3Cpath d='M10 10.5v6M14 10.5v6'/%3E%3C/svg%3E");
-  --phgap-upload-simple: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 14.5v-10M8.2 8.2 12 4.4l3.8 3.8'/%3E%3Cpath d='M4.5 15.5v3A1.5 1.5 0 0 0 6 20h12a1.5 1.5 0 0 0 1.5-1.5v-3'/%3E%3C/svg%3E");
-}
 }
 
 @layer ns-components{
@@ -1290,6 +1305,57 @@
    navy hero bands. Add `ns-pattern--on-light` on light surfaces to flip the
    ink to black hairlines at a slightly higher alpha (thin white lines need
    more presence on white than on navy). */
+
+/* --- The hairline grid, as a value -------------------------------------
+   The house motif — a square hairline grid — was hand-copied into about
+   twenty specimen cards, and it drifted exactly the way hand-copied things
+   do: four alphas (.05 / .06 / .07 / .09) and six cell sizes (14–26px) for
+   what everybody involved believed was one grid. Softening it meant twenty
+   edits, so nobody ever softened it.
+
+   It is exposed as a VALUE rather than only as a class because most of those
+   copies live in a `::before`, and you cannot put a class on a pseudo
+   element. `--ns-gridlines-image` composes `--ns-gridlines-ink`, and custom
+   property substitution resolves in the context of the element that USES it,
+   so overriding the ink locally re-tints the grid with nothing else changed:
+
+     .tile::before {
+       --ns-gridlines-cell: 16px;
+       background-image: var(--ns-gridlines-image);
+       background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+     }
+
+   Two inks and that is the whole vocabulary: white hairlines for the navy
+   console ground, near-black for a light one. Thin white lines need less
+   alpha on navy than black lines need on white, which is why the two are not
+   the same number.
+
+   .ns-pattern--grid is the other thing and stays: that one is a full-bleed
+   BAND treatment with a vignette mask, drawn in its own layer. This is the
+   raw material. */
+:root {
+  --ns-gridlines-ink-dark: rgb(255 255 255 / 0.07);
+  --ns-gridlines-ink-light: rgb(0 0 30 / 0.06);
+  --ns-gridlines-ink: var(--ns-gridlines-ink-dark);
+  --ns-gridlines-cell: 22px;
+  --ns-gridlines-image:
+    linear-gradient(to right, var(--ns-gridlines-ink) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--ns-gridlines-ink) 1px, transparent 1px);
+  /* Vertical rules only — a column guide rather than a grid. */
+  --ns-gridlines-image-cols:
+    linear-gradient(to right, var(--ns-gridlines-ink) 1px, transparent 1px);
+}
+/* The convenience class, for the common case where the grid is the element's
+   own background rather than a layer under its content. */
+.ns-gridlines {
+  background-image: var(--ns-gridlines-image);
+  background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+}
+.ns-gridlines--on-light { --ns-gridlines-ink: var(--ns-gridlines-ink-light); }
+.ns-gridlines--cols {
+  background-image: var(--ns-gridlines-image-cols);
+  background-size: var(--ns-gridlines-cell) 100%;
+}
 
 .ns-pattern { position: relative; }
 .ns-pattern > * { position: relative; }
@@ -2141,7 +2207,7 @@
     inline-size: 2.25rem; block-size: 2.25rem; padding: 0;
     border: 0; border-radius: var(--radius-sm);
     background: none; cursor: pointer;
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     font-variant-numeric: tabular-nums; color: var(--color-ink);
     transition: background var(--duration-fast) var(--ease-out),
                 color var(--duration-fast) var(--ease-out);
@@ -2193,7 +2259,7 @@
      above still reads as raised. */
   .ns-modal::backdrop, .ns-drawer::backdrop {
     background: var(--color-scrim);
-    animation: ns-fade-in var(--duration-fast) var(--ease-out);
+    animation: ns-anim-fade var(--duration-fast) var(--ease-out);
   }
 
 
@@ -2214,7 +2280,7 @@
     border-radius: var(--radius-card);
     background: var(--color-surface-raised); color: var(--color-ink);
     box-shadow: var(--shadow-raised);
-    animation: ns-fade-up var(--duration-base) var(--ease-out);
+    animation: ns-anim-rise var(--duration-base) var(--ease-out);
   }
   /* The display switch is on [open]. An author `display` beats the UA's
      `dialog:not([open]) { display: none }` whatever the specificity, so a
@@ -2298,7 +2364,7 @@
     box-shadow: var(--shadow-raised);
     z-index: var(--z-dropdown);
   }
-  .ns-popover:popover-open { animation: ns-fade-up var(--duration-fast) var(--ease-out); }
+  .ns-popover:popover-open { animation: ns-anim-rise var(--duration-fast) var(--ease-out); }
 
   .ns-menu { padding: var(--space-1-5); min-inline-size: 12rem; }
   .ns-menu__item {
@@ -2364,8 +2430,11 @@
   .ns-tooltip-host:focus-within > .ns-tooltip { opacity: 1; visibility: visible; }
 }
 
-@keyframes ns-fade-in { from { opacity: 0; } }
-@keyframes ns-fade-up { from { opacity: 0; translate: 0 0.5rem; } }
+/* The fade and the rise used to be redeclared here as ns-fade-in / ns-fade-up,
+   byte-identical to ns-anim-fade / ns-anim-rise in components/css/motion.css.
+   Two names for one gesture is two things to keep in step, and keyframe names
+   are global — so the overlays now animate on the shared ones. What is left
+   below is what is genuinely overlay-only. */
 @keyframes ns-slide-start { from { translate: -100% 0; } }
 /* The mobile nav sheet: down from the bar it came out of, not up from the
    bottom — it belongs to the burger, and motion should say so. */
@@ -2539,7 +2608,7 @@
   .ns-breadcrumb__item { display: flex; align-items: center; gap: var(--space-2); }
   .ns-breadcrumb__item + .ns-breadcrumb__item::before {
     content: "/"; color: var(--color-border);
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
   }
   .ns-breadcrumb__link {
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -2558,7 +2627,7 @@
     min-inline-size: var(--target-comfy); min-block-size: var(--target-comfy);
     padding-inline: var(--space-2);
     border: 1px solid transparent; border-radius: var(--radius-btn);
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     color: var(--color-muted); text-decoration: none;
     transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
   }
@@ -2845,7 +2914,7 @@
   .ns-topnav {
     position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
     display: flex; align-items: center; gap: var(--space-4);
-    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-4);
+    block-size: var(--navbar-h); padding-inline: var(--space-4);
     background: var(--color-surface); border-block-end: 1px solid var(--color-border);
   }
   /* The optional width-capping wrapper. Same flex row, centred, so a bar on a
@@ -2888,7 +2957,7 @@
   .ns-topnav__links { flex: none; display: flex; align-items: center; gap: var(--space-0-5); margin: 0; padding: 0; list-style: none; }
   .ns-topnav__links > li > a, .ns-topnav__link, .ns-topnav__trigger {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    block-size: var(--navbar-h, 3.5rem);
+    block-size: var(--navbar-h);
     padding-inline: var(--space-2-5);
     border: 0; background: transparent; cursor: pointer;
     font-family: var(--font-sans); font-size: var(--size-small); color: var(--color-muted);
@@ -3646,7 +3715,7 @@
     inline-size: 100vw; max-inline-size: 100vw;
     block-size: 100dvh; max-block-size: 100dvh;
     background: var(--color-surface); color: var(--color-ink);
-    animation: ns-fade-in var(--duration-fast) var(--ease-out);
+    animation: ns-anim-fade var(--duration-fast) var(--ease-out);
   }
   /* The display switch is on [open], NOT on the base rule. An author
      `display: flex` beats the UA's `dialog:not([open]) { display: none }`
@@ -3656,7 +3725,7 @@
   .ns-navsheet::backdrop { background: var(--color-scrim); }
   .ns-navsheet__head {
     flex: none; display: flex; align-items: center; gap: var(--space-3);
-    block-size: var(--navbar-h, 3.5rem); padding-inline: var(--space-6);
+    block-size: var(--navbar-h); padding-inline: var(--space-6);
     border-block-end: 1px solid var(--color-border);
   }
   .ns-navsheet__close { margin-inline-start: auto; }
@@ -3839,7 +3908,7 @@
     border-radius: var(--radius-card);
     background: var(--color-surface-raised);
     box-shadow: var(--shadow-raised);
-    animation: ns-fade-up var(--duration-base) var(--ease-out);
+    animation: ns-anim-rise var(--duration-base) var(--ease-out);
   }
   .ns-toast--success { border-inline-start-color: var(--color-success); }
   .ns-toast--error { border-inline-start-color: var(--color-error); }
@@ -4224,7 +4293,7 @@
   .ns-leaderboard__meta { flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
   .ns-leaderboard__score {
     flex: none; margin-inline-start: auto; text-align: end;
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     font-weight: var(--weight-label); color: var(--color-ink);
     font-variant-numeric: tabular-nums;
   }
@@ -5155,7 +5224,7 @@
      aria-pressed marks a selected filter. */
   .ns-tag {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border: 1px solid var(--color-border); border-radius: var(--radius-sm);
     background: var(--color-surface);
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
@@ -5182,7 +5251,7 @@
   .ns-badge {
     --_dot: var(--color-brand-500);
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border-radius: var(--radius-sm);
     box-shadow: inset 0 0 0 1px var(--color-border);
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -5344,7 +5413,7 @@
     border-radius: var(--radius-sm);
     background: var(--color-surface-raised);
     font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); line-height: 1.6;
+    font-weight: var(--weight-label); line-height: var(--leading-body);
     color: var(--color-ink); white-space: nowrap;
   }
   /* A chord (Cmd+K) versus a sequence (G then D) — the separator says which,
@@ -5365,7 +5434,7 @@
      button that only changes colour tells a screen-reader user nothing. */
   .ns-copy {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border: 1px solid var(--color-border); border-radius: var(--radius-sm);
     background: none; cursor: pointer;
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -5442,7 +5511,7 @@
   .ns-marquee__track {
     display: flex; flex: none; align-items: center;
     gap: var(--ns-marquee-gap); padding-inline-end: var(--ns-marquee-gap);
-    animation: marquee var(--ns-marquee-speed) linear infinite; /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+    animation: ns-marquee-scroll var(--ns-marquee-speed) linear infinite; /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
     min-inline-size: 100%;
   }
   .ns-marquee:hover .ns-marquee__track,
@@ -5458,7 +5527,7 @@
      of partner names or certifications actually is. */
   .ns-marquee__item {
     flex: none; display: inline-flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     letter-spacing: var(--tracking-label); text-transform: uppercase;
     color: var(--color-label); white-space: nowrap;
     transition: color var(--duration-fast) var(--ease-out);
@@ -5520,7 +5589,7 @@
      which is none. */
   .ns-ccard__badge {
     position: absolute; inset-block-start: var(--space-2); inset-inline-end: var(--space-2);
-    padding: var(--space-0-5, 2px) var(--space-2);
+    padding: var(--space-0-5) var(--space-2);
     border-radius: var(--radius-sm);
     background: var(--color-brand-500); color: var(--color-on-brand);
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
@@ -5967,7 +6036,7 @@
   .ns-curriculum__desc {
     font-family: var(--font-sans); font-size: var(--size-small); font-weight: var(--weight-body);
     letter-spacing: normal; text-transform: none; color: var(--color-muted);
-    line-height: var(--leading-body);
+    line-height: var(--leading-snug);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .ns-curriculum--modules .ns-curriculum__meta { margin-inline-start: 0; }
@@ -6702,6 +6771,23 @@
      collapses the others and scrolls it into view on load. That behaviour is
      progressive: with JS off every module ships `open`, which is worse to
      scroll but never hides anything. */
+  /* --- The rail, rebuilt --------------------------------------------------
+     The old rail was a column of text with a hairline down its left edge and
+     a bare uppercase word every few rows. It read as an outline of a
+     document, which is what it is NOT: it is the table of contents of a
+     150-module curriculum, and the reader's questions are "what kind of thing
+     is this row", "how long", and "how much of this module have I done".
+
+     So every level now carries a mark:
+       track    a tile and the position, as an object you can click
+       module   a caret, a name, a count, and its own progress meter
+       section  a label with a rule running out to the edge
+       post     a KIND icon, the title, the time
+
+     The spine moved from the rows to the LIST. One continuous hairline per
+     section with rows tucked against it, so the group reads as a group and
+     the current row can own a tinted, rounded slab instead of competing with
+     forty identical borders. */
   .ns-trainingnav {
     position: sticky; inset-block-start: var(--navbar-h);
     inline-size: var(--sidebar-w); flex: none;
@@ -6710,23 +6796,56 @@
     padding-inline-end: var(--space-3);
     border-inline-end: 1px solid var(--color-border);
   }
+
+  /* The track: the one thing above every module, so it is a card rather than
+     a caption — it is where "which curriculum am I in" is answered and it is
+     the way back out. Plain text inside still renders correctly; the icon and
+     the position line are optional children. */
   .ns-trainingnav__track {
-    display: block; padding-block-end: var(--space-3);
-    margin-block-end: var(--space-3);
-    border-block-end: 1px solid var(--color-border);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-    text-decoration: none;
+    display: flex; align-items: center; gap: var(--space-2-5);
+    padding: var(--space-2-5) var(--space-3);
+    margin-block-end: var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: var(--color-ink); text-decoration: none;
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    transition: border-color var(--duration-fast) var(--ease-out);
   }
+  a.ns-trainingnav__track:hover { border-color: var(--color-brand-500); }
+  .ns-trainingnav__track > i {
+    flex: none; display: grid; place-items: center;
+    inline-size: 1.75rem; block-size: 1.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-body);
+  }
+  .ns-trainingnav__track-body { min-inline-size: 0; }
+  /* The NAME is writing and the position is data — Principle 2, and the
+     reason this is two selectors rather than one on the wrapper: scoping the
+     mono voice to the wrapper <span> put the track's own name in uppercase
+     mono too, which made the card shout its way through three lines. */
+  .ns-trainingnav__track b {
+    display: block; font-family: var(--font-sans); font-weight: var(--weight-medium);
+    font-size: var(--size-small); letter-spacing: normal; text-transform: none;
+    color: var(--color-ink);
+  }
+  .ns-trainingnav__track-body > span {
+    display: block; margin-block-start: var(--space-0-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
   .ns-trainingnav__module { border: 0; }
+  .ns-trainingnav__module + .ns-trainingnav__module { margin-block-start: var(--space-0-5); }
   .ns-trainingnav__module > summary {
     display: flex; align-items: center; gap: var(--space-2);
-    padding: var(--space-1-5) var(--space-2);
+    padding: var(--space-2);
     border-radius: var(--radius-sm);
     list-style: none; cursor: pointer;
     font-size: var(--size-small); font-weight: var(--weight-medium);
     color: var(--color-ink);
+    transition: background var(--duration-fast) var(--ease-out);
   }
   .ns-trainingnav__module > summary::-webkit-details-marker { display: none; }
   .ns-trainingnav__module > summary:hover { background: var(--color-surface-sunken); }
@@ -6734,18 +6853,32 @@
     outline: var(--focus-ring-width) solid var(--color-brand-500);
     outline-offset: calc(-1 * var(--focus-ring-width));
   }
+  /* The module a reader is inside stays marked while its posts are on screen,
+     so scrolling the rail never loses "which module is this". */
+  .ns-trainingnav__module:has([aria-current="page"]) > summary { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__module:has([aria-current="page"]) > summary { color: var(--color-brand-300); }
   .ns-trainingnav__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
-  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
-  .ns-trainingnav__count { margin-inline-start: auto; flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
-  .ns-trainingnav__list { list-style: none; margin: 0 0 var(--space-2); padding-inline-start: var(--space-4); }
-  .ns-trainingnav__link {
-    display: block; padding: var(--space-1) var(--space-2);
-    border-inline-start: 2px solid var(--color-border);
-    font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out),
-                border-color var(--duration-fast) var(--ease-out);
+  /* The module's own glyph. It was the last level of the rail with no mark —
+     "Objects and fields" sat as bare text between a track that had a tile and
+     posts that each had an icon, which made the module read as a gap in the
+     column rather than as its top level. */
+  .ns-trainingnav__mod-icon {
+    flex: none; display: grid; place-items: center;
+    inline-size: 1.25rem; block-size: 1.25rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-small);
   }
-  .ns-trainingnav__link:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__mod-icon { color: var(--color-success); }
+  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
+  .ns-trainingnav__count {
+    margin-inline-start: auto; flex: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* A module that is finished says so with a tick instead of a count — the
+     number has done its job and the state is the more useful fact. */
+  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__count { color: var(--color-success); }
 
   /* --- Post sections inside a module --------------------------------------
      THE STRUCTURAL DIFFERENCE BETWEEN TRAINING AND A COURSE. A course is a
@@ -6757,62 +6890,293 @@
      One sidebar, three levels: track → module → section → post. Any deeper
      and the rail is a file tree, which is what this is designed not to be. */
   .ns-trainingnav__section {
-    display: block;
+    display: flex; align-items: center; gap: var(--space-2);
     padding: var(--space-3) var(--space-2) var(--space-1);
+    margin-inline-start: var(--space-4);
     font-family: var(--font-mono); font-size: var(--size-label);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
+  /* The section takes a glyph too. It is the one level of the rail that was
+     still text-only, and in a column where every other row leads with a mark
+     the bare label read as a gap rather than as a heading. The icon is the
+     section's JOB — concepts, practice, reference — so the three sections of
+     a module are told apart before the words are read. */
+  .ns-trainingnav__section > i { flex: none; font-size: var(--size-small); color: var(--color-label); }
+  /* The rule runs from the label to the rail's edge. It is what makes a
+     section read as a band across the column rather than three more words in
+     a column of words — and it costs no markup. */
+  .ns-trainingnav__section::after {
+    content: ""; flex: 1; block-size: 1px; background: var(--color-border);
+  }
 
+  /* THE SPINE MOVED. It used to be a 2px border on every row, which meant
+     forty rows all drawing the same line and the current one distinguished
+     only by its colour. Now the LIST carries one hairline and the rows tuck
+     against it, which frees the row itself to take a tinted slab when it is
+     current — a shape the eye finds without reading. */
+  .ns-trainingnav__list {
+    list-style: none; margin: 0 0 var(--space-2);
+    padding: 0; margin-inline-start: var(--space-4);
+    border-inline-start: 1px solid var(--color-border);
+  }
+  .ns-trainingnav__link {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-2); align-items: center;
+    margin-inline-start: -1px;
+    padding: var(--space-1-5) var(--space-2);
+    border-inline-start: 2px solid transparent;
+    border-start-end-radius: var(--radius-sm); border-end-end-radius: var(--radius-sm);
+    font-size: var(--size-small); line-height: var(--leading-snug);
+    color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-trainingnav__link:hover {
+    color: var(--color-ink);
+    background: var(--color-surface-sunken);
+    border-inline-start-color: var(--color-brand-300);
+  }
   /* Every row says what KIND of post it is, in the same icon vocabulary the
-     course rail uses — the word arrives on hover or focus from the shared
-     tooltip. A rail where a lab and a two-minute concept note look identical
-     is a rail that cannot be planned against. */
-  .ns-trainingnav__link { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-2); align-items: center; }
-  .ns-trainingnav__icon { flex: none; color: var(--color-label); font-size: var(--size-body); }
-  .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
-  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-300); }
-  .ns-trainingnav__link[data-state="done"] .ns-trainingnav__icon { color: var(--color-success); }
+     course rail uses. A rail where a lab and a two-minute concept note look
+     identical is a rail that cannot be planned against — which is the single
+     biggest thing the old flat list got wrong. */
+  .ns-trainingnav__icon {
+    flex: none; display: grid; place-items: center;
+    inline-size: 1.25rem; block-size: 1.25rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-label); font-size: var(--size-small);
+  }
   .ns-trainingnav__time {
     flex: none; font-family: var(--font-mono); font-size: var(--size-label);
-    color: var(--color-muted); font-variant-numeric: tabular-nums;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
   }
+  /* Every section opens with its own OVERVIEW — the page that introduces the
+     section before its posts. It is set apart from them because it is about
+     them: italic-free, quieter icon, and no time, since "how long is the
+     introduction" is not a question anybody has. */
+  .ns-trainingnav__link--overview { color: var(--color-ink); }
+  .ns-trainingnav__link--overview .ns-trainingnav__icon { color: var(--color-brand-500); }
+  .ns-trainingnav__link--overview[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
 
   /* Module-level progress, under the module's own summary: a training track
      is long enough that "how far into THIS module" is a different and more
      useful number than "how far into the track". */
-  .ns-trainingnav__bar { margin: var(--space-1) var(--space-2) var(--space-2); }
+  .ns-trainingnav__bar { margin: var(--space-1) var(--space-2) var(--space-2) var(--space-4); }
   .ns-trainingnav__bar .ns-progress { inline-size: 100%; }
-  /* aria-current, not a class — the highlighted unit and the announced unit
+
+  /* aria-current, not a class — the highlighted post and the announced post
      come from one attribute, and training.js reads the same one to decide
-     which module to open. */
+     which module to open. The slab is a tint PLUS a leading edge PLUS the
+     weight change: three signals, so it survives grayscale and forced
+     colours, where a colour swap alone would not. */
   .ns-trainingnav__link[aria-current="page"] {
     color: var(--color-brand-600); font-weight: var(--weight-medium);
     border-inline-start-color: var(--color-brand-500);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, transparent);
   }
   [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] { color: var(--color-brand-300); }
+  .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-300); }
+  /* Read: the row goes quiet and its icon goes green. The tick is the state,
+     the dimming is the "you are past this" — neither alone is enough. */
   .ns-trainingnav__link[data-state="done"] { color: var(--color-label); }
+  .ns-trainingnav__link[data-state="done"] .ns-trainingnav__icon { color: var(--color-success); }
 
-  /* --- Module head (in content) -------------------------------------------
-     The header of a module's own page: which module of how many, its title,
-     and the units as a checklist. */
+  /* --- The post head, rebuilt ---------------------------------------------
+     What a training post opens with. The old version was a crumb, a title, a
+     lede and a rule — correct, and completely silent about the three things a
+     reader wants before committing eleven minutes: what KIND of post this is,
+     how long, and where it sits.
+
+     So the head is now a row of marks above the title, and the title carries
+     a kind tile beside it. Every one of those is a fact the reader was
+     otherwise going to have to infer from the body. */
   .ns-modulehead { padding-block-end: var(--space-5); border-block-end: 1px solid var(--color-border); }
   .ns-modulehead__crumb {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
     font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase;
     color: var(--color-label);
   }
-  .ns-modulehead__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; margin-block-start: var(--space-1); }
-  .ns-modulehead__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
+  .ns-modulehead__crumb a { color: inherit; text-decoration: none; }
+  .ns-modulehead__crumb a:hover { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-modulehead__crumb a:hover { color: var(--color-brand-300); }
+  .ns-modulehead__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; margin-block-start: var(--space-3); }
+  .ns-modulehead__lede { font-size: var(--size-prose-lead); line-height: var(--leading-snug); color: var(--color-muted); margin-block-start: var(--space-3); max-inline-size: var(--measure-prose); text-wrap: pretty; }
+
+  /* The kind row: an icon-led chip per fact. Icons EARN their place here
+     because each one is paired with its own word — the glyph is the thing the
+     eye finds and the word is the thing it reads, which is the only
+     arrangement that works for both a scanner and a screen reader. */
+  .ns-tmeta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
+    margin-block-start: var(--space-4);
+  }
+  .ns-tmeta__item {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1) var(--space-2-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-tmeta__item i { color: var(--color-label); font-size: var(--size-small); }
+  /* The KIND chip is the one that is allowed to carry brand — it is the
+     answer to "what am I about to do", and the others are footnotes to it. */
+  .ns-tmeta__item--kind { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-tmeta__item--kind i { color: var(--color-brand-500); }
+  [data-theme="dark"] .ns-tmeta__item--kind { color: var(--color-brand-300); }
+  .ns-tmeta__item--done { border-color: var(--color-success); color: var(--color-success-ink); }
+  .ns-tmeta__item--done i { color: var(--color-success); }
+
+  /* --- The stage: a training post is VIDEO or ARTICLE ----------------------
+     Both are training posts, and the difference is one block at the top, not
+     two templates. A video post opens on the player and keeps the writing
+     underneath — the transcript, the steps, the code — because a training
+     video without the written version is not searchable, not skimmable and
+     not linkable to a line.
+
+     Deliberately NOT the course player: that is a locked three-column app for
+     working through a playlist. This is a page you can read, print and land
+     on from a search result, which happens to start with a video. */
+  .ns-tstage { margin-block: var(--stack-md); }
+  .ns-tstage .ns-video { border-radius: var(--radius-card); }
+  /* Under the frame: what the video is, and the way out of it for a reader
+     who would rather not watch. Every training video ships the written
+     version below, so this is a real anchor and never a dead promise. */
+  .ns-tstage__bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+    margin-block-start: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-tstage__bar > span { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+  .ns-tstage__skip { margin-inline-start: auto; }
+
+  /* --- The reading layout, rebuilt -----------------------------------------
+     THREE columns, because the two-column version wasted the third. A
+     training post at --measure-prose leaves ~14rem of empty page beside it on
+     any laptop, and the thing that belongs there is the one piece of
+     navigation the old layout had nowhere to put: where you are INSIDE the
+     post.
+
+       rail      the curriculum        (where am I in the track)
+       article   the post              (the thing)
+       aside     on this page          (where am I in the post)
+
+     THE RAIL IS ON THE RIGHT, and that is the deliberate difference from the
+     course player. A course player puts the curriculum on the leading edge
+     because the playlist is the spine of the session: you are working THROUGH
+     it and it is the primary object. A training post is a DOCUMENT you landed
+     on — from search, from a link, from the index — and the primary object is
+     the writing. So the leading edge, where the eye starts every line, goes to
+     the outline of the thing you are reading, and the curriculum sits on the
+     trailing edge as the place you go NEXT.
+
+     Below xl the aside goes first: it is navigation about navigation, and the
+     rail and the measure are both worth more than it. Below lg the rail
+     becomes a drawer from the trailing edge — the edge it lives on. */
+  .ns-training--doc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--ns-trail-w);
+    grid-template-rows: minmax(0, 1fr);
+    /* 20rem, not 17. A curriculum rail carries three levels of nesting and a
+       time on every row, and at 17rem the third level had ~11rem left — so
+       "Recalculation is asynchronous" and "Sharing model cheat sheet" both
+       wrapped to two lines and the column read as ragged prose instead of a
+       list. The article keeps the measure either way; this width comes out of
+       the empty page beside it. */
+    --ns-trail-w: 20rem;
+    gap: 0;
+    block-size: calc(100dvh - var(--navbar-h));
+    overflow: hidden;
+  }
+  .ns-training--doc > .ns-training__main {
+    grid-column: 1; grid-row: 1;
+    block-size: 100%; min-block-size: 0;
+    overflow-y: auto; max-inline-size: none;
+  }
+  .ns-training--doc > .ns-trainingnav {
+    grid-column: 2; grid-row: 1;
+    position: static; inline-size: auto;
+    max-block-size: none; block-size: 100%; min-block-size: 0;
+    overflow-y: auto;
+    border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
+    padding-block-start: 0; padding-inline: var(--space-4);
+  }
+  /* Same reason as the rail: a sticky child pins to its scroller's CONTENT
+     edge, so padding here would leave a see-through slot above the stuck
+     head with rows scrolling through it. */
+  .ns-training--doc .ns-trainingnav__head {
+    margin-inline: calc(-1 * var(--space-4));
+    padding-inline: var(--space-4);
+  }
+  /* The article column keeps its measure INSIDE the scroller, so the
+     scrollbar stays at the edge of the screen and the text stays at the
+     measure. */
+  /* FULL WIDTH, not the prose measure. With the aside gone the content column
+     IS the page, and a 42rem ribbon floating in a 60rem cell is the same dead
+     space the aside was removed to reclaim. Paragraphs still get their measure
+     — .ns-prose caps itself — but tables, code, the video stage and the pager
+     now use the whole container, which is what they were always short of. */
+  .ns-training--doc .ns-training__reading {
+    max-inline-size: var(--container-narrow);
+    margin-inline: auto;
+    padding: var(--space-8) var(--gutter-lg) var(--space-16);
+  }
 
   @media (max-width: 63.999rem) {
+    .ns-training--doc { display: block; block-size: auto; overflow: visible; }
+    .ns-training--doc > .ns-training__main { overflow: visible; block-size: auto; }
+    .ns-training--doc > .ns-trainingnav {
+      position: fixed; inset-block: 0; inset-inline-end: 0;
+      inline-size: min(22rem, 88vw); z-index: var(--z-overlay);
+      background: var(--color-surface);
+      border-inline-start: 1px solid var(--color-border);
+      transition: translate var(--duration-base) var(--ease-out);
+    }
+    /* Off-canvas from the TRAILING edge, because that is the edge it lives on
+       above the breakpoint — a drawer that flies in from the side its column
+       was never on reads as a different object. */
+    .ns-training--doc > .ns-trainingnav { translate: 100% 0; }
+    .ns-training--doc[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
+    .ns-training--doc .ns-training__reading { padding: var(--space-6) var(--gutter) var(--space-12); }
+  }
+
+  /* The BASE (non-fixed, non-doc) training layout still collapses to one
+     column below lg — restored here because .ns-training is what
+     training-module.html uses, and it is not a --doc page. */
+  @media (max-width: 63.999rem) {
     .ns-training { display: block; }
-    .ns-trainingnav {
+    .ns-training > .ns-trainingnav {
       position: static; inline-size: 100%; max-block-size: none;
       border-inline-end: 0; border-block-end: 1px solid var(--color-border);
       padding-inline-end: 0; margin-block-end: var(--space-5);
     }
-    .ns-training__main { max-inline-size: none; }
+    .ns-training > .ns-training__main { max-inline-size: none; }
+  }
+
+  @media (max-width: 63.999rem) {
+    .ns-training--doc {
+      display: block; block-size: auto; overflow: visible;
+    }
+    .ns-training--doc > .ns-training__main { overflow: visible; block-size: auto; }
+    .ns-training--doc > .ns-trainingnav {
+      position: fixed; inset-block: 0; inset-inline-start: 0;
+      inline-size: min(22rem, 88vw); z-index: var(--z-overlay);
+      background: var(--color-surface);
+      border-inline-end: 1px solid var(--color-border);
+      transition: translate var(--duration-base) var(--ease-out);
+    }
+    /* Off-canvas from the LEADING edge, because that is the edge it lives on
+       above the breakpoint — a drawer that flies in from the side its column
+       was never on reads as a different object. */
+    .ns-training--doc > .ns-trainingnav { translate: -100% 0; }
+    .ns-training--doc[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
+    .ns-training--doc .ns-training__reading { padding: var(--space-6) var(--gutter) var(--space-12); }
   }
 
   /* --- Track card ---------------------------------------------------------
@@ -7196,13 +7560,35 @@
   .ns-training--fixed {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--ns-trail-w);
+    /* minmax(0, 1fr), not auto: an implicit row grows to its tallest item,
+       so a 4,000px article would stretch the row past the grid's own fixed
+       height and neither column would ever scroll internally. Clamping the
+       row's minimum to 0 is what FORCES the overflow inward, which is the
+       whole point of the fixed variant. */
+    grid-template-rows: minmax(0, 1fr);
     --ns-trail-w: 18rem;
     gap: 0;
     block-size: calc(100dvh - var(--navbar-h));
     overflow: hidden;
   }
-  .ns-training--fixed > .ns-training__main { grid-column: 1; overflow-y: auto; max-inline-size: none; }
-  .ns-training--fixed > .ns-trainingnav { grid-column: 2; }
+  /* grid-row: 1 is load-bearing on BOTH. The rail comes first in the DOM
+     (it is the navigation), so with only columns declared, auto-placement
+     puts the rail at r1c2 and then cannot back up to c1 on the same row —
+     the main column lands in row 2, and the two cells split the viewport
+     height between them instead of sharing it. */
+  /* block-size + min-block-size together, not `overflow` alone. A grid item's
+     automatic minimum size is its CONTENT's height, and relying on
+     `overflow: auto` to zero that is the part that does not survive contact
+     with a real browser — the cell grew to the full 3,000px article, the
+     grid clipped it, and the column simply never scrolled. Pin the height to
+     the row and floor the minimum at 0, which is exactly what the rail
+     beside it already does. */
+  .ns-training--fixed > .ns-training__main {
+    grid-column: 1; grid-row: 1;
+    block-size: 100%; min-block-size: 0;
+    overflow-y: auto; max-inline-size: none;
+  }
+  .ns-training--fixed > .ns-trainingnav { grid-column: 2; grid-row: 1; }
   .ns-training--fixed.ns-training--nav-start { grid-template-columns: var(--ns-trail-w) minmax(0, 1fr); }
   .ns-training--fixed.ns-training--nav-start > .ns-training__main { grid-column: 2; }
   .ns-training--fixed.ns-training--nav-start > .ns-trainingnav { grid-column: 1; }
@@ -7216,6 +7602,18 @@
     overflow-y: auto;
     border-inline-end: 0;
     border-inline-start: 1px solid var(--color-border);
+    padding-inline: var(--space-4);
+    /* No top padding when the rail is its own scroller: a sticky child pins
+       to the scroller's CONTENT edge, so any padding here becomes a
+       see-through slot above the stuck filter head with rows scrolling
+       visibly through it. The head carries its own breathing room. */
+    padding-block-start: 0;
+  }
+  /* The stuck head must span the full rail width — including the rail's
+     inline padding — or rows scrolling beneath peek out in the two padding
+     gutters beside it. Negative margins out, matching padding back in. */
+  .ns-training--fixed .ns-trainingnav__head {
+    margin-inline: calc(-1 * var(--space-4));
     padding-inline: var(--space-4);
   }
   .ns-training--fixed.ns-training--nav-start > .ns-trainingnav {
@@ -7262,6 +7660,13 @@
      from .ns-panelbar, the same handle the course player uses on a phone.
      One panel pattern, two products. */
   .ns-trainingnav__close { display: none; }
+  /* The drawer's OPEN handle, for a page whose bar does not carry one (the
+     standalone training post has no .ns-panelbar). Hidden wherever the rail
+     is a visible column — an "open curriculum" button beside an open
+     curriculum is noise — and shown below lg, where the drawer is off-canvas
+     and this is the only way back to it. Put data-ns-training-open on it;
+     assets/js/training.js does the rest. */
+  .ns-training__handle { display: none; }
 
   @media (max-width: 63.999rem) {
     .ns-training--fixed {
@@ -7279,14 +7684,24 @@
       background: var(--color-surface);
       border-inline-start: 1px solid var(--color-border);
       border-inline-end: 0;
-      /* Off-canvas by default; the drawer's own [open] state slides it in.
-         translate rather than display:none so the rail keeps its scroll
-         position between openings. */
-      translate: 100% 0;
       transition: translate var(--duration-base) var(--ease-out);
     }
+    /* THE TRANSLATE PAIR IS DELIBERATELY OUTSIDE THE LIST ABOVE, and this is
+       not style — the drawer did not open until it was.
+
+       A selector list is weighed by its most specific branch, so folding the
+       off-canvas position in beside `.ns-training--fixed.ns-training--nav-start`
+       gave it that branch's (0,3,0) — which beat the (0,3,0) `[data-rail]`
+       rule below it on nothing but source order, and lost. Declared on its
+       own the off-canvas state is (0,2,0), `open` is (0,3,0), and the state
+       that has to win does.
+
+       translate rather than display:none, so the rail keeps its scroll
+       position between openings. */
+    .ns-training--fixed > .ns-trainingnav { translate: 100% 0; }
     .ns-training--fixed[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
     .ns-trainingnav__close { display: inline-flex; margin-inline-start: auto; }
+    .ns-training__handle { display: inline-flex; }
     .ns-training__reading { padding: var(--space-6) var(--gutter); }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -7613,7 +8028,7 @@
      Still one <ul> of <li>s: the shape changed, the semantics did not. */
   .ns-outcomes--cards {
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--gap-grid, var(--space-4));
+    gap: var(--gap-grid);
   }
   .ns-outcomes--cards li {
     grid-template-columns: minmax(0, 1fr);
@@ -7994,7 +8409,7 @@
   /* Two lines of excerpt, clamped. An index whose cards are different heights
      because one post has a longer summary is an index that reads as broken. */
   .ns-bcard__excerpt {
-    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body);
+    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-snug);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
 
@@ -8202,7 +8617,12 @@
     border-inline-start: 3px solid var(--color-brand-500);
     border-radius: 0 var(--radius-card) var(--radius-card) 0;
     background: color-mix(in srgb, var(--color-brand-500) 6%, transparent);
-    font-size: var(--size-small); line-height: var(--leading-body);
+    /* --size-prose-small, not --size-small: a callout sits INSIDE the article
+       it interrupts. At 13 against a 17 paragraph it drops two full steps and
+       reads as a footnote the eye skips — which is the opposite of what an
+       aside marked "warning" is for. 15 is the step that exists for content
+       inside prose; it is quieter than the paragraph without ducking under it. */
+    font-size: var(--size-prose-small); line-height: var(--leading-body);
   }
   .ns-callout > i { color: var(--color-brand-500); font-size: var(--size-body-lg); }
   .ns-callout__label {
@@ -8264,7 +8684,8 @@
     font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
   }
-  .ns-authorbox__bio { margin-block-start: var(--space-2); font-size: var(--size-small); color: var(--color-muted); max-inline-size: var(--measure-prose); }
+  /* Also a reading block, and it says so by carrying --measure-prose. */
+  .ns-authorbox__bio { margin-block-start: var(--space-2); font-size: var(--size-prose-small); color: var(--color-muted); max-inline-size: var(--measure-prose); }
   .ns-authorbox__links { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: var(--space-3); }
   .ns-authorbox--stack { grid-template-columns: minmax(0, 1fr); }
   .ns-authorboxes { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: var(--space-4); }
@@ -8408,9 +8829,15 @@
     color: var(--color-brand-600); font-weight: var(--weight-label);
   }
   [data-theme="dark"] .ns-comment__badge { color: var(--color-brand-300); }
+  /* A comment is READ, not scanned — it is prose by another author under an
+     article, capped at the same --measure-prose. Setting it at the UI size
+     while the post above runs at 17 said the reader's writing mattered less
+     than the author's, in the one place a design system can say that. */
   .ns-comment__text {
     margin-block-start: var(--space-2);
-    font-size: var(--size-small); line-height: var(--leading-body);
+    /* The reading leading, not the UI's — a comment runs at the full
+       --measure-prose, and leading follows the measure. */
+    font-size: var(--size-prose-small); line-height: var(--leading-prose);
     color: var(--color-ink); max-inline-size: var(--measure-prose); text-wrap: pretty;
   }
   .ns-comment__text > * + * { margin-block-start: var(--space-3); }
@@ -8530,7 +8957,7 @@
     font-variant-numeric: tabular-nums;
   }
   .ns-tagcard__desc {
-    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body);
+    font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-snug);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   /* A row of tags as filters — on the index, in a post footer, under a tag
@@ -8570,7 +8997,9 @@
   .ns-toc__link {
     display: block; padding: var(--space-1-5) var(--space-3);
     margin-inline-start: -1px; border-inline-start: 2px solid transparent;
-    font-size: var(--size-small); line-height: var(--leading-heading);
+    /* Snug, not heading: a TOC entry is a heading's text but it WRAPS, and
+       1.3 was drawn for a line that does not. */
+    font-size: var(--size-small); line-height: var(--leading-snug);
     color: var(--color-muted); text-decoration: none;
     transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
   }
@@ -8725,14 +9154,14 @@
   }
   .ns-video__play:hover { transform: scale(1.05); }
   .ns-video__dur { position: absolute; inset-block-end: var(--space-2); inset-inline-end: var(--space-2);
-                   padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
+                   padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-sm);
                    background: var(--color-scrim); color: var(--color-on-dark);
                    font-family: var(--font-mono); font-size: var(--size-label); }
   /* The opposite corner, for what KIND of video this is — SHORT, CLIP, LIVE,
      REPLAY. Duration and kind are different facts and a reader triaging a row
      of thumbnails wants both, so they do not share a corner. */
   .ns-video__tag { position: absolute; inset-block-start: var(--space-2); inset-inline-start: var(--space-2);
-                   padding: var(--space-0-5, 2px) var(--space-2); border-radius: var(--radius-sm);
+                   padding: var(--space-0-5) var(--space-2); border-radius: var(--radius-sm);
                    background: var(--color-scrim); color: var(--color-on-dark);
                    font-family: var(--font-mono); font-size: var(--size-label);
                    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
@@ -8763,7 +9192,13 @@
      with no preview element the modifier does nothing, which is the correct
      failure.
 
-     --zoom is a slow scale on the poster alone, clipped by the frame. */
+     --zoom is a slow scale on the poster alone, clipped by the frame. It is
+     the system's only hover transition at --duration-slow, and it is the call
+     site tokens/effects.css names when it separates a GESTURE from a
+     RESPONSE: the poster is not reporting anything and nobody is waiting on
+     it, so 420ms reads as the image easing forward. At --duration-base the
+     same scale reads as a pop, which Principle 5 rules out. Do not copy this
+     duration onto anything that tells the reader a state. */
   .ns-video__preview {
     position: absolute; inset: 0; inline-size: 100%; block-size: 100%;
     object-fit: cover; opacity: 0; pointer-events: none;
@@ -8809,7 +9244,7 @@
   /* Inside the strip the cap comes off — the item is already narrow. */
   .ns-shorts__item .ns-video--9x16 { max-inline-size: none; }
   .ns-shorts__cap {
-    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-ink);
+    font-size: var(--size-small); line-height: var(--leading-snug); color: var(--color-ink);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
   }
   .ns-shorts__meta {
@@ -8975,11 +9410,16 @@
    measure, mono for everything that is data — and the hairline doing the
    structure (blockquote edge, hr, table rules), never a background wash. */
 @layer ns-components {
-  /* The reading size, not the UI size. See tokens/typography.css § the
-     READING scale for why the two forked. */
+  /* The reading size AND the reading leading, neither the UI's. See
+     tokens/typography.css § the READING scale for the size fork; the leading
+     is 1.7 because it has to grow with the measure — the return sweep across
+     68ch needs more vertical separation than a card excerpt does. Supporting
+     blocks inside the article (callouts, refs, the takeaway) deliberately
+     stay at --leading-body: the register shift from 1.7 paragraphs to a 1.6
+     aside is part of what makes the aside read as an aside. */
   .ns-prose {
-    font-size: var(--size-prose); line-height: var(--leading-body);
-    color: var(--color-ink); max-inline-size: var(--container-prose, 42rem);
+    font-size: var(--size-prose); line-height: var(--leading-prose);
+    color: var(--color-ink); max-inline-size: var(--container-prose);
   }
   .ns-prose > * + * { margin-block-start: var(--stack-md); }
 
@@ -8996,7 +9436,11 @@
   .ns-prose h2 + *, .ns-prose h3 + *, .ns-prose h4 + * { margin-block-start: var(--space-3); }
 
   /* Lead paragraph — the deck under a title. */
-  .ns-prose .ns-lead { font-size: var(--size-prose-lead); color: var(--color-muted); line-height: var(--leading-heading); }
+  /* Snug, not heading: a lede is a SENTENCE that wraps two or three lines,
+     and 1.3 was drawn for a heading that mostly does not. At 20px, 1.45
+     advances 29px — the same rhythm the 17px/1.7 paragraphs below it run,
+     so the deck and the body read as one column at two volumes. */
+  .ns-prose .ns-lead { font-size: var(--size-prose-lead); color: var(--color-muted); line-height: var(--leading-snug); }
 
   /* Links — brand blue with a hairline underline that solidifies on hover. */
   .ns-prose a { color: var(--color-brand-600); text-decoration: underline;
@@ -9028,7 +9472,10 @@
   .ns-prose blockquote {
     margin: var(--stack-lg) 0 0 0; padding: var(--space-1) 0 var(--space-1) var(--space-5);
     border-inline-start: 2px solid var(--color-brand-500);
-    font-size: var(--size-prose-lead); color: var(--color-ink);
+    /* Same argument as .ns-lead above: 20px text wants the snug step, and
+       29px is the body's own line rhythm. Leading scales DOWN as size goes
+       up — the tall 1.7 belongs to the 17px paragraphs alone. */
+    font-size: var(--size-prose-lead); line-height: var(--leading-snug); color: var(--color-ink);
   }
   .ns-prose blockquote p + p { margin-block-start: var(--space-3); }
   .ns-prose blockquote footer, .ns-prose blockquote cite {
@@ -9045,6 +9492,11 @@
                   border-radius: var(--radius-card); padding: var(--space-4);
                   overflow-x: auto; font-size: var(--size-prose-small); line-height: var(--leading-body); }
   .ns-prose pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+  /* The .ns-code component defaults to the UI size, which is right on an admin
+     screen and wrong under a 17px paragraph — it left an article with a bare
+     <pre> at 15 and a highlighted figure at 13, two sizes for the same thing on
+     the same page. One knob, so the whole component follows. */
+  .ns-prose .ns-code { --code-size: var(--size-prose-small); }
   .ns-prose kbd { font-family: var(--font-mono); font-size: var(--size-label);
                   background: var(--color-surface-raised); border: 1px solid var(--color-border);
                   border-block-end-width: 2px; border-radius: var(--radius-sm); padding: 0 var(--space-1-5); }
@@ -9066,7 +9518,7 @@
 
   /* Small print & highlights. */
   .ns-prose small { font-size: var(--size-prose-small); color: var(--color-muted); }
-  .ns-prose mark { background: color-mix(in srgb, var(--color-brand-500) 18%, transparent); color: inherit; padding: 0 var(--space-0-5, 2px); }
+  .ns-prose mark { background: color-mix(in srgb, var(--color-brand-500) 18%, transparent); color: inherit; padding: 0 var(--space-0-5); }
 }
 /* NS Design System — content blocks.
    =========================================================================
@@ -9085,6 +9537,15 @@
    resumes. That is why none of them is a full-bleed tinted panel — Principle 1
    again, the hairline does the structuring, and a wash of colour across the
    reading column is the loudest thing a page can do.
+
+   THE SIZE RULE FOR EVERY BLOCK HERE: body copy in these takes
+   --size-prose-small (15), never --size-small (13). They sit inside a 17px
+   reading column, and 13 is two steps down — far enough that the eye reads it
+   as a footnote and skips it, which defeats a block whose whole job is to
+   interrupt. --size-small is for SCANNED surfaces: card excerpts, meta rows,
+   archive lists, rails, admin. The mono LABEL on each block stays at
+   --size-label, because a label is not body copy. Scanned versus read is the
+   axis the type scale forks on; see tokens/typography.css.
 
    Callout (blog.css) and Figure (media.css) already exist and are not
    duplicated here: a callout is an aside about the paragraph beside it, a
@@ -9111,7 +9572,11 @@
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
-  .ns-takeaway__text { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
+  /* --size-prose, not --size-body-lg. They are the same 17px today, and that
+     is exactly why the name has to be the right one: this block is the
+     article's own argument said faster, so it belongs to the reading scale
+     and should move if the reading scale moves. */
+  .ns-takeaway__text { font-size: var(--size-prose); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
   .ns-takeaway ul { margin-block-start: var(--space-2); padding-inline-start: var(--space-5); }
 
   /* --- Stat block ---------------------------------------------------------
@@ -9166,7 +9631,7 @@
     text-transform: uppercase; color: var(--color-label);
     margin-block-end: var(--space-2);
   }
-  .ns-compare__side ul { margin: 0; padding-inline-start: var(--space-5); font-size: var(--size-small); }
+  .ns-compare__side ul { margin: 0; padding-inline-start: var(--space-5); font-size: var(--size-prose-small); }
   .ns-compare__side li { margin-block-end: var(--space-1); }
   .ns-compare__side--verdict { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
   .ns-compare__side--verdict .ns-compare__title { color: var(--color-brand-600); }
@@ -9182,7 +9647,7 @@
     display: flex; align-items: flex-start; gap: var(--space-3);
     padding-block: var(--space-2);
     border-block-start: 1px solid var(--color-border);
-    font-size: var(--size-small);
+    font-size: var(--size-prose-small);
   }
   .ns-checklist li:last-child { border-block-end: 1px solid var(--color-border); }
   /* An optical nudge onto the first line's cap height, not spacing: it is a
@@ -9237,8 +9702,8 @@
     text-transform: uppercase; color: var(--color-label);
   }
   .ns-terms dl { display: grid; grid-template-columns: minmax(0, 10rem) minmax(0, 1fr); gap: var(--space-2) var(--space-4); margin: 0; }
-  .ns-terms dt { font-family: var(--font-mono); font-size: var(--size-small); color: var(--color-ink); }
-  .ns-terms dd { margin: 0; font-size: var(--size-small); color: var(--color-muted); }
+  .ns-terms dt { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-ink); }
+  .ns-terms dd { margin: 0; font-size: var(--size-prose-small); color: var(--color-muted); }
   @media (max-width: 47.999rem) {
     .ns-terms dl { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
     .ns-terms dd { margin-block-end: var(--space-2); }
@@ -9291,7 +9756,10 @@
     margin-block: var(--stack-md);
     padding-block: var(--space-3);
     border-block: 1px solid var(--color-border);
-    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-muted);
+    /* Inside the article, so the reading scale — see the note on .ns-callout
+       in blog.css. A notice the reader is meant to act on cannot be the
+       smallest thing on the page. */
+    font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-muted);
   }
   .ns-notice > i { color: var(--color-label); font-size: var(--size-body-lg); }
   .ns-notice__date {
@@ -9344,7 +9812,9 @@
   .ns-refs li {
     display: grid; grid-template-columns: 1.75rem minmax(0, 1fr); gap: var(--space-2);
     padding-block: var(--space-2);
-    font-size: var(--size-small); line-height: var(--leading-body); color: var(--color-muted);
+    /* A reference list is a reading block by definition — titles and sources
+       in sentence case, at the foot of an article. The reading scale. */
+    font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-muted);
   }
   .ns-refs li + li { border-block-start: 1px solid var(--color-border); }
   .ns-refs li::before {
@@ -9365,6 +9835,208 @@
     overflow-wrap: anywhere;
   }
   .ns-refs :target { color: var(--color-ink); }
+
+  /* ======================================================= GHOST CARDS ====
+     The Koenig editor's own card set, in this system's voice.
+
+     Ghost's editor lets an author drop a product, a bookmark, a file, a
+     header or a members CTA into a post. Those cards ship with Ghost's
+     default styling, which is a different design system — so a Namaste post
+     that used one got a rounded, shadowed, 16px-radius object sitting in a
+     page built from hairlines. These are the same cards, restyled to
+     Principle 1: a 1px border does the structuring, the mono voice carries
+     every piece of metadata, and one signal colour marks the one action.
+
+     The class names match Koenig's data model rather than inventing new
+     words, so the Ghost theme's rendering layer maps card → class with no
+     translation table: product, bookmark, file, header, cta.
+
+     Every one is a block INSIDE prose, so body copy takes the reading scale
+     (--size-prose-small) and labels take --size-label — same rule as the
+     content blocks above. */
+
+  /* --- Product ------------------------------------------------------------
+     A thing being recommended, with a rating and a way to get it. The image
+     is optional and the card works without it — a book recommendation with no
+     cover should not render a grey hole. */
+  .ns-product {
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-product:not(:has(.ns-product__media)) { grid-template-columns: minmax(0, 1fr); }
+  .ns-product__media {
+    inline-size: 8rem; block-size: 8rem; flex: none;
+    border-radius: var(--radius-sm); overflow: hidden;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-product__media img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  .ns-product__body { min-inline-size: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .ns-product__title { font-size: var(--size-body-lg); font-weight: var(--weight-semibold); color: var(--color-ink); text-wrap: balance; }
+  .ns-product__text { font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-muted); text-wrap: pretty; }
+  /* The rating is stars PLUS the number. Five glyphs alone is a value nobody
+     can read out, and a screen reader gets the number rather than "star star
+     star" — which is why the figure is real text and not an aria-label. */
+  .ns-product__rating { display: flex; align-items: center; gap: var(--space-2); }
+  .ns-product__stars { display: inline-flex; gap: var(--space-0-5); color: var(--color-warning); font-size: var(--size-small); }
+  .ns-product__stars i.ph-star { color: var(--color-border); }
+  .ns-product__score {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-product__foot { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-block-start: auto; padding-block-start: var(--space-2); }
+  .ns-product__price {
+    font-family: var(--font-mono); font-size: var(--size-body);
+    font-weight: var(--weight-semibold); color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 47.999rem) {
+    .ns-product { grid-template-columns: minmax(0, 1fr); }
+    .ns-product__media { inline-size: 100%; block-size: 10rem; }
+  }
+
+  /* --- Bookmark -----------------------------------------------------------
+     A link, previewed. The whole card is ONE link — a bookmark with a
+     separate clickable title and thumbnail is two tab stops to the same URL.
+     The publisher line carries a favicon because that is the fastest way a
+     reader answers "do I trust this domain". */
+  .ns-bookmark {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto;
+    margin-block: var(--stack-md);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: inherit; text-decoration: none; overflow: hidden;
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  a.ns-bookmark:hover { border-color: var(--color-brand-500); box-shadow: inset 2px 0 0 var(--color-brand-500); }
+  .ns-bookmark__body { min-inline-size: 0; padding: var(--pad-card); display: grid; gap: var(--space-2); }
+  .ns-bookmark__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  /* Two lines and no more: a bookmark is a signpost, and a four-line excerpt
+     is the article arriving early. */
+  .ns-bookmark__text {
+    font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .ns-bookmark__meta {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
+  /* The favicon slot carries its own frame rather than borrowing .ns-ph:
+     that placeholder is built for MEDIA and sets min-block-size: --space-12,
+     which stretched a 1rem favicon into a 48px bar. A 16px square needs a
+     16px placeholder. */
+  .ns-bookmark__icon {
+    inline-size: 1rem; block-size: 1rem; flex: none;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    object-fit: cover;
+  }
+  .ns-bookmark__media { inline-size: 12rem; flex: none; background: var(--color-surface-sunken); }
+  .ns-bookmark__media img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  @media (max-width: 47.999rem) {
+    .ns-bookmark { grid-template-columns: minmax(0, 1fr); }
+    .ns-bookmark__media { inline-size: 100%; block-size: 9rem; order: -1; }
+  }
+
+  /* --- File ---------------------------------------------------------------
+     A download. The SIZE and the extension are not decoration — they are the
+     two things that decide whether someone taps a link on a phone, and Ghost
+     collects both, so they are printed rather than hidden in a tooltip. */
+  .ns-file {
+    display: flex; align-items: center; gap: var(--space-4);
+    margin-block: var(--stack-md);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+  a.ns-file:hover { border-color: var(--color-brand-500); }
+  .ns-file__icon {
+    display: grid; place-items: center; flex: none;
+    inline-size: 2.75rem; block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-h4);
+  }
+  .ns-file__body { min-inline-size: 0; flex: 1; display: grid; gap: var(--space-1); }
+  .ns-file__name { font-size: var(--size-body); font-weight: var(--weight-medium); color: var(--color-ink); overflow-wrap: anywhere; }
+  .ns-file__meta {
+    display: flex; flex-wrap: wrap; gap: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-file__action { flex: none; }
+
+  /* --- Header -------------------------------------------------------------
+     Koenig's header card: a full-width statement inside a post. It is the one
+     card allowed to break the reading measure, because that IS its job — it
+     is a chapter break, not a paragraph. --dark takes the console navy, the
+     same band treatment sections.css uses, so a header card in a post and a
+     band on a marketing page are visibly the same object. */
+  .ns-headercard {
+    margin-block: var(--stack-lg);
+    padding: var(--space-10) var(--space-8);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    text-align: center;
+  }
+  .ns-headercard--dark {
+    background: var(--color-brand-900); border-color: var(--color-brand-900);
+    color: var(--color-on-dark);
+  }
+  .ns-headercard__kicker {
+    display: block; margin-block-end: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-headercard--dark .ns-headercard__kicker { color: var(--color-on-dark-border-hover); }
+  .ns-headercard__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
+  .ns-headercard__text {
+    font-size: var(--size-prose); line-height: var(--leading-snug);
+    color: var(--color-muted); margin-block-start: var(--space-3);
+    margin-inline: auto; max-inline-size: var(--measure-narrow); text-wrap: pretty;
+  }
+  .ns-headercard--dark .ns-headercard__text { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
+  .ns-headercard__actions { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3); margin-block-start: var(--space-6); }
+
+  /* --- Members CTA --------------------------------------------------------
+     Ghost's email-CTA card: the members prompt that interrupts a post. It is
+     a LEADING-EDGE block rather than a boxed panel, because it is an aside
+     from the publication rather than part of the argument — the same device
+     .ns-takeaway uses, in the accent that means membership. */
+  .ns-cta-card {
+    display: grid; gap: var(--space-3);
+    margin-block: var(--stack-md);
+    padding: var(--space-5) var(--space-6);
+    border-inline-start: 3px solid var(--color-featured-ink);
+    border-radius: 0 var(--radius-card) var(--radius-card) 0;
+    background: var(--color-surface-sunken);
+  }
+  .ns-cta-card__label {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-featured-ink);
+  }
+  .ns-cta-card__text { font-size: var(--size-prose-small); line-height: var(--leading-body); color: var(--color-ink); text-wrap: pretty; }
+  .ns-cta-card__form { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+  .ns-cta-card__form .ns-input { flex: 1; min-inline-size: 12rem; }
+  .ns-cta-card__fine {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+  }
 }
 /* NS Design System — syntax highlighter / code block.
    =========================================================================
@@ -10104,7 +10776,7 @@
      hover and, because it is infinite, it is the one effect on this page
      that must never carry information. */
   .ns-kinetic { display: flex; overflow: hidden; mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); } /* lint-ok: a mask's black is an alpha stop, not a colour — a theme token here would make the edges fade wrongly */
-  .ns-kinetic__track { display: flex; flex: none; gap: var(--space-6); padding-inline-end: var(--space-6); animation: marquee 28s linear infinite; } /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
+  .ns-kinetic__track { display: flex; flex: none; gap: var(--space-6); padding-inline-end: var(--space-6); animation: ns-marquee-scroll 28s linear infinite; } /* lint-ok: marquee speed is a distance-per-second, not a UI timing */
   .ns-kinetic:hover .ns-kinetic__track { animation-play-state: paused; }
   .ns-kinetic__item { font-family: var(--font-heading); font-size: var(--size-h1); font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight); white-space: nowrap; color: var(--color-ink); }
   .ns-kinetic__item--outline { color: transparent; -webkit-text-stroke: 1px var(--color-brand-500); }
@@ -10247,6 +10919,37 @@
   .ns-anim-stagger > :nth-child(4) { animation-delay: 120ms; }
   .ns-anim-stagger > :nth-child(5) { animation-delay: 160ms; }
   .ns-anim-stagger > :nth-child(n+6) { animation-delay: 200ms; }
+
+  /* --- Loops --------------------------------------------------------------
+     Not entrances: these run forever, which is why they are held to two and
+     why both are for DECORATION. Nothing that carries meaning may loop —
+     a reader cannot re-read a moving sentence, and a control that never
+     settles never looks ready. Both stop dead under prefers-reduced-motion
+     via the global guard in tokens/effects.css.
+
+     They live here, with the entrances, because a keyframe name is global and
+     unlayered. Keeping every one of them in one file with one prefix is the
+     only thing standing between this system and a silent collision with a
+     consuming app's own `float` or `marquee`. */
+
+  /* Illustration float. 8px, six seconds — slow enough to read as breathing
+     rather than as a thing trying to get your attention. Illustrations and
+     empty-state art only, never a control or a card. */
+  @keyframes ns-float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -8px; }
+  }
+
+  /* The marquee track. Named for the mechanism (scroll) rather than the
+     component, because .ns-marquee is a class and a keyframe sharing a name
+     with a class reads like a relationship the CSS does not actually have.
+     The -50% is load-bearing: .ns-marquee__track ships its content twice, so
+     translating exactly half a track lands on an identical frame and the loop
+     has no seam. */
+  @keyframes ns-marquee-scroll {
+    from { translate: 0 0; }
+    to { translate: -50% 0; }
+  }
 
   /* --- Scroll-triggered ---------------------------------------------------
      --onview runs the animation as the block scrolls into view rather than on
@@ -10404,7 +11107,7 @@
   .ns-auth__sent p { font-size: var(--size-small); color: var(--color-muted); }
   /* The address the link went to, in mono — it is data, and showing it back
      is what lets the user catch their own typo. */
-  .ns-auth__sent code { font-family: var(--font-mono); font-size: var(--size-small); color: var(--color-ink); }
+  .ns-auth__sent code { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-ink); }
 
   /* Password strength — a Steps-style tick row, not a rainbow meter. Wire the
      ticks with data-state="done" as rules pass; the text names what is
@@ -12251,7 +12954,7 @@
      --roomy is for the syllabus on a marketing page, where the row is the
      content rather than the navigation. */
   .ns-lesson--compact { padding-block: var(--space-1-5); min-block-size: 0; font-size: var(--size-fine); }
-  .ns-lesson--roomy { padding-block: var(--space-3-5, var(--space-4)); }
+  .ns-lesson--roomy { padding-block: var(--space-3-5); }
   .ns-lesson__time {
     font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-muted); font-variant-numeric: tabular-nums;
@@ -14324,13 +15027,20 @@
    Shared grammar:
      - every band opens with the code-comment kicker + a balanced heading;
      - the container is --container-page, gutters from --gutter;
-     - vertical rhythm is --space-16/--space-20 (spacing-section scale);
+     - vertical rhythm comes from the SEMANTIC scale, not from raw --space-N:
+       a band's padding-block is --stack-lg, which tokens/spacing.css defines
+       as the step "between page sections" — because that is exactly what a
+       band's padding is doing. Two variants sit deliberately off it and say
+       so at the call site;
      - dark bands use the navy console surface + the hairline grid motif,
        never a gradient. */
 @layer ns-components {
 
   /* --- Band + head --------------------------------------------------------- */
-  .ns-band { padding-block: var(--space-16); }
+  .ns-band { padding-block: var(--stack-lg); }
+  /* Off the stack scale on purpose: --stack-md (32px) is subsection spacing
+     and reads as a row rather than a band, --stack-lg is what this variant
+     exists to be tighter than. 40px is the one step between them. */
   .ns-band--tight { padding-block: var(--space-10); }
   .ns-band__inner { max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
   .ns-band--sunken { background: var(--color-surface-sunken); border-block: 1px solid var(--color-border); }
@@ -14359,6 +15069,195 @@
   .ns-band__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
   .ns-band__lede { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
+
+  /* --- Assembly: the components rendering the product ---------------------
+     The hero illustration, told in two acts on one loop, inside a browser
+     window:
+
+       ACT 1  six component FILES — nav.cmp, hero.cmp, button.cmp, image.cmp,
+              card.cmp, chart.cmp — each sitting in THE SLOT IT WILL RENDER
+              INTO. nav.cmp is where the navbar goes, card.cmp is where the
+              cards go. Nothing is scattered decoratively.
+       ACT 2  each file cross-fades into the thing it renders, in place. The
+              page assembles where you were already looking.
+
+     That placement is the whole point. A version where the files drift in
+     from the corners says "components exist"; this one says "THIS component
+     becomes THAT part of the page", which is the actual claim.
+
+     The window is deliberately LIGHT on the navy band — it is a picture of a
+     website, and websites in this system are white. --color-on-dark is a
+     fixed #fff in both themes (see tokens/colors.css), so the window stays a
+     white website in dark mode instead of quietly becoming a navy one.
+
+     Both acts share ONE timeline, so a file and its rendering can never be on
+     screen together. Each keyframe's 0% is its RESTING state, so under
+     prefers-reduced-motion the global guard leaves the rendered page with its
+     labels at rest on top — a legible still, not a blank stage. */
+  .ns-assembly {
+    position: relative; aspect-ratio: 4 / 3; inline-size: 100%;
+    display: grid; place-items: center;
+    --ns-gridlines-cell: 8%;
+    background-image: var(--ns-gridlines-image);
+    background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+    mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, var(--color-ink) 62%, transparent 100%); /* lint-ok: mask alpha ramp, any opaque colour works; ink keeps it token-fed */
+  }
+
+  /* --- The window --------------------------------------------------------- */
+  .ns-assembly__window {
+    inline-size: 100%; block-size: 92%;
+    display: grid; grid-template-rows: auto 1fr;
+    border-radius: var(--radius-card); overflow: hidden;
+    background: var(--color-on-dark);
+    box-shadow: var(--shadow-raised);
+  }
+  /* The chrome: three dots and an address pill. It is what makes the thing
+     below read as a WEBSITE rather than as a card — one row, and the whole
+     picture is unambiguous. */
+  .ns-assembly__chrome {
+    display: flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1-5) var(--space-2-5);
+    background: var(--color-surface-sunken);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-assembly__dot { inline-size: 6px; block-size: 6px; flex: none; border-radius: var(--radius-pill); background: var(--color-border); }
+  .ns-assembly__url {
+    flex: 1; margin-inline-start: var(--space-1-5);
+    padding: 2px var(--space-2); /* lint-ok: 2px of chrome padding on a miniature address bar; the scale starts at 2px only as --space-0-5, which is 2px */
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); text-align: center;
+  }
+
+  /* --- The page inside it -------------------------------------------------
+     A real grid, so every slot has a real place — which is what lets the
+     labels sit exactly where their component renders. */
+  .ns-assembly__page {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto auto minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: var(--space-2-5);
+    background: var(--color-on-dark);
+  }
+  .ns-assembly__slot { position: relative; min-inline-size: 0; }
+  .ns-assembly__slot--nav    { grid-column: 1 / -1; grid-row: 1; }
+  .ns-assembly__slot--hero   { grid-column: 1 / 3;  grid-row: 2; }
+  .ns-assembly__slot--image  { grid-column: 3;      grid-row: 2 / 4; }
+  .ns-assembly__slot--button { grid-column: 1 / 3;  grid-row: 3; }
+  .ns-assembly__slot--card   { grid-column: 1 / 3;  grid-row: 4; }
+  .ns-assembly__slot--chart  { grid-column: 3;      grid-row: 4; }
+
+  /* The label sits centred in its own slot and fades out as the render
+     fades in — same slot, same instant, so the swap reads as one thing
+     becoming another rather than two things trading places. */
+  .ns-assembly__cmp {
+    position: absolute; inset: 0; z-index: var(--z-raised);
+    display: flex; align-items: center; justify-content: center; gap: var(--space-1-5);
+    border: 1px dashed var(--color-brand-500); border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, var(--color-on-dark));
+    color: var(--color-brand-600);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); white-space: nowrap;
+    animation: ns-asm-collect 11s var(--ease-out) infinite; /* lint-ok: an illustration loop is a duration in seconds, not a UI response */
+    animation-delay: var(--_d, 0ms);
+  }
+  .ns-assembly__cmp i { font-size: var(--size-small); }
+  .ns-assembly__slot--nav    .ns-assembly__cmp { --_d: 0ms; }
+  .ns-assembly__slot--hero   .ns-assembly__cmp { --_d: 110ms; }
+  .ns-assembly__slot--button .ns-assembly__cmp { --_d: 220ms; }
+  .ns-assembly__slot--image  .ns-assembly__cmp { --_d: 330ms; }
+  .ns-assembly__slot--card   .ns-assembly__cmp { --_d: 440ms; }
+  .ns-assembly__slot--chart  .ns-assembly__cmp { --_d: 550ms; }
+
+  /* What renders, on the light page. */
+  .ns-assembly__render {
+    block-size: 100%;
+    animation: ns-asm-render 11s var(--ease-out) infinite; /* lint-ok: same loop as the labels above */
+  }
+  .ns-assembly__bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-assembly__mark { inline-size: 10px; block-size: 10px; flex: none; border-radius: var(--radius-sm); background: var(--color-brand-500); }
+  .ns-assembly__line { display: block; block-size: 5px; border-radius: var(--radius-pill); background: var(--color-border); flex: 1; }
+  .ns-assembly__line--short { flex: none; inline-size: 22%; }
+  .ns-assembly__line--wide  { inline-size: 82%; block-size: 10px; background: var(--color-ink); flex: none; }
+  .ns-assembly__line--mid   { inline-size: 54%; block-size: 10px; background: var(--color-ink); flex: none; }
+  .ns-assembly__stack { display: grid; gap: var(--space-1-5); align-content: center; }
+  .ns-assembly__actions { display: flex; gap: var(--space-2); align-items: center; }
+  .ns-assembly__chip {
+    display: inline-flex; align-items: center;
+    padding: var(--space-1) var(--space-2-5);
+    border-radius: var(--radius-btn);
+    background: var(--color-brand-500); color: var(--color-on-brand);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .ns-assembly__chip--quiet { background: transparent; color: var(--color-muted); box-shadow: inset 0 0 0 1px var(--color-border); }
+  /* The image slot: the system's own empty-media frame, at miniature scale. */
+  .ns-assembly__media {
+    block-size: 100%; display: grid; place-items: center;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-border); font-size: var(--size-h3);
+  }
+  .ns-assembly__cards { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+  .ns-assembly__mini-card {
+    display: grid; gap: var(--space-1-5); align-content: start;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  }
+  .ns-assembly__bars {
+    display: flex; align-items: flex-end; gap: 3px; /* lint-ok: a 3px gap between five miniature bars; the spacing scale steps 2px → 4px */
+    block-size: 100%; min-block-size: 1.75rem;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  }
+  .ns-assembly__bars > i { flex: 1; border-radius: 2px 2px 0 0; background: var(--color-brand-500); } /* lint-ok: a 2px cap on a 4px-wide miniature bar; --radius-sm would round it away entirely */
+
+  /* Act 1 rests visible, in place. */
+  @keyframes ns-asm-collect {
+    0%, 22%   { opacity: 1; scale: 1; }
+    38%, 78%  { opacity: 0; scale: 0.94; }
+    94%, 100% { opacity: 1; scale: 1; }
+  }
+  /* Act 2 is the answer to it: absent while the labels are up, held while
+     they are gone. */
+  @keyframes ns-asm-render {
+    0%, 26%   { opacity: 0; }
+    42%, 76%  { opacity: 1; }
+    90%, 100% { opacity: 0; }
+  }
+
+  /* --- The living grid ----------------------------------------------------
+     .ns-band--grid draws the motif; --grid-live drifts it. One cell every
+     twenty seconds, which is slow enough that nobody watching the headline
+     notices it moving and just enough that the band is not a flat image.
+     A hero that animates faster than a reader reads is an advert. */
+  .ns-band--grid-live::before {
+    animation: ns-grid-drift 20s linear infinite; /* lint-ok: a drift is distance-per-second, not a UI timing */
+  }
+  @keyframes ns-grid-drift {
+    from { background-position: 0 0; }
+    to   { background-position: var(--space-8) var(--space-8); }
+  }
+
+  /* --- Flush hero ---------------------------------------------------------
+     A hero that opens a page under a fixed bar should START at the bar, not
+     an inch below it: the gap reads as a rendering mistake, and on a short
+     viewport it costs the fold. --flush drops the top padding to the bar's
+     own breathing room and squares the corners, so the band runs edge to
+     edge. Only ever on the FIRST band of a page. */
+  .ns-hero--flush {
+    padding-block-start: var(--space-12);
+    border-radius: 0;
+    margin-block-start: 0;
+  }
 
   /* --- The actions slot ----------------------------------------------------
      A band does NOT define its own action. It leaves a slot and the page
@@ -14416,7 +15315,11 @@
      The page opener. Text-first: kicker, display heading, lede, two actions,
      one mono proof line. The dark variant carries the hairline-grid motif
      dissolving under a radial mask — the only decorative background allowed. */
-  .ns-hero { padding-block: var(--space-20) var(--space-16); }
+  /* Asymmetric, and the bottom is the band step: a hero opens a page, so it
+     wants more air above than a band gets, and exactly a band's worth below
+     so the next section lands on the page's rhythm. --space-20 is the one
+     nudge — there is no stack step between lg (64) and xl (96). */
+  .ns-hero { padding-block: var(--space-20) var(--stack-lg); }
   .ns-hero__title { font-size: var(--size-display); line-height: var(--leading-heading); letter-spacing: var(--tracking-tight); text-wrap: balance; max-inline-size: 22ch; }
   .ns-hero__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-4); max-inline-size: var(--container-prose); text-wrap: pretty; }
   .ns-band--dark .ns-hero__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: same on-dark dimming as the lede */ }
@@ -14429,6 +15332,43 @@
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
   .ns-band--dark .ns-hero__proof { color: var(--color-on-dark-border-hover); }
+
+  /* --- Hero variants -------------------------------------------------------
+     Three heroes and no more, because a hero answers exactly one question —
+     "what is this page and what do I do first" — and the variants differ only
+     in WHERE the eye enters:
+
+       (default)   left-aligned, text-first. The workhorse: the reader is
+                   here on purpose and wants the action, not a ceremony.
+       --center    centred, for a LAUNCH surface — a campaign page, a course
+                   announcement — where the headline is the event and there
+                   is nothing beside it competing for the first glance.
+       --split     body beside a media slot, for the one page where showing
+                   beats telling: the product homepage, where a real
+                   screenshot or illustration is the proof the words claim.
+
+     A fourth hero is a page that has not decided what it is for. */
+  .ns-hero--center .ns-band__inner { display: grid; justify-items: center; text-align: center; }
+  .ns-hero--center .ns-hero__title { max-inline-size: 24ch; }
+  .ns-hero--center .ns-hero__lede { max-inline-size: var(--measure-narrow); }
+  .ns-hero--center .ns-hero__actions { justify-content: center; }
+
+  .ns-hero--split .ns-band__inner {
+    display: grid; align-items: center; gap: var(--space-10);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+  }
+  /* The media slot. Contains whatever the page gives it — a framed
+     screenshot, an SVG, a video poster — and never grows the hero: the words
+     set the height, the picture fits. */
+  .ns-hero__media { min-inline-size: 0; }
+  .ns-hero__media > img, .ns-hero__media > svg, .ns-hero__media > video { inline-size: 100%; block-size: auto; display: block; }
+  @media (max-width: 63.999rem) {
+    /* Words first, picture after, smaller — the art supports the headline,
+       and a panel that pushes the headline off the first screen has
+       inverted that. Same rule as .ns-thero__art. */
+    .ns-hero--split .ns-band__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    .ns-hero--split .ns-hero__media { max-inline-size: 24rem; }
+  }
   /* The dissolving hairline grid, drawn from the grid token. */
   .ns-band--grid::before {
     content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -14546,7 +15486,7 @@
   .ns-logorow { display: flex; align-items: center; justify-content: center; gap: var(--space-10); flex-wrap: wrap; }
   .ns-logorow > * { color: var(--color-label); transition: color var(--duration-fast) var(--ease-out); }
   .ns-logorow > *:hover { color: var(--color-ink); }
-  .ns-logorow__mark { font-family: var(--font-mono); font-size: var(--size-small); letter-spacing: var(--tracking-label); text-transform: uppercase; }
+  .ns-logorow__mark { font-family: var(--font-mono); font-size: var(--size-mono); letter-spacing: var(--tracking-label); text-transform: uppercase; }
 
   /* --- Footer -------------------------------------------------------------
      Link columns over a mono bottom bar. One hairline on top; column heads
@@ -15113,20 +16053,20 @@
      The page shell, spelled once. Both products write this on every template;
      without it they each invent their own max-width and the two drift. */
   .ns-page { inline-size: 100%; max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
-  .ns-page--prose { max-inline-size: var(--container-prose); }
+  .ns-page--prose { max-inline-size: var(--container-prose); } /* used-by: ghost-theme, lms */
   .ns-page--narrow { max-inline-size: var(--container-narrow); }
-  .ns-page--wide { max-inline-size: var(--container-wide); }
+  .ns-page--wide { max-inline-size: var(--container-wide); } /* used-by: ghost-theme, lms */
   /* The gutter is inline only, because a page's vertical rhythm belongs to the
      sections inside it. --demo adds the block padding for a standalone page
      that has no band wrapping it. */
-  .ns-page--demo { padding-block: var(--space-8); }
+  .ns-page--demo { padding-block: var(--space-8); } /* used-by: ghost-theme, lms */
 
   /* Vertical rhythm between sections, as a class rather than a margin on
      every heading — margins on headings collapse unpredictably next to
      grids and cards. */
   .ns-stack > * + * { margin-block-start: var(--stack-sm); }
-  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); }
-  .ns-stack--md > * + * { margin-block-start: var(--stack-md); }
+  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); } /* used-by: ghost-theme, lms */
+  .ns-stack--md > * + * { margin-block-start: var(--stack-md); } /* used-by: ghost-theme, lms */
   .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
 
   /* Auto-fitting card grid. `min()` keeps the track from overflowing the
@@ -15135,13 +16075,13 @@
     display: grid; gap: var(--gap-grid);
     grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
   }
-  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); }
+  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
 
   /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
      column below lg, where the sidebar becomes a drawer. */
-  .ns-docs-layout { display: flex; gap: var(--space-10); align-items: flex-start; }
-  .ns-docs-layout__main { flex: 1; min-inline-size: 0; }
-  .ns-docs-layout__toc {
+  .ns-docs-layout { display: flex; gap: var(--space-10); align-items: flex-start; } /* used-by: ghost-theme, lms */
+  .ns-docs-layout__main { flex: 1; min-inline-size: 0; } /* used-by: ghost-theme, lms */
+  .ns-docs-layout__toc { /* used-by: ghost-theme, lms */
     position: sticky; inset-block-start: var(--navbar-h);
     inline-size: var(--toc-w); flex: none;
     max-block-size: calc(100dvh - var(--navbar-h));

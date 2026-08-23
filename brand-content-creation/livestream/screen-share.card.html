@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x815" name="Live Stream — Screen Share & Slides at 16:9" subtitle="How a shared screen, an org window or a deck reaches the canvas without being stretched or unreadable" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -24,8 +28,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 /* 03 — a 4:3 source pillarboxed on the brand canvas. */
 .pillar .win{inset:0 12.5%;}
 .pillar .pat{position:absolute;inset:0;
-  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
-  background-size:14px 14px}
+  --ns-gridlines-cell:14px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 .pillar .kick{position:absolute;inset-inline-start:3%;top:8%;font-family:var(--font-mono);font-size:6px;letter-spacing:.1em;color:var(--color-brand-300);text-transform:uppercase;z-index:3}
 .verdict{display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase}
 .ok{color:var(--color-success)}.no{color:var(--color-error)}

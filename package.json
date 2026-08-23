@@ -51,6 +51,7 @@
     "build:tokens": "node scripts/build-tokens.mjs",
     "build:css": "node scripts/build-css.mjs",
     "build:preview": "node scripts/build-preview.mjs",
+    "build:home": "node scripts/build-home.mjs",
     "build:site": "node scripts/build-site.mjs",
     "check:tokens": "node scripts/build-tokens.mjs --check",
     "check:principles": "node scripts/lint-principles.mjs",
@@ -98,6 +99,7 @@
     }
   },
   "devDependencies": {
+    "@phosphor-icons/web": "^2.1.2",
     "@tailwindcss/postcss": "^4.3.3",
     "cssnano": "7.1.2",
     "esbuild": "^0.25.0",

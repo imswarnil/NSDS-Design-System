@@ -74,7 +74,11 @@ const server = createServer(async (req, res) => {
       return;
     }
 
-    if (path === "/") path = "/preview/index.html";
+    /* The root is the HOMEPAGE, not the styleguide. index.html is generated
+       at the repo root by scripts/build-home.mjs precisely so that the dev
+       server and the deployed site serve the same file with the same
+       relative links; the styleguide lives one click in, at /preview/. */
+    if (path === "/") path = "/index.html";
 
     /* Contain the served path inside ROOT — path traversal is never
        acceptable, even on a local dev port. */
@@ -105,7 +109,10 @@ if (WATCH) {
   /* Output and VCS dirs are ignored, which is also what prevents the loop:
      a rebuild writes dist/ and preview/, and those writes must not retrigger
      the rebuild that produced them. */
-  const IGNORE = /(^|[\\/])(node_modules|dist|preview|_site|\.git)([\\/]|$)/;
+  /* index.html at the root is a BUILD OUTPUT (scripts/build-home.mjs) that
+     sits in a watched directory — without it here, every rebuild rewrites it,
+     the watcher sees the write, and the loop never stops. */
+  const IGNORE = /(^|[\\/])(node_modules|dist|preview|_site|\.git)([\\/]|$)|^index\.html$/;
   const RELEVANT = /\.(css|html|mjs|js|jsx|json|hbs|svg|woff2)$/;
 
   let timer = null;
@@ -127,6 +134,7 @@ if (WATCH) {
       await runNode("build-tokens.mjs");
       await runNode("build-css.mjs");
       await runNode("build-preview.mjs");
+      await runNode("build-home.mjs");
       console.log(`  rebuilt in ${Date.now() - t0}ms  (${reason}) → reloading ${clients.size} tab(s)`);
       broadcast("reload");
     } catch (err) {
@@ -152,8 +160,13 @@ if (WATCH) {
 
 let port = PORT;
 const onListening = () => {
-  const url = `http://127.0.0.1:${port}/preview/index.html`;
-  console.log(`\n  NS Design System preview → ${url}`);
+  /* Open on the HOMEPAGE. It is the front door of the deployed site and it
+     carries the navigation into everything else, so landing there while
+     working is landing where a visitor lands. */
+  const url = `http://127.0.0.1:${port}/`;
+  console.log(`\n  NS Design System → ${url}`);
+  console.log(`  Homepage      ${url}`);
+  console.log(`  Styleguide    ${url}preview/index.html`);
   console.log(`  Serving the real tree, so specimens and dist/ are what actually ships.`);
   if (WATCH) console.log("  Watching: save any token, CSS, card or script and open tabs reload.");
   console.log("  Ctrl-C to stop.\n");

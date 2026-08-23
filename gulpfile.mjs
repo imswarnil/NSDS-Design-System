@@ -8,7 +8,8 @@
 
    Tasks:
      gulp            dev loop — build, then serve with watch + live reload
-     gulp build      tokens → css bundle → preview page
+                     (opens on the HOMEPAGE at /, styleguide at /preview/)
+     gulp build      tokens → css bundle → preview pages → homepage
      gulp check      the CI checks (add --site-built to include link integrity)
      gulp site       build + stage the deployable static site into _site/
      gulp serve      serve an existing build, no watching
@@ -36,8 +37,12 @@ const run = (script, ...args) => {
 export const tokens = run("build-tokens.mjs");
 export const css = run("build-css.mjs");
 export const preview = run("build-preview.mjs");
+/* The homepage reads preview/pages.json and preview/demos.json, so it runs
+   AFTER the preview — and it runs in the plain `build`, not only in `site`,
+   because it is what `gulp` serves at http://127.0.0.1:4322/. */
+export const home = run("build-home.mjs");
 
-export const build = gulp.series(tokens, css, preview);
+export const build = gulp.series(tokens, css, preview, home);
 
 export const check = gulp.series(
   run("build-tokens.mjs", "--check"),

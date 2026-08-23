@@ -1,7 +1,11 @@
-<!-- @dsCard group="Content Creation" viewport="700x800" name="YouTube End Screen — Dark + Light" subtitle="Last-20-seconds layout — next video, subscribe circle, website card" -->
+<!-- @dsCard group="Content Creation" viewport="700x870" name="YouTube End Screen — Dark + Light" subtitle="Last-20-seconds layout — next video, subscribe circle, website card" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
-.label{font-family:var(--font-mono);font-size:10px;color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
+.label{font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 6px}
 .card{width:100%;aspect-ratio:16/9;position:relative;overflow:hidden}
 .dark{background:var(--color-brand-900);color:#fff}
 .light{background:#fff;color:var(--color-brand-900);box-shadow:inset 0 0 0 1px var(--color-border)}
@@ -27,13 +31,13 @@
 .light .site div{color:var(--color-muted)}
 </style></head><body>
 <div class="label">Dark</div>
-<div class="card dark"><div class="bar"></div><div class="pat" style="background-image:linear-gradient(to right,rgb(255 255 255/.06) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.06) 1px,transparent 1px);background-size:24px 24px"></div>
+<div class="card dark"><div class="bar"></div><div class="pat" style="--ns-gridlines-cell:24px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)"></div>
 <div class="next"><i class="ph ph-play-circle"></i><span>Bulkification &amp; Governor Limits</span></div>
 <div class="sub"><i class="ph ph-bell-ringing"></i><span>SUBSCRIBE</span></div>
 <div class="site"><i class="ph ph-globe"></i><div><b>namastesalesforce.com</b>Full course + resources</div></div>
 </div>
 <div class="label">Light</div>
-<div class="card light"><div class="bar"></div><div class="pat" style="background-image:linear-gradient(to right,rgb(0 0 30/.05) 1px,transparent 1px),linear-gradient(to bottom,rgb(0 0 30/.05) 1px,transparent 1px);background-size:24px 24px"></div>
+<div class="card light"><div class="bar"></div><div class="pat" style="--ns-gridlines-ink:var(--ns-gridlines-ink-light);--ns-gridlines-cell:24px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)"></div>
 <div class="next"><i class="ph ph-play-circle"></i><span>Bulkification &amp; Governor Limits</span></div>
 <div class="sub"><i class="ph ph-bell-ringing"></i><span>SUBSCRIBE</span></div>
 <div class="site"><i class="ph ph-globe"></i><div><b>namastesalesforce.com</b>Full course + resources</div></div>

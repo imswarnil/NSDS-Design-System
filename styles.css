@@ -32,12 +32,12 @@
 @import "./tokens/effects.css";
 @import "./tokens/base.css";
 
-/* Layered at the import site, not inside the files: phosphor.css is generated
+/* Layered at the import site, not inside the file: phosphor.css is generated
    by scripts/subset-icons.py, so a regeneration would drop an edit made in it.
-   Both icon files must land in the SAME layer — icons-gap.css overrides
-   phosphor.css purely by source order at equal specificity. */
+   There used to be a second import here — icons-gap.css, 31 glyphs redrawn as
+   inline-SVG masks because the subset was missing them and the subsetter was
+   missing too. Both are back; one file is the icon source again. */
 @import "./icons/phosphor.css" layer(ns-components);
-@import "./icons/icons-gap.css" layer(ns-components);
 @import "./patterns/patterns.css" layer(ns-components);
 
 @import "./components/css/index.css";

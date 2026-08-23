@@ -146,6 +146,23 @@
      collapses the others and scrolls it into view on load. That behaviour is
      progressive: with JS off every module ships `open`, which is worse to
      scroll but never hides anything. */
+  /* --- The rail, rebuilt --------------------------------------------------
+     The old rail was a column of text with a hairline down its left edge and
+     a bare uppercase word every few rows. It read as an outline of a
+     document, which is what it is NOT: it is the table of contents of a
+     150-module curriculum, and the reader's questions are "what kind of thing
+     is this row", "how long", and "how much of this module have I done".
+
+     So every level now carries a mark:
+       track    a tile and the position, as an object you can click
+       module   a caret, a name, a count, and its own progress meter
+       section  a label with a rule running out to the edge
+       post     a KIND icon, the title, the time
+
+     The spine moved from the rows to the LIST. One continuous hairline per
+     section with rows tucked against it, so the group reads as a group and
+     the current row can own a tinted, rounded slab instead of competing with
+     forty identical borders. */
   .ns-trainingnav {
     position: sticky; inset-block-start: var(--navbar-h);
     inline-size: var(--sidebar-w); flex: none;
@@ -154,23 +171,56 @@
     padding-inline-end: var(--space-3);
     border-inline-end: 1px solid var(--color-border);
   }
+
+  /* The track: the one thing above every module, so it is a card rather than
+     a caption — it is where "which curriculum am I in" is answered and it is
+     the way back out. Plain text inside still renders correctly; the icon and
+     the position line are optional children. */
   .ns-trainingnav__track {
-    display: block; padding-block-end: var(--space-3);
-    margin-block-end: var(--space-3);
-    border-block-end: 1px solid var(--color-border);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-    text-decoration: none;
+    display: flex; align-items: center; gap: var(--space-2-5);
+    padding: var(--space-2-5) var(--space-3);
+    margin-block-end: var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: var(--color-ink); text-decoration: none;
+    font-size: var(--size-small); font-weight: var(--weight-medium);
+    transition: border-color var(--duration-fast) var(--ease-out);
   }
+  a.ns-trainingnav__track:hover { border-color: var(--color-brand-500); }
+  .ns-trainingnav__track > i {
+    flex: none; display: grid; place-items: center;
+    inline-size: 1.75rem; block-size: 1.75rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-body);
+  }
+  .ns-trainingnav__track-body { min-inline-size: 0; }
+  /* The NAME is writing and the position is data — Principle 2, and the
+     reason this is two selectors rather than one on the wrapper: scoping the
+     mono voice to the wrapper <span> put the track's own name in uppercase
+     mono too, which made the card shout its way through three lines. */
+  .ns-trainingnav__track b {
+    display: block; font-family: var(--font-sans); font-weight: var(--weight-medium);
+    font-size: var(--size-small); letter-spacing: normal; text-transform: none;
+    color: var(--color-ink);
+  }
+  .ns-trainingnav__track-body > span {
+    display: block; margin-block-start: var(--space-0-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
   .ns-trainingnav__module { border: 0; }
+  .ns-trainingnav__module + .ns-trainingnav__module { margin-block-start: var(--space-0-5); }
   .ns-trainingnav__module > summary {
     display: flex; align-items: center; gap: var(--space-2);
-    padding: var(--space-1-5) var(--space-2);
+    padding: var(--space-2);
     border-radius: var(--radius-sm);
     list-style: none; cursor: pointer;
     font-size: var(--size-small); font-weight: var(--weight-medium);
     color: var(--color-ink);
+    transition: background var(--duration-fast) var(--ease-out);
   }
   .ns-trainingnav__module > summary::-webkit-details-marker { display: none; }
   .ns-trainingnav__module > summary:hover { background: var(--color-surface-sunken); }
@@ -178,18 +228,32 @@
     outline: var(--focus-ring-width) solid var(--color-brand-500);
     outline-offset: calc(-1 * var(--focus-ring-width));
   }
+  /* The module a reader is inside stays marked while its posts are on screen,
+     so scrolling the rail never loses "which module is this". */
+  .ns-trainingnav__module:has([aria-current="page"]) > summary { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__module:has([aria-current="page"]) > summary { color: var(--color-brand-300); }
   .ns-trainingnav__twist { flex: none; color: var(--color-label); transition: rotate var(--duration-fast) var(--ease-out); }
-  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
-  .ns-trainingnav__count { margin-inline-start: auto; flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); font-variant-numeric: tabular-nums; }
-  .ns-trainingnav__list { list-style: none; margin: 0 0 var(--space-2); padding-inline-start: var(--space-4); }
-  .ns-trainingnav__link {
-    display: block; padding: var(--space-1) var(--space-2);
-    border-inline-start: 2px solid var(--color-border);
-    font-size: var(--size-small); color: var(--color-muted); text-decoration: none;
-    transition: color var(--duration-fast) var(--ease-out),
-                border-color var(--duration-fast) var(--ease-out);
+  /* The module's own glyph. It was the last level of the rail with no mark —
+     "Objects and fields" sat as bare text between a track that had a tile and
+     posts that each had an icon, which made the module read as a gap in the
+     column rather than as its top level. */
+  .ns-trainingnav__mod-icon {
+    flex: none; display: grid; place-items: center;
+    inline-size: 1.25rem; block-size: 1.25rem;
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    color: var(--color-brand-500); font-size: var(--size-small);
   }
-  .ns-trainingnav__link:hover { color: var(--color-ink); border-inline-start-color: var(--color-brand-300); }
+  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__mod-icon { color: var(--color-success); }
+  .ns-trainingnav__module[open] > summary .ns-trainingnav__twist { rotate: 90deg; }
+  .ns-trainingnav__count {
+    margin-inline-start: auto; flex: none;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  /* A module that is finished says so with a tick instead of a count — the
+     number has done its job and the state is the more useful fact. */
+  .ns-trainingnav__module[data-state="done"] .ns-trainingnav__count { color: var(--color-success); }
 
   /* --- Post sections inside a module --------------------------------------
      THE STRUCTURAL DIFFERENCE BETWEEN TRAINING AND A COURSE. A course is a
@@ -201,62 +265,293 @@
      One sidebar, three levels: track → module → section → post. Any deeper
      and the rail is a file tree, which is what this is designed not to be. */
   .ns-trainingnav__section {
-    display: block;
+    display: flex; align-items: center; gap: var(--space-2);
     padding: var(--space-3) var(--space-2) var(--space-1);
+    margin-inline-start: var(--space-4);
     font-family: var(--font-mono); font-size: var(--size-label);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
+  /* The section takes a glyph too. It is the one level of the rail that was
+     still text-only, and in a column where every other row leads with a mark
+     the bare label read as a gap rather than as a heading. The icon is the
+     section's JOB — concepts, practice, reference — so the three sections of
+     a module are told apart before the words are read. */
+  .ns-trainingnav__section > i { flex: none; font-size: var(--size-small); color: var(--color-label); }
+  /* The rule runs from the label to the rail's edge. It is what makes a
+     section read as a band across the column rather than three more words in
+     a column of words — and it costs no markup. */
+  .ns-trainingnav__section::after {
+    content: ""; flex: 1; block-size: 1px; background: var(--color-border);
+  }
 
+  /* THE SPINE MOVED. It used to be a 2px border on every row, which meant
+     forty rows all drawing the same line and the current one distinguished
+     only by its colour. Now the LIST carries one hairline and the rows tuck
+     against it, which frees the row itself to take a tinted slab when it is
+     current — a shape the eye finds without reading. */
+  .ns-trainingnav__list {
+    list-style: none; margin: 0 0 var(--space-2);
+    padding: 0; margin-inline-start: var(--space-4);
+    border-inline-start: 1px solid var(--color-border);
+  }
+  .ns-trainingnav__link {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-2); align-items: center;
+    margin-inline-start: -1px;
+    padding: var(--space-1-5) var(--space-2);
+    border-inline-start: 2px solid transparent;
+    border-start-end-radius: var(--radius-sm); border-end-end-radius: var(--radius-sm);
+    font-size: var(--size-small); line-height: var(--leading-snug);
+    color: var(--color-muted); text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out),
+                background var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out);
+  }
+  .ns-trainingnav__link:hover {
+    color: var(--color-ink);
+    background: var(--color-surface-sunken);
+    border-inline-start-color: var(--color-brand-300);
+  }
   /* Every row says what KIND of post it is, in the same icon vocabulary the
-     course rail uses — the word arrives on hover or focus from the shared
-     tooltip. A rail where a lab and a two-minute concept note look identical
-     is a rail that cannot be planned against. */
-  .ns-trainingnav__link { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-2); align-items: center; }
-  .ns-trainingnav__icon { flex: none; color: var(--color-label); font-size: var(--size-body); }
-  .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
-  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-300); }
-  .ns-trainingnav__link[data-state="done"] .ns-trainingnav__icon { color: var(--color-success); }
+     course rail uses. A rail where a lab and a two-minute concept note look
+     identical is a rail that cannot be planned against — which is the single
+     biggest thing the old flat list got wrong. */
+  .ns-trainingnav__icon {
+    flex: none; display: grid; place-items: center;
+    inline-size: 1.25rem; block-size: 1.25rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-label); font-size: var(--size-small);
+  }
   .ns-trainingnav__time {
     flex: none; font-family: var(--font-mono); font-size: var(--size-label);
-    color: var(--color-muted); font-variant-numeric: tabular-nums;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
   }
+  /* Every section opens with its own OVERVIEW — the page that introduces the
+     section before its posts. It is set apart from them because it is about
+     them: italic-free, quieter icon, and no time, since "how long is the
+     introduction" is not a question anybody has. */
+  .ns-trainingnav__link--overview { color: var(--color-ink); }
+  .ns-trainingnav__link--overview .ns-trainingnav__icon { color: var(--color-brand-500); }
+  .ns-trainingnav__link--overview[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
 
   /* Module-level progress, under the module's own summary: a training track
      is long enough that "how far into THIS module" is a different and more
      useful number than "how far into the track". */
-  .ns-trainingnav__bar { margin: var(--space-1) var(--space-2) var(--space-2); }
+  .ns-trainingnav__bar { margin: var(--space-1) var(--space-2) var(--space-2) var(--space-4); }
   .ns-trainingnav__bar .ns-progress { inline-size: 100%; }
-  /* aria-current, not a class — the highlighted unit and the announced unit
+
+  /* aria-current, not a class — the highlighted post and the announced post
      come from one attribute, and training.js reads the same one to decide
-     which module to open. */
+     which module to open. The slab is a tint PLUS a leading edge PLUS the
+     weight change: three signals, so it survives grayscale and forced
+     colours, where a colour swap alone would not. */
   .ns-trainingnav__link[aria-current="page"] {
     color: var(--color-brand-600); font-weight: var(--weight-medium);
     border-inline-start-color: var(--color-brand-500);
+    background: color-mix(in srgb, var(--color-brand-500) 8%, transparent);
   }
   [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] { color: var(--color-brand-300); }
+  .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-trainingnav__link[aria-current="page"] .ns-trainingnav__icon { color: var(--color-brand-300); }
+  /* Read: the row goes quiet and its icon goes green. The tick is the state,
+     the dimming is the "you are past this" — neither alone is enough. */
   .ns-trainingnav__link[data-state="done"] { color: var(--color-label); }
+  .ns-trainingnav__link[data-state="done"] .ns-trainingnav__icon { color: var(--color-success); }
 
-  /* --- Module head (in content) -------------------------------------------
-     The header of a module's own page: which module of how many, its title,
-     and the units as a checklist. */
+  /* --- The post head, rebuilt ---------------------------------------------
+     What a training post opens with. The old version was a crumb, a title, a
+     lede and a rule — correct, and completely silent about the three things a
+     reader wants before committing eleven minutes: what KIND of post this is,
+     how long, and where it sits.
+
+     So the head is now a row of marks above the title, and the title carries
+     a kind tile beside it. Every one of those is a fact the reader was
+     otherwise going to have to infer from the body. */
   .ns-modulehead { padding-block-end: var(--space-5); border-block-end: 1px solid var(--color-border); }
   .ns-modulehead__crumb {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
     font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase;
     color: var(--color-label);
   }
-  .ns-modulehead__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; margin-block-start: var(--space-1); }
-  .ns-modulehead__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
+  .ns-modulehead__crumb a { color: inherit; text-decoration: none; }
+  .ns-modulehead__crumb a:hover { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-modulehead__crumb a:hover { color: var(--color-brand-300); }
+  .ns-modulehead__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; margin-block-start: var(--space-3); }
+  .ns-modulehead__lede { font-size: var(--size-prose-lead); line-height: var(--leading-snug); color: var(--color-muted); margin-block-start: var(--space-3); max-inline-size: var(--measure-prose); text-wrap: pretty; }
+
+  /* The kind row: an icon-led chip per fact. Icons EARN their place here
+     because each one is paired with its own word — the glyph is the thing the
+     eye finds and the word is the thing it reads, which is the only
+     arrangement that works for both a scanner and a screen reader. */
+  .ns-tmeta {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
+    margin-block-start: var(--space-4);
+  }
+  .ns-tmeta__item {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-1) var(--space-2-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-muted); font-variant-numeric: tabular-nums;
+  }
+  .ns-tmeta__item i { color: var(--color-label); font-size: var(--size-small); }
+  /* The KIND chip is the one that is allowed to carry brand — it is the
+     answer to "what am I about to do", and the others are footnotes to it. */
+  .ns-tmeta__item--kind { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-tmeta__item--kind i { color: var(--color-brand-500); }
+  [data-theme="dark"] .ns-tmeta__item--kind { color: var(--color-brand-300); }
+  .ns-tmeta__item--done { border-color: var(--color-success); color: var(--color-success-ink); }
+  .ns-tmeta__item--done i { color: var(--color-success); }
+
+  /* --- The stage: a training post is VIDEO or ARTICLE ----------------------
+     Both are training posts, and the difference is one block at the top, not
+     two templates. A video post opens on the player and keeps the writing
+     underneath — the transcript, the steps, the code — because a training
+     video without the written version is not searchable, not skimmable and
+     not linkable to a line.
+
+     Deliberately NOT the course player: that is a locked three-column app for
+     working through a playlist. This is a page you can read, print and land
+     on from a search result, which happens to start with a video. */
+  .ns-tstage { margin-block: var(--stack-md); }
+  .ns-tstage .ns-video { border-radius: var(--radius-card); }
+  /* Under the frame: what the video is, and the way out of it for a reader
+     who would rather not watch. Every training video ships the written
+     version below, so this is a real anchor and never a dead promise. */
+  .ns-tstage__bar {
+    display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3);
+    margin-block-start: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-tstage__bar > span { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+  .ns-tstage__skip { margin-inline-start: auto; }
+
+  /* --- The reading layout, rebuilt -----------------------------------------
+     THREE columns, because the two-column version wasted the third. A
+     training post at --measure-prose leaves ~14rem of empty page beside it on
+     any laptop, and the thing that belongs there is the one piece of
+     navigation the old layout had nowhere to put: where you are INSIDE the
+     post.
+
+       rail      the curriculum        (where am I in the track)
+       article   the post              (the thing)
+       aside     on this page          (where am I in the post)
+
+     THE RAIL IS ON THE RIGHT, and that is the deliberate difference from the
+     course player. A course player puts the curriculum on the leading edge
+     because the playlist is the spine of the session: you are working THROUGH
+     it and it is the primary object. A training post is a DOCUMENT you landed
+     on — from search, from a link, from the index — and the primary object is
+     the writing. So the leading edge, where the eye starts every line, goes to
+     the outline of the thing you are reading, and the curriculum sits on the
+     trailing edge as the place you go NEXT.
+
+     Below xl the aside goes first: it is navigation about navigation, and the
+     rail and the measure are both worth more than it. Below lg the rail
+     becomes a drawer from the trailing edge — the edge it lives on. */
+  .ns-training--doc {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--ns-trail-w);
+    grid-template-rows: minmax(0, 1fr);
+    /* 20rem, not 17. A curriculum rail carries three levels of nesting and a
+       time on every row, and at 17rem the third level had ~11rem left — so
+       "Recalculation is asynchronous" and "Sharing model cheat sheet" both
+       wrapped to two lines and the column read as ragged prose instead of a
+       list. The article keeps the measure either way; this width comes out of
+       the empty page beside it. */
+    --ns-trail-w: 20rem;
+    gap: 0;
+    block-size: calc(100dvh - var(--navbar-h));
+    overflow: hidden;
+  }
+  .ns-training--doc > .ns-training__main {
+    grid-column: 1; grid-row: 1;
+    block-size: 100%; min-block-size: 0;
+    overflow-y: auto; max-inline-size: none;
+  }
+  .ns-training--doc > .ns-trainingnav {
+    grid-column: 2; grid-row: 1;
+    position: static; inline-size: auto;
+    max-block-size: none; block-size: 100%; min-block-size: 0;
+    overflow-y: auto;
+    border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
+    padding-block-start: 0; padding-inline: var(--space-4);
+  }
+  /* Same reason as the rail: a sticky child pins to its scroller's CONTENT
+     edge, so padding here would leave a see-through slot above the stuck
+     head with rows scrolling through it. */
+  .ns-training--doc .ns-trainingnav__head {
+    margin-inline: calc(-1 * var(--space-4));
+    padding-inline: var(--space-4);
+  }
+  /* The article column keeps its measure INSIDE the scroller, so the
+     scrollbar stays at the edge of the screen and the text stays at the
+     measure. */
+  /* FULL WIDTH, not the prose measure. With the aside gone the content column
+     IS the page, and a 42rem ribbon floating in a 60rem cell is the same dead
+     space the aside was removed to reclaim. Paragraphs still get their measure
+     — .ns-prose caps itself — but tables, code, the video stage and the pager
+     now use the whole container, which is what they were always short of. */
+  .ns-training--doc .ns-training__reading {
+    max-inline-size: var(--container-narrow);
+    margin-inline: auto;
+    padding: var(--space-8) var(--gutter-lg) var(--space-16);
+  }
 
   @media (max-width: 63.999rem) {
+    .ns-training--doc { display: block; block-size: auto; overflow: visible; }
+    .ns-training--doc > .ns-training__main { overflow: visible; block-size: auto; }
+    .ns-training--doc > .ns-trainingnav {
+      position: fixed; inset-block: 0; inset-inline-end: 0;
+      inline-size: min(22rem, 88vw); z-index: var(--z-overlay);
+      background: var(--color-surface);
+      border-inline-start: 1px solid var(--color-border);
+      transition: translate var(--duration-base) var(--ease-out);
+    }
+    /* Off-canvas from the TRAILING edge, because that is the edge it lives on
+       above the breakpoint — a drawer that flies in from the side its column
+       was never on reads as a different object. */
+    .ns-training--doc > .ns-trainingnav { translate: 100% 0; }
+    .ns-training--doc[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
+    .ns-training--doc .ns-training__reading { padding: var(--space-6) var(--gutter) var(--space-12); }
+  }
+
+  /* The BASE (non-fixed, non-doc) training layout still collapses to one
+     column below lg — restored here because .ns-training is what
+     training-module.html uses, and it is not a --doc page. */
+  @media (max-width: 63.999rem) {
     .ns-training { display: block; }
-    .ns-trainingnav {
+    .ns-training > .ns-trainingnav {
       position: static; inline-size: 100%; max-block-size: none;
       border-inline-end: 0; border-block-end: 1px solid var(--color-border);
       padding-inline-end: 0; margin-block-end: var(--space-5);
     }
-    .ns-training__main { max-inline-size: none; }
+    .ns-training > .ns-training__main { max-inline-size: none; }
+  }
+
+  @media (max-width: 63.999rem) {
+    .ns-training--doc {
+      display: block; block-size: auto; overflow: visible;
+    }
+    .ns-training--doc > .ns-training__main { overflow: visible; block-size: auto; }
+    .ns-training--doc > .ns-trainingnav {
+      position: fixed; inset-block: 0; inset-inline-start: 0;
+      inline-size: min(22rem, 88vw); z-index: var(--z-overlay);
+      background: var(--color-surface);
+      border-inline-end: 1px solid var(--color-border);
+      transition: translate var(--duration-base) var(--ease-out);
+    }
+    /* Off-canvas from the LEADING edge, because that is the edge it lives on
+       above the breakpoint — a drawer that flies in from the side its column
+       was never on reads as a different object. */
+    .ns-training--doc > .ns-trainingnav { translate: -100% 0; }
+    .ns-training--doc[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
+    .ns-training--doc .ns-training__reading { padding: var(--space-6) var(--gutter) var(--space-12); }
   }
 
   /* --- Track card ---------------------------------------------------------
@@ -640,13 +935,35 @@
   .ns-training--fixed {
     display: grid;
     grid-template-columns: minmax(0, 1fr) var(--ns-trail-w);
+    /* minmax(0, 1fr), not auto: an implicit row grows to its tallest item,
+       so a 4,000px article would stretch the row past the grid's own fixed
+       height and neither column would ever scroll internally. Clamping the
+       row's minimum to 0 is what FORCES the overflow inward, which is the
+       whole point of the fixed variant. */
+    grid-template-rows: minmax(0, 1fr);
     --ns-trail-w: 18rem;
     gap: 0;
     block-size: calc(100dvh - var(--navbar-h));
     overflow: hidden;
   }
-  .ns-training--fixed > .ns-training__main { grid-column: 1; overflow-y: auto; max-inline-size: none; }
-  .ns-training--fixed > .ns-trainingnav { grid-column: 2; }
+  /* grid-row: 1 is load-bearing on BOTH. The rail comes first in the DOM
+     (it is the navigation), so with only columns declared, auto-placement
+     puts the rail at r1c2 and then cannot back up to c1 on the same row —
+     the main column lands in row 2, and the two cells split the viewport
+     height between them instead of sharing it. */
+  /* block-size + min-block-size together, not `overflow` alone. A grid item's
+     automatic minimum size is its CONTENT's height, and relying on
+     `overflow: auto` to zero that is the part that does not survive contact
+     with a real browser — the cell grew to the full 3,000px article, the
+     grid clipped it, and the column simply never scrolled. Pin the height to
+     the row and floor the minimum at 0, which is exactly what the rail
+     beside it already does. */
+  .ns-training--fixed > .ns-training__main {
+    grid-column: 1; grid-row: 1;
+    block-size: 100%; min-block-size: 0;
+    overflow-y: auto; max-inline-size: none;
+  }
+  .ns-training--fixed > .ns-trainingnav { grid-column: 2; grid-row: 1; }
   .ns-training--fixed.ns-training--nav-start { grid-template-columns: var(--ns-trail-w) minmax(0, 1fr); }
   .ns-training--fixed.ns-training--nav-start > .ns-training__main { grid-column: 2; }
   .ns-training--fixed.ns-training--nav-start > .ns-trainingnav { grid-column: 1; }
@@ -660,6 +977,18 @@
     overflow-y: auto;
     border-inline-end: 0;
     border-inline-start: 1px solid var(--color-border);
+    padding-inline: var(--space-4);
+    /* No top padding when the rail is its own scroller: a sticky child pins
+       to the scroller's CONTENT edge, so any padding here becomes a
+       see-through slot above the stuck filter head with rows scrolling
+       visibly through it. The head carries its own breathing room. */
+    padding-block-start: 0;
+  }
+  /* The stuck head must span the full rail width — including the rail's
+     inline padding — or rows scrolling beneath peek out in the two padding
+     gutters beside it. Negative margins out, matching padding back in. */
+  .ns-training--fixed .ns-trainingnav__head {
+    margin-inline: calc(-1 * var(--space-4));
     padding-inline: var(--space-4);
   }
   .ns-training--fixed.ns-training--nav-start > .ns-trainingnav {
@@ -706,6 +1035,13 @@
      from .ns-panelbar, the same handle the course player uses on a phone.
      One panel pattern, two products. */
   .ns-trainingnav__close { display: none; }
+  /* The drawer's OPEN handle, for a page whose bar does not carry one (the
+     standalone training post has no .ns-panelbar). Hidden wherever the rail
+     is a visible column — an "open curriculum" button beside an open
+     curriculum is noise — and shown below lg, where the drawer is off-canvas
+     and this is the only way back to it. Put data-ns-training-open on it;
+     assets/js/training.js does the rest. */
+  .ns-training__handle { display: none; }
 
   @media (max-width: 63.999rem) {
     .ns-training--fixed {
@@ -723,14 +1059,24 @@
       background: var(--color-surface);
       border-inline-start: 1px solid var(--color-border);
       border-inline-end: 0;
-      /* Off-canvas by default; the drawer's own [open] state slides it in.
-         translate rather than display:none so the rail keeps its scroll
-         position between openings. */
-      translate: 100% 0;
       transition: translate var(--duration-base) var(--ease-out);
     }
+    /* THE TRANSLATE PAIR IS DELIBERATELY OUTSIDE THE LIST ABOVE, and this is
+       not style — the drawer did not open until it was.
+
+       A selector list is weighed by its most specific branch, so folding the
+       off-canvas position in beside `.ns-training--fixed.ns-training--nav-start`
+       gave it that branch's (0,3,0) — which beat the (0,3,0) `[data-rail]`
+       rule below it on nothing but source order, and lost. Declared on its
+       own the off-canvas state is (0,2,0), `open` is (0,3,0), and the state
+       that has to win does.
+
+       translate rather than display:none, so the rail keeps its scroll
+       position between openings. */
+    .ns-training--fixed > .ns-trainingnav { translate: 100% 0; }
     .ns-training--fixed[data-rail="open"] > .ns-trainingnav { translate: 0 0; }
     .ns-trainingnav__close { display: inline-flex; margin-inline-start: auto; }
+    .ns-training__handle { display: inline-flex; }
     .ns-training__reading { padding: var(--space-6) var(--gutter); }
   }
   @media (prefers-reduced-motion: reduce) {

@@ -15,6 +15,361 @@ semver, with one design-system-specific reading of it:
 A color *value* changing is a **major** even though nothing breaks at build
 time: every screen in both products moves.
 
+## [Unreleased]
+
+### Added — `--leading-prose`, and a real leading ramp for reading
+
+`1.7`, the tallest step, for exactly one surface: continuous prose at
+`--size-prose` on the full 68ch measure. Leading grows with the measure —
+the eye's return sweep across a long line needs more vertical separation
+than a card excerpt — and 1.6 was drawn for the UI's 14px at card widths.
+`.ns-prose` paragraphs and comment bodies take it; supporting blocks inside
+the article (callouts, refs, the takeaway) deliberately stay at 1.6, so the
+register shift is part of what makes an aside read as an aside.
+
+The other direction got fixed too: the prose lede and blockquote (20px)
+dropped from heading/body leading to `--leading-snug` (1.45), which advances
+29px — the same rhythm as the 17px/1.7 paragraphs, so the deck and the body
+read as one column at two volumes.
+
+### Added — hero variants `--center` and `--split`
+
+Three heroes and no more, differing only in where the eye enters: the
+default (left, text-first), `--center` for a launch surface where the
+headline is the event, `--split` for the one page where showing beats
+telling — body beside a `.ns-hero__media` slot that holds real proof.
+Below lg the media drops under the words, so the headline never leaves the
+first screen.
+
+### Added — the Ghost Koenig card set, restyled
+
+Ghost's editor lets an author drop a **product**, a **bookmark**, a **file**, a
+**header** or a **members CTA** into a post. Those cards ship with Ghost's own
+default styling — a rounded, shadowed, 16px-radius object that lands in a
+Namaste post like a visitor from another design system. These are the same
+five cards rebuilt on Principle 1: a 1px border does the structuring, the mono
+voice carries every piece of metadata, and one signal colour marks the one
+action.
+
+The class names match Koenig's data model rather than inventing new words
+(`product`, `bookmark`, `file`, `header`, `cta`), so the Ghost theme's
+rendering layer maps card → class with no translation table. Body copy in all
+five takes `--size-prose-small`, the same rule every other content block
+follows.
+
+Decisions worth naming:
+
+- **Product** — the rating is stars *plus* the number, and the number is real
+  text; five glyphs alone is a value nobody can read out. Empty stars are a
+  different glyph, not a lighter colour, so the score survives grayscale. With
+  no image, `:has()` drops the media column instead of leaving a grey hole.
+- **Bookmark** — the whole card is *one* `<a>`. A separately clickable title
+  and thumbnail is two tab stops to the same URL. The excerpt clamps to two
+  lines: a bookmark is a signpost, and a four-line excerpt is the article
+  arriving early.
+- **File** — the size and extension are printed, not hidden. They are the two
+  facts that decide whether someone taps a download on a phone, and Ghost
+  already collects both.
+- **Header** — the one card allowed to break the reading measure, because that
+  *is* its job: it is a chapter break, not a paragraph. `--dark` uses the same
+  console navy as a section band.
+- **Members CTA** — a leading-edge block rather than a boxed panel, because it
+  is an aside from the *publication* rather than part of the argument.
+
+One bug found while building them: the favicon slot borrowed `.ns-ph`, the
+media placeholder, which sets `min-block-size: var(--space-12)` — stretching a
+1rem favicon into a 48px bar. A 16px square needs a 16px placeholder.
+
+### Changed — the assembly is a website in a browser window
+
+The illustration now renders inside a light Chrome window with an address bar,
+and each component label sits in **the slot its component will render into** —
+`nav.cmp` where the navbar goes, `card.cmp` where the cards go — cross-fading
+into that component in place. A version where the files drift in from the
+corners says "components exist"; this one says "*this* component becomes
+*that* part of the page", which is the actual claim.
+
+The window is deliberately light on the navy band: it is a picture of a
+website, and `--color-on-dark` is a fixed white in both themes, so it does not
+quietly become a navy website in dark mode.
+
+### Changed — full-bleed heroes, flush to the bar
+
+`.ns-hero--flush` drops the top padding to the bar's own breathing room and
+squares the corners, and the design system's homepage hero moved **out of**
+the page's 72rem `.wrap`. A band is full-bleed by definition — its own
+`__inner` does the centring — so nesting it in the wrapper gave the navy a
+white margin on both sides and a gap under the sticky bar, which reads as a
+rendering mistake rather than a design. Measured after: `gap: 0`,
+`left: 0`, width == viewport.
+
+### Changed — the assembly is now two acts: files, then render
+
+The illustration tells the system's argument instead of just showing its
+parts. **Act 1**: five component *files* — `nav.cmp`, `hero.cmp`,
+`button.cmp`, `card.cmp`, `chart.cmp` — scattered across the stage, each
+carrying the vector to the centre it collapses along, so they converge rather
+than all sliding the same way. **Act 2**: they cross-fade into what they
+render — a miniature homepage with a navbar, a hero carrying two real
+buttons, and three cards including a chart.
+
+Both acts share one 11s timeline so they cannot drift out of phase, and each
+keyframe's 0% is its resting state, so under prefers-reduced-motion the guard
+leaves the finished homepage with the files at rest beside it — a legible
+still, not a blank stage.
+
+### Changed — the training post is two columns, not three
+
+The in-page outline column is gone and the content takes the full container.
+A post already carries its structure in its headings, and a third column of
+navigation-about-navigation cost the tables, code blocks and video stage the
+width they actually needed. `.ns-training__aside` and its rules are deleted
+rather than left orphaned.
+
+Two more marks in the rail: **the module** now carries a glyph — it was the
+last level with none, so "Objects and fields" sat as bare text between a track
+with a tile and posts with icons, and read as a gap rather than a top level —
+and **every section opens with its own Overview row**, the page that
+introduces the section before its posts, set apart by a quieter icon and no
+time, since "how long is the introduction" is not a question anybody has.
+
+Caught while removing the aside: a stale `@media (max-width: 79.999rem)` block
+still set `grid-template-columns: var(--ns-trail-w) minmax(0, 1fr)`, which
+would have flipped the rail back to the **leading** edge on every viewport
+under 1280px — the exact opposite of the layout's whole argument.
+
+### Added — `.ns-assembly`, and an animated hero
+
+The hero illustration that is not an illustration. Its pieces are this
+system's own primitives — a bar, a rail, a card, a chart, chips, an avatar —
+arranged into a miniature of the product they build and animated arriving. A
+*drawn* picture of "our components make this" goes stale the first time a
+radius changes; this one re-renders itself when the tokens move.
+
+One keyframe, two custom properties per piece (`--_fx`/`--_fy` say where it
+comes *from*) and a per-piece delay, so the group assembles as a wave rather
+than a snap. The keyframe's **assembled state is its resting state**, which is
+why it runs assembled → scattered → assembled: under prefers-reduced-motion
+the global guard leaves the finished composition rather than a scattered one.
+
+`.ns-band--grid-live` drifts the hairline motif one cell every twenty seconds
+— slow enough that nobody reading the headline notices it moving, fast enough
+that the band is not a flat image. Both homepages now use a `--split` hero
+with the assembly in the media slot.
+
+One bug worth naming: `.ns-assembly__avatar` collapsed to a 0×0 box because
+`inline-size`/`block-size` do not apply to a non-replaced **inline** element,
+and it was a bare `<span>`. The dots and lines elsewhere get away with it only
+because they are flex items, which the box tree blockifies for them.
+
+### Added — every component page links to its own full-page demo
+
+The forward link is now *derived* rather than written: each `DEMOS` entry
+already names the component page it belongs to (`back`), so the link is that
+relationship read the other way round. It therefore exists on **every** page
+that has a demo, not just the three where somebody hand-wrote one. Add a
+`DEMOS` entry and the link appears; delete it and the link goes.
+
+### Changed — the training UI, rebuilt
+
+The rail, the post head and the reading layout were redesigned rather than
+adjusted. What changed and why:
+
+- **Three columns, not two.** A post at the reading measure leaves ~14rem of
+  empty page beside it on any laptop, and what belongs there is the one piece
+  of navigation the old layout had nowhere to put — where you are *inside* the
+  post. `.ns-training--doc` is **aside / article / curriculum**: the leading
+  edge, where the eye starts every line, goes to the outline of the thing you
+  are reading, and the curriculum sits on the trailing edge as the place you go
+  *next*. That is the deliberate difference from the course player, which puts
+  its playlist on the leading edge because you are working *through* it. The
+  rail is 20rem — at 17rem the third level of nesting had ~11rem left and every
+  other row wrapped. The aside is built by
+  `assets/js/toc.js` from the article's own headings, so the outline cannot
+  drift from the text. Below 80rem the aside drops; below 64rem the rail
+  becomes a drawer from the same edge it lives on.
+- **The rail's spine moved from the rows to the list.** Forty rows each drawing
+  the same 2px border meant the current one was distinguished by colour alone.
+  Now one hairline per section with the rows tucked against it, which frees the
+  current row to take a tinted, rounded slab — a tint *plus* a leading edge
+  *plus* the weight change, so it survives grayscale and forced colours.
+- **Every level carries a mark.** The track is a card with a tile and its
+  position rather than a caption; a module shows a caret, a count and its own
+  progress meter; a section label leads with a glyph for its job — concepts,
+  practice, reference — and runs a rule out to the rail's edge; a post row
+  leads with its KIND icon. A rail where a lab and a two-minute concept note
+  look identical is a rail nobody can plan against.
+- **The post head answers three questions it used to be silent about.**
+  `.ns-tmeta` is a row of icon-led chips — kind, duration, position, level,
+  read-state — and the kind chip is the only one allowed to carry brand.
+
+### Added — a training post is video OR article
+
+`.ns-tstage` is the one block that differs between them: a `.ns-video` frame
+plus a bar carrying captions, the transcript note and a real anchor down to
+the writing. A training video that is not also written is not searchable, not
+skimmable and not linkable to a line, so the written version always stays
+underneath.
+
+The claim "the difference is one block" is now *proved* rather than asserted:
+`fragment()` in `build-preview.mjs` takes a `strip` list of named regions, and
+the two demos — `demo-training-post` and `demo-training-article` — are rendered
+from **one** template with the other version's stage and kind chip cut. A
+near-duplicate 250-line template would have started drifting the day it landed.
+
+### Added — the training post page, and three real bugs it surfaced
+
+`templates/training-post.html` is the third training surface — the index
+orients, the module page lists, and this one *reads*: a fixed rail with a
+working filter beside one article at the reading scale, with position,
+references and a module-aware pager. It is the first template to exercise
+`.ns-training--fixed` and `assets/js/training.js` end to end, and doing so
+found three defects that had never been rendered before:
+
+- **The fixed grid never scrolled.** Its single row was implicit, so it grew
+  to the tallest item — a 3,000px article stretched the row past the grid's
+  own fixed height and the grid clipped it, instead of the columns scrolling
+  inside. Now `grid-template-rows: minmax(0, 1fr)`, with both cells pinned to
+  row 1 (auto-placement was putting the rail and the main column on separate
+  rows), and the main cell carries `block-size: 100%; min-block-size: 0` —
+  relying on `overflow: auto` to zero a grid item's automatic minimum size
+  does not survive contact with a browser.
+- **The drawer never opened below lg.** The off-canvas `translate` was
+  declared in a selector list alongside a `.ns-training--nav-start` branch,
+  and a list is weighed by its most specific branch — so the off-canvas state
+  tied the `[data-rail="open"]` rule meant to undo it and won on source
+  order. The translate pair now stands on its own.
+- **The sticky filter head had a see-through slot above it.** A sticky child
+  pins to its scroller's content edge, so the rail's top padding became a gap
+  with rows scrolling visibly through it. The rail's block-start padding is
+  gone and the head spans the full width, gutters included.
+
+Also new: `.ns-training__handle`, the drawer's open control, for a training
+page whose bar carries no `.ns-panelbar` — hidden wherever the rail is
+already a visible column. `assets/js/training.js` now loads on the generated
+pages, so the filter and drawer are live in the styleguide rather than
+documented and inert.
+
+### Added — two front-door templates and a "Homepage & pages" section
+
+`templates/homepage.html` is the learning site's canonical homepage — split
+hero → trust → method → path → courses → training tracks → stats → pace →
+voices → FAQ → CTA — and `templates/training-index.html` is the
+curriculum's front door, led by search. Both render as full-page demos
+(`demo-homepage`, `demo-training-index`), and a new styleguide section
+documents the compositions band-by-band with the question each band
+answers, plus the rules of composition (one dark band opens, one closes;
+the middle is merchandise; every stat is checkable; one CTA, always last;
+cut from the bottom, never the middle).
+
+### Fixed — the deployed homepage's wordmark rendered at 400
+
+`build-site.mjs` set `font-weight: var(--weight-bold)` — a token that does
+not exist in the ramp, so the declaration silently resolved to nothing. It
+is `--weight-heading` now, the hero speaks in the hero component's own
+classes, the tiles carry the system's card radius, and a "See it whole" row
+links the six full-page demos.
+
+### Fixed — 37 icons were rendering as empty space
+
+`scripts/subset-icons.py` is back in the tree, driven by a new
+`@phosphor-icons/web@2.1.2` devDependency, and it takes its glyph list from
+`node scripts/check-icons.mjs --list` — so the gate that fails the build and
+the generator that satisfies it read "what is used" from one implementation.
+All 37 previously missing glyphs now come from the real font.
+
+`icons/icons-gap.css` is **deleted**: 31 of those glyphs were being covered by
+hand-drawn inline-SVG masks kept in sync with Phosphor's grid by eye. One
+source for icons again, and the subset got *smaller* (14.5KB → 13KB) because
+the old one carried glyphs nothing referenced.
+
+`check-icons.mjs` now fails the build, and no longer reports `ns-ph--sm` — a
+size modifier on the placeholder — as a missing icon.
+
+### Added — `--leading-snug`
+
+`1.45`, the step the ramp was missing between `--leading-heading` (1.3) and
+`--leading-body` (1.6). For multi-line UI text that is scanned rather than
+read: card excerpts, TOC entries, clamped descriptions. `--animate-*` and the
+`leading-snug` Tailwind utility are emitted with it.
+
+### Changed — reading surfaces read at the reading size
+
+Callouts, comment bodies, references, notices, author bios, checklists,
+comparisons, glossaries and `.ns-code` blocks *inside* `.ns-prose` moved from
+`--size-small` (13px) to `--size-prose-small` (15px). All of them sit inside a
+17px reading column, where 13px is two steps down and reads as a footnote the
+eye skips. Scanned surfaces — card excerpts, post meta, archive rows, admin,
+player chrome — are untouched.
+
+Every mono run that was borrowing `--size-small` now uses `--size-mono`. Same
+computed value, correct name.
+
+### Fixed — a hero could render smaller than a heading on a phone
+
+`--size-display`'s clamp floor was `2rem`. Below a 690px viewport the fluid
+term fell under 40px, so a 360px phone rendered a display heading at 32.7px —
+smaller than the fixed `--size-h1` beside it and level with `h2`. The floor is
+now `2.5rem`, which is `--size-h1`.
+
+### Changed — no `@keyframes` in `tokens/`
+
+`fade-up`, `marquee` and `ns-float` moved to `components/css/motion.css`. Two
+of the three carried no `ns-` prefix, and a keyframe name is global and
+unlayered — a consuming app with its own `fade-up` won or lost on source
+order. `marquee` is now `ns-marquee-scroll`. Two byte-identical duplicate
+pairs collapsed: `fade-up`/`ns-fade-up` → `ns-anim-rise`, and
+`ns-fade-in`/`ns-anim-fade` → `ns-anim-fade`.
+
+`--animate-fade-up` keeps its utility name and now resolves to `ns-anim-rise`.
+
+### Fixed — `check-markup.mjs` had five blind spots
+
+It read class names out of CSS comments (which is where the phantom
+`.ns-blog-` came from), could not see classes composed in a template literal,
+in a React expression, or in a `.js` rendering helper, and called a block root
+with no declarations of its own a typo. The undemoed count went 169 → 37, and
+every remaining entry is real. New: `--list` mode, and a `used-by: <product>`
+annotation for classes the other two products render and this repo does not.
+
+### Added — nine training component pages
+
+The training hero, learning path, tiers, content gate, contributors, pager,
+curriculum position, thumbnail and layout all shipped CSS with no page. Plus
+the date picker's popup anatomy, and variants for the modifiers that had none
+(`--accent` and `--block-sm` buttons, success/error banners and toasts, the
+skeleton card, table cell utilities, the card shelf, the logo marquee).
+
+### Changed — the hairline grid is one value
+
+`--ns-gridlines-image` / `--ns-gridlines-ink` / `--ns-gridlines-cell` in
+`patterns/patterns.css` replace ~21 hand-copied gradient declarations across
+the specimen cards, which had drifted to four alphas and six cell sizes for
+what everyone believed was one grid. Exposed as a value rather than only a
+class because most copies live in a `::before`.
+
+### Fixed — 30 specimen cards were framed at the wrong height
+
+`@dsCard viewport="WxH"` had drifted badly in both directions — one card
+declared 1180 and rendered 2498. Every card was measured and corrected, so the
+styleguide no longer frames specimens with a scrollbar or a band of dead
+space.
+
+### Fixed — comments that contradicted the code
+
+`tokens/base.css` and `scripts/build-tokens.mjs` both said 450 was the reading
+weight and pointed at two files that argue the opposite; it is 400.
+`tokens/layout.css` described `--container-prose` as 68 characters of *Inter*
+at `--size-body`, a face this system does not ship and a size articles no
+longer use. `tokens/effects.css` claimed nothing interactive may use
+`--duration-slow` while `.ns-video--zoom` did; the contract now draws the line
+where it actually falls, between a gesture and a response.
+
+### Changed — bands consume the semantic spacing scale
+
+`.ns-band` and `.ns-hero` take `--stack-lg` rather than raw `--space-16`. The
+two variants that sit off the scale say so at the call site.
+
 ## [3.0.0]
 
 ### Changed — BREAKING: the component layer is `ns-components`, not `components`

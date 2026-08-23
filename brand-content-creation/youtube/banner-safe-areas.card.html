@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x950" name="YouTube Banner — The Four Crops" subtitle="One 2560×1440 file, cropped four different ways — and only the middle 1546×423 survives all of them" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -8,8 +12,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
    stays true at any width the styleguide frames it at. */
 .canvas{position:relative;width:100%;aspect-ratio:16/9;background:var(--color-brand-900);overflow:hidden}
 .pat{position:absolute;inset:0;opacity:.5;
-  background-image:linear-gradient(to right,rgb(255 255 255/.07) 1px,transparent 1px),linear-gradient(to bottom,rgb(255 255 255/.07) 1px,transparent 1px);
-  background-size:24px 24px}
+  --ns-gridlines-cell:24px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
 /* 2560×1440 → the four crops, as fractions of the canvas.
    tv      2560×1440  full bleed
    desktop 2560× 423  full width, centred band

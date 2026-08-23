@@ -67,9 +67,10 @@ section, component and doc), e.g.
 
 ## 2. What is on the live site
 
-`gulp site` stages a fully self-contained static bundle (~13 MB — 165
-styleguide pages, 46 specimen cards, the CSS closure and self-hosted fonts)
-into `_site/`. It is **not** the repo — `node_modules/`, `docs/`, `scripts/`,
+`gulp site` stages a fully self-contained static bundle (~15 MB — 182
+styleguide pages, 56 specimen cards, the CSS closure and self-hosted fonts)
+into `_site/`. Those three numbers are printed by the build itself, so read
+them off `gulp site` rather than trusting this line. It is **not** the repo — `node_modules/`, `docs/`, `scripts/`,
 and the git history are all excluded. What ships:
 
 | Path on the live site | Contents |

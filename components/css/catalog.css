@@ -199,7 +199,7 @@
      Still one <ul> of <li>s: the shape changed, the semantics did not. */
   .ns-outcomes--cards {
     grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: var(--gap-grid, var(--space-4));
+    gap: var(--gap-grid);
   }
   .ns-outcomes--cards li {
     grid-template-columns: minmax(0, 1fr);

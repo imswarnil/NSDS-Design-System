@@ -1,0 +1,296 @@
+<!--
+  Namaste UI template — a single training post, whole
+  =====================================================================
+  Framework-agnostic markup: the page a learner actually spends time on.
+  The training index (training-index.html) orients, the module page
+  (training-module.html) lists, and THIS page reads.
+
+  TWO COLUMNS: the post, and the curriculum beside it.
+
+    .ns-training__main   the post         — the thing itself, full width
+    .ns-trainingnav      the curriculum   — where am I in the track
+
+  There is no in-page outline column. A post already carries its structure in
+  its headings, and a third column of navigation-about-navigation cost the
+  content the width its tables, code blocks and video stage actually needed.
+
+  THE CURRICULUM IS ON THE RIGHT, which is the deliberate difference from the
+  course player. A player puts the playlist on the leading edge because you
+  are working THROUGH it. A training post is a document you landed on, so the
+  leading edge — where the eye starts every line — goes to the outline of the
+  thing you are reading, and the curriculum sits on the trailing edge as the
+  place you go NEXT. Below xl the aside drops (it is navigation about
+  navigation); below lg the rail becomes a drawer from the same edge it
+  lives on, opened by .ns-training__handle and closed by the ✕, the scrim
+  or Escape — all wired by assets/js/training.js, which also drives the
+  filter. With the script removed the search is a real form pointed at site
+  search and the rail is a column that is always open — nothing on this page
+  requires script.
+
+  A TRAINING POST IS VIDEO OR ARTICLE, and the difference is one block:
+  .ns-tstage at the top. A video post keeps the full written version
+  underneath, because a training video that is not also written is not
+  searchable, not skimmable and not linkable to a line. Delete the stage
+  and the same template is the article version.
+
+    Ghost   → the post template for the training collection.
+    Next.js → compose from components/training/ + components/cms/.
+-->
+
+<div class="ns-training ns-training--doc" data-ns-training data-rail="closed">
+
+  <!-- === 2 · The curriculum — the TRAILING edge ====================== -->
+  <nav class="ns-trainingnav" data-ns-trainingnav aria-label="Curriculum">
+    <div class="ns-trainingnav__head">
+      <form class="ns-trainingnav__search" role="search" action="#">
+        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+        <input class="ns-input" type="search" name="q" placeholder="Filter modules" aria-label="Filter modules" data-ns-trainingnav-filter>
+        <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-trainingnav__close" type="button" aria-label="Close curriculum" data-ns-training-close><i class="ph ph-x" aria-hidden="true"></i></button>
+      </form>
+      <p class="ns-trainingnav__result" role="status" data-ns-trainingnav-result></p>
+    </div>
+
+    <!-- The track as an object: mark, name, position. It is the way back
+         out, so it is a card and not a caption. -->
+    <a class="ns-trainingnav__track" href="#">
+      <i class="ph ph-graduation-cap" aria-hidden="true"></i>
+      <span class="ns-trainingnav__track-body">
+        <b>Salesforce Administrator</b>
+        <span>Module 12 of 150</span>
+      </span>
+    </a>
+
+    <details class="ns-trainingnav__module" data-state="done">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__mod-icon"><i class="ph ph-cube" aria-hidden="true"></i></span>Objects and fields<span class="ns-trainingnav__count"><i class="ph ph-check-circle" aria-hidden="true"></i></span></summary>
+      <div class="ns-trainingnav__bar"><progress class="ns-progress" value="6" max="6" aria-label="6 of 6 posts read"></progress></div>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Standard vs custom objects</span><span class="ns-trainingnav__time">8m</span></a></li>
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Field types</span><span class="ns-trainingnav__time">11m</span></a></li>
+      </ul>
+    </details>
+
+    <details class="ns-trainingnav__module" open>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__mod-icon"><i class="ph ph-shield-check" aria-hidden="true"></i></span>Security and access<span class="ns-trainingnav__count">8</span></summary>
+      <div class="ns-trainingnav__bar"><progress class="ns-progress" value="2" max="8" aria-label="2 of 8 posts read"></progress></div>
+      <p class="ns-trainingnav__section"><i class="ph ph-lightbulb" aria-hidden="true"></i>Concepts</p>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link ns-trainingnav__link--overview" href="#">
+          <i class="ph ph-book-open-text ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Concepts overview</span></a></li>
+        <li><a class="ns-trainingnav__link" data-state="done" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Profiles vs permission sets</span><span class="ns-trainingnav__time">9m</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#" aria-current="page">
+          <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Recalculation is asynchronous</span><span class="ns-trainingnav__time">11m</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Sharing rules in practice</span><span class="ns-trainingnav__time">12m</span></a></li>
+      </ul>
+      <p class="ns-trainingnav__section"><i class="ph ph-flask" aria-hidden="true"></i>Practice</p>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link ns-trainingnav__link--overview" href="#">
+          <i class="ph ph-book-open-text ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Practice overview</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-flask ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Build a sharing rule</span><span class="ns-trainingnav__time">22m</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-exam ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Check what you know</span><span class="ns-trainingnav__time">6q</span></a></li>
+      </ul>
+      <p class="ns-trainingnav__section"><i class="ph ph-bookmark-simple" aria-hidden="true"></i>Reference</p>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link ns-trainingnav__link--overview" href="#">
+          <i class="ph ph-book-open-text ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Reference overview</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-file-text ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Sharing model cheat sheet</span><span class="ns-trainingnav__time">PDF</span></a></li>
+      </ul>
+    </details>
+
+    <details class="ns-trainingnav__module">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__mod-icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>Automation: Flow<span class="ns-trainingnav__count">9</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-video ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Record-triggered flows</span><span class="ns-trainingnav__time">16m</span></a></li>
+      </ul>
+    </details>
+
+    <details class="ns-trainingnav__module">
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i><span class="ns-trainingnav__mod-icon"><i class="ph ph-code" aria-hidden="true"></i></span>Apex fundamentals<span class="ns-trainingnav__count">12</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" href="#">
+          <i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>
+          <span>Governor limits as a budget</span><span class="ns-trainingnav__time">10m</span></a></li>
+      </ul>
+    </details>
+  </nav>
+
+  <!-- === 1 · The post ================================================== -->
+  <main class="ns-training__main">
+    <div class="ns-training__reading">
+
+      <header class="ns-modulehead">
+        <p class="ns-modulehead__crumb">
+          <a href="#"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Training</a>
+          <i class="ph ph-caret-right" aria-hidden="true"></i>
+          <a href="#">Security and access</a>
+          <button class="ns-btn ns-btn--sm ns-training__handle" type="button" data-ns-training-open style="margin-inline-start:auto">
+            <i class="ph ph-list-bullets" aria-hidden="true"></i> Curriculum
+          </button>
+        </p>
+        <h1 class="ns-modulehead__title">Recalculation is asynchronous</h1>
+        <p class="ns-modulehead__lede">Role hierarchy grants access upward, and that is the part everyone remembers. The part that causes the incident is what happens when a record moves.</p>
+
+        <!-- Every chip is a fact the reader would otherwise infer from the
+             body. The KIND chip is the one allowed to carry brand. -->
+        <div class="ns-tmeta">
+          <!-- The KIND chip is the one fact that changes between the two
+               versions of this template, so it is marked the same way the
+               stage is: the styleguide renders each demo with the other
+               one cut, and neither version can claim to be something it is
+               not. -->
+          <!-- @strip:kind-video -->
+          <span class="ns-tmeta__item ns-tmeta__item--kind"><i class="ph ph-video" aria-hidden="true"></i>Video + notes</span>
+          <!-- /@strip:kind-video -->
+          <!-- @strip:kind-article -->
+          <span class="ns-tmeta__item ns-tmeta__item--kind"><i class="ph ph-article" aria-hidden="true"></i>Article</span>
+          <!-- /@strip:kind-article -->
+          <span class="ns-tmeta__item"><i class="ph ph-clock" aria-hidden="true"></i>11 min</span>
+          <span class="ns-tmeta__item"><i class="ph ph-stack" aria-hidden="true"></i>Post 2 of 6</span>
+          <span class="ns-tmeta__item"><i class="ph ph-barbell" aria-hidden="true"></i>Intermediate</span>
+          <span class="ns-tmeta__item ns-tmeta__item--done"><i class="ph ph-check-circle" aria-hidden="true"></i>Read</span>
+        </div>
+      </header>
+
+      <!-- @strip:stage -->
+      <!-- THE STAGE — delete this block and the page is the article version.
+           The frame is .ns-video from media.css, so the poster, the play
+           control and the ratio behave exactly as they do everywhere else. -->
+      <div class="ns-tstage">
+        <!-- No poster src here: the frame's own brand-900 ground IS the
+             empty state, and a stretched placeholder image reads as a broken
+             asset rather than as "art has not been shot yet". -->
+        <div class="ns-video">
+          <button class="ns-video__play" type="button" aria-label="Play — Recalculation is asynchronous"><i class="ph ph-play" aria-hidden="true"></i></button>
+          <span class="ns-video__dur">11:04</span>
+          <span class="ns-video__tag">Training</span>
+        </div>
+        <p class="ns-tstage__bar">
+          <span><i class="ph ph-closed-captioning" aria-hidden="true"></i>Captions</span>
+          <span><i class="ph ph-file-text" aria-hidden="true"></i>Transcript below</span>
+          <a class="ns-btn ns-btn--sm ns-tstage__skip" href="#t-what"><i class="ph ph-arrow-down" aria-hidden="true"></i> Read instead</a>
+        </p>
+      </div>
+      <!-- /@strip:stage -->
+
+      <article class="ns-prose" id="post-body">
+        <p class="ns-lead">When a record is reparented, its sharing rows are recalculated in the background — and until that finishes, the old rows are still live. This post is about the window in between, because that window is where the incident lives.</p>
+
+        <h2 id="t-what">What actually happens on reparent</h2>
+        <p>Sharing in Salesforce is materialized, not computed on read: the share tables hold a row for every grant, and a query checks rows, not rules. That design is why record access is fast at scale — and it has a consequence. When you change the thing the rows were derived <em>from</em>, the platform has to rebuild them, and it does that in a queue, not in your transaction.</p>
+        <p>So the sequence on a reparent is:</p>
+        <ul>
+          <li>your DML commits — the record's owner or parent has changed;</li>
+          <li>a recalculation job is <strong>enqueued</strong>, behind every other recalculation in the org;</li>
+          <li>until it runs, the old share rows answer every access check;</li>
+          <li>when it finishes, the new rows do.</li>
+        </ul>
+
+        <div class="ns-callout ns-callout--warn">
+          <i class="ph ph-warning" aria-hidden="true"></i>
+          <div>
+            <span class="ns-callout__label">The window</span>
+            In a quiet org the queue drains in seconds. In an org mid data-migration it can be <strong>hours</strong> — and a report run in that window is correct according to the database and wrong according to your compliance team.
+          </div>
+        </div>
+
+        <h2 id="t-apex">Seeing it in Apex</h2>
+        <p>You can watch the window from code. Query the share table immediately after the reparent and the old rows are still there:</p>
+
+        <figure class="ns-code" data-lang="apex">
+          <figcaption class="ns-code__bar">
+            <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>RecalcWindow.cls</span></span>
+            <span class="ns-code__actions">
+              <span class="ns-code__lang">apex</span>
+              <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+            </span>
+          </figcaption>
+          <div class="ns-code__body">
+            <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4
+5
+6</pre>
+            <pre class="ns-code__pre"><code><span class="ns-code__line">acct<span class="ns-tok-punct">.</span>ParentId <span class="ns-tok-punct">=</span> newParent<span class="ns-tok-punct">.</span>Id<span class="ns-tok-punct">;</span></span><span class="ns-code__line"><span class="ns-tok-kw">update</span> acct<span class="ns-tok-punct">;</span></span><span class="ns-code__line"></span><span class="ns-code__line"><span class="ns-tok-com">// Same transaction: the OLD rows still answer.</span></span><span class="ns-code__line"><span class="ns-tok-type">List</span><span class="ns-tok-punct">&lt;</span><span class="ns-tok-type">AccountShare</span><span class="ns-tok-punct">&gt;</span> rows <span class="ns-tok-punct">=</span></span><span class="ns-code__line">  <span class="ns-tok-punct">[</span><span class="ns-tok-kw">SELECT</span> UserOrGroupId <span class="ns-tok-kw">FROM</span> AccountShare <span class="ns-tok-kw">WHERE</span> AccountId <span class="ns-tok-punct">=</span> <span class="ns-tok-punct">:</span>acct<span class="ns-tok-punct">.</span>Id<span class="ns-tok-punct">]</span><span class="ns-tok-punct">;</span></span></code></pre>
+          </div>
+        </figure>
+
+        <p>Nothing in that query is wrong. The rows are real; they are simply the rows of a world that no longer exists. That distinction — <em>stale but valid</em> — is why no exception fires anywhere.</p>
+
+        <h2 id="t-triggers">What triggers a recalculation</h2>
+        <p>Not every edit does. The queue only takes jobs from changes that alter <em>derived</em> sharing:</p>
+        <table>
+          <thead>
+            <tr><th scope="col">Change</th><th scope="col">Recalculates?</th><th scope="col">Why</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Record owner changes</td><td>Yes</td><td>Owner-based rules and the hierarchy both derive from it</td></tr>
+            <tr><td>Record is reparented</td><td>Yes</td><td>Implicit parent access derives from the lookup</td></tr>
+            <tr><td>A role moves in the hierarchy</td><td>Yes — org-wide</td><td>Every grant through that branch is derived</td></tr>
+            <tr><td>A field on the record changes</td><td>No</td><td>Field values are not in the share tables</td></tr>
+            <tr><td>Manual share added</td><td>No</td><td>A manual share <em>is</em> a row — nothing to derive</td></tr>
+          </tbody>
+        </table>
+
+        <p>The third row is the one that bites: moving a role near the top of the hierarchy recalculates every branch beneath it. That is why the platform sometimes defers those jobs to off-peak hours — and why your &ldquo;quick org chart tidy-up&rdquo; on a Friday afternoon is not quick.</p>
+
+        <h2 id="t-testing">Testing for the window</h2>
+        <p>You cannot assert your way out of an asynchronous queue, but you can design for it:</p>
+        <div class="ns-takeaway">
+          <span class="ns-takeaway__label">In short</span>
+          <p class="ns-takeaway__text">Never read sharing state in the same transaction that changed its inputs. If a process depends on post-recalculation access, chain it — platform event, queueable, or simply the next user action — and treat the share tables as eventually consistent, because they are.</p>
+        </div>
+
+        <section class="ns-refs">
+          <span class="ns-refs__label">References</span>
+          <ol>
+            <li id="tr1"><a href="#">Record Access at Scale — sharing architecture</a><span class="ns-refs__src">architect.salesforce.com/decision-guides</span></li>
+            <li id="tr2"><a href="#">Defer Sharing Calculations</a><span class="ns-refs__src">help.salesforce.com — the admin-facing control for the same queue</span></li>
+            <li id="tr3"><a href="#">AccountShare object</a><span class="ns-refs__src">developer.salesforce.com/docs — SOAP API developer guide</span></li>
+          </ol>
+        </section>
+      </article>
+
+      <!-- Prev / next, each carrying its module. The next post here is in the
+           SAME module, so the module line stays quiet; cross a boundary and
+           it is the more important of the two facts. -->
+      <nav class="ns-tpager" aria-label="Post navigation">
+        <a class="ns-tpager__btn" href="#">
+          <span class="ns-tpager__dir"><i class="ph ph-arrow-left" aria-hidden="true"></i>Previous</span>
+          <span class="ns-tpager__where">Security and access</span>
+          <span class="ns-tpager__title">Profiles vs permission sets</span>
+        </a>
+        <a class="ns-tpager__btn ns-tpager__btn--next" href="#">
+          <span class="ns-tpager__dir">Next<i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+          <span class="ns-tpager__where">Security and access</span>
+          <span class="ns-tpager__title">Sharing rules in practice</span>
+        </a>
+      </nav>
+
+    </div>
+  </main>
+
+  <!-- No `hidden` attribute: base.css makes [hidden] display:none !important,
+       which would beat the drawer CSS that shows the scrim below lg. The
+       stylesheet hides it by default; data-rail="open" reveals it. -->
+  <div class="ns-training__scrim" data-ns-training-close></div>
+</div>

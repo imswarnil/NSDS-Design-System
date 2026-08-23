@@ -63,6 +63,16 @@ export const COMPONENTS = [
   <button class="ns-btn ns-btn--outline ns-btn--sm">Cards</button>
   <button class="ns-btn ns-btn--outline ns-btn--sm">Timeline</button>
 </div>` },
+      { name: "Accent", note: "The warm accent, and it is not a second primary. It marks the one action that is about MONEY or membership — go Pro, buy, upgrade — so that a page can have a primary action and a commercial one without the two competing. Two accent buttons on a screen means neither is the commercial action.", html: `<button class="ns-btn ns-btn--accent">Go Pro</button>
+<button class="ns-btn ns-btn--primary">Start lesson</button>` },
+      { name: "Full width", note: "<code>--block</code> fills its container; <code>--block-sm</code> does it only below the md breakpoint, which is the honest default for a form's submit — full width on a phone, natural width on a desktop where a 900px-wide button is absurd. <code>.ns-btn-group--block</code> does the same for a group, splitting the row evenly.", html: `<div style="max-inline-size:22rem;display:grid;gap:var(--space-3)">
+  <button class="ns-btn ns-btn--primary ns-btn--block">Create account</button>
+  <button class="ns-btn ns-btn--block-sm">Full width on phones only</button>
+  <div class="ns-btn-group ns-btn-group--block">
+    <button class="ns-btn ns-btn--outline ns-btn--sm" aria-pressed="true">Monthly</button>
+    <button class="ns-btn ns-btn--outline ns-btn--sm">Yearly</button>
+  </div>
+</div>` },
           { name: "Size scale", note: "Four steps, and the default is deliberately not the biggest one. A button lives INSIDE something — a card, a row, a toolbar — and the most common design-system bug is a default button set at body size and 44px tall, which is visually larger than the card title above it. The default carries a <code>--size-small</code> label at <code>--target-comfy</code> (40px): the touch target is untouched, the visual bulk is not. Height and type size are set independently on purpose — height is the accessibility property, size is the typographic one.", html: `<button class="ns-btn ns-btn--primary ns-btn--xl">Extra large</button>
 <button class="ns-btn ns-btn--primary ns-btn--lg">Large</button>
 <button class="ns-btn ns-btn--primary">Default</button>
@@ -277,6 +287,11 @@ export const COMPONENTS = [
   <div class="ns-alert__body"><strong class="ns-alert__title">Deployment failed</strong>
   <div class="ns-alert__text">Two test classes are below 75% coverage.</div>
   <div class="ns-alert__actions"><button class="ns-btn ns-btn--outline ns-btn--sm">View log</button></div></div>
+</div>
+<div class="ns-alert ns-alert--success" role="status">
+  <i class="ph ph-check-circle ns-alert__icon" aria-hidden="true"></i>
+  <div class="ns-alert__body"><strong class="ns-alert__title">Deployment succeeded</strong>
+  <div class="ns-alert__text">All 214 tests passed at 81% coverage.</div></div>
 </div>` },
     ],
   },
@@ -294,6 +309,10 @@ export const COMPONENTS = [
 <div class="ns-toast" style="position:static">
   <span class="ns-toast__text">Link copied to clipboard</span>
   <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>
+<div class="ns-toast ns-toast--error" style="position:static">
+  <span class="ns-toast__text">Could not reach the server &mdash; nothing was saved</span>
+  <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
 </div>` },
     ],
   },
@@ -310,6 +329,11 @@ export const COMPONENTS = [
   <div class="ns-skeleton ns-skeleton--text"></div>
   <div class="ns-skeleton ns-skeleton--text" style="inline-size:70%"></div>
 </div>` },
+      { name: "Card", note: "The whole card shape in one element, for a grid that loads as a grid. Four stacked bars in a card outline is four things arriving; this is one, which is what the reader is actually waiting for.", html: `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(12rem,1fr));gap:var(--space-4);max-inline-size:32rem">
+  <div class="ns-skeleton ns-skeleton--card"></div>
+  <div class="ns-skeleton ns-skeleton--card"></div>
+</div>
+<span class="ns-visually-hidden">Loading courses</span>` },
     ],
   },
   {
@@ -622,6 +646,33 @@ export const COMPONENTS = [
     <tr><th scope="row">API version</th><td>v62.0</td></tr>
     <tr><th scope="row">Edition</th><td>Enterprise</td></tr>
     <tr><th scope="row">Org ID</th><td>00D5j000000abcAAA</td></tr>
+  </tbody>
+</table></div>` },
+      { name: "Cell utilities", stack: true, note: "The per-cell classes, all in one table. <code>__lede</code> is a cell holding an avatar beside its label; <code>__trunc</code> caps a free-text column at 18rem and ellipses it — the class exists so the PRODUCT decides which column is worth the width, because only the product knows; <code>__center</code> and <code>__quiet</code> are alignment and de-emphasis. <code>--fixed</code> is the one that matters on a live list: with <code>table-layout: fixed</code> the columns are decided by the header rather than by the widest cell, so a row arriving from the server does not shift every column and lose the reader their place.", html: `<div class="ns-table-wrap ns-table-wrap--flush"><table class="ns-table ns-table--compact ns-table--fixed ns-table--bordered">
+  <thead>
+    <tr>
+      <th scope="col" rowspan="2">Member</th>
+      <th class="ns-table__group" scope="colgroup" colspan="2">This month</th>
+      <th class="ns-table__center" scope="col" rowspan="2">Plan</th>
+    </tr>
+    <tr>
+      <th class="ns-table__num" scope="col">Lessons</th>
+      <th class="ns-table__num" scope="col">Hours</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><span class="ns-table__lede"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">RK</span><span class="ns-table__trunc">Ravi Kulkarni — Technical Architect, Bengaluru</span></span></td>
+      <td class="ns-table__num">31</td>
+      <td class="ns-table__num ns-table__quiet">12.4</td>
+      <td class="ns-table__center">Pro</td>
+    </tr>
+    <tr>
+      <td><span class="ns-table__lede"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">AM</span><span class="ns-table__trunc">Anita Menon — Platform Developer, Kochi</span></span></td>
+      <td class="ns-table__num">18</td>
+      <td class="ns-table__num ns-table__quiet">7.1</td>
+      <td class="ns-table__center ns-table__quiet">Free</td>
+    </tr>
   </tbody>
 </table></div>` },
       { name: "Default", html: `<div class="ns-table-wrap" tabindex="0" style="max-inline-size:28rem">
@@ -2690,11 +2741,106 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
+    id: "assembly", title: "Assembly", family: "Sections",
+    summary: "The hero illustration, told in two acts on one loop: five component <em>files</em> — <code>nav.cmp</code>, <code>hero.cmp</code>, <code>button.cmp</code>, <code>card.cmp</code>, <code>chart.cmp</code> — scattered and then gathered, cross-fading into what they render: a miniature Namaste Salesforce homepage built from those very parts. The argument of the whole system, drawn with the system.",
+    use: ["The media slot of a <code>--split</code> hero, on the navy band", "A page whose argument IS the system — either homepage's front door", "Anywhere a screenshot would be used to say &ldquo;this is what it builds&rdquo;"],
+    not: ["A product marketing hero — there the media slot wants the real artifact, not a diagram of one", "Anything a reader is expected to read: it is <code>aria-hidden</code> texture, and its labels are chosen for length, not meaning", "A light surface. Every part is drawn in the on-dark palette"],
+    a11y: [
+      "<code>aria-hidden=\"true\"</code> on the stage: it is decoration, and the file names inside it are texture rather than content — announcing them would read as a broken UI",
+      "Each keyframe's 0% is its RESTING state, so under prefers-reduced-motion the global guard leaves the finished homepage with the files at rest beside it — a legible still, not a blank stage",
+      "Both acts run on one shared 11s timeline, so they cannot drift out of phase with each other",
+      "The stage is a fixed 4:3 with percentage slots, so it scales with the hero and never reflows the words next to it",
+    ],
+    variants: [
+      { name: "Files, then render", stack: true, note: "Each label sits in <strong>the slot its component will render into</strong> — <code>nav.cmp</code> where the navbar goes, <code>card.cmp</code> where the cards go — and cross-fades into that component in place. A version where the files drift in from the corners says &ldquo;components exist&rdquo;; this one says &ldquo;<em>this</em> component becomes <em>that</em> part of the page&rdquo;, which is the actual claim. The window is deliberately light on the navy band: it is a picture of a website, and <code>--color-on-dark</code> is a fixed white in both themes, so it does not quietly become a navy website in dark mode.", html: `<div class="ns-band ns-band--dark" style="padding:var(--space-6);border-radius:var(--radius-card)">
+  <div style="max-inline-size:26rem;margin-inline:auto">
+  <div class="ns-assembly" aria-hidden="true">
+    <div class="ns-assembly__window">
+      <div class="ns-assembly__chrome">
+        <span class="ns-assembly__dot"></span>
+        <span class="ns-assembly__dot"></span>
+        <span class="ns-assembly__dot"></span>
+        <span class="ns-assembly__url">namastesalesforce.com</span>
+      </div>
+
+      <!-- Every slot holds TWO layers in the same box: the component's
+           file name, and the thing that file renders. They cross-fade on
+           one shared timeline, so each label becomes its own component in
+           the exact place that component lives on the page. -->
+      <div class="ns-assembly__page">
+        <div class="ns-assembly__slot ns-assembly__slot--nav">
+          <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>nav.cmp</span>
+          <div class="ns-assembly__render">
+            <span class="ns-assembly__bar">
+              <span class="ns-assembly__mark"></span>
+              <span class="ns-assembly__line ns-assembly__line--short"></span>
+              <span class="ns-assembly__line"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="ns-assembly__slot ns-assembly__slot--hero">
+          <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>hero.cmp</span>
+          <div class="ns-assembly__render">
+            <span class="ns-assembly__stack">
+              <span class="ns-assembly__line ns-assembly__line--wide"></span>
+              <span class="ns-assembly__line ns-assembly__line--mid"></span>
+            </span>
+          </div>
+        </div>
+
+        <div class="ns-assembly__slot ns-assembly__slot--image">
+          <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>image.cmp</span>
+          <div class="ns-assembly__render">
+            <span class="ns-assembly__media"><i class="ph ph-image" aria-hidden="true"></i></span>
+          </div>
+        </div>
+
+        <div class="ns-assembly__slot ns-assembly__slot--button">
+          <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>button.cmp</span>
+          <div class="ns-assembly__render">
+            <span class="ns-assembly__actions">
+              <span class="ns-assembly__chip">Start</span>
+              <span class="ns-assembly__chip ns-assembly__chip--quiet">Browse</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="ns-assembly__slot ns-assembly__slot--card">
+          <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>card.cmp</span>
+          <div class="ns-assembly__render">
+            <span class="ns-assembly__cards">
+              <span class="ns-assembly__mini-card">
+                <span class="ns-assembly__line ns-assembly__line--short"></span>
+                <span class="ns-assembly__line"></span>
+              </span>
+              <span class="ns-assembly__mini-card">
+                <span class="ns-assembly__line ns-assembly__line--short"></span>
+                <span class="ns-assembly__line"></span>
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <div class="ns-assembly__slot ns-assembly__slot--chart">
+          <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>chart.cmp</span>
+          <div class="ns-assembly__render">
+            <span class="ns-assembly__bars"><i style="block-size:40%"></i><i style="block-size:70%"></i><i style="block-size:52%"></i><i style="block-size:90%"></i><i style="block-size:64%"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
     id: "hero-section", title: "Hero", family: "Sections",
-    summary: "The page opener: kicker, display-size balanced title, lede, two actions and one mono proof line. Text-first — no screenshot collage, no illustration required.",
-    use: ["The top of the home page and major landing pages", "The proof line for one concrete fact — course count, price, cohort date"],
-    not: ["Interior pages — a PageHead or a plain h1 opens those", "More than two actions; the second is already optional"],
-    a11y: ["The title is the page's h1", "Proof line is real text, not an image"],
+    summary: "The page opener: kicker, display-size balanced title, lede, two actions and one mono proof line. Three variants and no more, differing only in where the eye enters — a fourth hero is a page that has not decided what it is for.",
+    use: ["The top of the home page and major landing pages", "The proof line for one concrete fact — course count, price, cohort date", "--center for a launch page where the headline IS the event", "--split for the one page where showing beats telling"],
+    not: ["Interior pages — a PageHead or a plain h1 opens those", "More than two actions; the second is already optional", "--split with decoration in the media slot — the picture must be proof (a real screenshot, the actual artifact), or the default hero says it better in fewer pixels"],
+    a11y: ["The title is the page's h1", "Proof line is real text, not an image", "In --split the media slot is aria-hidden when decorative; below lg it drops UNDER the words, so the headline never leaves the first screen"],
     variants: [
       { name: "Dark hero", html: `<div class="ns-band ns-hero ns-band--dark ns-band--grid" style="padding-block:var(--space-10)"><div class="ns-band__inner">
   <span class="ns-kicker">Learn Salesforce, properly</span>
@@ -2705,6 +2851,31 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <a class="ns-btn ns-btn--ghost" href="#">Browse the roadmap</a>
   </div>
   <span class="ns-hero__proof">12 courses · 214 lessons · free while in beta</span>
+</div></div>` },
+      { name: "Centred", flush: true, note: "For a LAUNCH surface — a campaign page, a cohort announcement. The title cap widens to 24ch (centred lines tolerate more length than ragged-right ones) and the lede narrows to the callout measure, so the block reads as one column rather than a heap.", html: `<div class="ns-band ns-hero ns-hero--center" style="padding-block:var(--space-10)"><div class="ns-band__inner">
+  <span class="ns-kicker">Cohort 4 · starts 6 October</span>
+  <h1 class="ns-hero__title" style="font-size:var(--size-h1)">Platform Developer I, in nine weeks</h1>
+  <p class="ns-hero__lede">A paced cohort through the whole certification path — with a finish date you pick before you start.</p>
+  <div class="ns-hero__actions">
+    <a class="ns-btn ns-btn--primary ns-btn--lg" href="#">Reserve a seat</a>
+    <a class="ns-btn" href="#">See the syllabus</a>
+  </div>
+  <span class="ns-hero__proof">42 hours · 8 modules · 30 seats</span>
+</div></div>` },
+      { name: "Split", flush: true, note: "Body beside a media slot, for the homepage — the one page where a real artifact is the proof the words claim. The words set the height and the picture fits; below lg the media drops under the headline and shrinks.", html: `<div class="ns-band ns-hero ns-hero--split ns-band--dark ns-band--grid" style="padding-block:var(--space-10)"><div class="ns-band__inner">
+  <div>
+    <span class="ns-kicker">Learn Salesforce, properly</span>
+    <h1 class="ns-hero__title" style="font-size:var(--size-h1)">From first org to defensible Apex</h1>
+    <p class="ns-hero__lede">One roadmap through courses, labs and working code.</p>
+    <div class="ns-hero__actions">
+      <a class="ns-btn ns-btn--white" href="#">Start learning</a>
+      <a class="ns-btn ns-btn--ghost" href="#">Browse courses</a>
+    </div>
+    <span class="ns-hero__proof">12 courses · 214 lessons</span>
+  </div>
+  <div class="ns-hero__media" aria-hidden="true">
+    <div class="ns-tthumb ns-tthumb--glyph" style="font-size:var(--size-display)"><i class="ph ph-code"></i></div>
+  </div>
 </div></div>` },
       { name: "Full page", note: "All seven bands composed in canonical order — the framework-agnostic template rendered with the real stylesheet.", html: `<p><a class="ns-btn ns-btn--outline ns-btn--sm" href="./demo-sections.html" target="_blank" rel="noopener">Open the full-page demo <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a></p>` },
     ],
@@ -3760,6 +3931,18 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <p class="ns-card__text">The 12 badges that matter, nothing else.</p>
   </div>
 </div>` },
+      { name: "Hover without a link", note: "The hover treatment normally fires from <code>:has(.ns-card__link)</code> — the card reacts because it CONTAINS a link, which is the honest trigger. <code>--hover</code> is the opt-in for the case that rule cannot see: a card made interactive by something else, like a whole-card click handler in the LMS or a card wrapped in a router <code>&lt;Link&gt;</code> that renders no <code>.ns-card__link</code> inside. Do not put it on a card that does nothing — a surface that lights up and then ignores the click is worse than one that never moved.", html: `<div class="ns-card ns-card--hover" style="max-inline-size:20rem">
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Wrapped</span>
+    <span class="ns-card__title">The parent is the link</span>
+    <p class="ns-card__text">Hover me — the accent line and border fire without a <code>.ns-card__link</code> anywhere inside.</p>
+  </div>
+</div>` },
+      { name: "Shelf", stack: true, note: "<code>.ns-strip</code> is the scroll-snapped horizontal shelf any card composes into — related posts, &ldquo;continue learning&rdquo;, more from this author. <code>--wide</code> raises the track from 14rem to 20rem for cards that carry media. The <code>min()</code> around the track minimum is load-bearing: a bare <code>14rem</code> is a definite minimum that propagates up and silently widens whatever column the shelf was dropped into.", html: `<div class="ns-strip ns-strip--wide">
+  <div class="ns-card"><span class="ns-card__media ns-ph" aria-hidden="true"></span><div class="ns-card__body"><span class="ns-card__title">Governor limits as a budget</span></div></div>
+  <div class="ns-card"><span class="ns-card__media ns-ph" aria-hidden="true"></span><div class="ns-card__body"><span class="ns-card__title">Bulkify every trigger</span></div></div>
+  <div class="ns-card"><span class="ns-card__media ns-ph" aria-hidden="true"></span><div class="ns-card__body"><span class="ns-card__title">Sharing recalculation</span></div></div>
+</div>` },
     ],
   },
   {
@@ -3840,6 +4023,55 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <label class="ns-field__label" for="d-pub">Publish date</label>
   <div class="ns-datefield"><input class="ns-input" id="d-pub" type="date" value="2026-09-14"></div>
   <p class="ns-field__help">Scheduled posts go live at 09:00 in the site timezone.</p>
+</div>` },
+      { name: "The popup's anatomy", stack: true, note: "The script builds this; it is printed here because a structure that only exists at runtime is a structure nobody can review. Note what it is made of: a real <code>&lt;table&gt;</code> with <code>&lt;th scope=\"col\"&gt;</code>, real <code>&lt;button&gt;</code> days, and a month heading that is a live region because arrow-keying across a boundary changes it and the only other feedback would be visual. Today is a ring, selected is a fill — two claims that have to be able to coexist on one cell.", html: `<div class="ns-datefield" style="margin-block-end:19rem">
+  <input class="ns-input" type="date" value="2026-09-14" aria-label="Publish date">
+  <div class="ns-calendar">
+    <div class="ns-calendar__head">
+      <button class="ns-calendar__nav" type="button" aria-label="Previous month"><i class="ph ph-caret-left" aria-hidden="true"></i></button>
+      <span class="ns-calendar__month" role="status">September 2026</span>
+      <button class="ns-calendar__nav" type="button" aria-label="Next month"><i class="ph ph-caret-right" aria-hidden="true"></i></button>
+    </div>
+    <table class="ns-calendar__grid">
+      <thead><tr>
+        <th class="ns-calendar__dow" scope="col">Mo</th><th class="ns-calendar__dow" scope="col">Tu</th><th class="ns-calendar__dow" scope="col">We</th>
+        <th class="ns-calendar__dow" scope="col">Th</th><th class="ns-calendar__dow" scope="col">Fr</th><th class="ns-calendar__dow" scope="col">Sa</th><th class="ns-calendar__dow" scope="col">Su</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><button class="ns-calendar__day" type="button" data-outside tabindex="-1">31</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">1</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">2</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">3</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">4</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">5</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">6</button></td>
+        </tr>
+        <tr>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">7</button></td>
+          <td><button class="ns-calendar__day" type="button" data-today tabindex="-1">8</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">9</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">10</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">11</button></td>
+          <td><button class="ns-calendar__day" type="button" disabled tabindex="-1">12</button></td>
+          <td><button class="ns-calendar__day" type="button" disabled tabindex="-1">13</button></td>
+        </tr>
+        <tr>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">14</button></td>
+          <td><button class="ns-calendar__day" type="button" aria-selected="true" tabindex="0">15</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">16</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">17</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">18</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">19</button></td>
+          <td><button class="ns-calendar__day" type="button" tabindex="-1">20</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="ns-calendar__foot">
+      <button class="ns-btn ns-btn--xs" type="button">Today</button>
+      <button class="ns-btn ns-btn--xs" type="button">Clear</button>
+    </div>
+  </div>
 </div>` },
     ],
   },
@@ -3982,6 +4214,17 @@ Map<Id, Account> byId = new Map<Id, Account>(
 <div class="ns-banner ns-banner--warning">
   <i class="ph ph-warning ns-banner__icon" aria-hidden="true"></i>
   <span class="ns-banner__text">Scheduled maintenance on 14 September, 02:00–04:00 UTC.</span>
+  <button class="ns-banner__dismiss" type="button" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
+</div>
+<div class="ns-banner ns-banner--error">
+  <i class="ph ph-warning-circle ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">Your subscription payment failed. Access ends on 21 September.</span>
+  <a class="ns-btn ns-btn--outline ns-btn--sm ns-banner__action" href="#0">Update card</a>
+</div>
+<div class="ns-banner ns-banner--success">
+  <i class="ph ph-check-circle ns-banner__icon" aria-hidden="true"></i>
+  <span class="ns-banner__text">Your certificate for Platform Developer I is ready.</span>
+  <a class="ns-btn ns-btn--outline ns-btn--sm ns-banner__action" href="#0">Download</a>
   <button class="ns-banner__dismiss" type="button" aria-label="Dismiss"><i class="ph ph-x" aria-hidden="true"></i></button>
 </div>` },
       { name: "Dark", dark: true, html: `<div class="ns-banner ns-banner--dark">
@@ -4207,6 +4450,378 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
+    id: "training-hero", title: "Training hero", family: "Training",
+    summary: "The opener for a curriculum index. <code>.ns-hero</code>&rsquo;s sibling, not a copy: the extra job is the SEARCH, because a reader arriving at a 150-module curriculum has a question (&ldquo;sharing rules&rdquo;) far more often than they have a place to start.",
+    use: ["The top of /training, once", "Any index whose size is the thing the reader has to be reassured about", "With the stats — a curriculum that will not say how big it is reads as smaller than it is"],
+    not: ["A marketing page. Use .ns-hero: it has no search and does not owe the reader a module count", "A module page. .ns-modulehead is the in-content header", "Two per page"],
+    a11y: [
+      "The search is a real <code>&lt;form&gt;</code> around a real <code>&lt;input type=\"search\"&gt;</code> pointed at the site search, so it works with JS off and is announced as a search landmark",
+      "The corner grids are drawn on <code>::before</code>/<code>::after</code> from <code>--color-grid</code> — decoration with no DOM, so nothing is read out and nothing shifts layout",
+      "The art slot is <code>aria-hidden</code> in the template: it supports the headline, it does not add information",
+      "Below lg the art moves BELOW the words and shrinks. A decorative panel that pushes the headline off the first screen has inverted its own job",
+    ],
+    variants: [
+      { name: "With search and stats", flush: true, note: "Title, lede, actions, the search field, then the three numbers. The search is a full-width field UNDER the buttons rather than beside them, because it is the wider target and the one a returning reader goes straight to.", html: `<section class="ns-thero">
+  <div class="ns-thero__inner">
+    <div class="ns-thero__body">
+      <span class="ns-kicker">Training</span>
+      <h1 class="ns-thero__title">Every Salesforce skill, in the order you need it</h1>
+      <p class="ns-thero__lede">150 modules, 900 posts, and a path through them. Most of it is free.</p>
+      <div class="ns-thero__actions">
+        <a class="ns-btn ns-btn--primary" href="#0">Start at the beginning</a>
+        <a class="ns-btn" href="#0">Browse all modules</a>
+      </div>
+      <form class="ns-thero__search" role="search" action="#0">
+        <div class="ns-input-wrap">
+          <i class="ns-input-wrap__icon ph ph-magnifying-glass" aria-hidden="true"></i>
+          <input class="ns-input" type="search" name="q" placeholder="Search 900 posts — try &ldquo;sharing rules&rdquo;" aria-label="Search the training">
+        </div>
+      </form>
+      <div class="ns-thero__stats">
+        <span><b>150</b>Modules</span>
+        <span><b>900</b>Posts</span>
+        <span><b>42h</b>Reading</span>
+      </div>
+    </div>
+    <div class="ns-thero__art" aria-hidden="true">
+      <div class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-graduation-cap"></i></div>
+    </div>
+  </div>
+</section>` },
+    ],
+  },
+  {
+    id: "learning-path", title: "Learning path", family: "Training",
+    summary: "Foundation &rarr; advanced &rarr; AI, as a numbered journey with real connectors. A level above the module spine: the stops are whole STAGES of a 100-module curriculum, and the reader is choosing where to <em>enter</em> rather than tracking where they are.",
+    use: ["A curriculum index, as the centrepiece", "Three to five stops — more and the connector stops meaning anything", "When the stages are genuinely sequential"],
+    not: ["One track's modules. That is <code>.ns-modules</code>, the connected spine — same idea, different altitude, and merging them would give one component two jobs", "A set of unordered categories: a connector between them claims an order that does not exist", "More than five stops"],
+    a11y: [
+      "The connector is a <code>::after</code> on each stop, so it is decoration with no DOM — a screen reader hears an ordered list of links, which is what this is",
+      "The node number is real text, not a background image, so &ldquo;02&rdquo; is announced with its stop",
+      "State lives on <code>data-state</code> (<code>done</code> / <code>current</code>), and done/current are also carried by the node's colour AND its position in the list — never colour alone",
+      "Below lg it becomes a vertical timeline. Four cards side by side on a phone is four cards nobody can read and a connector that means nothing",
+    ],
+    variants: [
+      { name: "Four stops", stack: true, note: "Stop 1 done, stop 2 current. The connector after a done stop turns green, so the completed run reads as one continuous line rather than four separate ticks.", html: `<ol class="ns-path" style="list-style:none;margin:0;padding:0">
+  <li class="ns-path__stop" data-state="done">
+    <span class="ns-path__node">01</span>
+    <a class="ns-path__card" href="#0">
+      <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-cube" aria-hidden="true"></i></span>
+      <span class="ns-path__title">Foundations</span>
+      <span class="ns-path__text">Objects, fields, relationships and the data model everything else sits on.</span>
+      <span class="ns-path__meta"><span>18 modules</span><span>Free</span></span>
+    </a>
+  </li>
+  <li class="ns-path__stop" data-state="current">
+    <span class="ns-path__node">02</span>
+    <a class="ns-path__card" href="#0">
+      <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
+      <span class="ns-path__title">Automation</span>
+      <span class="ns-path__text">Flow, validation, approvals — and when to reach for code instead.</span>
+      <span class="ns-path__meta"><span>24 modules</span><span>Free</span></span>
+    </a>
+  </li>
+  <li class="ns-path__stop">
+    <span class="ns-path__node">03</span>
+    <a class="ns-path__card" href="#0">
+      <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-code" aria-hidden="true"></i></span>
+      <span class="ns-path__title">Development</span>
+      <span class="ns-path__text">Apex, LWC, testing and the governor limits that shape all of it.</span>
+      <span class="ns-path__meta"><span>31 modules</span><span>Mixed</span></span>
+    </a>
+  </li>
+  <li class="ns-path__stop">
+    <span class="ns-path__node">04</span>
+    <a class="ns-path__card" href="#0">
+      <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-sparkle" aria-hidden="true"></i></span>
+      <span class="ns-path__title">AI on the platform</span>
+      <span class="ns-path__text">Prompt templates, grounding, and what Agentforce actually does.</span>
+      <span class="ns-path__meta"><span>12 modules</span><span>Pro</span></span>
+    </a>
+  </li>
+</ol>` },
+    ],
+  },
+  {
+    id: "tiers", title: "Free vs Pro", family: "Training",
+    summary: "The page has to answer &ldquo;what do I get for nothing&rdquo; before it asks for anything. Two columns, both concrete, <strong>the free one first</strong> — leading with the paid column reads as a price list, and the honest claim here is that most of the training is open.",
+    use: ["Once per page, near the curriculum it describes", "Exactly two columns", "When both columns can be stated concretely"],
+    not: ["Three or four tiers — that is a pricing page, and it belongs on one", "Leading with Pro", "A feature matrix. Two short lists the reader finishes; a 30-row table is one they scroll past"],
+    a11y: [
+      "The Pro column is marked by its leading edge — the system's standing &ldquo;this one&rdquo; device — not by a fill, a shadow or a scale-up, so it survives forced-colours and does not rely on hue",
+      "Each column's label is real text (<code>FREE</code> / <code>PRO</code>), so the distinction is announced and not inferred from a border",
+      "The ticks are decorative <code>aria-hidden</code> icons; the item text carries the meaning",
+      "Both columns are the same markup in the same order in the DOM as on screen",
+    ],
+    variants: [
+      { name: "Free first", stack: true, note: "The free column carries no ornament at all. If it needed a badge to look like a real offer, it would not be one.", html: `<div class="ns-tiers">
+  <div class="ns-tier">
+    <span class="ns-tier__label">Free</span>
+    <span class="ns-tier__title">The training</span>
+    <span class="ns-tier__price">&pound;0 &middot; no account</span>
+    <ul class="ns-tier__list">
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>120 of 150 modules, in full</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Every code sample and lab file</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Search across all 900 posts</span></li>
+    </ul>
+    <div class="ns-tier__foot"><a class="ns-btn" href="#0">Start reading</a></div>
+  </div>
+  <div class="ns-tier ns-tier--pro">
+    <span class="ns-tier__label"><i class="ph ph-crown-simple" aria-hidden="true"></i>Pro</span>
+    <span class="ns-tier__title">Everything, plus the hard parts</span>
+    <span class="ns-tier__price">&pound;9 / month</span>
+    <ul class="ns-tier__list">
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>The 30 architecture and AI modules</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Certification practice sets</span></li>
+      <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Downloadable orgs for every lab</span></li>
+    </ul>
+    <div class="ns-tier__foot"><a class="ns-btn ns-btn--primary" href="#0">Go Pro</a></div>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "gate", title: "Content gate", family: "Training",
+    summary: "A locked post shows the BEGINNING of the real thing rather than a wall. The mask is on the teaser, not an overlay on top of it, so the text underneath is genuinely truncated in the DOM rather than covered by a div a reader can delete in devtools.",
+    use: ["A Pro post, below the fold of its own opening", "--inline inside a card or a rail", "Where the titles around it stay visible — a curriculum that hides its Pro posts cannot be evaluated before you pay for it"],
+    not: ["An overlay over full content. That is not a gate, it is a paywall with the answer in the page source", "The top of a post. Let them start it", "A benefits list. A gate that lists nine things is a pricing page that appeared in the middle of a sentence"],
+    a11y: [
+      "The teaser is really truncated: the gated text is not in the DOM at all, so a screen reader is not read content the page is refusing to show",
+      "The mask is a <code>mask-image</code> alpha ramp on the teaser, so it fades to the page whatever the surface colour is and inverts correctly in dark mode",
+      "The panel is ordinary flow content with a real link — it is reachable by keyboard in reading order, immediately after the text it interrupts",
+      "One primary action. A gate with three competing buttons is a decision the reader will not make",
+    ],
+    variants: [
+      { name: "On a post", stack: true, note: "Real content, faded under the mask, then one panel with one action and one line of what you get.", html: `<div class="ns-gate">
+  <div class="ns-gate__teaser">
+    <div class="ns-prose">
+      <h2>Why the sharing model bites here</h2>
+      <p>Role hierarchy grants access upward, and that is the part everyone remembers. The part that causes the incident is what happens when a record is reparented: the recalculation is asynchronous, it is queued behind every other recalculation in the org, and until it finishes the old sharing rows are still live.</p>
+      <p>Which means a report run in that window is correct according to the database and wrong according to your compliance team. The fix is not a better sharing rule.</p>
+    </div>
+  </div>
+  <div class="ns-gate__panel">
+    <span class="ns-gate__icon"><i class="ph ph-crown-simple" aria-hidden="true"></i></span>
+    <span class="ns-gate__title">The rest of this post is for Pro members</span>
+    <span class="ns-gate__text">Nine more modules on the sharing model, including the recalculation timeline and how to test for it.</span>
+    <a class="ns-btn ns-btn--primary" href="#0">Go Pro &mdash; &pound;9 / month</a>
+    <span class="ns-gate__note">120 of 150 modules are free</span>
+  </div>
+</div>` },
+      { name: "Inline", note: "The compact form, for a card or a rail rather than a page body: smaller icon, smaller title, tighter panel. Same parts — a second component here would drift.", html: `<div class="ns-gate ns-gate--inline" style="max-inline-size:20rem">
+  <div class="ns-gate__panel">
+    <span class="ns-gate__icon"><i class="ph ph-crown-simple" aria-hidden="true"></i></span>
+    <span class="ns-gate__title">Pro module</span>
+    <span class="ns-gate__text">Certification practice sets and the architecture track.</span>
+    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#0">Go Pro</a>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "training-people", title: "Contributors", family: "Training",
+    summary: "Everyone who wrote a module. Distinct from the instructor block: that is a marketing bio for the one or two people who authored a course; this is a GRID of forty people who each wrote three posts, so it is a face, a name, a role and a count — not a paragraph each.",
+    use: ["A curriculum's contributors page", "Anywhere the count of authors is itself the point", "As links to each person's posts"],
+    not: ["One or two people. Use the instructor block and give them a paragraph", "A team page with bios — this row has no room for one and adding it breaks the grid", "Decoration. If the names do not link anywhere, leave them out"],
+    a11y: [
+      "Each card is one link wrapping the whole row, so there is one tab stop per person rather than three",
+      "The avatar is decorative — the name beside it is the accessible text, so the image carries an empty alt",
+      "The post count is a real number in text, tabular-figured so a column of them lines up",
+      "Auto-fill grid at a 13rem minimum: it reflows to one column on a phone without a media query",
+    ],
+    variants: [
+      { name: "Grid", stack: true, note: "Face, name, role, count. Four facts is what fits at this size, and the fourth is the one that says the curriculum is maintained.", html: `<div class="ns-people">
+  <a class="ns-person" href="#0">
+    <span class="ns-avatar ns-avatar--sm" aria-hidden="true">RK</span>
+    <span class="ns-person__body">
+      <span class="ns-person__name">Ravi Kulkarni</span>
+      <span class="ns-person__role">Technical Architect</span>
+    </span>
+    <span class="ns-person__count">31</span>
+  </a>
+  <a class="ns-person" href="#0">
+    <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AM</span>
+    <span class="ns-person__body">
+      <span class="ns-person__name">Anita Menon</span>
+      <span class="ns-person__role">Platform Developer</span>
+    </span>
+    <span class="ns-person__count">18</span>
+  </a>
+  <a class="ns-person" href="#0">
+    <span class="ns-avatar ns-avatar--sm" aria-hidden="true">DN</span>
+    <span class="ns-person__body">
+      <span class="ns-person__name">Dev Nair</span>
+      <span class="ns-person__role">Admin &amp; Ops</span>
+    </span>
+    <span class="ns-person__count">12</span>
+  </a>
+  <a class="ns-person" href="#0">
+    <span class="ns-avatar ns-avatar--sm" aria-hidden="true">PJ</span>
+    <span class="ns-person__body">
+      <span class="ns-person__name">Priya Joshi</span>
+      <span class="ns-person__role">Consultant</span>
+    </span>
+    <span class="ns-person__count">9</span>
+  </a>
+</div>` },
+    ],
+  },
+  {
+    id: "training-pager", title: "Training pager", family: "Training",
+    summary: "Prev / next across a 900-post curriculum, where &ldquo;next&rdquo; frequently means <em>the first post of a different module</em>. So every direction carries its MODULE as well as its title — and where the next post is in another module, that is the more important of the two facts.",
+    use: ["The foot of every training post", "With the module named above the title, always", "With aria-disabled at the two ends"],
+    not: ["A blog post. <code>.ns-postnav</code> is the two-title version and has no module to name", "Numbered pagination — this is a sequence, not a set of pages", "Hiding the disabled end: a dead arrow at the last post of a 150-module curriculum reads as a bug, and so does a missing one"],
+    a11y: [
+      "<code>aria-disabled=\"true\"</code> plus <code>pointer-events: none</code> at the ends: the link stays in the DOM and is announced as unavailable, rather than vanishing and moving everything one place left",
+      "The direction word (&ldquo;Previous&rdquo; / &ldquo;Next&rdquo;) is real text, not conveyed by the arrow glyph alone",
+      "The arrows are <code>aria-hidden</code> — they repeat the direction word",
+      "Below md the two collapse to one column in reading order, previous first",
+    ],
+    variants: [
+      { name: "Across a module boundary", stack: true, note: "The next post is in a different module, so the module is set in the mono label voice above the title. Reading it, you know you are about to leave where you are.", html: `<nav class="ns-tpager" aria-label="Post navigation">
+  <a class="ns-tpager__btn" href="#0">
+    <span class="ns-tpager__dir"><i class="ph ph-arrow-left" aria-hidden="true"></i>Previous</span>
+    <span class="ns-tpager__where">Sharing &amp; visibility</span>
+    <span class="ns-tpager__title">Recalculation, and why it is asynchronous</span>
+  </a>
+  <a class="ns-tpager__btn ns-tpager__btn--next" href="#0">
+    <span class="ns-tpager__dir">Next<i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+    <span class="ns-tpager__where">Apex fundamentals</span>
+    <span class="ns-tpager__title">Governor limits as a budget</span>
+  </a>
+</nav>` },
+      { name: "The last post", stack: true, note: "An end that says it is the end, dimmed and unclickable but still there.", html: `<nav class="ns-tpager" aria-label="Post navigation">
+  <a class="ns-tpager__btn" href="#0">
+    <span class="ns-tpager__dir"><i class="ph ph-arrow-left" aria-hidden="true"></i>Previous</span>
+    <span class="ns-tpager__where">AI on the platform</span>
+    <span class="ns-tpager__title">Grounding a prompt template</span>
+  </a>
+  <a class="ns-tpager__btn ns-tpager__btn--next" href="#0" aria-disabled="true">
+    <span class="ns-tpager__dir">Next<i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+    <span class="ns-tpager__where">End of curriculum</span>
+    <span class="ns-tpager__title">You have reached the last post</span>
+  </a>
+</nav>` },
+    ],
+  },
+  {
+    id: "training-position", title: "Curriculum position", family: "Training",
+    summary: "&ldquo;Post 4 of 6 &middot; Module 12 of 150&rdquo;. Two numbers because they answer two different questions — how much of <em>this sitting</em> is left, and how much of <em>the whole thing</em> — and a reader working through a long curriculum asks both.",
+    use: ["Under a training post's title, or in the rail head", "Both numbers, always", "Where the curriculum is large enough that the second number is reassuring rather than daunting"],
+    not: ["A progress bar. This is a location, not an achievement", "One number — either alone answers half the question", "A course with eight lessons, where the second number is noise"],
+    a11y: [
+      "Plain text in reading order, so it is announced as a sentence rather than as two orphaned numbers",
+      "Tabular figures, so the row does not reflow as the numbers change from post to post",
+      "The separator is a decorative span at border colour — it is punctuation, and it is not read as content",
+      "The current values are wrapped in <code>&lt;b&gt;</code> for the ink shift, which is emphasis the mono label voice cannot express by weight alone",
+    ],
+    variants: [
+      { name: "Both numbers", note: "The local number first, because it is the one that decides whether the reader keeps going right now.", html: `<p class="ns-tposition">
+  <span>Post <b>4</b> of <b>6</b></span>
+  <span class="ns-tposition__sep">&middot;</span>
+  <span>Module <b>12</b> of <b>150</b></span>
+</p>` },
+    ],
+  },
+  {
+    id: "training-thumb", title: "Training thumbnail", family: "Training",
+    summary: "The 16:9 image box shared by the path stop, the module card and the track card — because they are the same object at three sizes, and three implementations of an image box is three chances for one of them to letterbox differently.",
+    use: ["Any training surface that shows an image", "--glyph where there is no artwork", "With a badge for a one-word state (Pro, New)"],
+    not: ["A course card. That is <code>.ns-card__media</code>, which is the generic one", "A non-16:9 source without cropping it first", "Two badges. One corner, one fact"],
+    a11y: [
+      "A sunken ground and a fixed ratio, so a missing image is a quiet empty frame rather than a broken-image glyph or a collapsed row",
+      "The <code>--glyph</code> fallback is a decorative icon on the hairline grid — cheaper than commissioning 200 thumbnails, and it never looks like a failure",
+      "The badge is real text in the flow, not a background image, so &ldquo;Pro&rdquo; is announced with the item",
+      "<code>object-fit: cover</code> on the image, so a wrongly-sized source crops rather than distorting a face",
+    ],
+    variants: [
+      { name: "Glyph fallback and badge", note: "The default state for a module with no artwork yet, which is most of them for most of a curriculum's life.", html: `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:var(--space-4)">
+  <div class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-cube" aria-hidden="true"></i></div>
+  <div class="ns-tthumb ns-tthumb--glyph">
+    <i class="ph ph-flow-arrow" aria-hidden="true"></i>
+    <span class="ns-tthumb__badge"><span class="ns-label">Pro</span></span>
+  </div>
+  <div class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-code" aria-hidden="true"></i></div>
+</div>` },
+    ],
+  },
+  {
+    id: "training-layout", title: "Training layout", family: "Training",
+    summary: "The reading shell for a curriculum: the post at <strong>full width</strong>, the curriculum beside it on the trailing edge. The rail goes there — not on the leading edge like the course player — because a training post is a document you landed on, so the edge where the eye starts every line belongs to the writing, and the curriculum is the place you go <em>next</em>.",
+    use: ["A training post, where the rail has 150 modules in it", "--doc for the document layout: content full width, curriculum on the trailing edge", "--fixed for the older two-column form with the rail sticky rather than pinned"],
+    not: ["A short course. A rail that fits on screen does not need to scroll on its own", "A marketing page", "A third column of in-page outline — a post carries its structure in its headings, and that column cost the tables, code and video stage the width they actually needed"],
+    a11y: [
+      "The reading column keeps its measure INSIDE the scrolling cell, so the scrollbar stays at the edge of the screen and the text stays at the measure",
+      "Every section of a module opens with its own OVERVIEW row — the page that introduces the section before its posts — set apart by a quieter icon and no time, since &ldquo;how long is the introduction&rdquo; is not a question anybody has",
+      "Each level of the rail carries a mark: a tile on the track, a glyph on the module, an icon on the section divider, a KIND icon on the post",
+      "Below lg the rail becomes a drawer from the TRAILING edge — the edge its column lives on — closed by the ✕, the scrim and Escape",
+      "The drawer's slide is dropped under prefers-reduced-motion; the rail still opens, it just arrives",
+    ],
+    variants: [
+      { name: "The post head", stack: true, note: "What a training post opens with. The old head was a crumb, a title, a lede and a rule — correct, and completely silent about the three things a reader wants before committing eleven minutes: what KIND of post this is, how long, and where it sits. Every chip is a fact they were otherwise going to infer from the body, and the kind chip is the only one allowed to carry brand.", html: `<header class="ns-modulehead">
+  <p class="ns-modulehead__crumb">
+    <a href="#0"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Training</a>
+    <i class="ph ph-caret-right" aria-hidden="true"></i>
+    <a href="#0">Security and access</a>
+  </p>
+  <h1 class="ns-modulehead__title">Recalculation is asynchronous</h1>
+  <p class="ns-modulehead__lede">Role hierarchy grants access upward, and that is the part everyone remembers. The part that causes the incident is what happens when a record moves.</p>
+  <div class="ns-tmeta">
+    <span class="ns-tmeta__item ns-tmeta__item--kind"><i class="ph ph-video" aria-hidden="true"></i>Video + notes</span>
+    <span class="ns-tmeta__item"><i class="ph ph-clock" aria-hidden="true"></i>11 min</span>
+    <span class="ns-tmeta__item"><i class="ph ph-stack" aria-hidden="true"></i>Post 2 of 6</span>
+    <span class="ns-tmeta__item"><i class="ph ph-barbell" aria-hidden="true"></i>Intermediate</span>
+    <span class="ns-tmeta__item ns-tmeta__item--done"><i class="ph ph-check-circle" aria-hidden="true"></i>Read</span>
+  </div>
+</header>` },
+      { name: "Video or article", stack: true, note: "A training post is one or the other, and the difference is <strong>one block</strong>: <code>.ns-tstage</code> at the top. A video post keeps the full written version underneath — a training video that is not also written is not searchable, not skimmable and not linkable to a line, which is why the bar carries a real anchor down to the text. Delete the stage and the same template is the article version; the styleguide proves it by rendering <a href=\"./demo-training-article.html\">both demos from one file</a>.", html: `<div class="ns-tstage">
+  <div class="ns-video">
+    <button class="ns-video__play" type="button" aria-label="Play"><i class="ph ph-play" aria-hidden="true"></i></button>
+    <span class="ns-video__dur">11:04</span>
+    <span class="ns-video__tag">Training</span>
+  </div>
+  <p class="ns-tstage__bar">
+    <span><i class="ph ph-closed-captioning" aria-hidden="true"></i>Captions</span>
+    <span><i class="ph ph-file-text" aria-hidden="true"></i>Transcript below</span>
+    <a class="ns-btn ns-btn--sm ns-tstage__skip" href="#0"><i class="ph ph-arrow-down" aria-hidden="true"></i> Read instead</a>
+  </p>
+</div>` },
+      { name: "Rail and reading column", flush: true, note: "Shown static here — <code>--fixed</code> pins both columns to the viewport height in a real page, which a documentation frame cannot show honestly. The three-column <code>--doc</code> form is best seen whole: <a href=\"./demo-training-post.html\">open the full-page demo</a>.", html: `<div class="ns-training" style="border:1px solid var(--color-border);border-radius:var(--radius-card);overflow:hidden">
+  <nav class="ns-trainingnav" aria-label="Curriculum">
+    <div class="ns-trainingnav__head">
+      <div class="ns-trainingnav__search">
+        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+        <input class="ns-input" type="search" placeholder="Filter modules" aria-label="Filter modules">
+        <button class="ns-btn ns-btn--icon ns-trainingnav__close" type="button" aria-label="Close curriculum"><i class="ph ph-x" aria-hidden="true"></i></button>
+      </div>
+      <p class="ns-trainingnav__result" role="status">150 modules</p>
+    </div>
+    <details class="ns-trainingnav__module" open>
+      <summary><i class="ph ph-caret-right ns-trainingnav__twist" aria-hidden="true"></i>Sharing &amp; visibility<span class="ns-trainingnav__count">6</span></summary>
+      <ul class="ns-trainingnav__list">
+        <li><a class="ns-trainingnav__link" href="#0" data-state="done"><i class="ph ph-check-circle ns-trainingnav__icon" aria-hidden="true"></i>The sharing model, end to end<span class="ns-trainingnav__time">8 min</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#0" aria-current="page"><i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>Recalculation is asynchronous<span class="ns-trainingnav__time">11 min</span></a></li>
+        <li><a class="ns-trainingnav__link" href="#0"><i class="ph ph-article ns-trainingnav__icon" aria-hidden="true"></i>Testing for the window<span class="ns-trainingnav__time">6 min</span></a></li>
+      </ul>
+    </details>
+  </nav>
+  <div class="ns-training__main">
+    <div class="ns-training__reading">
+      <header class="ns-modulehead">
+        <p class="ns-modulehead__crumb"><a href="#0">Training</a> / <a href="#0">Sharing &amp; visibility</a></p>
+        <h1 class="ns-modulehead__title">Recalculation is asynchronous</h1>
+        <p class="ns-modulehead__lede">And the window between reparenting a record and the sharing rows catching up is where the incident lives.</p>
+      </header>
+      <div class="ns-prose">
+        <p>Role hierarchy grants access upward, and that is the part everyone remembers. The part that causes the incident is what happens when a record is reparented.</p>
+      </div>
+    </div>
+  </div>
+  <div class="ns-training__scrim" data-ns-training-close></div>
+</div>` },
+    ],
+  },
+  {
     id: "motion", title: "Page motion", family: "Progress & data",
     summary: "Nine entrance animations, and a hard limit on what they are for. Principle&nbsp;5 governs <em>interaction</em> — 120–180ms, no bounce. Entrance is the one place a longer curve is allowed, because nobody is waiting on it: its job is to tell the eye what order to read a page in.",
     use: ["One entrance per BLOCK — a section, a card grid, a band", "--onview for content below the fold", "--stagger on a container whose children arrive together"],
@@ -4237,6 +4852,11 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <li class="ns-list__row"><span class="ns-list__index">06</span><span class="ns-list__title">+200ms — and everything after</span></li>
   <li class="ns-list__row"><span class="ns-list__index">07</span><span class="ns-list__title">+200ms</span></li>
 </ul>` },
+      { name: "Rows with a second line", stack: true, note: "<code>.ns-list__text</code> is the muted line beside or under the title — what the row IS, where the title is what it is called. One line only: a list row that needs a paragraph is a card.", html: `<ul class="ns-list" style="max-inline-size:26rem">
+  <li class="ns-list__row"><span class="ns-list__index">01</span><span class="ns-list__title">Objects and fields</span><span class="ns-list__text">The data model everything sits on</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">02</span><span class="ns-list__title">Relationships</span><span class="ns-list__text">Lookup, master-detail, and the cascade</span></li>
+  <li class="ns-list__row"><span class="ns-list__index">03</span><span class="ns-list__title">Sharing</span><span class="ns-list__text">Who sees what, and when it recalculates</span></li>
+</ul>` },
       { name: "Scroll-triggered", stack: true, note: "--onview uses native animation-timeline: view() — no observer, no JS. Where unsupported the declaration is dropped and it runs on load, which is visible either way.", html: `<div class="ns-anim ns-anim--rise ns-anim--onview ns-card"><div class="ns-card__body"><span class="ns-card__kicker">onview</span><span class="ns-card__text">Completes before the block is centred, so a fast scroll never shows content assembling.</span></div></div>` },
     ],
   },
@@ -4253,6 +4873,18 @@ Map<Id, Account> byId = new Map<Id, Account>(
   </div>
   <div class="ns-marquee__track" aria-hidden="true">
     <span class="ns-marquee__item">Acme Cloud</span><span class="ns-marquee__item">Northwind</span><span class="ns-marquee__item">Globex</span><span class="ns-marquee__item">Initech</span><span class="ns-marquee__item">Umbrella Ops</span>
+  </div>
+</div>` },
+      { name: "Logo wall, fast", stack: true, note: "<code>.ns-marquee__logo</code> caps a real logo image at 1.5rem and holds it at 65% opacity until hover — a row of client marks at full strength competes with everything on the page, and a row of them at different heights reads as a mistake. <code>--fast</code> (22s) is for a short list: speed here is distance per second, so a four-item track at the default 40s looks stalled.", html: `<div class="ns-marquee ns-marquee--window ns-marquee--fast">
+  <div class="ns-marquee__track">
+    <a class="ns-marquee__item" href="#0"><img class="ns-marquee__logo" src="../assets/logo/favicon.svg" alt="Acme Cloud"></a>
+    <a class="ns-marquee__item" href="#0"><img class="ns-marquee__logo" src="../assets/logo/favicon.svg" alt="Northwind"></a>
+    <a class="ns-marquee__item" href="#0"><img class="ns-marquee__logo" src="../assets/logo/favicon.svg" alt="Globex"></a>
+  </div>
+  <div class="ns-marquee__track" aria-hidden="true">
+    <span class="ns-marquee__item"><img class="ns-marquee__logo" src="../assets/logo/favicon.svg" alt=""></span>
+    <span class="ns-marquee__item"><img class="ns-marquee__logo" src="../assets/logo/favicon.svg" alt=""></span>
+    <span class="ns-marquee__item"><img class="ns-marquee__logo" src="../assets/logo/favicon.svg" alt=""></span>
   </div>
 </div>` },
       { name: "Reverse and slow", stack: true, note: "A second strip running the other way is the one case for two — stacked, they read as a texture rather than a race.", html: `<div class="ns-marquee ns-marquee--window ns-marquee--slow ns-marquee--reverse">
@@ -4457,6 +5089,148 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <p class="ns-notice__text">This describes the old Process Builder migration path. Start from <a href="#0">the Flow migration guide</a> instead.</p>
   </div>
 </aside>` },
+    ],
+  },
+  {
+    id: "ghost-product", title: "Product card", family: "Content blocks",
+    summary: "Koenig's product card: a thing being recommended, with a rating and a way to get it. Ghost ships this with its own default styling — a rounded, shadowed object that lands in a Namaste post like a visitor from another design system. This is the same card, rebuilt on the hairline.",
+    use: ["A book, a tool or a course a post recommends", "A review that ends in a verdict the reader can act on", "Without the image — a recommendation with no cover should not render a grey hole"],
+    not: ["A shop. Three product cards in a row is a catalogue, and a catalogue is a page, not a block", "Anything the publication sells itself — that is the members CTA", "A comparison. Two products side by side is <code>.ns-compare</code>"],
+    a11y: [
+      "The rating is stars <em>plus</em> the number, and the number is real text — five glyphs alone is a value nobody can read out, and &ldquo;star star star&rdquo; is not what a screen reader should say",
+      "Empty stars are a different glyph, not a lighter colour, so the score survives grayscale and forced-colours",
+      "The button is the only interactive thing in the card: one action, one tab stop",
+      "Below md the media goes full width above the body rather than shrinking to a thumbnail",
+    ],
+    variants: [
+      { name: "With cover", stack: true, html: `<div class="ns-product">
+  <span class="ns-product__media ns-ph" aria-hidden="true"></span>
+  <div class="ns-product__body">
+    <span class="ns-product__title">Advanced Apex Patterns</span>
+    <div class="ns-product__rating">
+      <span class="ns-product__stars" aria-hidden="true"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph ph-star"></i></span>
+      <span class="ns-product__score">4.0 / 5 &middot; 218 ratings</span>
+    </div>
+    <p class="ns-product__text">The one book that treats governor limits as an architecture problem rather than a list of numbers to memorise. Chapter 4 is worth the price on its own.</p>
+    <div class="ns-product__foot">
+      <span class="ns-product__price">&pound;38</span>
+      <a class="ns-btn ns-btn--primary ns-btn--sm" href="#0">Get the book</a>
+    </div>
+  </div>
+</div>` },
+      { name: "No cover", stack: true, note: "<code>:has()</code> drops the media column when there is no image, so the card reflows to one column instead of leaving an empty slot.", html: `<div class="ns-product">
+  <div class="ns-product__body">
+    <span class="ns-product__title">Salesforce CLI</span>
+    <p class="ns-product__text">Free, first-party, and the thing every deployment lesson assumes you have installed.</p>
+    <div class="ns-product__foot">
+      <span class="ns-product__price">Free</span>
+      <a class="ns-btn ns-btn--sm" href="#0">Install</a>
+    </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "ghost-bookmark", title: "Bookmark card", family: "Content blocks",
+    summary: "Koenig's bookmark card: a link, previewed. Ghost fetches the title, description, publisher and thumbnail; this restyles the result so an embedded link reads as a signpost in the hairline vocabulary rather than as a floating panel.",
+    use: ["A source worth showing rather than footnoting", "A related post, mid-article", "A doc page the reader is about to need"],
+    not: ["Every link in a post — an inline link the reader should follow now stays inline", "A stack of five. Two bookmarks in a row is a reading list, and a reading list is <code>.ns-related</code>", "A link with no preview data — that is a plain link"],
+    a11y: [
+      "The WHOLE card is one <code>&lt;a&gt;</code>. A bookmark with a separately clickable title and thumbnail is two tab stops to the same URL",
+      "The publisher line carries a favicon because that is the fastest way a reader answers &ldquo;do I trust this domain&rdquo; — the domain text is there either way",
+      "The excerpt is clamped to two lines: a bookmark is a signpost, and a four-line excerpt is the article arriving early",
+      "Below md the thumbnail moves above the body with <code>order</code>, so the DOM order stays title-first",
+    ],
+    variants: [
+      { name: "With thumbnail", stack: true, html: `<a class="ns-bookmark" href="#0">
+  <span class="ns-bookmark__body">
+    <span class="ns-bookmark__title">Record Access at Scale</span>
+    <span class="ns-bookmark__text">How the sharing model is materialised, why recalculation is asynchronous, and what that means for an org mid-migration.</span>
+    <span class="ns-bookmark__meta">
+      <span class="ns-bookmark__icon" aria-hidden="true"></span>
+      <span>architect.salesforce.com</span>
+    </span>
+  </span>
+  <span class="ns-bookmark__media ns-ph" aria-hidden="true"></span>
+</a>` },
+      { name: "No thumbnail", stack: true, html: `<a class="ns-bookmark" href="#0">
+  <span class="ns-bookmark__body">
+    <span class="ns-bookmark__title">Defer Sharing Calculations</span>
+    <span class="ns-bookmark__text">The admin-facing control for the same queue — and the reason a Friday org-chart tidy-up is not quick.</span>
+    <span class="ns-bookmark__meta"><span class="ns-bookmark__icon" aria-hidden="true"></span><span>help.salesforce.com</span></span>
+  </span>
+</a>` },
+    ],
+  },
+  {
+    id: "ghost-file", title: "File card", family: "Content blocks",
+    summary: "Koenig's file card: a download. The size and the extension are printed rather than hidden, because those two facts are what decide whether somebody taps a link on a phone — and Ghost already collects both.",
+    use: ["A lab file, a cheat sheet, a sample org", "Anything the post asks the reader to open in another application"],
+    not: ["An image — that is a figure", "A link to a page. A file card promises a download, and a reader who gets a web page instead has been lied to"],
+    a11y: [
+      "One link, wrapping the whole row, with the file name as its accessible text",
+      "Size and type are real text in the mono voice, tabular-figured so a column of files lines up",
+      "The glyph is decorative: the extension beside it carries the same fact in words",
+    ],
+    variants: [
+      { name: "Download", stack: true, html: `<a class="ns-file" href="#0" download>
+  <span class="ns-file__icon"><i class="ph ph-file-text" aria-hidden="true"></i></span>
+  <span class="ns-file__body">
+    <span class="ns-file__name">sharing-model-cheat-sheet.pdf</span>
+    <span class="ns-file__meta"><span>PDF</span><span>412 KB</span><span>2 pages</span></span>
+  </span>
+  <span class="ns-btn ns-btn--outline ns-btn--sm ns-file__action"><i class="ph ph-download-simple" aria-hidden="true"></i> Download</span>
+</a>` },
+    ],
+  },
+  {
+    id: "ghost-header", title: "Header card", family: "Content blocks",
+    summary: "Koenig's header card: a full-width statement inside a post. It is the one block allowed to break the reading measure, because that <em>is</em> its job — it is a chapter break, not a paragraph.",
+    use: ["The break between two halves of a long post", "The opening statement of a series instalment", "--dark for the one that closes a post"],
+    not: ["More than one per post. Two chapter breaks in a 1,500-word article is a page that cannot decide what it is", "A heading — <code>&lt;h2&gt;</code> is a heading, and prose styles it", "Carrying the post's own title"],
+    a11y: [
+      "The title inside is a real heading at the right level for its place in the document — the card styles it, it does not replace it",
+      "--dark uses the same console navy as a section band, so a header card in a post and a band on a marketing page are visibly one object",
+      "Centred text is capped at <code>--measure-narrow</code>: centred lines are harder to return from, so they get a shorter measure, not the full one",
+    ],
+    variants: [
+      { name: "On the page surface", stack: true, html: `<div class="ns-headercard">
+  <span class="ns-headercard__kicker">Part two</span>
+  <h2 class="ns-headercard__title">Now the part that breaks in production</h2>
+  <p class="ns-headercard__text">Everything above holds in a quiet org. What follows is what happens when the queue is not empty.</p>
+</div>` },
+      { name: "Dark, with an action", stack: true, html: `<div class="ns-headercard ns-headercard--dark">
+  <span class="ns-headercard__kicker">Keep going</span>
+  <h2 class="ns-headercard__title">The sharing model, end to end</h2>
+  <p class="ns-headercard__text">Nine more posts on recalculation, implicit access and the tests that catch them.</p>
+  <div class="ns-headercard__actions">
+    <a class="ns-btn ns-btn--white" href="#0">Open the module</a>
+    <a class="ns-btn ns-btn--ghost" href="#0">Browse training</a>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "ghost-cta", title: "Members CTA", family: "Content blocks",
+    summary: "Koenig's email-CTA card: the members prompt that interrupts a post. A leading-edge block rather than a boxed panel — it is an aside from the <em>publication</em> rather than part of the argument, so it uses the same device as the takeaway in the accent that means membership.",
+    use: ["Once per post, after the first real section", "The point where a free reader has had enough value to believe the paid half exists"],
+    not: ["The top of a post. Asking before giving is how a reader leaves", "Two per post", "A paywall — that is <code>.ns-gate</code>, and it has content behind it"],
+    a11y: [
+      "A real <code>&lt;form&gt;</code> with a real labelled <code>&lt;input type=\"email\"&gt;</code>, so autofill and password managers work",
+      "The fine print is next to the button, not behind a link: a consent line the reader has to go and find is not consent",
+      "The leading edge is the accent that means membership everywhere else in the system, so the block is recognisable before it is read",
+    ],
+    variants: [
+      { name: "Subscribe", stack: true, html: `<div class="ns-cta-card">
+  <span class="ns-cta-card__label"><i class="ph ph-envelope-simple" aria-hidden="true"></i>Get the next one</span>
+  <p class="ns-cta-card__text">One post a week on the parts of the platform that bite. No course pitches, no digest, unsubscribe in one click.</p>
+  <form class="ns-cta-card__form" action="#0">
+    <label class="ns-visually-hidden" for="cta-email">Email address</label>
+    <input class="ns-input" id="cta-email" type="email" name="email" placeholder="you@company.com" autocomplete="email">
+    <button class="ns-btn ns-btn--primary" type="submit">Subscribe</button>
+  </form>
+  <span class="ns-cta-card__fine">1,482 readers &middot; no spam, ever</span>
+</div>` },
     ],
   },
   {

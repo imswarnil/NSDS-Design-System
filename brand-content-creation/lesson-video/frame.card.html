@@ -1,4 +1,8 @@
 <!-- @dsCard group="Content Creation" viewport="760x645" name="Lesson Video — The Frame" subtitle="One 16:9 canvas, six zones, both themes — and the live furniture that is deliberately absent" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
+     type inside a tile is scaled artwork, not UI copy — a scale token there would
+     be the wrong size by definition. The card's own chrome (labels, captions) does
+     use the scale. See improve.md IMPROVE-11. -->
 <!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
 <style>
 body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
@@ -14,8 +18,12 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
       --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
       --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06)}
 .bar{position:absolute;inset-inline:0;top:0;height:3px;background:var(--color-brand-500);z-index:5}
-.pat{position:absolute;inset:0;
-  background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);
+/* The shared hairline grid image, but on a PROPORTIONAL cell — twelve
+   columns by eight rows of the frame, because this card is a safe-area
+   diagram and the cell has to mean "a twelfth of the frame" rather than
+   22px. Same ink, same one line to change. */
+.pat{position:absolute;inset:0;--ns-gridlines-ink:var(--grid);
+  background-image:var(--ns-gridlines-image);
   background-size:calc(100%/12) calc(100%/8)}
 .safe{position:absolute;inset:5%;border:1px solid var(--color-brand-500);opacity:.55}
 .z{position:absolute;font-family:var(--font-mono);font-size:8px;letter-spacing:.05em;text-transform:uppercase;

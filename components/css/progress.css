@@ -215,7 +215,7 @@
   .ns-leaderboard__meta { flex: none; font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
   .ns-leaderboard__score {
     flex: none; margin-inline-start: auto; text-align: end;
-    font-family: var(--font-mono); font-size: var(--size-small);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     font-weight: var(--weight-label); color: var(--color-ink);
     font-variant-numeric: tabular-nums;
   }

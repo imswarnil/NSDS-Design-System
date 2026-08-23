@@ -1,0 +1,300 @@
+<!--
+  Namaste UI template — the /training landing page
+  =====================================================================
+  Framework-agnostic markup: the front door of the written curriculum,
+  assembled from the training family in components/css/training.css. The
+  module page (templates/training-module.html) is where reading happens;
+  THIS page's one job is orientation — it must answer, in order:
+
+    01 thero        what is this and how big is it  (hero + search + stats)
+    02 path         what shape is it                (four stages, an entrance)
+    03 trackcards   what is in each stage           (the tracks, as peers)
+    04 tiers        what is free                    (free first, always)
+    05 pace         how long will it take           (a date, not hours)
+    06 people       who wrote it                    (maintained, not scraped)
+    07 CTA          the one closer
+
+  The search is the most important control on the page: a visitor arriving
+  at a 150-module curriculum has a QUESTION ("sharing rules") far more
+  often than they have a place to start, and every band below the hero is
+  for the visitor the search did not satisfy.
+
+    Ghost   → paste bands into partials/, wire the search to the site search.
+    Next.js → compose from components/training/.
+-->
+
+<!-- 01 · The training hero: title, lede, actions, the search, the numbers.
+     Corner grids draw themselves from --color-grid; the art slot ships the
+     glyph tile so the section is not empty before artwork exists. -->
+<section class="ns-thero">
+  <div class="ns-thero__inner">
+    <div class="ns-thero__body">
+      <span class="ns-kicker">Training</span>
+      <h1 class="ns-thero__title">Every Salesforce skill, in the order you need it</h1>
+      <p class="ns-thero__lede">150 modules of written training — read at your pace, searched when you need an answer, free for most of it.</p>
+      <div class="ns-thero__actions">
+        <a class="ns-btn ns-btn--primary ns-btn--lg" href="#">Start at the beginning</a>
+        <a class="ns-btn" href="#">Browse all modules</a>
+      </div>
+      <form class="ns-thero__search" role="search" action="#">
+        <div class="ns-input-wrap">
+          <i class="ns-input-wrap__icon ph ph-magnifying-glass" aria-hidden="true"></i>
+          <input class="ns-input" type="search" name="q" placeholder="Search 900 posts — try &ldquo;sharing rules&rdquo;" aria-label="Search the training">
+        </div>
+      </form>
+      <div class="ns-thero__stats">
+        <span><b>150</b>Modules</span>
+        <span><b>900</b>Posts</span>
+        <span><b>42h</b>Reading</span>
+        <span><b>120</b>Free modules</span>
+      </div>
+    </div>
+    <div class="ns-thero__art" aria-hidden="true">
+      <div class="ns-tthumb ns-tthumb--glyph" style="font-size:var(--size-display)"><i class="ph ph-graduation-cap"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 · The path: the whole curriculum as four stages with real connectors.
+     data-state comes from the learner's own progress; signed out, every stop
+     is plain and the connectors stay neutral. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">The shape of it</span>
+      <h2 class="ns-band__title">Four stages, each ending where the next begins</h2>
+      <p class="ns-band__lede">You are choosing where to enter, not committing to the whole journey — every stage stands on its own.</p>
+    </header>
+    <ol class="ns-path" style="list-style:none;margin:0;padding:0">
+      <li class="ns-path__stop" data-state="done">
+        <span class="ns-path__node">01</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-cube" aria-hidden="true"></i></span>
+          <span class="ns-path__title">Foundations</span>
+          <span class="ns-path__text">Objects, fields, relationships and the data model everything else sits on.</span>
+          <span class="ns-path__meta"><span>18 modules</span><span>Free</span></span>
+        </a>
+      </li>
+      <li class="ns-path__stop" data-state="current">
+        <span class="ns-path__node">02</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
+          <span class="ns-path__title">Automation</span>
+          <span class="ns-path__text">Flow, validation, approvals — and when to reach for code instead.</span>
+          <span class="ns-path__meta"><span>24 modules</span><span>Free</span></span>
+        </a>
+      </li>
+      <li class="ns-path__stop">
+        <span class="ns-path__node">03</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span class="ns-path__title">Development</span>
+          <span class="ns-path__text">Apex, LWC, testing and the governor limits that shape all of it.</span>
+          <span class="ns-path__meta"><span>31 modules</span><span>Mixed</span></span>
+        </a>
+      </li>
+      <li class="ns-path__stop">
+        <span class="ns-path__node">04</span>
+        <a class="ns-path__card" href="#">
+          <span class="ns-tthumb ns-tthumb--glyph"><i class="ph ph-sparkle" aria-hidden="true"></i></span>
+          <span class="ns-path__title">AI on the platform</span>
+          <span class="ns-path__text">Prompt templates, grounding, and what Agentforce actually does.</span>
+          <span class="ns-path__meta"><span>12 modules</span><span>Pro</span></span>
+        </a>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 03 · The tracks: peers in a grid, no connector — nothing here claims one
+     earns the next. Six of ~14; the action leads to the rest. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Tracks</span>
+        <h2 class="ns-band__title">Inside the stages</h2>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">All 14 tracks</a>
+      </div>
+    </header>
+    <div class="ns-grid">
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-cube" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">01</span>
+        </span>
+        <span class="ns-trackcard__title">Platform foundations</span>
+        <span class="ns-trackcard__text">The org, the data model, and the words everything else is defined in.</span>
+        <span class="ns-trackcard__meta"><span>18 modules</span><span>6h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-shield-check" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">02</span>
+        </span>
+        <span class="ns-trackcard__title">Security &amp; sharing</span>
+        <span class="ns-trackcard__text">Who sees what, why, and what happens when a record is reparented.</span>
+        <span class="ns-trackcard__meta"><span>12 modules</span><span>5h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">03</span>
+        </span>
+        <span class="ns-trackcard__title">Automation with Flow</span>
+        <span class="ns-trackcard__text">Declarative first: records, screens, schedules, and the limits of each.</span>
+        <span class="ns-trackcard__meta"><span>16 modules</span><span>7h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">04</span>
+        </span>
+        <span class="ns-trackcard__title">Apex fundamentals</span>
+        <span class="ns-trackcard__text">Governor limits as a budget, bulkification as a habit, tests as proof.</span>
+        <span class="ns-trackcard__meta"><span>22 modules</span><span>9h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-chart-bar" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">05</span>
+        </span>
+        <span class="ns-trackcard__title">Reports &amp; dashboards</span>
+        <span class="ns-trackcard__text">From a question to a chart someone else can trust, without exports.</span>
+        <span class="ns-trackcard__meta"><span>9 modules</span><span>3h</span></span>
+      </a>
+      <a class="ns-trackcard" href="#">
+        <span class="ns-trackcard__head">
+          <span class="ns-trackcard__icon"><i class="ph ph-sparkle" aria-hidden="true"></i></span>
+          <span class="ns-trackcard__index">06</span>
+        </span>
+        <span class="ns-trackcard__title">AI &amp; Agentforce</span>
+        <span class="ns-trackcard__text">Prompt templates, grounding, actions — the platform's AI, demystified.</span>
+        <span class="ns-trackcard__meta"><span>12 modules</span><span>Pro</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · Free vs Pro, stated once, free first — the honest claim is that
+     most of the training is open, and leading with the paid column would
+     read as a price list. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">What it costs</span>
+      <h2 class="ns-band__title">Most of it, nothing</h2>
+    </header>
+    <div class="ns-tiers">
+      <div class="ns-tier">
+        <span class="ns-tier__label">Free</span>
+        <span class="ns-tier__title">The training</span>
+        <span class="ns-tier__price">&pound;0 &middot; no account</span>
+        <ul class="ns-tier__list">
+          <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>120 of 150 modules, in full</span></li>
+          <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Every code sample and lab file</span></li>
+          <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Search across all 900 posts</span></li>
+        </ul>
+        <div class="ns-tier__foot"><a class="ns-btn" href="#">Start reading</a></div>
+      </div>
+      <div class="ns-tier ns-tier--pro">
+        <span class="ns-tier__label"><i class="ph ph-crown-simple" aria-hidden="true"></i>Pro</span>
+        <span class="ns-tier__title">Everything, plus the hard parts</span>
+        <span class="ns-tier__price">&pound;9 / month</span>
+        <ul class="ns-tier__list">
+          <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>The 30 architecture and AI modules</span></li>
+          <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Certification practice sets</span></li>
+          <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Downloadable orgs for every lab</span></li>
+        </ul>
+        <div class="ns-tier__foot"><a class="ns-btn ns-btn--primary" href="#">Go Pro</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 · The commitment as a date. Static values here; in product the
+     segmented control recomputes the date (see the Pace planner page). -->
+<section class="ns-band ns-band--tight ns-band--sunken">
+  <div class="ns-band__inner">
+    <div class="ns-pace ns-pace--inline">
+      <div>
+        <span class="ns-pace__label">Finish the foundations by</span>
+        <time class="ns-pace__date" datetime="2026-10-14">14 October 2026</time>
+        <span class="ns-pace__meta"><b>53 days at 30 min a day</b><span>18 modules &middot; 6 hours</span></span>
+      </div>
+      <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0">
+        <legend class="ns-visually-hidden">How much time per day</legend>
+        <div class="ns-segmented">
+          <label class="ns-segmented__option"><input type="radio" name="training-pace" value="15"><span>15 min</span></label>
+          <label class="ns-segmented__option"><input type="radio" name="training-pace" value="30" checked><span>30 min</span></label>
+          <label class="ns-segmented__option"><input type="radio" name="training-pace" value="60"><span>1 hr</span></label>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</section>
+
+<!-- 06 · Who wrote it: a face, a name, a role and a count — the count is
+     the fact that says the curriculum is maintained. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Contributors</span>
+        <h2 class="ns-band__title">Written by people who ship on the platform</h2>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">All 40 contributors</a>
+      </div>
+    </header>
+    <div class="ns-people">
+      <a class="ns-person" href="#">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">RK</span>
+        <span class="ns-person__body">
+          <span class="ns-person__name">Ravi Kulkarni</span>
+          <span class="ns-person__role">Technical Architect</span>
+        </span>
+        <span class="ns-person__count">31</span>
+      </a>
+      <a class="ns-person" href="#">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">AM</span>
+        <span class="ns-person__body">
+          <span class="ns-person__name">Anita Menon</span>
+          <span class="ns-person__role">Platform Developer</span>
+        </span>
+        <span class="ns-person__count">18</span>
+      </a>
+      <a class="ns-person" href="#">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">DN</span>
+        <span class="ns-person__body">
+          <span class="ns-person__name">Dev Nair</span>
+          <span class="ns-person__role">Admin &amp; Ops</span>
+        </span>
+        <span class="ns-person__count">12</span>
+      </a>
+      <a class="ns-person" href="#">
+        <span class="ns-avatar ns-avatar--sm" aria-hidden="true">PJ</span>
+        <span class="ns-person__body">
+          <span class="ns-person__name">Priya Joshi</span>
+          <span class="ns-person__role">Consultant</span>
+        </span>
+        <span class="ns-person__count">9</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- 07 · The closer — into module one, not into a signup form. -->
+<section class="ns-band ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <div class="ns-cta">
+      <h2 class="ns-band__title">Module 01 is eight minutes long. Read it now.</h2>
+      <div class="ns-cta__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="#">What is an org?</a>
+      </div>
+      <span class="ns-cta__fine">No account needed until you want your progress saved.</span>
+    </div>
+  </div>
+</section>
