@@ -474,10 +474,12 @@
 
   /* Fixed chrome — needed by scroll-margin so an anchored heading is not
      hidden under the sticky navbar, and by sticky sidebars/TOCs. */
-  /* 3.5rem: tall enough for a 2.5rem control plus its breathing room, and
-     one notch tighter than the 4rem it used to be — the bar is chrome, and
+  /* 3rem: tall enough for a 2rem control plus its breathing room. The bar
+     used to be 4rem, then 3.5rem around a 2.5rem control; sizing the bar's
+     own controls to --space-8 (the same 2rem as .ns-btn--sm, which is what
+     sits next to them) took the last half-rem out. The bar is chrome, and
      every row it takes is a row of content the reader does not get. */
-  --navbar-h: 3.5rem;
+  --navbar-h: 3rem;
   --sidebar-w: 16rem;
   --toc-w: 15rem;
   --player-side-w: 21rem; /* course-player curriculum rail */
@@ -2432,8 +2434,24 @@
     inset-block-start: calc(100% + var(--space-1-5));
   }
   .ns-tooltip-host { position: relative; display: inline-flex; }
+  /* :focus-visible, NOT :focus-within — and the difference is a bug people
+     actually hit. :focus-within matches however focus arrived, including a
+     mouse click, so any control that keeps focus after being pressed was left
+     with its tooltip hanging open under a pointer that had already moved on.
+     The training rail's collapse button made it obvious: clicking it moves
+     focus to the reopen control, whose tooltip then sat there permanently.
+
+     :focus-visible only matches when the browser judges that focus should be
+     indicated — keyboard and other non-pointer routes — which is exactly the
+     population the focus branch exists for. A mouse user already had :hover.
+
+     Two selectors because the host is sometimes the focusable element itself
+     (a <button class="ns-tooltip-host">) and sometimes its parent (a wrapper
+     around a link). :has() covers the second; it cannot cover the first,
+     since an element is not its own descendant. */
   .ns-tooltip-host:hover > .ns-tooltip,
-  .ns-tooltip-host:focus-within > .ns-tooltip { opacity: 1; visibility: visible; }
+  .ns-tooltip-host:focus-visible > .ns-tooltip,
+  .ns-tooltip-host:has(:focus-visible) > .ns-tooltip { opacity: 1; visibility: visible; }
 }
 
 /* The fade and the rise used to be redeclared here as ns-fade-in / ns-fade-up,
@@ -2914,13 +2932,24 @@
   .ns-announce--quiet .ns-announce__close:hover { background: var(--color-surface); }
 
   /* --- The bar ------------------------------------------------------------
-     Sticky, one hairline below, --navbar-h tall. Children may sit directly
-     inside it (the short form) or inside .ns-topnav__inner when the page
-     content is width-capped and the bar's contents must line up with it. */
+     Sticky, one hairline below, --navbar-h tall. FLUID by default: the bar
+     runs edge to edge and its padding is the page's own --gutter, so the
+     brand sits the same distance from the viewport edge as the first column
+     of a full-bleed page. Wrap the children in .ns-topnav__inner when the
+     page content IS width-capped and the bar has to line up with that
+     instead — that is the exception, and it is the "Contained" variant.
+
+     --_control-h is the one height every control in the bar shares: search,
+     path picker, star, theme, account trigger and the auth buttons. It lives
+     here rather than being repeated in eight rules so the responsive block
+     can raise the whole cluster to the thumb floor in a single line. Each
+     control repeats --space-7 as a var() fallback, so a specimen rendered
+     outside a bar (the styleguide does this) is still the right size. */
   .ns-topnav {
+    --_control-h: var(--space-7);
     position: sticky; inset-block-start: 0; z-index: var(--z-sticky);
     display: flex; align-items: center; gap: var(--space-4);
-    block-size: var(--navbar-h); padding-inline: var(--space-4);
+    block-size: var(--navbar-h); padding-inline: var(--gutter);
     background: var(--color-surface); border-block-end: 1px solid var(--color-border);
   }
   /* The optional width-capping wrapper. Same flex row, centred, so a bar on a
@@ -2951,12 +2980,74 @@
     text-transform: uppercase; color: var(--color-label); white-space: nowrap;
   }
 
+  /* --- Path picker ---------------------------------------------------------
+     A dropdown that rides beside the brand and names the training section you
+     are in: Administrator, Developer, Architect, Consultant.
+
+     It replaces the mono tagline that used to sit there ("Namaste Salesforce
+     | Learn", "| Blog"). That tagline printed the same word on every page of
+     a section and could not be clicked — a LABEL standing in the one spot
+     where a control belongs. Someone reading the Admin trail who wants the
+     Developer trail should be able to switch from the place that told them
+     which trail they are on, rather than going back to the mega menu.
+
+     It is the same disclosure as every other panel here — a real <button>
+     with aria-expanded, opening a plain .ns-navmenu — so nav.js already
+     drives it and Esc already returns focus. The only new thing is the
+     trigger's shape: a sunken pill, --space-8 like the rest of the bar's
+     controls, deliberately quieter than a link in the row because it reports
+     where you are before it offers to move you.
+
+     `align-self: stretch` is load-bearing. The panel is positioned at
+     `inset-block-start: 100%` of .ns-navitem, so a 2rem-tall wrapper would
+     drop it into the MIDDLE of the bar; stretching the wrapper to the bar's
+     height puts the panel's top edge on the bar's bottom hairline, where
+     every other panel starts. */
+  .ns-pathpick { flex: none; align-self: stretch; }
+  .ns-pathpick__trigger {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    block-size: var(--_control-h, var(--space-7)); padding-inline: var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-btn);
+    background: var(--color-surface-sunken); color: var(--color-ink); cursor: pointer;
+    font-family: var(--font-sans); font-size: var(--size-fine); font-weight: var(--weight-medium);
+    white-space: nowrap;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                background-color var(--duration-fast) var(--ease-out);
+  }
+  /* The path's own glyph, in brand — the one coloured mark in the lockup, and
+     it is what makes the control scannable at a glance from across the bar. */
+  .ns-pathpick__trigger > i { font-size: var(--size-small); line-height: 1; color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-pathpick__trigger > i { color: var(--color-brand-300); }
+  .ns-pathpick__label { min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; }
+  .ns-pathpick__trigger::after {
+    content: "\e136"; /* ph-caret-down */
+    font-family: var(--font-icon); font-size: var(--size-label); color: var(--color-muted);
+    transition: rotate var(--duration-fast) var(--ease-out);
+  }
+  .ns-pathpick__trigger:hover { border-color: var(--color-brand-300); }
+  .ns-pathpick__trigger:focus-visible {
+    outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset);
+  }
+  .ns-pathpick:has(> [aria-expanded="true"]) > .ns-pathpick__trigger { border-color: var(--color-brand-500); }
+  .ns-pathpick:has(> [aria-expanded="true"]) > .ns-pathpick__trigger::after { rotate: 180deg; }
+  /* The panel hangs off the picker itself, so it lines up with the trigger
+     rather than with the link row further along the bar. */
+  .ns-pathpick > .ns-navmenu { inset-inline-start: 0; }
+  .ns-topnav--dark .ns-pathpick__trigger, .ns-topnav--transparent .ns-pathpick__trigger {
+    border-color: var(--color-on-dark-border); background: var(--color-on-dark-wash); color: var(--color-on-dark);
+  }
+  .ns-topnav--dark .ns-pathpick__trigger > i, .ns-topnav--transparent .ns-pathpick__trigger > i,
+  .ns-topnav--dark .ns-pathpick__trigger::after, .ns-topnav--transparent .ns-pathpick__trigger::after { color: var(--color-on-dark); }
+  .ns-topnav--dark .ns-pathpick__trigger:hover, .ns-topnav--transparent .ns-pathpick__trigger:hover {
+    border-color: var(--color-on-dark-border-hover); color: var(--color-on-brand);
+  }
+
   /* Link row. The 2px underline is drawn transparent at rest so marking a
      link current never moves the row.
 
      Note the child combinators: a panel hanging off one of these <li>s is
      full of <a>s too, and a descendant selector here would give every row in
-     a dropdown the bar's own 3.5rem height. */
+     a dropdown the bar's own full height. */
   /* flex: none on both clusters — a bar narrower than its contents scrolls
      the page's own gutter rather than squeezing a two-word button onto two
      lines, which is the failure mode when a long brand name meets a long CTA. */
@@ -3006,10 +3097,15 @@
   /* Icon-only bar action — notifications, streak, help, fullscreen. Square,
      hairline-free until hover, and it ALWAYS carries an aria-label; the
      badge is a count, never a bare dot, because a dot with no number tells a
-     screen-reader user nothing. */
+     screen-reader user nothing.
+
+     --space-8, not --target-comfy: every control in the actions cluster is
+     2rem so the row has ONE height — the one .ns-btn--sm gives the sign-in
+     pair it sits beside. The 2.5rem thumb floor comes back below lg, where
+     these stop being cursor targets; see the responsive block at the foot. */
   .ns-navicon {
     position: relative; flex: none;
-    inline-size: var(--target-comfy); block-size: var(--target-comfy);
+    inline-size: var(--_control-h, var(--space-7)); block-size: var(--_control-h, var(--space-7));
     display: inline-flex; align-items: center; justify-content: center;
     border: 1px solid transparent; border-radius: var(--radius-btn);
     background: transparent; color: var(--color-muted); cursor: pointer;
@@ -3018,7 +3114,7 @@
   }
   .ns-navicon:hover { color: var(--color-ink); border-color: var(--color-border); }
   .ns-navicon:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
-  .ns-navicon i { font-size: var(--size-body-lg); }
+  .ns-navicon i { font-size: var(--size-small); }
   .ns-navicon__badge {
     position: absolute; inset-block-start: 0; inset-inline-end: 0;
     min-inline-size: var(--space-4); padding-inline: var(--space-1);
@@ -3039,9 +3135,9 @@
      to carry a figure. Keep it to ONE of these in a bar. */
   .ns-navstar {
     flex: none; display: inline-flex; align-items: center;
-    min-block-size: var(--target-comfy);
+    min-block-size: var(--_control-h, var(--space-7));
     border: 1px solid var(--color-border); border-radius: var(--radius-btn);
-    color: var(--color-ink); text-decoration: none; font-size: var(--size-small);
+    color: var(--color-ink); text-decoration: none; font-size: var(--size-fine);
     overflow: hidden;
     transition: border-color var(--duration-fast) var(--ease-out);
   }
@@ -3049,8 +3145,9 @@
   .ns-navstar:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-navstar__label {
     display: inline-flex; align-items: center; gap: var(--space-1-5);
-    padding-inline: var(--space-2-5); align-self: stretch;
+    padding-inline: var(--space-2); align-self: stretch;
   }
+  .ns-navstar__label i { font-size: var(--size-small); }
   .ns-navstar__count {
     display: inline-flex; align-items: center; align-self: stretch;
     padding-inline: var(--space-2);
@@ -3077,6 +3174,14 @@
   .ns-topnav__spacer { flex: 1; }
   .ns-topnav__actions { flex: none; margin-inline-start: auto; display: flex; align-items: center; gap: var(--space-1-5); }
   .ns-topnav__actions .ns-btn { flex: none; white-space: nowrap; }
+  /* The ONE place in the system where a button is resized by its context. The
+     bar is chrome and its buttons are chrome-sized, but they must stay
+     sentence case — .ns-btn--xs is the right height and the wrong voice (mono,
+     uppercase, tracked), which is a legal footnote, not a call to action. So
+     the size comes from the bar and the type comes from --sm. */
+  .ns-topnav__actions .ns-btn--sm {
+    min-block-size: var(--_control-h, var(--space-7)); padding-block: 0; padding-inline: var(--space-3);
+  }
   /* --center puts the link row in the optical middle; the spacers do the work
      so the row is centred between brand and actions, not on the viewport. */
   .ns-topnav--center .ns-topnav__links { margin-inline: auto; }
@@ -3091,7 +3196,7 @@
   }
 
   /* --- Bar variants -------------------------------------------------------- */
-  .ns-topnav--compact { --navbar-h: 3rem; }
+  .ns-topnav--compact { --navbar-h: 2.75rem; }
   .ns-topnav--sunken { background: var(--color-surface-sunken); }
 
   /* On a navy hero: transparent until the page scrolls, then solid. The
@@ -3128,23 +3233,26 @@
      and the shortcut hint teaches the keyboard path. */
   .ns-navsearch {
     display: inline-flex; align-items: center; gap: var(--space-2);
-    min-inline-size: 12rem; min-block-size: var(--target-comfy);
-    padding-inline: var(--space-3);
+    min-inline-size: 12rem; min-block-size: var(--_control-h, var(--space-7));
+    padding-inline: var(--space-2);
     border: 1px solid var(--color-border); border-radius: var(--radius-btn);
     background: var(--color-surface-sunken); color: var(--color-muted);
-    font-family: var(--font-sans); font-size: var(--size-small); text-align: start; cursor: pointer;
+    font-family: var(--font-sans); font-size: var(--size-fine); text-align: start; cursor: pointer;
     transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
   }
   .ns-navsearch:hover { border-color: var(--color-brand-300); color: var(--color-ink); }
   .ns-navsearch:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: var(--focus-ring-offset); }
   .ns-navsearch__text { flex: 1; min-inline-size: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ns-navsearch__kbd {
-    flex: none; padding: var(--space-0-5) var(--space-1-5);
+    flex: none; padding: 0 var(--space-1);
     border: 1px solid var(--color-border); border-radius: var(--radius-sm);
     background: var(--color-surface);
     font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label);
   }
-  .ns-navsearch--icon { min-inline-size: 0; border-color: transparent; background: transparent; }
+  .ns-navsearch--icon {
+    min-inline-size: var(--_control-h, var(--space-7)); justify-content: center;
+    border-color: transparent; background: transparent;
+  }
   .ns-topnav--dark .ns-navsearch, .ns-topnav--transparent .ns-navsearch {
     border-color: var(--color-on-dark-border); background: var(--color-on-dark-wash); color: var(--color-on-dark);
   }
@@ -3257,6 +3365,13 @@
     padding: var(--space-5) var(--space-4);
   }
   .ns-megamenu--wide .ns-megamenu__inner { max-inline-size: var(--container-wide); }
+  /* On a FLUID bar the panel's contents have to run fluid too. A bar whose
+     brand sits at the viewport gutter, over a panel whose first column starts
+     wherever a centred 72rem block happens to begin, reads as two unrelated
+     pieces of furniture. Same --gutter as the bar, so the panel's first column
+     lands under the brand and its foot bar lands under the actions. */
+  .ns-megamenu--fluid > .ns-megamenu__inner,
+  .ns-megamenu--fluid > .ns-megamenu__foot { max-inline-size: none; padding-inline: var(--gutter); }
   .ns-megamenu__col { display: flex; flex-direction: column; gap: var(--space-1); min-inline-size: 0; }
   .ns-megamenu__label {
     margin-block-end: var(--space-1);
@@ -3306,7 +3421,7 @@
   .ns-usermenu { position: relative; display: flex; align-items: center; }
   .ns-usermenu__trigger {
     display: inline-flex; align-items: center; gap: var(--space-2);
-    min-block-size: var(--target-comfy); padding: var(--space-1) var(--space-2);
+    min-block-size: var(--_control-h, var(--space-7)); padding: 0 var(--space-2);
     border: 1px solid transparent; border-radius: var(--radius-pill);
     background: transparent; color: var(--color-ink); cursor: pointer;
     font-family: var(--font-sans); font-size: var(--size-small);
@@ -3463,7 +3578,7 @@
      and it needs no font at all. */
   .ns-themeswitch {
     position: relative; flex: none;
-    inline-size: var(--target-comfy); block-size: var(--target-comfy);
+    inline-size: var(--_control-h, var(--space-7)); block-size: var(--_control-h, var(--space-7));
     display: inline-flex; align-items: center; justify-content: center;
     padding: 0; border: 1px solid transparent; border-radius: var(--radius-btn);
     background: transparent; color: var(--color-muted); cursor: pointer;
@@ -3476,14 +3591,17 @@
     outline-offset: var(--focus-ring-offset);
   }
 
-  /* Sized so the WHOLE sun — disc plus rays — is about half the button. The
-     disc alone used to be --space-3, which put the ray ring at 1.8rem inside a
-     2.5rem target: a sun crowding its own edges rather than sitting in them.
-     The disc drives everything below (the rays are a percentage of it), so
-     this one value is the sun's size. */
+  /* Sized so the WHOLE sun — disc plus rays — is half the button, at whatever
+     size the bar is running. The rays are a percentage of the disc
+     (inset: -60%), so the ring measures the disc × 2.2; half a button is
+     therefore a disc of h / 4.4. Deriving it beats a fixed value, which had
+     to be re-picked by hand every time the bar's height changed and was wrong
+     in between — the switch is 1.75rem in the bar and 2.5rem below lg, and
+     one expression covers both. */
   .ns-themeswitch__mark {
     position: relative; display: block;
-    inline-size: var(--space-2-5); block-size: var(--space-2-5);
+    inline-size: calc(var(--_control-h, var(--space-7)) / 4.4); /* lint-ok: a ratio, not a length — the length is the token it divides */
+    block-size: calc(var(--_control-h, var(--space-7)) / 4.4);  /* lint-ok: as above */
     border-radius: var(--radius-pill);
     background: var(--color-brand-500);
     transition: background-color var(--duration-base) var(--ease-out),
@@ -3553,7 +3671,7 @@
      that jumps. Still a switch, still with an accessible name. */
   .ns-themetoggle-icon {
     position: relative; flex: none;
-    inline-size: var(--target-comfy); block-size: var(--target-comfy);
+    inline-size: var(--_control-h, var(--space-7)); block-size: var(--_control-h, var(--space-7));
     display: inline-flex; align-items: center; justify-content: center;
     border: 1px solid var(--color-border); border-radius: var(--radius-btn);
     background: transparent; color: var(--color-muted); cursor: pointer;
@@ -3795,6 +3913,21 @@
     .ns-topnav__brand-tag { display: none; }
     .ns-topnav { padding-inline: var(--space-4); }
     .ns-usermenu__name { display: none; }
+    /* THE THUMB FLOOR COMES BACK, in one line. Above lg the cluster is
+       1.75rem because it is a row of cursor targets; below it these are the
+       only things left in the bar beside the burger, and they are being
+       tapped. --target-comfy is 40px, which is the rule in tokens/spacing.css
+       for anything a thumb hits — the desktop bar is the exception, not this.
+       Every control reads --_control-h, so this is the whole change. */
+    .ns-topnav { --_control-h: var(--target-comfy); }
+  }
+  /* On a phone the picker keeps its glyph and its caret and loses the word —
+     the panel it opens names every path in full, so the label is the cheapest
+     thing in the lockup to spend. The control itself stays: it is how you get
+     between trails, and the mobile sheet is three taps further away. */
+  @media (max-width: 39.999rem) {
+    .ns-pathpick__label { display: none; }
+    .ns-pathpick__trigger { padding-inline: var(--space-2); gap: var(--space-1); }
   }
   /* The course bar sheds in a fixed order: the back button's word, then the
      inline progress meter (it is repeated above the curriculum rail), then
@@ -7281,9 +7414,32 @@
      display:none so the rail keeps its scroll position for when it returns. */
   .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > :not(.ns-trainingnav__spine) { display: none; }
   .ns-trainingnav__spine { display: none; }
+  /* THE REOPEN BUTTON SITS WHERE THE COLLAPSE BUTTON WAS. Measured before
+     this rule: you clicked collapse at y=79 and the control to undo it
+     appeared at y=216 — 136px lower — so the obvious gesture, click again in
+     the same place, hit nothing. Two things caused it. The spine padded
+     itself --space-4 against the head's --space-2-5, and with two auto rows
+     in a full-height grid the button was being stretched rather than sat at
+     the top.
+
+     `grid-template-rows: auto 1fr` gives the button its own height and hands
+     the rest to the label; `align-content: start` stops the pair drifting
+     down; and the block padding now matches .ns-trainingnav__head exactly, so
+     the two buttons share a centre line. If the head's padding ever changes,
+     this has to change with it — they are one control in two states. */
   .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > .ns-trainingnav__spine {
-    display: grid; justify-items: center; gap: var(--space-3);
-    padding-block: var(--space-4);
+    display: grid; grid-template-rows: auto 1fr;
+    justify-items: center; align-content: start; gap: var(--space-3);
+    /* --space-2, matching .ns-trainingnav__head's DESKTOP padding rather than
+       its base padding. The spine only exists at >=64rem — collapsing is a
+       column affordance and below that the rail is a drawer — and at that
+       width the head tightens to --space-2. Using the base --space-2-5 here
+       left the two buttons 2px out of line, which is invisible in a
+       screenshot and visible as a twitch when the rail opens and shuts. */
+    padding-block: var(--space-2);
+  }
+  .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > .ns-trainingnav__spine > .ns-btn {
+    align-self: start;
   }
   /* The vertical label is the whole affordance: a bare chevron on a 40px
      strip is a mystery meat control, and the word costs nothing sideways. */
@@ -7585,6 +7741,16 @@
      and the <time> sit on one baseline inside a hoverable target. */
   .ns-tpost-author__stamp > .ns-tooltip-host { align-items: center; gap: var(--space-1-5); }
   .ns-tpost-author__stamp time { font-variant-numeric: tabular-nums; color: var(--color-ink); }
+
+  /* The thread closes the page, under the author block and the pager, with
+     a rule to separate it from them: the pager is navigation away and the
+     thread is a reason to stay, so they should not read as one run of
+     blocks. .ns-comments brings everything else. */
+  .ns-tpost-comments {
+    margin-block-start: var(--stack-md);
+    padding-block-start: var(--stack-sm);
+    border-block-start: 1px solid var(--color-border);
+  }
 
   .ns-tpost-toc { margin-block: var(--stack-sm) var(--stack-md); }
   .ns-tpost-toc > summary { inline-size: 100%; }
@@ -8081,6 +8247,25 @@
      makes the search button look like it belongs to the search. */
   .ns-trainingnav__search .ns-btn--icon {
     block-size: var(--target-comfy); inline-size: var(--target-comfy);
+  }
+  /* SHORTER ON THE DESKTOP RAIL ONLY. 40px is the right target for a thumb
+     and too tall for a filter that sits above a list of forty rows — it was
+     spending a whole lesson's worth of height on the box you use to find one.
+     At 2rem the row reads as a rail control rather than a page form.
+
+     The floor is respected rather than waived: --target-comfy (40px) is what
+     tokens/spacing.css asks for "anything a thumb hits", and below 64rem this
+     same rail IS the phone drawer, where every one of these is thumb-hit. So
+     the shrink is scoped to the width at which the rail is a mouse-driven
+     column. 2rem is still well above the WCAG 2.2 AA floor of 24px. */
+  @media (min-width: 64rem) {
+    .ns-training--doc .ns-trainingnav__head { padding-block: var(--space-2); }
+    .ns-training--doc .ns-trainingnav__search .ns-input,
+    .ns-training--doc .ns-trainingnav__search .ns-btn--icon {
+      block-size: var(--space-8); min-block-size: var(--space-8);
+      inline-size: auto; padding-block: 0;
+    }
+    .ns-training--doc .ns-trainingnav__search .ns-btn--icon { inline-size: var(--space-8); }
   }
   /* Trailing-edge tooltips, for the same reason as .ns-tbar__steps: these
      controls sit at the right of a rail that is itself at the right of the

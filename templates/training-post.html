@@ -534,6 +534,101 @@
         </div>
       </div>
 
+      <!-- === THE THREAD ==================================================
+           .ns-comments from blog.css, unchanged — a lesson and a post take
+           the same thread rather than the training surface growing a second
+           comment system. What differs is only the WORDING: on a lesson the
+           useful frame is "ask about this lesson", because the thing a reader
+           has after eleven minutes on asynchronous recalculation is a
+           question, not an opinion.
+
+           The compose box comes FIRST, above the thread. On a blog the form
+           goes at the bottom because you read the discussion and then join
+           it; on a lesson the reader is usually stuck on a specific line and
+           wants to ask, and making them scroll a 40-comment thread to reach
+           the box is the reason those questions end up in email instead.
+
+           One level of replies, enforced in blog.css — a third flattens back
+           to the second rather than indenting again. -->
+      <section class="ns-comments ns-tpost-comments" aria-labelledby="t-discussion">
+        <div class="ns-comments__head">
+          <h2 class="ns-comments__count" id="t-discussion"><b>3</b> questions on this lesson</h2>
+          <label class="ns-commentform__hint">Sort
+            <select class="ns-select" aria-label="Sort questions">
+              <option>Newest</option><option>Oldest</option><option>Most liked</option>
+            </select>
+          </label>
+        </div>
+
+        <!-- No bespoke comment input: a comment box is a textarea, and
+             pretending otherwise is how a design system grows a second form
+             system. .ns-field, .ns-textarea and .ns-btn do all of it. -->
+        <form class="ns-commentform">
+          <div class="ns-field">
+            <label class="ns-field__label" for="t-comment">Ask about this lesson</label>
+            <textarea class="ns-textarea" id="t-comment" rows="3" placeholder="Stuck on something above? Quote the line and ask&hellip;"></textarea>
+            <span class="ns-field__help">Markdown is supported. Code blocks help more than screenshots.</span>
+          </div>
+          <div class="ns-commentform__row">
+            <span class="ns-commentform__hint">Posting as <strong>dev_arun</strong></span>
+            <button type="submit" class="ns-btn ns-btn--primary"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i> Post question</button>
+          </div>
+        </form>
+
+        <div class="ns-comments__list">
+          <article class="ns-comment ns-comment--pinned">
+            <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+            <div class="ns-comment__main">
+              <div class="ns-comment__head">
+                <a class="ns-comment__author" href="#">Priya Nair</a>
+                <span class="ns-comment__badge">instructor</span>
+                <span class="ns-comment__badge"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> pinned</span>
+                <time class="ns-comment__time" datetime="2026-08-16">2 days ago</time>
+              </div>
+              <div class="ns-comment__text"><p>If you want to watch the queue rather than infer it, Setup &rarr; Background Jobs shows the recalculation entries while they drain. On a sandbox with a few thousand records you can usually see the window open and close.</p></div>
+              <div class="ns-comment__actions">
+                <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" aria-pressed="false" aria-label="Like, 9 likes"><i class="ph ph-heart" aria-hidden="true"></i> 9</button>
+                <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs">Reply</button>
+              </div>
+            </div>
+          </article>
+
+          <article class="ns-comment">
+            <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+            <div class="ns-comment__main">
+              <div class="ns-comment__head">
+                <a class="ns-comment__author" href="#">dev_arun</a>
+                <time class="ns-comment__time" datetime="2026-08-17">yesterday</time>
+              </div>
+              <div class="ns-comment__text"><p>Does this apply to a manual share added in the same transaction, or only to derived rows? The table above says manual shares do not recalculate, but I am not sure whether that means they are safe to read immediately.</p></div>
+              <div class="ns-comment__actions">
+                <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" aria-pressed="false" aria-label="Like, 2 likes"><i class="ph ph-heart" aria-hidden="true"></i> 2</button>
+                <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs">Reply</button>
+              </div>
+
+              <div class="ns-comment__replies">
+                <article class="ns-comment ns-comment--op">
+                  <span class="ns-comment__avatar ns-ph ns-ph--sm" aria-hidden="true"></span>
+                  <div class="ns-comment__main">
+                    <div class="ns-comment__head">
+                      <a class="ns-comment__author" href="#">Ravi Kulkarni</a>
+                      <span class="ns-comment__badge">author</span>
+                      <time class="ns-comment__time" datetime="2026-08-17">yesterday</time>
+                    </div>
+                    <div class="ns-comment__text"><p>Safe to read immediately. A manual share <em>is</em> the row &mdash; there is nothing to derive, so nothing is queued. It is only the rows the platform computes for you that go through recalculation.</p></div>
+                    <div class="ns-comment__actions">
+                      <button type="button" class="ns-btn ns-btn--quiet ns-btn--xs" aria-pressed="false" aria-label="Like, 6 likes"><i class="ph ph-heart" aria-hidden="true"></i> 6</button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <button type="button" class="ns-btn ns-btn--outline ns-btn--block">Load 1 more question</button>
+      </section>
+
       <!-- Prev / next, each carrying its module. The next post here is in the
            SAME module, so the module line stays quiet; cross a boundary and
            it is the more important of the two facts. -->

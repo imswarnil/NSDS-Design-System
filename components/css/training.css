@@ -650,9 +650,32 @@
      display:none so the rail keeps its scroll position for when it returns. */
   .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > :not(.ns-trainingnav__spine) { display: none; }
   .ns-trainingnav__spine { display: none; }
+  /* THE REOPEN BUTTON SITS WHERE THE COLLAPSE BUTTON WAS. Measured before
+     this rule: you clicked collapse at y=79 and the control to undo it
+     appeared at y=216 — 136px lower — so the obvious gesture, click again in
+     the same place, hit nothing. Two things caused it. The spine padded
+     itself --space-4 against the head's --space-2-5, and with two auto rows
+     in a full-height grid the button was being stretched rather than sat at
+     the top.
+
+     `grid-template-rows: auto 1fr` gives the button its own height and hands
+     the rest to the label; `align-content: start` stops the pair drifting
+     down; and the block padding now matches .ns-trainingnav__head exactly, so
+     the two buttons share a centre line. If the head's padding ever changes,
+     this has to change with it — they are one control in two states. */
   .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > .ns-trainingnav__spine {
-    display: grid; justify-items: center; gap: var(--space-3);
-    padding-block: var(--space-4);
+    display: grid; grid-template-rows: auto 1fr;
+    justify-items: center; align-content: start; gap: var(--space-3);
+    /* --space-2, matching .ns-trainingnav__head's DESKTOP padding rather than
+       its base padding. The spine only exists at >=64rem — collapsing is a
+       column affordance and below that the rail is a drawer — and at that
+       width the head tightens to --space-2. Using the base --space-2-5 here
+       left the two buttons 2px out of line, which is invisible in a
+       screenshot and visible as a twitch when the rail opens and shuts. */
+    padding-block: var(--space-2);
+  }
+  .ns-training--doc[data-rail="collapsed"] > .ns-trainingnav > .ns-trainingnav__spine > .ns-btn {
+    align-self: start;
   }
   /* The vertical label is the whole affordance: a bare chevron on a 40px
      strip is a mystery meat control, and the word costs nothing sideways. */
@@ -954,6 +977,16 @@
      and the <time> sit on one baseline inside a hoverable target. */
   .ns-tpost-author__stamp > .ns-tooltip-host { align-items: center; gap: var(--space-1-5); }
   .ns-tpost-author__stamp time { font-variant-numeric: tabular-nums; color: var(--color-ink); }
+
+  /* The thread closes the page, under the author block and the pager, with
+     a rule to separate it from them: the pager is navigation away and the
+     thread is a reason to stay, so they should not read as one run of
+     blocks. .ns-comments brings everything else. */
+  .ns-tpost-comments {
+    margin-block-start: var(--stack-md);
+    padding-block-start: var(--stack-sm);
+    border-block-start: 1px solid var(--color-border);
+  }
 
   .ns-tpost-toc { margin-block: var(--stack-sm) var(--stack-md); }
   .ns-tpost-toc > summary { inline-size: 100%; }
@@ -1450,6 +1483,25 @@
      makes the search button look like it belongs to the search. */
   .ns-trainingnav__search .ns-btn--icon {
     block-size: var(--target-comfy); inline-size: var(--target-comfy);
+  }
+  /* SHORTER ON THE DESKTOP RAIL ONLY. 40px is the right target for a thumb
+     and too tall for a filter that sits above a list of forty rows — it was
+     spending a whole lesson's worth of height on the box you use to find one.
+     At 2rem the row reads as a rail control rather than a page form.
+
+     The floor is respected rather than waived: --target-comfy (40px) is what
+     tokens/spacing.css asks for "anything a thumb hits", and below 64rem this
+     same rail IS the phone drawer, where every one of these is thumb-hit. So
+     the shrink is scoped to the width at which the rail is a mouse-driven
+     column. 2rem is still well above the WCAG 2.2 AA floor of 24px. */
+  @media (min-width: 64rem) {
+    .ns-training--doc .ns-trainingnav__head { padding-block: var(--space-2); }
+    .ns-training--doc .ns-trainingnav__search .ns-input,
+    .ns-training--doc .ns-trainingnav__search .ns-btn--icon {
+      block-size: var(--space-8); min-block-size: var(--space-8);
+      inline-size: auto; padding-block: 0;
+    }
+    .ns-training--doc .ns-trainingnav__search .ns-btn--icon { inline-size: var(--space-8); }
   }
   /* Trailing-edge tooltips, for the same reason as .ns-tbar__steps: these
      controls sit at the right of a rail that is itself at the right of the

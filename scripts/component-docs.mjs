@@ -4883,7 +4883,10 @@ Map<Id, Account> byId = new Map<Id, Account>(
       "The header keeps only what gates the decision to start — duration, position, difficulty, read state — and the kind moved up to a mark above the title. Author and last-updated close the lesson instead, in .ns-authorbox, the component blog posts already use for exactly this: who wrote it and when it was last checked are what a reader wants once they have FINISHED and are deciding whether to trust it. The updated stamp is a <time> with a machine-readable datetime, because on a platform that moves three times a year &ldquo;is this still true?&rdquo; is the first question after a lesson that surprised you",
       "The topbar's progress meter GROWS to fill the row. Everything else on the bar has a content width; the meter is the one item that is strictly more legible the wider it gets, so it takes what is left rather than sitting at a fixed 6rem with empty chrome beside it",
       "The filter is a field and a real submit BUTTON on the trailing edge, not a field with a glyph painted inside it. The old leading icon had pointer-events: none — something that looked pressable and was not — and a search form with no submit is one only a keyboard can post",
-      "Every icon-only control carries a .ns-tooltip as well as its aria-label, and the ones pinned to a trailing edge anchor their tooltip there: a tooltip centred with translate: -50% needs half its width of room on both sides, which a control at the right of a right-hand rail does not have",
+      "Every icon-only control carries a .ns-tooltip as well as its aria-label, and the ones pinned to a trailing edge anchor their tooltip there: a tooltip centred with translate: -50% needs half its width of room on both sides, which a control at the right of a right-hand rail does not have. Both ends of the rail open theirs DOWNWARD — upward is only right when there is page above the host, and at the top of the rail that is the topbar while at the foot it is the last lessons in the list",
+      "Collapsing keeps the reopen control on the SAME centre line as the collapse control it replaces, so clicking twice in one place opens and shuts the rail. The spine's block padding is therefore tied to the head's, and the two have to move together",
+      "The filter row is 2rem at &ge;64rem and --target-comfy below it. The rail is a mouse-driven column at the first width and the phone drawer at the second, and only one of those is thumb-hit",
+      "The thread under a lesson is .ns-comments, the same component a blog post uses, with the compose box moved ABOVE the thread: a reader stuck on a specific line should not scroll forty comments to reach the box",
       "A SKYSCRAPER SLOT (160&times;600, the standard unit from ads.css) runs down the leading edge of the body, sticky beside the reading. It begins BELOW the header, which owns the full width — a column starting at the top would push the title into two thirds of a page it should own outright. Below xl the whole column becomes a scrollable row under the header, and ads.css drops the 600px unit on a phone",
       "The outline is the real .ns-toc--collapsible, not a bespoke disclosure — toc.css warns that three copies of a TOC is three places for the scroll-spy to drift, and this page was one of the copies",
       "The drawer's slide is dropped under prefers-reduced-motion; the rail still opens, it just arrives",
@@ -5663,13 +5666,25 @@ Map<Id, Account> byId = new Map<Id, Account>(
   /* ===================================================== Navigation ==== */
   {
     id: "topnav", title: "Navbar", family: "Navigation",
-    summary: "The one piece of chrome on every page: brand, links, actions, one hairline below, <code>--navbar-h</code> (3.5rem) tall — chrome, and every row it takes is a row of content the reader does not get. The current page wears the 2px brand underline — the accent-line device, horizontal — because the page you are already on is not an action and must not look like a button. Sticky by default; the surface variants ride a hero, float, or go quiet.",
+    summary: "The one piece of chrome on every page: brand, path picker, links, actions, one hairline below, <code>--navbar-h</code> (3rem) tall — chrome, and every row it takes is a row of content the reader does not get. It runs <strong>fluid</strong> — edge to edge, padded by the page's own <code>--gutter</code> — unless you wrap the children in <code>.ns-topnav__inner</code>. Every control in it shares one height, <code>--_control-h</code> (1.75rem), including the auth buttons; the 2.5rem thumb floor returns below lg in a single line, where they stop being cursor targets. The current page wears the 2px brand underline — the accent-line device, horizontal — because the page you are already on is not an action and must not look like a button. Sticky by default; the surface variants ride a hero, float, or go quiet.",
     use: ["The single global bar at the top of every page", "aria-current=\"page\" on exactly one link", "Pair it with the mobile sheet below lg — the bar is one component with two link surfaces"],
-    not: ["Secondary navigation inside a page — Tabs or Sidebar", "A second bar under the first — if the page needs two rows of navigation, the information architecture is the problem", "Hiding the bar on scroll-down: it saves 3.5rem and costs everyone the ability to predict where navigation is"],
+    not: ["Secondary navigation inside a page — Tabs or Sidebar", "A second bar under the first — if the page needs two rows of navigation, the information architecture is the problem", "Hiding the bar on scroll-down: it saves 3rem and costs everyone the ability to predict where navigation is"],
     a11y: ["A &lt;nav&gt; landmark with a label, so \"skip to navigation\" lands somewhere", "aria-current=\"page\" marks location for assistive tech AND paints the underline — one attribute, both jobs", "The bar is the first thing in the tab order after the skip link, and the skip link's target carries tabindex=\"-1\""],
     variants: [
-      { name: "Anatomy", flush: true, note: "Brand · link row · divider · search · theme · action, in that order (the signed-in and signed-out ends of the bar are on the <a href=\"./c-usermenu.html\">Account menu</a> page). Everything after the link row sits in <code>.ns-topnav__actions</code>, which takes the remaining space with <code>margin-inline-start:auto</code> — so adding an action never re-centres the links. Live: the whole bar on this page is operable.", html: `<nav class="ns-topnav" aria-label="Anatomy example">
-  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span><span class="ns-topnav__brand-tag">Learn</span></a>
+      { name: "Anatomy", flush: true, note: "Brand · path picker · link row · divider · search · theme · action, in that order (the signed-in and signed-out ends of the bar are on the <a href=\"./c-usermenu.html\">Account menu</a> page). Everything after the link row sits in <code>.ns-topnav__actions</code>, which takes the remaining space with <code>margin-inline-start:auto</code> — so adding an action never re-centres the links. Live: the whole bar on this page is operable.", html: `<nav class="ns-topnav" aria-label="Anatomy example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <div class="ns-navitem ns-pathpick">
+    <button type="button" class="ns-pathpick__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-path-anatomy" aria-label="Training path: Administrator. Change path">
+      <i class="ph ph-user" aria-hidden="true"></i>
+      <span class="ns-pathpick__label">Administrator</span>
+    </button>
+    <div class="ns-navmenu" id="doc-path-anatomy">
+      <p class="ns-navmenu__label">Training paths</p>
+      <a class="ns-navmenu__item" href="#" aria-current="page"><span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span></a>
+      <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span></a>
+      <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span></a>
+    </div>
+  </div>
   <ul class="ns-topnav__links">
     <li><a href="#" aria-current="page">Courses</a></li>
     <li><a href="#">Docs <span class="ns-topnav__flag">New</span></a></li>
@@ -5687,7 +5702,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Sign up</a>
   </div>
 </nav>` },
-      { name: "Contained", flush: true, note: "<code>.ns-topnav__inner</code> caps the contents at the page container so the brand sits exactly above the page's first column. Without it the bar is edge-to-edge — right for an app, wrong for a 72rem marketing page. <code>--wide</code> switches the cap to the wide container.", html: `<nav class="ns-topnav" aria-label="Contained example">
+      { name: "Contained", flush: true, note: "The DEFAULT is fluid: the bar runs edge to edge and its padding is the page's own <code>--gutter</code>, so the brand sits the same distance from the viewport edge as the first column of a full-bleed page. <code>.ns-topnav__inner</code> is the exception — it caps the contents at the page container so the brand lands exactly above the first column of a <em>width-capped</em> page, and <code>--wide</code> switches that cap to the wide container. Pair it with <code>.ns-megamenu--fluid</code> or not accordingly: a fluid bar over a panel whose columns start wherever a centred 72rem block happens to begin reads as two unrelated pieces of furniture.", html: `<nav class="ns-topnav" aria-label="Contained example">
   <div class="ns-topnav__inner">
     <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
     <ul class="ns-topnav__links">
@@ -5696,6 +5711,31 @@ Map<Id, Account> byId = new Map<Id, Account>(
     </ul>
     <div class="ns-topnav__actions"><a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a></div>
   </div>
+</nav>` },
+      { name: "Path picker", flush: true, note: "The control beside the brand names the training path you are in and switches you to another. It replaces the mono <code>.ns-topnav__brand-tag</code> that used to sit there — \"Namaste Salesforce | Learn\" printed the same word on every page of a section and could not be clicked, which is a <em>label</em> standing in the one slot where a control belongs. Structurally it is an ordinary <code>.ns-navitem</code> disclosure opening an ordinary <code>.ns-navmenu</code>, so nav.js already drives it and Esc already returns focus; only the trigger's shape is new, and it is deliberately quieter than a link in the row because it reports where you are before it offers to move you. <code>align-self:stretch</code> on the wrapper is load-bearing — the panel hangs off <code>inset-block-start:100%</code>, so a wrapper the height of the trigger would drop it into the middle of the bar. Live: click it. Below 40rem the word goes and the glyph stays.", html: `<nav class="ns-topnav" aria-label="Path picker example">
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
+  <div class="ns-navitem ns-pathpick">
+    <button type="button" class="ns-pathpick__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-path" aria-label="Training path: Administrator. Change path">
+      <i class="ph ph-user" aria-hidden="true"></i>
+      <span class="ns-pathpick__label">Administrator</span>
+    </button>
+    <div class="ns-navmenu" id="doc-path">
+      <p class="ns-navmenu__label">Training paths</p>
+      <a class="ns-navmenu__item" href="#" aria-current="page"><span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span></a>
+      <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span></a>
+      <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span></a>
+      <a class="ns-navmenu__item" href="#"><span class="ns-navmenu__icon"><i class="ph ph-chart-line-up" aria-hidden="true"></i></span><span><span class="ns-navmenu__title">Consultant</span><span class="ns-navmenu__desc">Discovery, delivery, adoption</span></span></a>
+      <div class="ns-navmenu__foot">
+        <span>Currently on Administrator</span>
+        <a href="#">All paths →</a>
+      </div>
+    </div>
+  </div>
+  <ul class="ns-topnav__links">
+    <li><a href="#" aria-current="page">Courses</a></li>
+    <li><a href="#">Pricing</a></li>
+  </ul>
+  <div class="ns-topnav__actions"><a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start learning</a></div>
 </nav>` },
       { name: "Signed in — app bar", flush: true, note: "Compact height, search first, account menu last. No sign-up button: the member already signed up, and leaving it there is how a product tells a paying customer it has not noticed them.", html: `<nav class="ns-topnav ns-topnav--compact" aria-label="App bar example">
   <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
@@ -5780,7 +5820,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
 </a>
 <a class="ns-navicon" href="#" aria-label="GitHub repository"><i class="ph ph-github-logo" aria-hidden="true"></i></a>` },
       { name: "Blog bar", flush: true, note: "Centred links, a reading-progress line along the bottom edge, and tags instead of products — on a blog the useful navigation is by subject. The progress line is set here to 38% for the specimen; in product <code>assets/js/nav.js</code> drives it from scroll. Full page: <a href=\"./demo-navbar-blog.html\">open the blog bar demo ↗</a>", html: `<nav class="ns-topnav ns-topnav--center" aria-label="Blog bar example">
-  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span><span class="ns-topnav__brand-tag">Blog</span></a>
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
   <ul class="ns-topnav__links">
     <li><a href="#" aria-current="page">Latest</a></li>
     <li><a href="#">Admin</a></li>
@@ -5794,7 +5834,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <div class="ns-topnav__progress" style="--p:38" aria-hidden="true"></div>
 </nav>` },
       { name: "On a hero", dark: true, flush: true, note: "<code>--dark</code> is the navy bar; <code>--transparent</code> is the same anatomy with no background at all, for sitting on a hero image — it swaps to this navy once the page scrolls (<code>data-scrolled</code>, one passive listener). Deliberately NOT a translucent blur: backdrop-filter costs real repaint budget on mid-range Android, and \"calm and fast\" is a product value, not a slogan.", html: `<nav class="ns-topnav ns-topnav--dark" aria-label="Dark bar example">
-  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span><span class="ns-topnav__brand-tag">Learn</span></a>
+  <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
   <ul class="ns-topnav__links">
     <li><a href="#" aria-current="page">Courses</a></li>
     <li><a href="#">Training</a></li>

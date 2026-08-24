@@ -193,8 +193,24 @@
     inset-block-start: calc(100% + var(--space-1-5));
   }
   .ns-tooltip-host { position: relative; display: inline-flex; }
+  /* :focus-visible, NOT :focus-within — and the difference is a bug people
+     actually hit. :focus-within matches however focus arrived, including a
+     mouse click, so any control that keeps focus after being pressed was left
+     with its tooltip hanging open under a pointer that had already moved on.
+     The training rail's collapse button made it obvious: clicking it moves
+     focus to the reopen control, whose tooltip then sat there permanently.
+
+     :focus-visible only matches when the browser judges that focus should be
+     indicated — keyboard and other non-pointer routes — which is exactly the
+     population the focus branch exists for. A mouse user already had :hover.
+
+     Two selectors because the host is sometimes the focusable element itself
+     (a <button class="ns-tooltip-host">) and sometimes its parent (a wrapper
+     around a link). :has() covers the second; it cannot cover the first,
+     since an element is not its own descendant. */
   .ns-tooltip-host:hover > .ns-tooltip,
-  .ns-tooltip-host:focus-within > .ns-tooltip { opacity: 1; visibility: visible; }
+  .ns-tooltip-host:focus-visible > .ns-tooltip,
+  .ns-tooltip-host:has(:focus-visible) > .ns-tooltip { opacity: 1; visibility: visible; }
 }
 
 /* The fade and the rise used to be redeclared here as ns-fade-in / ns-fade-up,

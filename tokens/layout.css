@@ -53,10 +53,12 @@
 
   /* Fixed chrome — needed by scroll-margin so an anchored heading is not
      hidden under the sticky navbar, and by sticky sidebars/TOCs. */
-  /* 3.5rem: tall enough for a 2.5rem control plus its breathing room, and
-     one notch tighter than the 4rem it used to be — the bar is chrome, and
+  /* 3rem: tall enough for a 2rem control plus its breathing room. The bar
+     used to be 4rem, then 3.5rem around a 2.5rem control; sizing the bar's
+     own controls to --space-8 (the same 2rem as .ns-btn--sm, which is what
+     sits next to them) took the last half-rem out. The bar is chrome, and
      every row it takes is a row of content the reader does not get. */
-  --navbar-h: 3.5rem;
+  --navbar-h: 3rem;
   --sidebar-w: 16rem;
   --toc-w: 15rem;
   --player-side-w: 21rem; /* course-player curriculum rail */

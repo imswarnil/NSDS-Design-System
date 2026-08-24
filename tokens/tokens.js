@@ -441,7 +441,7 @@ export const light = {
   gutter: "var(--space-4)",
   gutterMd: "var(--space-6)",
   gutterLg: "var(--space-8)",
-  navbarH: "3.5rem",
+  navbarH: "3rem",
   sidebarW: "16rem",
   tocW: "15rem",
   playerSideW: "21rem",

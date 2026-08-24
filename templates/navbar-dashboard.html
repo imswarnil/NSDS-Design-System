@@ -21,101 +21,129 @@
   in <head> before any stylesheet.
 -->
 <nav class="ns-topnav ns-topnav--compact" aria-label="Main">
-  <div class="ns-topnav__inner">
-    <a class="ns-topnav__brand" href="/dashboard/">
-      <img src="../assets/logo/favicon.svg" alt="">
-      <span class="ns-topnav__brand-name">Namaste Salesforce</span>
-      <span class="ns-topnav__brand-tag">App</span>
-    </a>
+  <a class="ns-topnav__brand" href="/dashboard/">
+    <img src="../assets/logo/favicon.svg" alt="">
+    <span class="ns-topnav__brand-name">Namaste Salesforce</span>
+  </a>
 
-    <ul class="ns-topnav__links">
-      <li><a href="/dashboard/" aria-current="page"><i class="ph ph-squares-four" aria-hidden="true"></i> Dashboard</a></li>
-      <li><a href="/my-courses/"><i class="ph ph-books" aria-hidden="true"></i> My courses</a></li>
-
-      <!-- "Continue" — the one menu a signed-in learner actually wants. -->
-      <li class="ns-navitem">
-        <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="dash-continue">
-          <i class="ph ph-play-circle" aria-hidden="true"></i> Continue
-        </button>
-        <div class="ns-navmenu" id="dash-continue">
-          <p class="ns-navmenu__label">Pick up where you left off</p>
-          <a class="ns-navmenu__item" href="#">
-            <span class="ns-navmenu__icon"><i class="ph ph-play" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">Objects &amp; fields</span><span class="ns-navmenu__desc">Salesforce Admin · lesson 07 of 24</span></span>
-          </a>
-          <a class="ns-navmenu__item" href="#">
-            <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">Apex triggers</span><span class="ns-navmenu__desc">Developer trail · lesson 03 of 31</span></span>
-          </a>
-          <hr class="ns-navmenu__sep">
-          <a class="ns-navmenu__item" href="#">
-            <span class="ns-navmenu__icon"><i class="ph ph-exam" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">Practice exam</span><span class="ns-navmenu__desc">Attempted 4 days ago · 68%</span></span>
-          </a>
-          <div class="ns-navmenu__foot">
-            <span>2 courses in progress</span>
-            <a href="/my-courses/">All courses →</a>
-          </div>
-        </div>
-      </li>
-
-      <li><a href="/certificates/"><i class="ph ph-seal-check" aria-hidden="true"></i> Certificates</a></li>
-    </ul>
-
-    <div class="ns-topnav__actions">
-      <!-- One metric, not three. Three is a stat band, and that belongs on
-           the page rather than in the chrome. -->
-      <span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
-
-      <button type="button" class="ns-navsearch ns-navsearch--icon" aria-label="Search your courses" data-ns-search>
-        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
-      </button>
-
-      <a class="ns-navicon" href="/notifications/" aria-label="Notifications — 3 unread">
-        <i class="ph ph-bell" aria-hidden="true"></i>
-        <span class="ns-navicon__badge" aria-hidden="true">3</span>
+  <div class="ns-navitem ns-pathpick">
+    <button type="button" class="ns-pathpick__trigger" data-ns-menu aria-expanded="false" aria-controls="dash-path"
+            aria-label="Training path: Administrator. Change path">
+      <i class="ph ph-user" aria-hidden="true"></i>
+      <span class="ns-pathpick__label">Administrator</span>
+    </button>
+    <div class="ns-navmenu" id="dash-path">
+      <p class="ns-navmenu__label">Training paths</p>
+      <a class="ns-navmenu__item" href="/training/admin/" aria-current="page">
+        <span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span>
       </a>
+      <a class="ns-navmenu__item" href="/training/developer/">
+        <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span>
+      </a>
+      <a class="ns-navmenu__item" href="/training/architect/">
+        <span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span>
+      </a>
+      <a class="ns-navmenu__item" href="/training/consultant/">
+        <span class="ns-navmenu__icon"><i class="ph ph-chart-line-up" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Consultant</span><span class="ns-navmenu__desc">Discovery, delivery, adoption</span></span>
+      </a>
+      <div class="ns-navmenu__foot">
+        <span>Currently on Administrator</span>
+        <a href="/training/">All paths →</a>
+      </div>
+    </div>
+  </div>
 
-      <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
-              aria-label="Dark mode" data-ns-theme-toggle>
-        <span class="ns-themeswitch__mark" aria-hidden="true"></span>
+  <ul class="ns-topnav__links">
+    <li><a href="/dashboard/" aria-current="page"><i class="ph ph-squares-four" aria-hidden="true"></i> Dashboard</a></li>
+    <li><a href="/my-courses/"><i class="ph ph-books" aria-hidden="true"></i> My courses</a></li>
+
+    <!-- "Continue" — the one menu a signed-in learner actually wants. -->
+    <li class="ns-navitem">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="dash-continue">
+        <i class="ph ph-play-circle" aria-hidden="true"></i> Continue
       </button>
-
-      <span class="ns-topnav__divider" aria-hidden="true"></span>
-
-      <div class="ns-usermenu">
-        <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="dash-account" aria-label="Account menu for Aarti Kulkarni">
-          <span class="ns-avatar-ring" style="--p:29"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span></span>
-        </button>
-        <div class="ns-usermenu__panel" id="dash-account">
-          <div class="ns-usermenu__head">
-            <span class="ns-avatar" aria-hidden="true">AK</span>
-            <span class="ns-usermenu__identity">
-              <span class="ns-usermenu__fullname">Aarti Kulkarni</span>
-              <span class="ns-usermenu__email">aarti@example.com</span>
-            </span>
-            <span class="ns-usermenu__plan">Pro</span>
-          </div>
-          <div class="ns-usermenu__progress">
-            <span class="ns-usermenu__progress-label"><span>Admin trail</span><span>29%</span></span>
-            <progress class="ns-progress" value="29" max="100" aria-label="Admin trail progress">29%</progress>
-          </div>
-          <hr class="ns-menu__sep">
-          <a class="ns-menu__item" href="/account/"><i class="ph ph-user" aria-hidden="true"></i> Profile</a>
-          <a class="ns-menu__item" href="/account/bookmarks/"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Bookmarks</a>
-          <a class="ns-menu__item" href="/account/billing/"><i class="ph ph-credit-card" aria-hidden="true"></i> Billing</a>
-          <hr class="ns-menu__sep">
-          <a class="ns-menu__item" href="/account/settings/"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
-          <a class="ns-menu__item" href="/help/"><i class="ph ph-question" aria-hidden="true"></i> Help</a>
-          <hr class="ns-menu__sep">
-          <button type="button" class="ns-menu__item ns-menu__item--danger" data-members-signout><i class="ph ph-arrow-square-out" aria-hidden="true"></i> Sign out</button>
+      <div class="ns-navmenu" id="dash-continue">
+        <p class="ns-navmenu__label">Pick up where you left off</p>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-play" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Objects &amp; fields</span><span class="ns-navmenu__desc">Salesforce Admin · lesson 07 of 24</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Apex triggers</span><span class="ns-navmenu__desc">Developer trail · lesson 03 of 31</span></span>
+        </a>
+        <hr class="ns-navmenu__sep">
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-exam" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Practice exam</span><span class="ns-navmenu__desc">Attempted 4 days ago · 68%</span></span>
+        </a>
+        <div class="ns-navmenu__foot">
+          <span>2 courses in progress</span>
+          <a href="/my-courses/">All courses →</a>
         </div>
       </div>
+    </li>
 
-      <button type="button" class="ns-burger" data-ns-sheet="dash-nav" aria-expanded="false" aria-label="Menu" aria-haspopup="dialog">
-        <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
+    <li><a href="/certificates/"><i class="ph ph-seal-check" aria-hidden="true"></i> Certificates</a></li>
+  </ul>
+
+  <div class="ns-topnav__actions">
+    <!-- One metric, not three. Three is a stat band, and that belongs on
+         the page rather than in the chrome. -->
+    <span class="ns-navstat"><i class="ph ph-lightning" aria-hidden="true"></i> <strong>12</strong> day streak</span>
+
+    <button type="button" class="ns-navsearch ns-navsearch--icon" aria-label="Search your courses" data-ns-search>
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+    </button>
+
+    <a class="ns-navicon" href="/notifications/" aria-label="Notifications — 3 unread">
+      <i class="ph ph-bell" aria-hidden="true"></i>
+      <span class="ns-navicon__badge" aria-hidden="true">3</span>
+    </a>
+
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
+            aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
+    </button>
+
+    <span class="ns-topnav__divider" aria-hidden="true"></span>
+
+    <div class="ns-usermenu">
+      <button type="button" class="ns-usermenu__trigger" data-ns-menu aria-expanded="false" aria-controls="dash-account" aria-label="Account menu for Aarti Kulkarni">
+        <span class="ns-avatar-ring" style="--p:29"><span class="ns-avatar ns-avatar--sm" aria-hidden="true">AK</span></span>
       </button>
+      <div class="ns-usermenu__panel" id="dash-account">
+        <div class="ns-usermenu__head">
+          <span class="ns-avatar" aria-hidden="true">AK</span>
+          <span class="ns-usermenu__identity">
+            <span class="ns-usermenu__fullname">Aarti Kulkarni</span>
+            <span class="ns-usermenu__email">aarti@example.com</span>
+          </span>
+          <span class="ns-usermenu__plan">Pro</span>
+        </div>
+        <div class="ns-usermenu__progress">
+          <span class="ns-usermenu__progress-label"><span>Admin trail</span><span>29%</span></span>
+          <progress class="ns-progress" value="29" max="100" aria-label="Admin trail progress">29%</progress>
+        </div>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/"><i class="ph ph-user" aria-hidden="true"></i> Profile</a>
+        <a class="ns-menu__item" href="/account/bookmarks/"><i class="ph ph-bookmark-simple" aria-hidden="true"></i> Bookmarks</a>
+        <a class="ns-menu__item" href="/account/billing/"><i class="ph ph-credit-card" aria-hidden="true"></i> Billing</a>
+        <hr class="ns-menu__sep">
+        <a class="ns-menu__item" href="/account/settings/"><i class="ph ph-gear" aria-hidden="true"></i> Settings</a>
+        <a class="ns-menu__item" href="/help/"><i class="ph ph-question" aria-hidden="true"></i> Help</a>
+        <hr class="ns-menu__sep">
+        <button type="button" class="ns-menu__item ns-menu__item--danger" data-members-signout><i class="ph ph-arrow-square-out" aria-hidden="true"></i> Sign out</button>
+      </div>
     </div>
+
+    <button type="button" class="ns-burger" data-ns-sheet="dash-nav" aria-expanded="false" aria-label="Menu" aria-haspopup="dialog">
+      <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
+    </button>
   </div>
 </nav>
 

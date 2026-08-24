@@ -124,6 +124,63 @@ export function NavBrand({ href = "/", logo, name, tag }) {
   );
 }
 
+/** The path picker — the control that sits beside the brand, names the
+ *  training path you are in, and switches you to another one.
+ *
+ *  It stands where the mono `tag` used to ("Namaste Salesforce | Learn"). The
+ *  tag printed the same word on every page of a section and could not be
+ *  clicked; this reports the same fact and acts on it.
+ *
+ *  @param paths   [{ id, label, desc?, icon?, href? }] — the training sections
+ *  @param activeId the path the current page belongs to; its row gets
+ *                  aria-current and its glyph rides the trigger.
+ *  @param footer   optional node for the panel's foot bar ("All paths →").
+ */
+export function PathPicker({ paths = [], activeId, onSelect, footer, id }) {
+  const { setOpen, wrapProps, triggerProps } = useDisclosure();
+  const panelId = `${React.useId().replace(/:/g, "")}-path`;
+  const active = paths.find((p) => p.id === activeId) ?? paths[0];
+  if (!active) return null;
+
+  return (
+    <div className="ns-navitem ns-pathpick" {...wrapProps}>
+      <button
+        type="button"
+        className="ns-pathpick__trigger"
+        aria-controls={id || panelId}
+        /* The label names the CURRENT path before it offers the action, so the
+           announcement carries the same fact the glyph does. */
+        aria-label={`Training path: ${active.label}. Change path`}
+        {...triggerProps}
+      >
+        {active.icon && <i className={`ph ${active.icon}`} aria-hidden="true" />}
+        <span className="ns-pathpick__label">{active.label}</span>
+      </button>
+      <div className="ns-navmenu" id={id || panelId}>
+        <p className="ns-navmenu__label">Training paths</p>
+        {paths.map((path) => (
+          <a
+            className="ns-navmenu__item"
+            key={path.id}
+            href={path.href || `#${path.id}`}
+            aria-current={path.id === active.id ? "page" : undefined}
+            onClick={onSelect ? (e) => { e.preventDefault(); setOpen(false); onSelect(path.id); } : () => setOpen(false)}
+          >
+            {path.icon && <span className="ns-navmenu__icon"><i className={`ph ${path.icon}`} aria-hidden="true" /></span>}
+            <span>
+              <span className="ns-navmenu__title">{path.label}</span>
+              {path.desc && <span className="ns-navmenu__desc">{path.desc}</span>}
+            </span>
+          </a>
+        ))}
+        {/* No separator above it — .ns-navmenu__foot draws its own top rule,
+            and an <hr> as well is two hairlines a few pixels apart. */}
+        {footer && <div className="ns-navmenu__foot">{footer}</div>}
+      </div>
+    </div>
+  );
+}
+
 /** The link row. Children are <NavLink>, <NavMenu>, <MegaMenu>. */
 export function NavLinks({ children }) {
   return <ul className="ns-topnav__links">{children}</ul>;

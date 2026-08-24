@@ -17,6 +17,53 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — a question thread on the training post
+
+`.ns-comments` from blog.css, unchanged: a lesson and a post take the same
+thread rather than the training surface growing a second comment system. The
+wording differs — on a lesson the useful frame is "ask about this lesson",
+because what a reader has after eleven minutes on asynchronous recalculation
+is a question, not an opinion.
+
+The compose box comes **first**, above the thread. On a blog the form goes at
+the bottom because you read the discussion and then join it; on a lesson the
+reader is usually stuck on a specific line, and making them scroll a
+40-comment thread to reach the box is why those questions end up in email.
+
+### Changed — the filter row is shorter on the desktop rail
+
+40px is right for a thumb and too tall for a filter above a list of forty
+rows: it was spending a whole lesson's worth of height on the box you use to
+find one. The row is 2rem at &ge;64rem — and only there. Below that this same
+rail *is* the phone drawer, where every control is thumb-hit, so the
+`--target-comfy` floor `tokens/spacing.css` asks for stays in force. 2rem is
+still well above the WCAG 2.2 AA floor of 24px.
+
+### Fixed — the reopen control moved 136px away from the collapse control
+
+You collapsed the rail at y=79 and the button to undo it appeared at y=216,
+so the obvious gesture — click again in the same place — hit nothing. The
+spine padded itself `--space-4` against the head's `--space-2`, and with two
+auto rows in a full-height grid the button was being stretched rather than
+seated at the top. It now shares a centre line with the control it replaces,
+measured drift 0.
+
+### Fixed — tooltips stayed open after a click
+
+`.ns-tooltip-host` revealed its tooltip on `:focus-within`, which matches
+however focus arrived — including a mouse click. Any control that keeps
+focus after being pressed was left with its hint hanging open under a
+pointer that had already moved on; the training rail's collapse button made
+it obvious, since clicking it moves focus to the reopen control, whose
+tooltip then sat there permanently.
+
+Now `:focus-visible`, which only matches when the browser judges that focus
+should be indicated — keyboard and other non-pointer routes, exactly the
+population the focus branch exists for. A mouse user already had `:hover`.
+Two selectors, because the host is sometimes the focusable element itself
+and sometimes a wrapper around it, and an element is not its own descendant.
+
+
 ### Fixed — the author block and pager began at the ad rail's edge
 
 They sat outside `.ns-tpost-body`, so they ran the full width of the reading

@@ -24,146 +24,181 @@
   <button type="button" class="ns-announce__close" aria-label="Dismiss announcement"><i class="ph ph-x" aria-hidden="true"></i></button>
 </div>
 
+<!-- The bar runs FLUID: no .ns-topnav__inner, so brand and actions sit at
+     the viewport's own --gutter rather than at the edge of a 72rem column.
+     Wrap the children in <div class="ns-topnav__inner"> if the page content
+     underneath is width-capped and the bar has to line up with it. -->
 <nav class="ns-topnav" aria-label="Main">
-  <div class="ns-topnav__inner">
-    <a class="ns-topnav__brand" href="/">
-      <img src="../assets/logo/favicon.svg" alt="">
-      <span class="ns-topnav__brand-name">Namaste Salesforce</span>
-      <span class="ns-topnav__brand-tag">Learn</span>
+  <a class="ns-topnav__brand" href="/">
+    <img src="../assets/logo/favicon.svg" alt="">
+    <span class="ns-topnav__brand-name">Namaste Salesforce</span>
+  </a>
+
+  <!-- Which training path you are in, and the way to change it. Replaces
+       the mono "| Learn" tagline that used to sit here: same slot, but a
+       control rather than a label. -->
+  <div class="ns-navitem ns-pathpick">
+    <button type="button" class="ns-pathpick__trigger" data-ns-menu aria-expanded="false" aria-controls="nav-path"
+            aria-label="Training path: Administrator. Change path">
+      <i class="ph ph-user" aria-hidden="true"></i>
+      <span class="ns-pathpick__label">Administrator</span>
+    </button>
+    <div class="ns-navmenu" id="nav-path">
+      <p class="ns-navmenu__label">Training paths</p>
+      <a class="ns-navmenu__item" href="/training/admin/" aria-current="page">
+        <span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span>
+      </a>
+      <a class="ns-navmenu__item" href="/training/developer/">
+        <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span>
+      </a>
+      <a class="ns-navmenu__item" href="/training/architect/">
+        <span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span>
+      </a>
+      <a class="ns-navmenu__item" href="/training/consultant/">
+        <span class="ns-navmenu__icon"><i class="ph ph-chart-line-up" aria-hidden="true"></i></span>
+        <span><span class="ns-navmenu__title">Consultant</span><span class="ns-navmenu__desc">Discovery, delivery, adoption</span></span>
+      </a>
+      <div class="ns-navmenu__foot">
+        <span>Currently on Administrator</span>
+        <a href="/training/">All paths →</a>
+      </div>
+    </div>
+  </div>
+
+  <ul class="ns-topnav__links">
+    <li><a href="/courses/" aria-current="page"><i class="ph ph-books" aria-hidden="true"></i> Courses</a></li>
+
+    <!-- Mega panel. --mega makes the wrapper `static` so the panel spans
+         the whole bar rather than the link. -->
+    <li class="ns-navitem ns-navitem--mega">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="nav-learn"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Learn</button>
+      <div class="ns-megamenu ns-megamenu--fluid" id="nav-learn">
+        <div class="ns-megamenu__inner">
+          <div class="ns-megamenu__col">
+            <p class="ns-megamenu__label">By role</p>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span>
+            </a>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span>
+            </a>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span>
+            </a>
+          </div>
+          <div class="ns-megamenu__col">
+            <p class="ns-megamenu__label">By product</p>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Flow</span><span class="ns-navmenu__desc">Automation without code</span></span>
+            </a>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-lightning" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Lightning</span><span class="ns-navmenu__desc">App Builder and components</span></span>
+            </a>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-database" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Data Cloud</span><span class="ns-navmenu__desc">Ingest, unify, activate</span></span>
+            </a>
+          </div>
+          <div class="ns-megamenu__col">
+            <p class="ns-megamenu__label">Free</p>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-map-trifold" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Roadmaps</span><span class="ns-navmenu__desc">What to learn, in order</span></span>
+            </a>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-exam" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Practice exams</span><span class="ns-navmenu__desc">Timed, with explanations</span></span>
+            </a>
+            <a class="ns-navmenu__item" href="#">
+              <span class="ns-navmenu__icon"><i class="ph ph-terminal-window" aria-hidden="true"></i></span>
+              <span><span class="ns-navmenu__title">Code snippets</span><span class="ns-navmenu__desc">Copy-paste Apex and LWC</span></span>
+            </a>
+          </div>
+          <!-- One promo per panel. Two is an ad break. -->
+          <div class="ns-megamenu__feature">
+            <span class="ns-megamenu__feature-kicker">Featured</span>
+            <p class="ns-megamenu__feature-title">Admin → Developer in 12 weeks</p>
+            <p class="ns-megamenu__feature-text">The full trail: Apex, testing, deployment, and the interview prep at the end.</p>
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="#">See the trail</a>
+          </div>
+        </div>
+        <div class="ns-megamenu__foot">
+          <a href="#"><i class="ph ph-play-circle" aria-hidden="true"></i> Latest lesson</a>
+          <a href="#"><i class="ph ph-users-three" aria-hidden="true"></i> Community</a>
+          <a href="#"><i class="ph ph-question" aria-hidden="true"></i> Help centre</a>
+        </div>
+      </div>
+    </li>
+
+    <!-- Plain dropdown. -->
+    <li class="ns-navitem">
+      <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="nav-resources"><i class="ph ph-compass" aria-hidden="true"></i> Resources</button>
+      <div class="ns-navmenu" id="nav-resources">
+        <p class="ns-navmenu__label">Read</p>
+        <a class="ns-navmenu__item" href="/blog/">
+          <span class="ns-navmenu__icon"><i class="ph ph-article" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Blog</span><span class="ns-navmenu__desc">Release notes, deep dives, opinions</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="/docs/">
+          <span class="ns-navmenu__icon"><i class="ph ph-book-open-text" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">Docs</span><span class="ns-navmenu__desc">The theme and the design system</span></span>
+        </a>
+        <hr class="ns-navmenu__sep">
+        <p class="ns-navmenu__label">Watch</p>
+        <a class="ns-navmenu__item" href="#">
+          <span class="ns-navmenu__icon"><i class="ph ph-video" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">YouTube</span><span class="ns-navmenu__desc">Two videos a week, in Hindi and English</span></span>
+        </a>
+        <a class="ns-navmenu__item" href="https://github.com/namaste-salesforce">
+          <span class="ns-navmenu__icon"><i class="ph ph-github-logo" aria-hidden="true"></i></span>
+          <span><span class="ns-navmenu__title">GitHub</span><span class="ns-navmenu__desc">The Ghost theme and this design system, MIT</span></span>
+        </a>
+        <div class="ns-navmenu__foot">
+          <span>New this week</span>
+          <a href="#">Winter release →</a>
+        </div>
+      </div>
+    </li>
+
+    <li><a href="/pricing/"><i class="ph ph-tag" aria-hidden="true"></i> Pricing</a></li>
+  </ul>
+
+  <div class="ns-topnav__actions">
+    <!-- A button shaped like a field: typing happens in the search modal. -->
+    <button type="button" class="ns-navsearch" data-ns-search>
+      <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+      <span class="ns-navsearch__text">Search courses…</span>
+      <kbd class="ns-navsearch__kbd">⌘K</kbd>
+    </button>
+
+    <!-- One piece of social proof, and it is a link to the repo. -->
+    <a class="ns-navstar" href="https://github.com/namaste-salesforce" aria-label="Star Namaste Salesforce on GitHub — 1.2k stars">
+      <span class="ns-navstar__label"><i class="ph ph-github-logo" aria-hidden="true"></i> <span>Star</span></span>
+      <span class="ns-navstar__count" aria-hidden="true">1.2k</span>
     </a>
 
-    <ul class="ns-topnav__links">
-      <li><a href="/courses/" aria-current="page"><i class="ph ph-books" aria-hidden="true"></i> Courses</a></li>
+    <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
+            aria-label="Dark mode" data-ns-theme-toggle>
+      <span class="ns-themeswitch__mark" aria-hidden="true"></span>
+    </button>
 
-      <!-- Mega panel. --mega makes the wrapper `static` so the panel spans
-           the whole bar rather than the link. -->
-      <li class="ns-navitem ns-navitem--mega">
-        <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="nav-learn"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Learn</button>
-        <div class="ns-megamenu" id="nav-learn">
-          <div class="ns-megamenu__inner">
-            <div class="ns-megamenu__col">
-              <p class="ns-megamenu__label">By role</p>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-user" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Administrator</span><span class="ns-navmenu__desc">Setup, security, data model</span></span>
-              </a>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Developer</span><span class="ns-navmenu__desc">Apex, LWC, integrations</span></span>
-              </a>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-strategy" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Architect</span><span class="ns-navmenu__desc">Patterns, scale, governance</span></span>
-              </a>
-            </div>
-            <div class="ns-megamenu__col">
-              <p class="ns-megamenu__label">By product</p>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Flow</span><span class="ns-navmenu__desc">Automation without code</span></span>
-              </a>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-lightning" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Lightning</span><span class="ns-navmenu__desc">App Builder and components</span></span>
-              </a>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-database" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Data Cloud</span><span class="ns-navmenu__desc">Ingest, unify, activate</span></span>
-              </a>
-            </div>
-            <div class="ns-megamenu__col">
-              <p class="ns-megamenu__label">Free</p>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-map-trifold" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Roadmaps</span><span class="ns-navmenu__desc">What to learn, in order</span></span>
-              </a>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-exam" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Practice exams</span><span class="ns-navmenu__desc">Timed, with explanations</span></span>
-              </a>
-              <a class="ns-navmenu__item" href="#">
-                <span class="ns-navmenu__icon"><i class="ph ph-terminal-window" aria-hidden="true"></i></span>
-                <span><span class="ns-navmenu__title">Code snippets</span><span class="ns-navmenu__desc">Copy-paste Apex and LWC</span></span>
-              </a>
-            </div>
-            <!-- One promo per panel. Two is an ad break. -->
-            <div class="ns-megamenu__feature">
-              <span class="ns-megamenu__feature-kicker">Featured</span>
-              <p class="ns-megamenu__feature-title">Admin → Developer in 12 weeks</p>
-              <p class="ns-megamenu__feature-text">The full trail: Apex, testing, deployment, and the interview prep at the end.</p>
-              <a class="ns-btn ns-btn--outline ns-btn--sm" href="#">See the trail</a>
-            </div>
-          </div>
-          <div class="ns-megamenu__foot">
-            <a href="#"><i class="ph ph-play-circle" aria-hidden="true"></i> Latest lesson</a>
-            <a href="#"><i class="ph ph-users-three" aria-hidden="true"></i> Community</a>
-            <a href="#"><i class="ph ph-question" aria-hidden="true"></i> Help centre</a>
-          </div>
-        </div>
-      </li>
-
-      <!-- Plain dropdown. -->
-      <li class="ns-navitem">
-        <button type="button" class="ns-topnav__trigger" data-ns-menu aria-expanded="false" aria-controls="nav-resources"><i class="ph ph-compass" aria-hidden="true"></i> Resources</button>
-        <div class="ns-navmenu" id="nav-resources">
-          <p class="ns-navmenu__label">Read</p>
-          <a class="ns-navmenu__item" href="/blog/">
-            <span class="ns-navmenu__icon"><i class="ph ph-article" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">Blog</span><span class="ns-navmenu__desc">Release notes, deep dives, opinions</span></span>
-          </a>
-          <a class="ns-navmenu__item" href="/docs/">
-            <span class="ns-navmenu__icon"><i class="ph ph-book-open-text" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">Docs</span><span class="ns-navmenu__desc">The theme and the design system</span></span>
-          </a>
-          <hr class="ns-navmenu__sep">
-          <p class="ns-navmenu__label">Watch</p>
-          <a class="ns-navmenu__item" href="#">
-            <span class="ns-navmenu__icon"><i class="ph ph-video" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">YouTube</span><span class="ns-navmenu__desc">Two videos a week, in Hindi and English</span></span>
-          </a>
-          <a class="ns-navmenu__item" href="https://github.com/namaste-salesforce">
-            <span class="ns-navmenu__icon"><i class="ph ph-github-logo" aria-hidden="true"></i></span>
-            <span><span class="ns-navmenu__title">GitHub</span><span class="ns-navmenu__desc">The Ghost theme and this design system, MIT</span></span>
-          </a>
-          <div class="ns-navmenu__foot">
-            <span>New this week</span>
-            <a href="#">Winter release →</a>
-          </div>
-        </div>
-      </li>
-
-      <li><a href="/pricing/"><i class="ph ph-tag" aria-hidden="true"></i> Pricing</a></li>
-    </ul>
-
-    <div class="ns-topnav__actions">
-      <!-- A button shaped like a field: typing happens in the search modal. -->
-      <button type="button" class="ns-navsearch" data-ns-search>
-        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
-        <span class="ns-navsearch__text">Search courses…</span>
-        <kbd class="ns-navsearch__kbd">⌘K</kbd>
-      </button>
-
-      <!-- One piece of social proof, and it is a link to the repo. -->
-      <a class="ns-navstar" href="https://github.com/namaste-salesforce" aria-label="Star Namaste Salesforce on GitHub — 1.2k stars">
-        <span class="ns-navstar__label"><i class="ph ph-github-logo" aria-hidden="true"></i> <span>Star</span></span>
-        <span class="ns-navstar__count" aria-hidden="true">1.2k</span>
-      </a>
-
-      <button type="button" class="ns-themeswitch" role="switch" aria-checked="false"
-              aria-label="Dark mode" data-ns-theme-toggle>
-        <span class="ns-themeswitch__mark" aria-hidden="true"></span>
-      </button>
-
-      <!-- Signed out. Ghost: wrap in {{#unless @member}} … {{/unless}}. -->
-      <div class="ns-topnav__auth">
-        <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#/portal/signin" data-portal="signin">Sign in</a>
-        <a class="ns-btn ns-btn--primary ns-btn--sm" href="#/portal/signup" data-portal="signup">Start learning</a>
-      </div>
-
-      <button type="button" class="ns-burger" data-ns-sheet="site-nav" aria-expanded="false" aria-label="Menu" aria-haspopup="dialog">
-        <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
-      </button>
+    <!-- Signed out. Ghost: wrap in {{#unless @member}} … {{/unless}}. -->
+    <div class="ns-topnav__auth">
+      <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#/portal/signin" data-portal="signin">Sign in</a>
+      <a class="ns-btn ns-btn--primary ns-btn--sm" href="#/portal/signup" data-portal="signup">Start learning</a>
     </div>
+
+    <button type="button" class="ns-burger" data-ns-sheet="site-nav" aria-expanded="false" aria-label="Menu" aria-haspopup="dialog">
+      <span class="ns-burger__bar"></span><span class="ns-burger__bar"></span><span class="ns-burger__bar"></span>
+    </button>
   </div>
 </nav>
 
