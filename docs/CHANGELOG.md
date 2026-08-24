@@ -17,6 +17,39 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Fixed — the author block and pager began at the ad rail's edge
+
+They sat outside `.ns-tpost-body`, so they ran the full width of the reading
+cell while the article ran the width of its column: measured, paragraphs
+started at x=240 and the author card at x=32. Two different pages stacked.
+The whole reading flow — article, author block, pager — is the second column
+now. Nothing is lost to an empty gutter, because the ad rail is sticky and
+is still beside them as they scroll past.
+
+### Fixed — 24px of dead space under the rail's watermark
+
+The base `.ns-trainingnav` is a sticky column in a scrolling page and pads
+itself `--space-6` at both ends. The `--doc` override zeroed only the start,
+so half that padding survived under the last row of a grid whose rows
+already fill the column. The watermark is the last thing in the rail, and a
+footer floating 24px off the floor reads as a mistake because it is one.
+
+### Changed — tooltip placement at both ends of the rail
+
+The head's and foot's tooltips open **downward**. Everywhere else a tooltip
+goes above its host, which is right when there is page above it — at the top
+of the rail upward opens into the topbar, over the crumb, and at the bottom
+it covers the last lessons in the list, which is exactly what the reader is
+pointing at.
+
+The search button lost its tooltip entirely: the field beside it already
+says "Filter lessons" in its placeholder, and a hint repeating the label two
+centimetres away is noise on the most-used control in the rail. Its
+`aria-label` stays — that is the accessible name rather than a hint, and it
+carries the one fact the placeholder does not, that submitting searches the
+whole catalogue rather than filtering this rail.
+
+
 ### Changed — the lesson filter is a field and a button
 
 The magnifying glass was an absolutely-positioned `<i>` at the leading edge

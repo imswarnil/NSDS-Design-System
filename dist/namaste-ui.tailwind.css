@@ -11736,7 +11736,7 @@
     overflow: visible;
     border-inline-end: 0;
     border-inline-start: 1px solid var(--color-border);
-    padding-block-start: 0;
+    padding-block: 0;
     padding-inline: 0;
   }
   .ns-trainingnav__scroll {
@@ -11758,6 +11758,11 @@
     padding: var(--space-2);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface-sunken);
+  }
+  .ns-trainingnav__foot .ns-tooltip {
+    inset-block-start: 100%;
+    inset-block-end: auto;
+    margin-block-start: var(--space-2);
   }
   .ns-trainingnav__foot .ns-share {
     gap: 0;
@@ -12613,6 +12618,9 @@
     inset-inline-start: auto;
     inset-inline-end: 0;
     translate: 0 0;
+    inset-block-start: 100%;
+    inset-block-end: auto;
+    margin-block-start: var(--space-2);
   }
   .ns-trainingnav__result {
     font-family: var(--font-mono);

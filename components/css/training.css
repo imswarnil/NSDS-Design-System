@@ -561,7 +561,14 @@
     display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto;
     overflow: visible;
     border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
-    padding-block-start: 0; padding-inline: 0;
+    /* padding-block, BOTH ends. The base .ns-trainingnav is a sticky column
+       in a scrolling page and pads itself with --space-6 top and bottom; this
+       override used to zero only the START, so 24px of that padding survived
+       under the last row. In a grid whose rows already fill the column that
+       is not breathing room, it is a gap between the watermark and the bottom
+       of the rail — the watermark is the LAST thing, and a footer that floats
+       24px off the floor reads as a mistake because it is one. */
+    padding-block: 0; padding-inline: 0;
   }
   /* The scrolling middle. It is the only part that moves, and it carries the
      rail's inline padding so the scrollbar sits at the column's edge rather
@@ -593,6 +600,15 @@
     padding: var(--space-2);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface-sunken);
+  }
+  /* The foot's tooltips open DOWNWARD. Everywhere else a tooltip goes above
+     its host, which is right when there is page above it — here the host is
+     a 2rem button at the bottom of a full-height rail, so upward puts the
+     hint over the last lessons in the list, which is the thing the reader is
+     pointing at. Below the row there is nothing but the watermark. */
+  .ns-trainingnav__foot .ns-tooltip {
+    inset-block-start: 100%; inset-block-end: auto;
+    margin-block-start: var(--space-2);
   }
   .ns-trainingnav__foot .ns-share { gap: 0; min-inline-size: 0; }
   .ns-trainingnav__foot .ns-share__label { display: none; }
@@ -825,6 +841,13 @@
      time belong with the title, in .ns-tmeta, the same way the lesson
      player states its lesson in its header. Facts about the page go in the
      page's header; a rail is for what is beside it. */
+  /* THE WHOLE READING FLOW IS THE SECOND COLUMN — article, author block and
+     pager alike. Those last two used to sit outside this grid, so they ran
+     the full width of the reading cell and began at the AD RAIL's edge:
+     measured, the paragraphs started at x=240 and the author card at x=32,
+     which reads as two different pages stacked. The ad is sticky, so it is
+     still beside them as they scroll past; there is no empty gutter bought
+     by this, only an edge that finally lines up. */
   .ns-tpost-body {
     display: grid;
     grid-template-columns: var(--ns-tsky-w) minmax(0, 1fr);
@@ -916,6 +939,9 @@
      an article, not another card — and it carries a dated stamp that a blog
      bio does not, because "is this still true?" is the first question after
      a platform lesson that surprised you. */
+  /* The author block and the pager sit INSIDE the content column now, so
+     they line up with the paragraph above them instead of starting at the
+     ad rail's edge. See the note on .ns-tpost-body. */
   .ns-tpost-author { margin-block-start: var(--stack-md); }
   .ns-tpost-author__stamp {
     display: flex; flex-wrap: wrap; gap: var(--space-4);
@@ -1440,6 +1466,12 @@
   .ns-trainingnav__search .ns-tooltip {
     inset-inline-start: auto; inset-inline-end: 0;
     translate: 0 0;
+    /* DOWNWARD too, and for the same reason as the foot at the other end of
+       the rail: the head is the rail's top row, so an upward tooltip opens
+       into the topbar above it — over the crumb, which is chrome the reader
+       may be reading. Below it there is only the list it describes. */
+    inset-block-start: 100%; inset-block-end: auto;
+    margin-block-start: var(--space-2);
   }
   /* What the filter did. A rail that silently shows three of forty modules is
      a rail that looks broken; this is the line that says it is not. */

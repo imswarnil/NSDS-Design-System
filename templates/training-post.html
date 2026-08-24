@@ -82,8 +82,15 @@
            submit is one only a keyboard can post. -->
       <form class="ns-trainingnav__search" role="search" action="#">
         <input class="ns-input" type="search" name="q" placeholder="Filter lessons" aria-label="Filter lessons" data-ns-trainingnav-filter>
-        <button class="ns-btn ns-btn--outline ns-btn--icon ns-btn--sm ns-tooltip-host" type="submit" aria-label="Search all lessons">
-          <i class="ph ph-magnifying-glass" aria-hidden="true"></i><span class="ns-tooltip">Search all lessons</span>
+        <!-- No tooltip on this one. The field it sits against already says
+             "Filter lessons" in its placeholder, and a hint that repeats the
+             label two centimetres away is noise on the control a reader uses
+             most. The aria-label stays: it is the accessible name, not a
+             hint, and it carries the one fact the placeholder does not — that
+             submitting searches the WHOLE catalogue rather than filtering
+             this rail. -->
+        <button class="ns-btn ns-btn--outline ns-btn--icon ns-btn--sm" type="submit" aria-label="Search all lessons">
+          <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
         </button>
         <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host ns-trainingnav__collapse" type="button" aria-label="Collapse curriculum" data-ns-training-collapse>
           <i class="ph ph-caret-right" aria-hidden="true"></i><span class="ns-tooltip">Collapse</span>
@@ -487,9 +494,6 @@
         </section>
       </article>
 
-      </div>
-      </div>
-
       <!-- WHO WROTE IT, AND WHEN — the block that closes the lesson.
            .ns-authorbox is the component blog posts already use for exactly
            this, so a lesson and an article close the same way rather than
@@ -551,6 +555,10 @@
           <span class="ns-tpager__title"><i class="ph ph-article" aria-hidden="true"></i> Sharing rules in practice</span>
         </a>
       </nav>
+
+      </div>
+      </div>
+
 
     </div>
   </main>
