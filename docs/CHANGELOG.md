@@ -17,6 +17,33 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Fixed — the curriculum rail had four different left edges
+
+Measured down one 352px column: the search field started at 12px from the
+rail's edge, the section rows at 16px, the foot's share buttons at 8px and
+the watermark at 12px. Four rules, four inline paddings, none of them wrong
+on its own — which is exactly why it survived, since nothing ever compared
+them. The rail now declares `--ns-rail-pad` once and its head, list, foot and
+byline all use it, so every row starts and ends on the same line. A rail is
+a column, and a column has one edge.
+
+### Fixed — the filter head padded 8px above the field and 20px below it
+
+Not the padding, which was symmetric the whole time: the head is a grid with
+a `--space-3` gap and two children, and the second — the "3 sections · 12
+lessons" result line — is empty until somebody types. An empty grid item is
+still an item, so it claimed a 12px gap and contributed 0px of its own.
+`:empty { display: none }` takes it out of the grid, and it returns the
+moment the filter has something to say.
+
+The head also carried `margin-block-end: var(--space-2)` from the base rail,
+where it is the gap before the list. In the `--doc` rail the head is a grid
+row with a hairline under it, so that margin sat *below the border* as an 8px
+band of nothing — a row with a bottom edge and then some more room after it,
+which is what made the block look untidy however the padding was tuned. The
+head is 49px now, down from 61px, and the list starts flush against it.
+
+
 ### Added — a question thread on the training post
 
 `.ns-comments` from blog.css, unchanged: a lesson and a post take the same

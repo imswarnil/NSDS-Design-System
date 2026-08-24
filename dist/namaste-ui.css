@@ -7322,6 +7322,15 @@
        three plus an implicit one — the watermark was landing in an auto row
        the template never asked for, which works right up until somebody adds
        a fifth child and wonders why it scrolls. */
+    /* ONE GUTTER FOR THE WHOLE RAIL, declared once and used by all four
+       rows. Measured before this token existed, the rail had FOUR different
+       inline paddings — head 12px, list 16px, foot 8px, watermark 12px — so
+       the search field, the section rows, the share buttons and the byline
+       each started at a different x down the same 352px column. No single
+       one of them was wrong, which is why it survived: each rule was
+       reasonable on its own and nothing compared them. A rail is a column,
+       and a column has one edge. */
+    --ns-rail-pad: var(--space-3);
     display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto;
     overflow: visible;
     border-inline-end: 0; border-inline-start: 1px solid var(--color-border);
@@ -7339,7 +7348,7 @@
      than inside the padding. */
   .ns-trainingnav__scroll {
     min-block-size: 0; overflow-y: auto;
-    padding-inline: var(--space-4); padding-block-end: var(--space-4);
+    padding-inline: var(--ns-rail-pad); padding-block-end: var(--space-4);
   }
   /* THE FILTER BELONGS TO THE RAIL, and until now it did not look like it:
      the head sat on the page ground with no edge of its own, so the search
@@ -7348,8 +7357,20 @@
      mirrored — which is what makes the rail read as one object with a
      scrolling middle rather than a list with two strays attached. */
   .ns-training--doc .ns-trainingnav__head {
-    margin-inline: 0;
-    padding: var(--space-2-5) var(--space-3);
+    /* margin-block-end: 0, overriding the base rule's --space-2.
+       In the base rail the head is a sticky block inside a scrolling column
+       and that margin is the gap before the list. Here it is a GRID ROW with
+       a hairline under it, so the margin sat below the border as an 8px band
+       of rail-coloured nothing — the row had a bottom edge and then some
+       more room after it, which is what made the whole block look untidy
+       however the padding was tuned.
+
+       position: static for the same reason: sticky is inert in a fixed grid
+       row, and leaving it on means the head keeps a stacking context nobody
+       needs. */
+    position: static;
+    margin: 0;
+    padding: var(--space-2-5) var(--ns-rail-pad);
     border-block-end: 1px solid var(--color-border);
     background: var(--color-surface-sunken);
   }
@@ -7361,7 +7382,7 @@
      ChatGPT or Perplexity with the prompt already written. */
   .ns-trainingnav__foot {
     display: flex; align-items: center; gap: var(--space-1);
-    padding: var(--space-2);
+    padding: var(--space-2) var(--ns-rail-pad);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface-sunken);
   }
@@ -7374,7 +7395,10 @@
     inset-block-start: 100%; inset-block-end: auto;
     margin-block-start: var(--space-2);
   }
-  .ns-trainingnav__foot .ns-share { gap: 0; min-inline-size: 0; }
+  /* The share row sits flush to the gutter. .ns-btn--icon centres its glyph
+     in a square box, so with the row's own gap the FIRST button's box already
+     starts at the gutter and no extra inset is wanted. */
+  .ns-trainingnav__foot .ns-share { gap: 0; min-inline-size: 0; margin-inline-start: 0; }
   .ns-trainingnav__foot .ns-share__label { display: none; }
   .ns-trainingnav__foot .ns-usermenu { margin-inline-start: auto; flex: none; }
   .ns-trainingnav__foot .ns-usermenu > .ns-btn { padding-inline: var(--space-2); gap: var(--space-1-5); }
@@ -7387,7 +7411,7 @@
      somebody reading it wants is the rest of the catalogue. */
   .ns-trainingnav__brand {
     display: flex; align-items: center; gap: var(--space-2);
-    padding: var(--space-2-5) var(--space-3);
+    padding: var(--space-2-5) var(--ns-rail-pad);
     border-block-start: 1px solid var(--color-border);
     background: var(--color-surface-sunken);
     font-size: var(--size-label); color: var(--color-muted);
@@ -8289,6 +8313,17 @@
     inset-block-start: 100%; inset-block-end: auto;
     margin-block-start: var(--space-2);
   }
+  /* :empty, and it is the reason the head looked lopsided.
+     The head is a grid with a --space-3 gap and TWO children: the form and
+     this line. The line is empty until somebody types, but an empty grid item
+     is still an item — it took a 12px gap and contributed 0px of its own, so
+     the head measured 8px of space above the field and 20px below it. The
+     padding was symmetric the whole time; the gap was the asymmetry.
+
+     display:none takes the item out of the grid entirely, so the gap goes
+     with it. The moment the filter writes a message the element stops being
+     :empty and the gap comes back, which is exactly when it is wanted. */
+  .ns-trainingnav__result:empty { display: none; }
   /* What the filter did. A rail that silently shows three of forty modules is
      a rail that looks broken; this is the line that says it is not. */
   .ns-trainingnav__result {
