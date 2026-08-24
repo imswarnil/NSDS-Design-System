@@ -4,7 +4,15 @@
   Framework-agnostic markup: the same .ns-* classes the React components
   (components/sections/Sections.jsx) render. Each band stands alone — lift
   any one of them into any page. Order here is the canonical marketing
-  page: hero → logos → features → stats → quote → FAQ → CTA.
+  page: hero → logos → features → router → compare → stats → sample →
+  scope → quote → fit → shipped → FAQ → CTA.
+
+  The six added bands each answer a question none of the others do:
+    router   which of these am I          compare  what changes about me
+    sample   is the writing any good      scope    is what I need in here
+    fit      should I NOT buy this        shipped  is this still alive
+  A band that restates the feature grid in a new arrangement is a variant,
+  not a section.
     Ghost   → paste bands into partials/, swap copy for Ghost helpers.
     Next.js → prefer <HeroSection>/<FeatureGrid>/<CtaBand>/<Faq>.
 -->
@@ -73,6 +81,62 @@
   </div>
 </section>
 
+<!-- Router: which of these am I? The first question a multi-audience
+     curriculum has to answer. Mutually exclusive entry points, so each cell
+     is a link with a destination rather than a claim with an icon. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <div class="ns-band__head">
+      <span class="ns-kicker">Start where you are</span>
+      <h2 class="ns-band__title">Three ways in</h2>
+      <p class="ns-band__lede">An admin, a developer and an architect want three different first lessons. Pick the one that describes your Monday.</p>
+    </div>
+    <div class="ns-router">
+      <a class="ns-router__card" href="#">
+        <span class="ns-router__mark"><i class="ph ph-gear" aria-hidden="true"></i></span>
+        <span class="ns-router__role">Administrator</span>
+        <p class="ns-router__when">You own an org, you live in Setup, and the last thing that broke was a validation rule nobody documented.</p>
+        <span class="ns-router__go">Start with objects <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="ns-router__card" href="#">
+        <span class="ns-router__mark"><i class="ph ph-code" aria-hidden="true"></i></span>
+        <span class="ns-router__role">Developer</span>
+        <p class="ns-router__when">You write Apex or LWC, you can read a stack trace, and you want the platform&rsquo;s reasons rather than its syntax.</p>
+        <span class="ns-router__go">Start with governor limits <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="ns-router__card" href="#">
+        <span class="ns-router__mark"><i class="ph ph-blueprint" aria-hidden="true"></i></span>
+        <span class="ns-router__role">Architect</span>
+        <p class="ns-router__when">You are asked to sign off designs, and the question is never &ldquo;can it&rdquo; but &ldquo;what does this cost at 40 million rows&rdquo;.</p>
+        <span class="ns-router__go">Start with the sharing model <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Before / after: two panels that are deliberately NOT peers. The left is a
+     state to leave, the right is where the training puts you, and styling
+     them identically would argue the opposite of the copy. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <div class="ns-band__head">
+      <span class="ns-kicker">What changes</span>
+      <h2 class="ns-band__title">The same problem, eight weeks apart</h2>
+    </div>
+    <div class="ns-compare">
+      <div class="ns-compare__side ns-compare__side--before">
+        <span class="ns-compare__label"><i class="ph ph-warning-circle" aria-hidden="true"></i> Before</span>
+        <p class="ns-compare__text">&ldquo;Sharing is broken.&rdquo; You reproduce it once, cannot reproduce it again, and the fix is a manual share that quietly becomes permanent. The incident report says <em>intermittent</em>.</p>
+      </div>
+      <span class="ns-compare__seam" aria-hidden="true"><i class="ph ph-arrow-right"></i></span>
+      <div class="ns-compare__side ns-compare__side--after">
+        <span class="ns-compare__label"><i class="ph ph-check-circle" aria-hidden="true"></i> After</span>
+        <p class="ns-compare__text">&ldquo;Recalculation is asynchronous, the reparent queued behind a migration, and the report ran inside the window.&rdquo; You name it, you chain the read, and it does not recur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Stat band: concrete numbers only. -->
 <section class="ns-band ns-band--tight">
   <div class="ns-band__inner">
@@ -85,6 +149,80 @@
   </div>
 </section>
 
+<!-- Sample: stop describing the writing and show it. The only quality claim a
+     reader can check from a homepage is one they can read. The fade is a mask
+     rather than a gradient overlay, so it works on any ground and in dark. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <div class="ns-band__head">
+      <span class="ns-kicker">Read before you buy</span>
+      <h2 class="ns-band__title">A lesson, mid-flow</h2>
+      <p class="ns-band__lede">Not a summary of a lesson. The actual page, picked up where it gets technical.</p>
+    </div>
+    <div class="ns-sample">
+      <p class="ns-sample__bar">
+        <i class="ph ph-article" aria-hidden="true"></i>
+        <b>Recalculation is asynchronous</b>
+        <span>&middot; Security and access &middot; 11 min</span>
+      </p>
+      <div class="ns-sample__body">
+        <div class="ns-prose">
+          <h2>What actually happens on reparent</h2>
+          <p>Sharing in Salesforce is materialized, not computed on read: the share tables hold a row for every grant, and a query checks rows, not rules. That design is why record access is fast at scale &mdash; and it has a consequence. When you change the thing the rows were derived <em>from</em>, the platform has to rebuild them, and it does that in a queue, not in your transaction.</p>
+          <p>So the sequence on a reparent is: your DML commits; a recalculation job is enqueued behind every other recalculation in the org; until it runs, the old share rows answer every access check.</p>
+        </div>
+      </div>
+      <div class="ns-sample__foot">
+        <p class="ns-sample__note">Every lesson is written before it is filmed, so all of it is searchable.</p>
+        <a class="ns-btn ns-btn--outline" href="#">Read the whole lesson <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Scope: breadth at a glance. The roadmap shows depth; this answers the
+     different question a buyer asks — is the thing my job needs in here.
+     Deliberately dense: forty terms scanned beats six benefit statements. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <div class="ns-band__head">
+      <span class="ns-kicker">The whole terrain</span>
+      <h2 class="ns-band__title">What is actually covered</h2>
+      <p class="ns-band__lede">Every area, with the number of lessons in it. If a term you need is missing, it is genuinely missing.</p>
+    </div>
+    <div class="ns-scope">
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-cube" aria-hidden="true"></i> Data model <span class="ns-scope__count">24</span></h3>
+        <ul class="ns-scope__items">
+          <li>Standard objects</li><li>Custom objects</li><li data-key>Relationships</li><li>Record types</li>
+          <li>Field types</li><li>Formula fields</li><li data-key>Rollup summaries</li><li>Schema Builder</li>
+        </ul>
+      </div>
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-shield-check" aria-hidden="true"></i> Security <span class="ns-scope__count">31</span></h3>
+        <ul class="ns-scope__items">
+          <li>Profiles</li><li>Permission sets</li><li data-key>Sharing rules</li><li>Role hierarchy</li>
+          <li data-key>Implicit sharing</li><li>OWD</li><li>Field-level security</li><li>Shield</li>
+        </ul>
+      </div>
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-flow-arrow" aria-hidden="true"></i> Automation <span class="ns-scope__count">27</span></h3>
+        <ul class="ns-scope__items">
+          <li data-key>Record-triggered flows</li><li>Screen flows</li><li>Scheduled paths</li><li>Approval processes</li>
+          <li>Entry criteria</li><li data-key>Order of execution</li><li>Platform events</li>
+        </ul>
+      </div>
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-code" aria-hidden="true"></i> Apex &amp; APIs <span class="ns-scope__count">46</span></h3>
+        <ul class="ns-scope__items">
+          <li data-key>Governor limits</li><li>Triggers</li><li>Queueable</li><li>Batch Apex</li>
+          <li>Test classes</li><li data-key>Bulk API</li><li>REST</li><li>Composite requests</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Testimonial: one voice, set large. -->
 <section class="ns-band ns-band--sunken">
   <div class="ns-band__inner">
@@ -92,6 +230,73 @@
       <blockquote>I passed the Platform Developer I after the Apex course — but the real win is that my triggers stopped scaring me.</blockquote>
       <figcaption>Priya S. · Salesforce Developer · batch 2025</figcaption>
     </figure>
+  </div>
+</section>
+
+<!-- Fit: the band that argues against itself, and the only one that can.
+     Everything else on the page is advocacy, which a reader discounts
+     automatically. Naming who should leave earns the rest. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <div class="ns-band__head">
+      <span class="ns-kicker">Before you sign up</span>
+      <h2 class="ns-band__title">Who this is for, and who it is not</h2>
+    </div>
+    <div class="ns-fit">
+      <div class="ns-fit__col ns-fit__col--yes">
+        <h3 class="ns-fit__head"><i class="ph ph-check-circle" aria-hidden="true"></i> Worth your time if</h3>
+        <ul class="ns-fit__list">
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You already touch a real org and keep hitting things you cannot explain.</span></li>
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You want the platform&rsquo;s reasons, not a click-path you will forget by Thursday.</span></li>
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You are preparing for a certification and want it to be a side effect rather than the goal.</span></li>
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You read faster than you watch, and want the written version of everything.</span></li>
+        </ul>
+      </div>
+      <div class="ns-fit__col ns-fit__col--no">
+        <h3 class="ns-fit__head"><i class="ph ph-x-circle" aria-hidden="true"></i> Look elsewhere if</h3>
+        <ul class="ns-fit__list">
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You have never opened Salesforce. Start with Trailhead&rsquo;s basics &mdash; it is free and it is good at that.</span></li>
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You want a certification dump. There are no exam questions here, on purpose.</span></li>
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You need instructor-led sessions on a schedule. Everything here is self-paced.</span></li>
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You are looking for Marketing Cloud or CPQ. Not covered, and not planned this year.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Shipped: the one band that gets WORSE if nobody maintains it, which is
+     exactly what makes it credible. A dead curriculum and a living one look
+     identical on a homepage. If this is ever three months stale, delete it
+     rather than back-date it. -->
+<section class="ns-band ns-band--tight ns-band--sunken">
+  <div class="ns-band__inner">
+    <div class="ns-band__head">
+      <span class="ns-kicker">Still being written</span>
+      <h2 class="ns-band__title">Shipped recently</h2>
+    </div>
+    <div class="ns-shipped">
+      <a class="ns-shipped__row" href="#">
+        <span class="ns-shipped__date"><time datetime="2026-08-18">18 Aug</time></span>
+        <span class="ns-shipped__kind"><i class="ph ph-plus-circle" aria-hidden="true"></i> New</span>
+        <span class="ns-shipped__title">Six lessons on record-triggered flows, including the order-of-execution walkthrough people kept asking for.</span>
+      </a>
+      <a class="ns-shipped__row" href="#">
+        <span class="ns-shipped__date"><time datetime="2026-08-11">11 Aug</time></span>
+        <span class="ns-shipped__kind"><i class="ph ph-arrows-clockwise" aria-hidden="true"></i> Updated</span>
+        <span class="ns-shipped__title">Sharing and access rewritten for Summer &rsquo;26 &mdash; implicit sharing behaviour changed on reparent.</span>
+      </a>
+      <a class="ns-shipped__row" href="#">
+        <span class="ns-shipped__date"><time datetime="2026-07-29">29 Jul</time></span>
+        <span class="ns-shipped__kind"><i class="ph ph-flask" aria-hidden="true"></i> Lab</span>
+        <span class="ns-shipped__title">Build a sharing rule end to end, in your own Developer Edition org.</span>
+      </a>
+      <a class="ns-shipped__row" href="#">
+        <span class="ns-shipped__date"><time datetime="2026-07-21">21 Jul</time></span>
+        <span class="ns-shipped__kind"><i class="ph ph-trash" aria-hidden="true"></i> Retired</span>
+        <span class="ns-shipped__title">Workflow Rules lessons archived. They still open, and they say at the top why they are no longer the answer.</span>
+      </a>
+    </div>
   </div>
 </section>
 

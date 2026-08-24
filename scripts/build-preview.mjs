@@ -1937,7 +1937,7 @@ const DEMOS = [
      instead of being gone before the page paints. */
   { out: "demo-blog-ads.html", tpl: "blog-post-ads.html", title: "Blog post with ads — full page", back: "c-adunit.html", note: "every placement in situ — watch the skeletons fill, scroll for the parallax, dismiss the anchor, open the interstitial" },
   { out: "demo-type-specimen.html", tpl: "type-specimen.html", title: "Type specimen — full page", back: "type.html", note: "the whole family in place: scale, weights, measure, effects" },
-  { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "hero → logos → features → stats → quote → FAQ → CTA" },
+  { out: "demo-sections.html", tpl: "sections-home.html", title: "Page sections — full page demo", back: "c-hero-section.html", note: "the canonical marketing order — hero → logos → features → router → compare → stats → sample → scope → quote → fit → shipped → FAQ → CTA. The six middle bands each answer a question none of the others do" },
   /* The two landing pages. sections-home above is the generic band CATALOGUE;
      these are the product's own front doors, and the difference is the
      middle — both show the actual merchandise (path, courses, tracks, tiers)

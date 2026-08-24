@@ -391,8 +391,12 @@ export function UserMenu({ user, items = [], progress, onSignOut, id }) {
 export function AuthActions({ signInHref = "#", signUpHref = "#", signInLabel = "Sign in", signUpLabel = "Start learning" }) {
   return (
     <div className="ns-topnav__auth">
-      <a className="ns-btn ns-btn--quiet ns-btn--sm" href={signInHref}>{signInLabel}</a>
-      <a className="ns-btn ns-btn--primary ns-btn--sm" href={signUpHref}>{signUpLabel}</a>
+      <a className="ns-btn ns-btn--quiet ns-btn--sm" href={signInHref}>
+        <i className="ph ph-user-circle" aria-hidden="true" /> {signInLabel}
+      </a>
+      <a className="ns-btn ns-btn--primary ns-btn--sm" href={signUpHref}>
+        <i className="ph ph-rocket-launch" aria-hidden="true" /> {signUpLabel}
+      </a>
     </div>
   );
 }

@@ -2945,6 +2945,168 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
+    id: "router", title: "Router", family: "Sections",
+    summary: "Mutually exclusive entry points — <strong>which of these am I?</strong> The first question a multi-audience curriculum has to answer, and the one a feature grid cannot: feature cells are simultaneously true, router cells are a choice.",
+    use: ["A homepage serving two or more distinct roles that need different first lessons", "Anywhere the reader has to self-identify before anything else is useful"],
+    not: ["Benefits or capabilities — those are all true at once, which is .ns-features", "More than four: past that it is a directory, not a fork", "Roles without a destination. A router cell that does not go somewhere is a card"],
+    a11y: [
+      "The whole cell is the link, so the target is the card rather than the four words at the bottom",
+      "The __when line is the load-bearing one. &ldquo;You are here if you already administer an org&rdquo; is what lets a reader rule themselves in or out in a single read; three role names alone are three job titles and the reader guesses",
+    ],
+    variants: [
+      { name: "Three ways in", html: `<div class="ns-router">
+  <a class="ns-router__card" href="#0">
+    <span class="ns-router__mark"><i class="ph ph-gear" aria-hidden="true"></i></span>
+    <span class="ns-router__role">Administrator</span>
+    <p class="ns-router__when">You own an org, you live in Setup, and the last thing that broke was a validation rule nobody documented.</p>
+    <span class="ns-router__go">Start with objects <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+  </a>
+  <a class="ns-router__card" href="#0">
+    <span class="ns-router__mark"><i class="ph ph-code" aria-hidden="true"></i></span>
+    <span class="ns-router__role">Developer</span>
+    <p class="ns-router__when">You write Apex or LWC, you can read a stack trace, and you want the platform&rsquo;s reasons rather than its syntax.</p>
+    <span class="ns-router__go">Start with governor limits <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+  </a>
+</div>` },
+    ],
+  },
+  {
+    id: "compare", title: "Before / after", family: "Sections",
+    summary: "Two panels that are deliberately <strong>not peers</strong>: the left is a state the reader is in and should want to leave, the right is where the training puts them. Styling them identically would argue the opposite of the copy.",
+    use: ["The delta a course produces, stated as two concrete situations", "Two versions of the same code — the shape is honest with real snippets in it"],
+    not: ["Us versus a competitor. That is a different and much weaker band", "Two things that are equally valid — if neither side is worse, this is .ns-features"],
+    a11y: [
+      "The seam is its own grid column rather than a pseudo-element on either panel, because it belongs to neither — attaching it to one side makes that side taller at some widths",
+      "Below md the panels stack and the arrow rotates 90&deg;. An arrow still pointing right when the panels are stacked points at the page margin",
+      "Exactly one accent, on the after panel. An accent on both is decoration",
+    ],
+    variants: [
+      { name: "Eight weeks apart", html: `<div class="ns-compare">
+  <div class="ns-compare__side ns-compare__side--before">
+    <span class="ns-compare__label"><i class="ph ph-warning-circle" aria-hidden="true"></i> Before</span>
+    <p class="ns-compare__text">&ldquo;Sharing is broken.&rdquo; You reproduce it once, cannot reproduce it again, and the fix is a manual share that quietly becomes permanent.</p>
+  </div>
+  <span class="ns-compare__seam" aria-hidden="true"><i class="ph ph-arrow-right"></i></span>
+  <div class="ns-compare__side ns-compare__side--after">
+    <span class="ns-compare__label"><i class="ph ph-check-circle" aria-hidden="true"></i> After</span>
+    <p class="ns-compare__text">&ldquo;Recalculation is asynchronous, and the report ran inside the window.&rdquo; You name it, you chain the read, and it does not recur.</p>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "sample", title: "Sample", family: "Sections",
+    summary: "A genuine excerpt behind a masked fade. Every education site claims its lessons are clear; the only claim a reader can check from a homepage is one they can <strong>read</strong>.",
+    use: ["Showing real writing, code and callouts instead of describing them", "Any page whose product IS the prose"],
+    not: ["A paraphrase written for the homepage. If the excerpt is not the real page, the band is a lie with a frame around it", "Screenshots of text — unsearchable, unselectable, and blurry on a retina display"],
+    a11y: [
+      "The fade is a MASK, not a gradient overlay. An overlay has to know what colour it is fading to, so it breaks on a sunken band and breaks again in dark mode; a mask fades to transparent, which is correct on every ground",
+      "The excerpt carries --size-prose, since it sits inside a marketing band whose base is the UI size, and it is centred — .ns-prose caps itself at the measure and left-aligning it in a band-width frame leaves a third of the panel empty",
+      "The first child's top margin is zeroed: a heading's top margin exists to clear the paragraph above it, and there is nothing above it here",
+    ],
+    variants: [
+      { name: "A lesson, mid-flow", html: `<div class="ns-sample">
+  <p class="ns-sample__bar"><i class="ph ph-article" aria-hidden="true"></i> <b>Recalculation is asynchronous</b> <span>&middot; 11 min</span></p>
+  <div class="ns-sample__body">
+    <div class="ns-prose">
+      <h2>What actually happens on reparent</h2>
+      <p>Sharing in Salesforce is materialized, not computed on read: the share tables hold a row for every grant, and a query checks rows, not rules. That design is why record access is fast at scale &mdash; and it has a consequence.</p>
+      <p>When you change the thing the rows were derived from, the platform has to rebuild them, and it does that in a queue, not in your transaction.</p>
+    </div>
+  </div>
+  <div class="ns-sample__foot">
+    <p class="ns-sample__note">Every lesson is written before it is filmed.</p>
+    <a class="ns-btn ns-btn--outline" href="#0">Read the whole lesson <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "scope", title: "Scope", family: "Sections",
+    summary: "Breadth at a glance, grouped and counted. The roadmap shows <em>depth</em> — the ordered stages a reader moves through; this answers the different question a buyer asks: <strong>is the thing my job needs in here?</strong>",
+    use: ["A curriculum large enough that its range cannot be inferred from a roadmap", "Any catalogue where the buyer arrives with a specific term in mind"],
+    not: ["Six items. If the list is short enough to be reassuring it is short enough to be a feature grid", "Padding it into cards — the density is the feature"],
+    a11y: [
+      "The count per area earns its place: it is the difference between &ldquo;we mention Flow&rdquo; and &ldquo;there are nine lessons on Flow&rdquo;",
+      "data-key marks the terms a reader is most likely scanning for. Two or three per group — mark everything and nothing is marked",
+      "This is the one band on the page allowed to look like an index, because that is what makes it useful: forty terms scanned in five seconds beats six benefit statements",
+    ],
+    variants: [
+      { name: "Two areas", html: `<div class="ns-scope">
+  <div class="ns-scope__group">
+    <h3 class="ns-scope__area"><i class="ph ph-shield-check" aria-hidden="true"></i> Security <span class="ns-scope__count">31</span></h3>
+    <ul class="ns-scope__items">
+      <li>Profiles</li><li>Permission sets</li><li data-key>Sharing rules</li><li>Role hierarchy</li><li data-key>Implicit sharing</li><li>OWD</li>
+    </ul>
+  </div>
+  <div class="ns-scope__group">
+    <h3 class="ns-scope__area"><i class="ph ph-code" aria-hidden="true"></i> Apex &amp; APIs <span class="ns-scope__count">46</span></h3>
+    <ul class="ns-scope__items">
+      <li data-key>Governor limits</li><li>Triggers</li><li>Queueable</li><li>Batch Apex</li><li data-key>Bulk API</li><li>REST</li>
+    </ul>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "fit", title: "Fit", family: "Sections",
+    summary: "The band that <strong>argues against itself</strong> — and the only one on a marketing page that can. Everything else is advocacy, which a reader discounts automatically; naming who should leave earns the rest of what the page says.",
+    use: ["Any paid product where the wrong buyer is a refund and a bad review", "Naming a competitor honestly when they are genuinely better at something"],
+    not: ["Fake disqualifiers (&ldquo;not for people who don't want to succeed&rdquo;). A reader can tell, and it costs more trust than it buys", "Us versus them — both columns are about the READER"],
+    a11y: [
+      "The two columns are not equals: the &ldquo;yes&rdquo; column is raised, the &ldquo;no&rdquo; column sunken and muted, so the shape is legible before the words are",
+      "Every &ldquo;look elsewhere&rdquo; line should name where to go instead. A disqualifier without a destination is just a door closing",
+    ],
+    variants: [
+      { name: "For and against", html: `<div class="ns-fit">
+  <div class="ns-fit__col ns-fit__col--yes">
+    <h3 class="ns-fit__head"><i class="ph ph-check-circle" aria-hidden="true"></i> Worth your time if</h3>
+    <ul class="ns-fit__list">
+      <li><i class="ph ph-check" aria-hidden="true"></i><span>You already touch a real org and keep hitting things you cannot explain.</span></li>
+      <li><i class="ph ph-check" aria-hidden="true"></i><span>You want the platform&rsquo;s reasons, not a click-path you will forget by Thursday.</span></li>
+    </ul>
+  </div>
+  <div class="ns-fit__col ns-fit__col--no">
+    <h3 class="ns-fit__head"><i class="ph ph-x-circle" aria-hidden="true"></i> Look elsewhere if</h3>
+    <ul class="ns-fit__list">
+      <li><i class="ph ph-minus" aria-hidden="true"></i><span>You have never opened Salesforce. Start with Trailhead&rsquo;s basics &mdash; it is free and it is good at that.</span></li>
+      <li><i class="ph ph-minus" aria-hidden="true"></i><span>You want a certification dump. There are no exam questions here, on purpose.</span></li>
+    </ul>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "shipped", title: "Shipped", family: "Sections",
+    summary: "Dated, time-ordered proof the thing is alive. A dead curriculum and a living one look identical on a homepage — both have a hero, both claim to be comprehensive — and this is the cheapest honest way to tell them apart.",
+    use: ["Any product whose value depends on being current", "A changelog worth showing to buyers rather than only to users"],
+    not: ["Back-dated filler. This is the one band that gets WORSE if nobody maintains it, which is exactly what makes it credible", "A stale copy. If the newest row is three months old, delete the band rather than keeping it"],
+    a11y: [
+      "Newest first, dates in the mono voice and tabular-nums so the column lines up",
+      "Below md the date and kind share a row above the title: three columns in 360px leaves the title about 9rem",
+      "Retirements belong here as much as additions. A curriculum that only ever grows is one nobody is pruning",
+    ],
+    variants: [
+      { name: "Recent activity", html: `<div class="ns-shipped">
+  <a class="ns-shipped__row" href="#0">
+    <span class="ns-shipped__date"><time datetime="2026-08-18">18 Aug</time></span>
+    <span class="ns-shipped__kind"><i class="ph ph-plus-circle" aria-hidden="true"></i> New</span>
+    <span class="ns-shipped__title">Six lessons on record-triggered flows, including the order-of-execution walkthrough.</span>
+  </a>
+  <a class="ns-shipped__row" href="#0">
+    <span class="ns-shipped__date"><time datetime="2026-08-11">11 Aug</time></span>
+    <span class="ns-shipped__kind"><i class="ph ph-arrows-clockwise" aria-hidden="true"></i> Updated</span>
+    <span class="ns-shipped__title">Sharing and access rewritten for Summer &rsquo;26.</span>
+  </a>
+  <a class="ns-shipped__row" href="#0">
+    <span class="ns-shipped__date"><time datetime="2026-07-21">21 Jul</time></span>
+    <span class="ns-shipped__kind"><i class="ph ph-trash" aria-hidden="true"></i> Retired</span>
+    <span class="ns-shipped__title">Workflow Rules lessons archived, with a note at the top of each saying why.</span>
+  </a>
+</div>` },
+    ],
+  },
+  {
     id: "faq", title: "FAQ", family: "Sections",
     summary: "Hairline question rows on native <details> — find-in-page still reaches collapsed answers. The marker is a mono +/− drawn by CSS, flipping to brand when open.",
     use: ["3–8 real questions people actually ask, near the end of a page"],
@@ -5672,7 +5834,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     not: ["Secondary navigation inside a page — Tabs or Sidebar", "A second bar under the first — if the page needs two rows of navigation, the information architecture is the problem", "Hiding the bar on scroll-down: it saves 3rem and costs everyone the ability to predict where navigation is"],
     a11y: ["A &lt;nav&gt; landmark with a label, so \"skip to navigation\" lands somewhere", "aria-current=\"page\" marks location for assistive tech AND paints the underline — one attribute, both jobs", "The bar is the first thing in the tab order after the skip link, and the skip link's target carries tabindex=\"-1\""],
     variants: [
-      { name: "Anatomy", flush: true, note: "Brand · path picker · link row · divider · search · theme · action, in that order (the signed-in and signed-out ends of the bar are on the <a href=\"./c-usermenu.html\">Account menu</a> page). Everything after the link row sits in <code>.ns-topnav__actions</code>, which takes the remaining space with <code>margin-inline-start:auto</code> — so adding an action never re-centres the links. Live: the whole bar on this page is operable.", html: `<nav class="ns-topnav" aria-label="Anatomy example">
+      { name: "Anatomy", flush: true, note: "Brand · path picker · link row · divider · search · theme · action, in that order (the signed-in and signed-out ends of the bar are on the <a href=\"./c-usermenu.html\">Account menu</a> page). Everything after the link row sits in <code>.ns-topnav__actions</code>, which takes the remaining space with <code>margin-inline-start:auto</code> — so adding an action never re-centres the links. The auth pair carries a glyph each: at a 1.75rem button the mark is what the eye finds before it reads, and these are the two controls in the bar that have to be found. Live: the whole bar on this page is operable.", html: `<nav class="ns-topnav" aria-label="Anatomy example">
   <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
   <div class="ns-navitem ns-pathpick">
     <button type="button" class="ns-pathpick__trigger" data-ns-menu aria-expanded="false" aria-controls="doc-path-anatomy" aria-label="Training path: Administrator. Change path">
@@ -5700,7 +5862,8 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <button type="button" class="ns-themeswitch" role="switch" aria-checked="false" aria-label="Dark mode" data-ns-theme-toggle>
       <span class="ns-themeswitch__mark" aria-hidden="true"></span>
     </button>
-    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Sign up</a>
+    <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#"><i class="ph ph-user-circle" aria-hidden="true"></i> Sign in</a>
+    <a class="ns-btn ns-btn--primary ns-btn--sm" href="#"><i class="ph ph-rocket-launch" aria-hidden="true"></i> Sign up</a>
   </div>
 </nav>` },
       { name: "Contained", flush: true, note: "The DEFAULT is fluid: the bar runs edge to edge and its padding is the page's own <code>--gutter</code>, so the brand sits the same distance from the viewport edge as the first column of a full-bleed page. <code>.ns-topnav__inner</code> is the exception — it caps the contents at the page container so the brand lands exactly above the first column of a <em>width-capped</em> page, and <code>--wide</code> switches that cap to the wide container. Pair it with <code>.ns-megamenu--fluid</code> or not accordingly: a fluid bar over a panel whose columns start wherever a centred 72rem block happens to begin reads as two unrelated pieces of furniture.", html: `<nav class="ns-topnav" aria-label="Contained example">
@@ -5820,7 +5983,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <span class="ns-navstar__count" aria-hidden="true">1.2k</span>
 </a>
 <a class="ns-navicon" href="#" aria-label="GitHub repository"><i class="ph ph-github-logo" aria-hidden="true"></i></a>` },
-      { name: "Blog bar", flush: true, note: "Centred links, a reading-progress line along the bottom edge, and tags instead of products — on a blog the useful navigation is by subject. The progress line is set here to 38% for the specimen; in product <code>assets/js/nav.js</code> drives it from scroll. Full page: <a href=\"./demo-navbar-blog.html\">open the blog bar demo ↗</a>", html: `<nav class="ns-topnav ns-topnav--center" aria-label="Blog bar example">
+      { name: "Blog bar", flush: true, note: "<code>--center</code> links, a reading-progress line along the bottom edge, and tags instead of products — on a blog the useful navigation is by subject. <code>--center</code> puts the row in the middle of the space <em>between the brand lockup and the actions cluster</em>, not on the viewport centre: a viewport-centred row would have to overlap one cluster or the other at the widths where it is still on screen. It also zeroes the actions&rsquo; own <code>margin-inline-start:auto</code> — <code>auto</code> margins split free space equally between every auto in the line, so leaving three of them put the row one third of the way along rather than in the middle. The progress line is set here to 38% for the specimen; in product <code>assets/js/nav.js</code> drives it from scroll. Full page: <a href=\"./demo-navbar-blog.html\">open the blog bar demo ↗</a>", html: `<nav class="ns-topnav ns-topnav--center" aria-label="Blog bar example">
   <a class="ns-topnav__brand" href="#"><img src="../assets/logo/favicon.svg" alt=""><span class="ns-topnav__brand-name">Namaste Salesforce</span></a>
   <ul class="ns-topnav__links">
     <li><a href="#" aria-current="page">Latest</a></li>

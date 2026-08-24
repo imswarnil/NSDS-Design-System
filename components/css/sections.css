@@ -523,4 +523,314 @@
   .ns-footer--dark .ns-footer__head { color: color-mix(in srgb, var(--color-on-dark) 70%, transparent); }
   .ns-footer--dark .ns-footer__bar { border-block-start-color: color-mix(in srgb, var(--color-on-dark) 15%, transparent); }
   .ns-footer--dark .ns-footer__col a:hover, .ns-footer--dark .ns-footer__bar a:hover { color: var(--color-on-brand); }
+
+  /* ======================================================= SIX MORE BANDS ====
+     Each of these exists because it answers a question no other band on the
+     page answers. That is the whole admission test: a section that restates
+     .ns-features in a different arrangement is a variant, not a section, and
+     belongs as a modifier or not at all.
+
+       .ns-compare   what changes about YOU        (before / after)
+       .ns-router    which of these am I           (mutually exclusive entry)
+       .ns-sample    is the writing any good       (shows, does not describe)
+       .ns-shipped   is this thing still alive     (dated, time-ordered)
+       .ns-fit       should I NOT buy this         (argues against itself)
+       .ns-scope     is the thing I need in here   (breadth at a glance)
+     ------------------------------------------------------------------- */
+
+  /* --- 1. Before / after ---------------------------------------------------
+     TWO PANELS THAT ARE NOT PEERS, which is the entire reason this is not
+     .ns-features with two children. A feature grid says "all of these are
+     true at once" and styles its cells identically to prove it. Here the left
+     panel is a state the reader is currently in and should want to leave, and
+     the right is where the training puts them — so they are deliberately
+     styled UNEQUALLY: the before is sunken and muted, the after is raised and
+     carries the brand. Making them look alike would be a design that argues
+     the opposite of the copy.
+
+     For a technical curriculum this is the most honest persuasive shape
+     available, because both sides can be real code. */
+  .ns-compare {
+    display: grid; gap: var(--space-4);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .ns-compare__side {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    min-inline-size: 0;
+  }
+  .ns-compare__side--before {
+    background: var(--color-surface-sunken);
+    color: var(--color-muted);
+  }
+  .ns-compare__side--after {
+    background: var(--color-surface-raised);
+    /* The only accent on the band. It marks the destination, so it goes on
+       exactly one of the two panels — an accent on both would be decoration. */
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+  }
+  .ns-compare__label {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-compare__side--after .ns-compare__label { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-compare__side--after .ns-compare__label { color: var(--color-brand-300); }
+  .ns-compare__text { font-size: var(--size-small); line-height: var(--leading-snug); margin: 0; }
+  .ns-compare__side--after .ns-compare__text { color: var(--color-ink); }
+  /* The seam. A column of its own rather than a pseudo-element on either
+     panel, because it belongs to NEITHER — it is the transition, and giving
+     it to one side makes that side taller than the other at some widths. */
+  .ns-compare__seam {
+    display: grid; place-items: center;
+    color: var(--color-label); font-size: var(--size-h4);
+  }
+  @media (max-width: 47.999rem) {
+    /* Stacked, and the arrow turns to match. An arrow still pointing right
+       when the panels are stacked points at the page margin. */
+    .ns-compare { grid-template-columns: minmax(0, 1fr); }
+    .ns-compare__seam { rotate: 90deg; }
+  }
+
+  /* --- 2. The router -------------------------------------------------------
+     "WHICH OF THESE AM I?" — the one question a multi-audience curriculum has
+     to answer before any other. An admin, a developer and an architect want
+     three different first lessons, and a homepage that describes all three at
+     once serves none of them.
+
+     It is not .ns-features, and the difference is logical rather than visual:
+     feature cells are simultaneously true, router cells are MUTUALLY
+     EXCLUSIVE. That is why each one is a link with a destination rather than a
+     claim with an icon, and why the whole cell is the target. */
+  .ns-router { display: grid; gap: var(--gap-grid); grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr)); }
+  .ns-router__card {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-raised);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-router__card:hover {
+    border-color: var(--color-brand-500);
+    box-shadow: var(--shadow-raised);
+  }
+  .ns-router__mark {
+    display: grid; place-items: center;
+    inline-size: var(--space-10); block-size: var(--space-10);
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-50);
+    color: var(--color-brand-600); font-size: var(--size-h4);
+  }
+  [data-theme="dark"] .ns-router__mark {
+    background: color-mix(in srgb, var(--color-brand-500) 16%, transparent);
+    color: var(--color-brand-300);
+  }
+  .ns-router__role { font-family: var(--font-heading); font-size: var(--size-h4); font-weight: var(--weight-heading); }
+  /* The disambiguator, and the load-bearing line of the whole band. "You are
+     here if you already administer an org" is what lets somebody rule
+     themselves IN or OUT in one read; without it three role names are three
+     job titles and the reader guesses. */
+  .ns-router__when {
+    font-size: var(--size-small); line-height: var(--leading-snug);
+    color: var(--color-muted); margin: 0;
+    flex: 1;
+  }
+  .ns-router__go {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-router__go { color: var(--color-brand-300); }
+  .ns-router__go i { transition: translate var(--duration-fast) var(--ease-out); }
+  .ns-router__card:hover .ns-router__go i { translate: var(--space-1) 0; }
+
+  /* --- 3. The sample -------------------------------------------------------
+     STOP DESCRIBING THE WRITING AND SHOW IT. Every education site claims its
+     lessons are clear; the only claim a reader can check from the homepage is
+     one they can read. So this band embeds a genuine excerpt — real prose,
+     real code, real callouts — inside a frame that admits it is an excerpt.
+
+     The fade is a MASK, not a gradient overlay in the page background. An
+     overlay has to know what colour it is fading to, so it breaks the moment
+     the band sits on a sunken or dark surface, and it breaks again in dark
+     mode. A mask fades to transparent, which is correct on every ground. */
+  .ns-sample {
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    overflow: hidden;
+  }
+  .ns-sample__bar {
+    display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+    padding: var(--space-3) var(--pad-card);
+    border-block-end: 1px solid var(--color-border);
+    background: var(--color-surface-sunken);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-sample__bar b { color: var(--color-ink); font-weight: var(--weight-label); }
+  .ns-sample__body {
+    position: relative;
+    padding: var(--pad-card-lg) var(--pad-card-lg) 0;
+    /* A fixed cut, so the fade always lands mid-paragraph. Sized to show a
+       heading and enough prose to judge the voice — about the point where a
+       reader has decided. */
+    max-block-size: 22rem; overflow: hidden;
+    mask-image: linear-gradient(to bottom, #000 60%, transparent); /* lint-ok: a mask's black is an alpha stop, not a colour */
+  }
+  /* The excerpt is real .ns-prose, so it needs the reading scale back — it is
+     inside a marketing band whose base is the UI size.
+
+     CENTRED, because .ns-prose caps itself at the reading measure and this
+     frame is band-width: left-aligned it left a third of the panel empty on
+     the right, which reads as a layout bug rather than as a measure. Here the
+     cap is the point — the reader is being shown what reading this feels
+     like — so the honest arrangement is a measure-wide column centred in its
+     frame. */
+  .ns-sample__body .ns-prose { font-size: var(--size-prose); margin-inline: auto; }
+  /* A heading carries a top margin so it can breathe after the paragraph
+     ABOVE it. There is nothing above it here — it is the first thing in the
+     frame — so that margin is just dead space under the chrome bar, and it
+     was pushing the excerpt down by most of a line. */
+  .ns-sample__body .ns-prose > :first-child { margin-block-start: 0; }
+  .ns-sample__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: var(--space-3);
+    padding: var(--pad-card);
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-sample__note { font-size: var(--size-small); color: var(--color-muted); margin: 0; }
+
+  /* --- 4. Shipped ----------------------------------------------------------
+     "IS THIS THING STILL ALIVE?" A dead curriculum and a living one look
+     identical on a homepage — both have a hero, both claim to be
+     comprehensive — and the reader has no way to tell until they have paid.
+     A dated list is the cheapest honest answer available, and it is the one
+     band on the page that gets WORSE if nobody maintains it, which is exactly
+     what makes it credible.
+
+     Time-ordered, newest first, dates in the mono voice and tabular so the
+     column lines up. If this band is ever three months stale, delete it
+     rather than back-dating it. */
+  .ns-shipped { display: flex; flex-direction: column; }
+  .ns-shipped__row {
+    display: grid; align-items: baseline; gap: var(--space-4);
+    grid-template-columns: auto auto minmax(0, 1fr);
+    padding-block: var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    color: inherit; text-decoration: none;
+  }
+  .ns-shipped__row:first-child { border-block-start: 0; }
+  a.ns-shipped__row:hover .ns-shipped__title { color: var(--color-brand-600); }
+  [data-theme="dark"] a.ns-shipped__row:hover .ns-shipped__title { color: var(--color-brand-300); }
+  .ns-shipped__date {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+    min-inline-size: 5.5rem;
+  }
+  .ns-shipped__kind {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-shipped__kind { color: var(--color-brand-300); }
+  .ns-shipped__title { font-size: var(--size-small); line-height: var(--leading-snug); transition: color var(--duration-fast) var(--ease-out); }
+  @media (max-width: 47.999rem) {
+    /* The date and the kind share a row above the title rather than each
+       taking a column: three columns in 360px gives the title ~9rem. */
+    .ns-shipped__row { grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2) var(--space-3); }
+    .ns-shipped__title { grid-column: 1 / -1; }
+  }
+
+  /* --- 5. Fit --------------------------------------------------------------
+     THE BAND THAT ARGUES AGAINST ITSELF, and the only one on the page that
+     can. Everything else here is advocacy, which a reader discounts
+     automatically; a page willing to name who should leave earns the rest of
+     what it says. It also saves the refund.
+
+     The two columns are NOT a comparison of us against a competitor — that is
+     a different and much weaker band. They are both about the reader. */
+  .ns-fit {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  }
+  .ns-fit__col {
+    display: flex; flex-direction: column; gap: var(--space-4);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+  }
+  .ns-fit__col--yes { background: var(--color-surface-raised); }
+  .ns-fit__col--no { background: var(--color-surface-sunken); }
+  .ns-fit__head {
+    display: flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-heading); font-size: var(--size-h4);
+    font-weight: var(--weight-heading);
+  }
+  .ns-fit__col--yes .ns-fit__head i { color: var(--color-success); }
+  .ns-fit__col--no .ns-fit__head i { color: var(--color-label); }
+  .ns-fit__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+  .ns-fit__list li {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2-5);
+    align-items: start;
+    font-size: var(--size-small); line-height: var(--leading-snug);
+  }
+  .ns-fit__col--no .ns-fit__list li { color: var(--color-muted); }
+  .ns-fit__list i { margin-block-start: var(--space-0-5); }
+  .ns-fit__col--yes .ns-fit__list i { color: var(--color-success); }
+  .ns-fit__col--no .ns-fit__list i { color: var(--color-label); }
+
+  /* --- 6. Scope ------------------------------------------------------------
+     "IS THE THING I NEED IN HERE?" — breadth, in one screen. A curriculum
+     built for ~100 sections cannot show its range through a roadmap: .ns-path
+     shows DEPTH, the ordered stages a reader moves through, and a reader
+     evaluating a purchase is asking a different question — does this cover
+     record-triggered flows, does it cover Bulk API, does it cover the thing my
+     job actually needs.
+
+     So this is deliberately DENSE. It is the one band on the page allowed to
+     look like an index, because that is what makes it useful: forty terms
+     scanned in five seconds beats six benefit statements. Resist the urge to
+     pad it into cards. */
+  .ns-scope {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+  .ns-scope__group { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-scope__area {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-scope__area i { color: var(--color-brand-500); font-size: var(--size-body); }
+  /* The count earns its place: it is the difference between "we mention Flow"
+     and "there are nine lessons on Flow". */
+  .ns-scope__count { margin-inline-start: auto; font-variant-numeric: tabular-nums; }
+  .ns-scope__items {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-wrap: wrap; gap: var(--space-1-5);
+  }
+  .ns-scope__items li {
+    padding: var(--space-1) var(--space-2-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    font-size: var(--size-label); color: var(--color-muted);
+    white-space: nowrap;
+  }
+  /* A term the reader is most likely scanning for, marked. At most two or
+     three per group — mark everything and nothing is marked. */
+  .ns-scope__items li[data-key] {
+    border-color: var(--color-brand-500); color: var(--color-brand-600);
+  }
+  [data-theme="dark"] .ns-scope__items li[data-key] { color: var(--color-brand-300); }
+
 }

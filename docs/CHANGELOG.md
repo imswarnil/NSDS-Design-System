@@ -17,6 +17,58 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — six page sections, each answering a question no other band does
+
+The admission test for a new section is not "is this a different layout" but
+"does this answer something none of the others answer". A band that restates
+the feature grid in a new arrangement is a variant, not a section. These six
+each carry a distinct job:
+
+| Band | The question it answers |
+| --- | --- |
+| `.ns-router` | Which of these am I? |
+| `.ns-compare` | What changes about me? |
+| `.ns-sample` | Is the writing any good? |
+| `.ns-scope` | Is the thing I need in here? |
+| `.ns-fit` | Should I *not* buy this? |
+| `.ns-shipped` | Is this still alive? |
+
+**`.ns-router`** — mutually exclusive entry points. The distinction from
+`.ns-features` is logical rather than visual: feature cells are
+simultaneously true, router cells are a choice, which is why each is a link
+with a destination. The `__when` line does the work — "you are here if you
+already administer an org" lets a reader rule themselves in or out in one
+read, where three role names alone are three job titles and a guess.
+
+**`.ns-compare`** — two panels deliberately *not* peers. The left is a state
+to leave, the right is where the training puts you, and styling them
+identically would argue the opposite of the copy. The seam is its own grid
+column because it belongs to neither panel; below md the panels stack and the
+arrow rotates, since an arrow still pointing right at stacked panels points at
+the page margin.
+
+**`.ns-sample`** — a genuine excerpt behind a masked fade. The only quality
+claim a reader can check from a homepage is one they can read. The fade is a
+`mask-image`, not a gradient overlay: an overlay has to know what colour it is
+fading to, so it breaks on a sunken band and again in dark mode.
+
+**`.ns-scope`** — breadth at a glance, grouped and counted. `.ns-path` shows
+depth, the ordered stages a reader moves through; a buyer is asking something
+else entirely — does this cover the thing my job needs. Deliberately dense,
+because forty terms scanned in five seconds beats six benefit statements.
+
+**`.ns-fit`** — the band that argues against itself, and the only one that
+can. Everything else on a marketing page is advocacy, which readers discount
+automatically. Both columns are about the *reader*, not about a competitor.
+
+**`.ns-shipped`** — dated, time-ordered, newest first. The one band that gets
+worse if nobody maintains it, which is exactly what makes it credible. If the
+newest row is ever three months old, delete the band rather than back-date it.
+
+All six are in `templates/sections-home.html` in canonical page order and
+documented in the styleguide.
+
+
 ### Fixed — the curriculum rail had four different left edges
 
 Measured down one 352px column: the search field started at 12px from the

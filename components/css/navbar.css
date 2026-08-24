@@ -139,7 +139,14 @@
      drop it into the MIDDLE of the bar; stretching the wrapper to the bar's
      height puts the panel's top edge on the bar's bottom hairline, where
      every other panel starts. */
+  /* Tight to the brand. The bar's own gap is --space-4, which is the right
+     distance between the lockup and the link row but too far between a mark
+     and the thing that qualifies it — at arm's length the picker would read
+     as the first item of the nav rather than as part of the brand. Halving it
+     is what makes "Namaste Salesforce · Administrator" one object, which is
+     the whole reason this control sits here and not in the row. */
   .ns-pathpick { flex: none; align-self: stretch; }
+  .ns-topnav__brand + .ns-pathpick { margin-inline-start: calc(-1 * var(--space-2)); }
   .ns-pathpick__trigger {
     display: inline-flex; align-items: center; gap: var(--space-1);
     block-size: var(--_control-h, var(--space-7)); padding-inline: var(--space-2);
@@ -318,9 +325,23 @@
   .ns-topnav__actions .ns-btn--sm {
     min-block-size: var(--_control-h, var(--space-7)); padding-block: 0; padding-inline: var(--space-3);
   }
-  /* --center puts the link row in the optical middle; the spacers do the work
-     so the row is centred between brand and actions, not on the viewport. */
+  /* A glyph at --size-fine (the sm button's own type size) is a smudge. The
+     label is the button and stays 12px; the mark gets the UI body size, which
+     is the same relationship the link row already uses. */
+  .ns-topnav__actions .ns-btn i { font-size: var(--size-small); line-height: 1; }
+  /* --center puts the link row in the middle of the space between the brand
+     lockup and the actions cluster — not on the viewport centre, which would
+     need the row to overlap one cluster or the other at the widths where it
+     is still on screen.
+
+     The zeroed margin is load-bearing and was a real bug. `auto` margins
+     split free space EQUALLY between every auto in the line, so leaving the
+     actions' own margin-inline-start:auto in place made three of them: the
+     row got one third of the space on its left and two thirds on its right,
+     which is not centred, it is one third of the way along. Two autos, two
+     equal halves. */
   .ns-topnav--center .ns-topnav__links { margin-inline: auto; }
+  .ns-topnav--center .ns-topnav__actions { margin-inline-start: 0; }
 
   /* Reading progress, for the blog bar. A 2px rule along the bottom edge —
      the same accent line, used as a measure. --p is the percentage. */
@@ -1049,6 +1070,11 @@
     .ns-topnav__brand-tag { display: none; }
     .ns-topnav { padding-inline: var(--space-4); }
     .ns-usermenu__name { display: none; }
+    /* The link row is gone at this width, and with it the auto margin that
+       --center zeroed on the actions to make the centring work. Put it back,
+       or a centred bar loses the only thing pushing its actions to the end
+       and parks the account menu against the brand. */
+    .ns-topnav--center .ns-topnav__actions { margin-inline-start: auto; }
     /* THE THUMB FLOOR COMES BACK, in one line. Above lg the cluster is
        1.75rem because it is a row of cursor targets; below it these are the
        only things left in the bar beside the burger, and they are being

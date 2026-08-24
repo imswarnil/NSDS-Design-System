@@ -28,7 +28,7 @@
      the viewport's own --gutter rather than at the edge of a 72rem column.
      Wrap the children in <div class="ns-topnav__inner"> if the page content
      underneath is width-capped and the bar has to line up with it. -->
-<nav class="ns-topnav" aria-label="Main">
+<nav class="ns-topnav ns-topnav--center" aria-label="Main">
   <a class="ns-topnav__brand" href="/">
     <img src="../assets/logo/favicon.svg" alt="">
     <span class="ns-topnav__brand-name">Namaste Salesforce</span>
@@ -192,8 +192,8 @@
 
     <!-- Signed out. Ghost: wrap in {{#unless @member}} … {{/unless}}. -->
     <div class="ns-topnav__auth">
-      <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#/portal/signin" data-portal="signin">Sign in</a>
-      <a class="ns-btn ns-btn--primary ns-btn--sm" href="#/portal/signup" data-portal="signup">Start learning</a>
+      <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#/portal/signin" data-portal="signin"><i class="ph ph-user-circle" aria-hidden="true"></i> Sign in</a>
+      <a class="ns-btn ns-btn--primary ns-btn--sm" href="#/portal/signup" data-portal="signup"><i class="ph ph-rocket-launch" aria-hidden="true"></i> Start learning</a>
     </div>
 
     <button type="button" class="ns-burger" data-ns-sheet="site-nav" aria-expanded="false" aria-label="Menu" aria-haspopup="dialog">
@@ -243,8 +243,8 @@
     </div>
   </div>
   <div class="ns-navsheet__foot">
-    <a class="ns-btn ns-btn--primary" href="#/portal/signup" data-portal="signup">Start learning</a>
-    <a class="ns-btn ns-btn--outline" href="#/portal/signin" data-portal="signin">Sign in</a>
+    <a class="ns-btn ns-btn--primary" href="#/portal/signup" data-portal="signup"><i class="ph ph-rocket-launch" aria-hidden="true"></i> Start learning</a>
+    <a class="ns-btn ns-btn--outline" href="#/portal/signin" data-portal="signin"><i class="ph ph-user-circle" aria-hidden="true"></i> Sign in</a>
     <p class="ns-navsheet__meta"><span>Free · no card</span><span>12,400 learners</span></p>
   </div>
 </dialog>
