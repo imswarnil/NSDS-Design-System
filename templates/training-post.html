@@ -56,7 +56,9 @@
     <!-- The collapsed rendering. One attribute — data-rail — drives all three
          states: column, spine, drawer. -->
     <div class="ns-trainingnav__spine">
-      <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" type="button" aria-label="Open curriculum" data-ns-training-expand><i class="ph ph-caret-left" aria-hidden="true"></i></button>
+      <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" type="button" aria-label="Open curriculum" data-ns-training-expand>
+        <i class="ph ph-caret-left" aria-hidden="true"></i><span class="ns-tooltip">Open curriculum</span>
+      </button>
       <span class="ns-trainingnav__spine-label">Curriculum</span>
     </div>
 
@@ -72,11 +74,23 @@
          answered by something that scrolled away 400 rows ago, so the filter
          is what stays pinned. -->
     <div class="ns-trainingnav__head">
+      <!-- The glass is a SUBMIT BUTTON on the trailing edge, not a decoration
+           inside the field. It used to be an absolutely-positioned <i> with
+           pointer-events: none — something that looked pressable and was not.
+           As a real submit it also makes the no-JS path work: the box is a
+           <form action> pointed at site search, and a search form with no
+           submit is one only a keyboard can post. -->
       <form class="ns-trainingnav__search" role="search" action="#">
-        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
         <input class="ns-input" type="search" name="q" placeholder="Filter lessons" aria-label="Filter lessons" data-ns-trainingnav-filter>
-        <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-trainingnav__collapse" type="button" aria-label="Collapse curriculum" data-ns-training-collapse><i class="ph ph-caret-right" aria-hidden="true"></i></button>
-        <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-trainingnav__close" type="button" aria-label="Close curriculum" data-ns-training-close><i class="ph ph-x" aria-hidden="true"></i></button>
+        <button class="ns-btn ns-btn--outline ns-btn--icon ns-btn--sm ns-tooltip-host" type="submit" aria-label="Search all lessons">
+          <i class="ph ph-magnifying-glass" aria-hidden="true"></i><span class="ns-tooltip">Search all lessons</span>
+        </button>
+        <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host ns-trainingnav__collapse" type="button" aria-label="Collapse curriculum" data-ns-training-collapse>
+          <i class="ph ph-caret-right" aria-hidden="true"></i><span class="ns-tooltip">Collapse</span>
+        </button>
+        <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host ns-trainingnav__close" type="button" aria-label="Close curriculum" data-ns-training-close>
+          <i class="ph ph-x" aria-hidden="true"></i><span class="ns-tooltip">Close</span>
+        </button>
       </form>
       <p class="ns-trainingnav__result" role="status" data-ns-trainingnav-result></p>
     </div>
@@ -336,31 +350,21 @@
            whole column. -->
       <div class="ns-tpost-body">
 
-      <!-- THE READING RAIL — provenance, then the ad, in that order.
-           WHO AND WHEN LIVE HERE NOW. They were chips in the header, where
-           they competed with the three facts that actually gate the decision
-           to read. Author and last-updated are provenance: nobody checks who
-           wrote a lesson before starting it, and everybody checks after
-           hitting something surprising. That is a thing you reach for WHILE
-           reading, which is what a reading rail is for.
+      <!-- THE AD RAIL. 160x600, the standard unit from ads.css, wrapped in
+           `ns-ad-rail` so it sticks beside the reading.
 
-           A <dl>, not a paragraph — these are label/value pairs and a screen
-           reader should hear them as pairs.
+           PROVENANCE USED TO SIT ABOVE IT and has moved to the foot of the
+           article — see .ns-authorbox below. Who wrote a lesson and when it
+           was last touched are things a reader wants when they have FINISHED
+           and are deciding whether to trust it, follow the author, or check
+           whether it predates the release that broke their org. Beside the
+           first paragraph they are just two more facts competing with the
+           writing; under the last one they are the natural close.
 
-           The ad sits BELOW them: 160x600, the standard unit from ads.css,
-           wrapped in `ns-ad-rail` so it sticks beside the reading. Below xl
-           this whole column becomes a scrollable row under the header. -->
-      <aside class="ns-tsky" aria-label="About this lesson">
-        <div class="ns-tsky__group">
-          <span class="ns-tsky__label">About</span>
-          <dl class="ns-tsky__meta">
-            <dt>Written by</dt>
-            <dd class="ns-tsky__who"><i class="ph ph-user-circle" aria-hidden="true"></i>Ravi Kulkarni</dd>
-            <dt>Updated</dt>
-            <dd><i class="ph ph-clock-clockwise" aria-hidden="true"></i> 14 Aug 2026</dd>
-          </dl>
-        </div>
-
+           That leaves this column doing one job, which is the honest
+           description of an ad slot. Below xl it becomes a row under the
+           header, and ads.css drops the 600px unit on a phone. -->
+      <aside class="ns-tsky" aria-label="Advertisement">
         <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled">
           <span class="ns-ad__label">Advertisement</span>
           <div class="ns-ad__frame"><span class="ns-ad__dummy" aria-hidden="true"><span class="ns-ad__dummy-name">Skyscraper</span><span class="ns-ad__dummy-size">160x600</span></span></div>
@@ -378,7 +382,9 @@
              empty state, and a stretched placeholder image reads as a broken
              asset rather than as "art has not been shot yet". -->
         <div class="ns-video">
-          <button class="ns-video__play" type="button" aria-label="Play — Recalculation is asynchronous"><i class="ph ph-play" aria-hidden="true"></i></button>
+          <button class="ns-video__play ns-tooltip-host" type="button" aria-label="Play — Recalculation is asynchronous">
+            <i class="ph ph-play" aria-hidden="true"></i><span class="ns-tooltip">Play &mdash; 11:04</span>
+          </button>
           <span class="ns-video__dur">11:04</span>
           <span class="ns-video__tag">Training</span>
         </div>
@@ -431,7 +437,7 @@
             <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>RecalcWindow.cls</span></span>
             <span class="ns-code__actions">
               <span class="ns-code__lang">apex</span>
-              <button type="button" class="ns-code__btn" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span></button>
+              <button type="button" class="ns-code__btn ns-tooltip-host" data-code="copy"><i class="ph ph-copy" aria-hidden="true"></i><span class="ns-code__btn-label"><span>Copy</span></span><span class="ns-tooltip">Copy the snippet</span></button>
             </span>
           </figcaption>
           <div class="ns-code__body">
@@ -482,6 +488,46 @@
       </article>
 
       </div>
+      </div>
+
+      <!-- WHO WROTE IT, AND WHEN — the block that closes the lesson.
+           .ns-authorbox is the component blog posts already use for exactly
+           this, so a lesson and an article close the same way rather than
+           two surfaces inventing two bios.
+
+           The last-updated line matters more here than on a blog: a platform
+           moves three times a year, and "is this still true?" is the first
+           question a reader has after a lesson that surprised them. It is a
+           <time> with a machine-readable datetime, so it is a date to a
+           parser and not only to a person. -->
+      <div class="ns-authorbox ns-tpost-author">
+        <img class="ns-authorbox__avatar" src="../assets/logo/favicon.svg" alt="">
+        <div>
+          <p class="ns-authorbox__name"><a href="#">Ravi Kulkarni</a></p>
+          <p class="ns-authorbox__role">Salesforce Architect · Security &amp; sharing</p>
+          <p class="ns-authorbox__bio">Spends most of his time on the sharing model and the incidents it causes. Writes the lesson he wishes he had read before the outage.</p>
+          <p class="ns-tpost-author__stamp">
+            <span class="ns-tooltip-host">
+              <i class="ph ph-clock-clockwise" aria-hidden="true"></i>
+              Updated <time datetime="2026-08-14">14 Aug 2026</time>
+              <span class="ns-tooltip">Checked against Summer &rsquo;26</span>
+            </span>
+            <span class="ns-tooltip-host">
+              <i class="ph ph-calendar-blank" aria-hidden="true"></i>
+              Published <time datetime="2026-02-03">3 Feb 2026</time>
+              <span class="ns-tooltip">First published</span>
+            </span>
+          </p>
+          <div class="ns-authorbox__links">
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="#"><i class="ph ph-books" aria-hidden="true"></i> All lessons</a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="#" aria-label="Ravi Kulkarni on LinkedIn">
+              <i class="ph ph-linkedin-logo" aria-hidden="true"></i><span class="ns-tooltip">LinkedIn</span>
+            </a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm ns-tooltip-host" href="#" aria-label="Ravi Kulkarni on X">
+              <i class="ph ph-x-logo" aria-hidden="true"></i><span class="ns-tooltip">X</span>
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- Prev / next, each carrying its module. The next post here is in the

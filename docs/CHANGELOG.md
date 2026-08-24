@@ -17,6 +17,64 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — the lesson filter is a field and a button
+
+The magnifying glass was an absolutely-positioned `<i>` at the leading edge
+with `pointer-events: none` — a picture of a control rather than a control,
+which is why the row read as cluttered. It is now a real submit button on
+the trailing edge, sitting in the row with collapse and close so all three
+read as the same kind of object, and squared to the field's height so they
+form one control group instead of three things dropped beside a box.
+
+That also makes the no-JS path honest: the box lives in a `<form action>`
+pointed at site search, and a search form with no submit is one only a
+keyboard can post.
+
+### Changed — the topbar's progress meter fills the row
+
+It was `flex: none` with a 6rem bar pushed to the end by an auto margin, so
+a 1500px header showed a 96px meter with ~700px of empty chrome beside it —
+the one element whose whole job is to be read at a glance was the smallest
+thing on the row. It now grows into whatever the crumb and the controls
+leave. A first pass capped it at 32rem, which only moved the dead space; a
+progress bar has no width at which it reads worse, so the cap went.
+
+### Changed — provenance closes the lesson
+
+Author and last-updated moved out of the reading rail into `.ns-authorbox`
+at the foot of the article — the component blog posts already use for
+exactly this, so a lesson and an article close the same way rather than two
+surfaces inventing two bios. Who wrote a lesson and when it was last touched
+are what a reader wants when they have *finished* and are deciding whether
+to trust it; beside the first paragraph they were two more facts competing
+with the writing. The stamp carries `<time datetime>` for both published and
+updated, because on a platform that moves three times a year "is this still
+true?" is the first question after a lesson that surprised you.
+
+That leaves `.ns-tsky` doing one job, which is the honest description of an
+ad slot. The `__group` / `__label` / `__meta` / `__who` rules went with the
+markup rather than being kept "in case" — a rule with no call site is a rule
+nobody is maintaining.
+
+### Added — tooltips on every icon-only control
+
+Twelve of them, each keeping its `aria-label` as well: the tooltip is for
+the sighted pointer user, the label for everyone else, and neither
+substitutes for the other.
+
+### Fixed — trailing-edge tooltips hung off the screen
+
+`.ns-tooltip` centres on its host with `translate: -50%`, which is only safe
+when the host has half the tooltip's width of room on both sides. The rail's
+controls sit at the right of a rail at the right of the viewport, so
+"Collapse curriculum" overflowed by a measured 8px and "Search all lessons"
+was flush to the pixel — and with no scroll container to grow a scrollbar it
+clipped silently, which is the worse of the two failures. Anchored to the
+trailing edge, as `.ns-tbar__steps` already was. This is now the second
+instance of the pattern; the CSS says that a third wants an `--end` modifier
+in `overlay.css` rather than another local override.
+
+
 ### Changed — the training post's header, rail head and reading rail
 
 The rail's head is now the **filter and nothing else**. A track header sat

@@ -753,11 +753,31 @@
   .ns-tbar__sep { color: var(--color-border); flex: none; }
   /* HOW FAR THROUGH. A <progress> and its own count — the meter is the shape
      of the answer and the number is the answer, and a learner wants both. */
+  /* THE METER TAKES THE FREE SPACE, and this is the point of the bar.
+     It was `flex: none` with a 6rem meter pushed to the end by an auto
+     margin, so a 1500px header showed a 96px bar with ~700px of empty
+     chrome beside it — the one element on the row whose whole job is to be
+     READ AT A GLANCE was the smallest thing on it.
+
+     Now it grows. The crumb keeps its content width, the steps and the
+     handle keep theirs, and everything left over goes to the progress —
+     which is the only item here that gets more useful as it gets wider.
+     A max-inline-size stops it becoming a stripe across an ultrawide. */
+  /* No max-inline-size. A first pass capped this at 32rem, which just moved
+     the dead space rather than removing it: the meter stopped growing at
+     512px and the ~225px it refused to take sat empty between the step
+     arrows and the column edge. A progress bar is the one element on this
+     row that is strictly more legible the wider it gets — there is no width
+     at which a longer bar reads worse — so it takes everything the crumb and
+     the controls do not. */
   .ns-tbar__meter {
-    display: flex; align-items: center; gap: var(--space-2);
-    margin-inline-start: auto; flex: none;
+    display: flex; align-items: center; gap: var(--space-3);
+    flex: 1; min-inline-size: 0;
+    margin-inline: var(--space-4);
   }
-  .ns-tbar__meter .ns-progress { inline-size: 6rem; }
+  .ns-tbar__meter .ns-progress { flex: 1; min-inline-size: 0; }
+  .ns-tbar__meter > i { flex: none; }
+  .ns-tbar__count { flex: none; }
   .ns-tbar__count { color: var(--color-ink); }
   .ns-tbar__steps { display: flex; align-items: center; gap: var(--space-1); flex: none; }
   /* THE TOOLTIPS ARE ANCHORED TO THE END, and that is a scroll fix rather
@@ -816,36 +836,13 @@
     display: grid; gap: var(--space-5);
     min-inline-size: 0;
   }
-  .ns-tsky__group { display: grid; gap: var(--space-2); }
-  .ns-tsky__label {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-  }
-  /* The meta list: one fact per row, the value under its own label. A
-     definition list rather than a paragraph, because these are pairs and a
-     screen reader should hear them as pairs. */
-  .ns-tsky__meta { display: grid; gap: var(--space-3); margin: 0; }
-  .ns-tsky__meta dt {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
-    color: var(--color-label);
-  }
-  .ns-tsky__meta dd {
-    margin: 0; font-size: var(--size-small); color: var(--color-ink);
-    line-height: var(--leading-snug);
-  }
-  .ns-tsky__who { display: flex; align-items: center; gap: var(--space-2); }
-  /* The glyphs sit with the VALUE, not the label: the label is already in
-     the mono label voice and a second mark on it would be two ways of saying
-     the same thing. Muted, because provenance is looked up rather than
-     scanned. */
-  .ns-tsky__meta dd i { color: var(--color-label); }
-  /* A ROW, not the stacked --rail variant. Four icon buttons come to ~8rem
-     and the column is 11rem, so stacking them spent four rows of a scarce
-     vertical resource to save nothing — and centred them away from the
-     labels above while it was at it. */
-  .ns-tsky .ns-share { gap: var(--space-1); margin-inline-start: calc(-1 * var(--space-2)); }
+  /* A LABELLED-BLOCK WRAPPER USED TO LIVE HERE — __group, __label, __meta and
+     __who, styling a provenance <dl> above the ad. All of it went with the
+     provenance itself, which is now .ns-authorbox at the foot of the article.
+     Deleted rather than kept "in case": a rule with no call site is a rule
+     nobody is maintaining, and the next person to need a labelled block in
+     this rail is better served writing the four lines they actually want than
+     inheriting four they have to read first. */
 
   /* Below xl the tools stop being a column and become a ROW under the
      header — which is where they were always going to end up on a phone, so
@@ -861,8 +858,6 @@
       border-block-end: 1px solid var(--color-border);
       overflow-x: auto; scrollbar-width: thin;
     }
-    .ns-tsky__meta { grid-auto-flow: column; grid-auto-columns: max-content; gap: var(--space-5); align-items: center; }
-    .ns-tsky__group { grid-auto-flow: column; grid-auto-columns: max-content; align-items: center; gap: var(--space-2); }
   }
 
   @media (max-width: 63.999rem) {
@@ -915,6 +910,25 @@
      Symmetric margins, which it did not have: it carried --stack-md below
      and nothing above, so it sat hard against the video stage and then left
      a 2rem hole before the lede. */
+  /* --- The block that closes the lesson -----------------------------------
+     .ns-authorbox does the work; these are the two things that are true
+     about it HERE. It needs air above it — it follows the last paragraph of
+     an article, not another card — and it carries a dated stamp that a blog
+     bio does not, because "is this still true?" is the first question after
+     a platform lesson that surprised you. */
+  .ns-tpost-author { margin-block-start: var(--stack-md); }
+  .ns-tpost-author__stamp {
+    display: flex; flex-wrap: wrap; gap: var(--space-4);
+    margin-block-start: var(--space-3);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  /* .ns-tooltip-host is inline-flex, which is what lets the glyph, the word
+     and the <time> sit on one baseline inside a hoverable target. */
+  .ns-tpost-author__stamp > .ns-tooltip-host { align-items: center; gap: var(--space-1-5); }
+  .ns-tpost-author__stamp time { font-variant-numeric: tabular-nums; color: var(--color-ink); }
+
   .ns-tpost-toc { margin-block: var(--stack-sm) var(--stack-md); }
   .ns-tpost-toc > summary { inline-size: 100%; }
   .ns-tpost-toc .ns-toc {
@@ -1377,12 +1391,56 @@
     background: var(--color-surface);
     border-block-end: 1px solid var(--color-border);
   }
-  .ns-trainingnav__search { position: relative; display: flex; align-items: center; }
-  .ns-trainingnav__search i {
-    position: absolute; inset-inline-start: var(--space-2-5);
-    color: var(--color-label); font-size: var(--size-body); pointer-events: none;
+  /* --- The filter -----------------------------------------------------
+     A FIELD AND A BUTTON, not a field with a decoration inside it.
+
+     The magnifying glass used to be an absolutely-positioned <i> at the
+     LEADING edge with pointer-events: none — a picture of a control rather
+     than a control. It read as clutter because it looked pressable and was
+     not, and it ate the field's leading padding to do it.
+
+     Now it is a real submit button on the trailing edge, sitting in the row
+     with the collapse and close controls so all three read as the same kind
+     of object. That also makes the no-JS path honest: the box lives in a
+     <form action> pointed at site search, and a search form with no submit
+     is a form only a mouse-and-keyboard user can post.
+
+     Search first, then collapse, then close — the order they are reached
+     for, and the destructive-ish one last. */
+  .ns-trainingnav__search {
+    display: flex; align-items: center; gap: var(--space-1-5);
   }
-  .ns-trainingnav__search .ns-input { padding-inline-start: var(--space-8); inline-size: 100%; }
+  /* min-inline-size: 0 is load-bearing on a flex item that must be allowed to
+     SHRINK: an <input> carries a default intrinsic width (roughly 20
+     characters) that acts as a floor, so without this the field refuses to go
+     below ~180px and pushes the buttons out of a 22rem rail — which is the
+     same class of overflow the head itself had. */
+  .ns-trainingnav__search .ns-input { flex: 1; min-inline-size: 0; }
+  .ns-trainingnav__search .ns-btn { flex: none; }
+  /* The controls match the FIELD's height, not the button scale's.
+     --btn--sm is 2rem and .ns-input is 2.25rem, so a row of them sat a
+     hairline short at both edges and read as three things dropped next to a
+     box rather than one control group. Squaring them to the field is what
+     makes the search button look like it belongs to the search. */
+  .ns-trainingnav__search .ns-btn--icon {
+    block-size: var(--target-comfy); inline-size: var(--target-comfy);
+  }
+  /* Trailing-edge tooltips, for the same reason as .ns-tbar__steps: these
+     controls sit at the right of a rail that is itself at the right of the
+     viewport, so a centred tooltip hangs off the screen — measured at 8px
+     past for "Collapse curriculum" and flush to the pixel for "Search".
+     There is no scroll container here to grow a scrollbar, so it clipped
+     silently instead, which is the worse failure of the two.
+
+     THIS IS THE SECOND PLACE THIS PATTERN HAS APPEARED. A tooltip anchored
+     with translate: -50% is only safe when its host has half its own width
+     of room on both sides; any host pinned to a trailing edge needs this
+     pair. If a third case turns up, it wants a --end modifier in
+     overlay.css rather than a third local override. */
+  .ns-trainingnav__search .ns-tooltip {
+    inset-inline-start: auto; inset-inline-end: 0;
+    translate: 0 0;
+  }
   /* What the filter did. A rail that silently shows three of forty modules is
      a rail that looks broken; this is the line that says it is not. */
   .ns-trainingnav__result {
