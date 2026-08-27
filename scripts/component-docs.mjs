@@ -3711,15 +3711,16 @@ Map<Id, Account> byId = new Map<Id, Account>(
   },
   {
     id: "post-layout", title: "Post layout & TOC", family: "Blog",
-    summary: "One layout, three widths. The default is TOC rail | article | share rail; <code>--sidebar</code> swaps both rails for one real sidebar on the end side; <code>--wide</code> drops everything. The article column <strong>never widens</strong> whichever rails are present: the measure is the point of the page, and a longer line does not become more readable because there is room for it. That is why these are variants of one layout rather than three layouts.",
+    summary: "One layout, two pages. The default is <strong>share rail | article | outline</strong>; <code>--sidebar</code> swaps both rails for one real sidebar on the end side. <code>--wide</code> exists for a page that wants the measure and nothing beside it. The article column <strong>never widens</strong> whichever rails are present: the measure is the point of the page, and a longer line does not become more readable because there is room for it.",
     use: [
-      "(default) REFERENCE material — a long technical piece a reader returns to and navigates within",
-      "<code>--sidebar</code> a post that has to carry a newsletter, a popular shelf or a sponsor",
-      "<code>--wide</code> an ESSAY — a piece read start to finish, once",
-      "Full pages: <a href=\"./demo-blog-post.html\">rails</a> &middot; <a href=\"./demo-blog-post-sidebar.html\">sidebar</a> &middot; <a href=\"./demo-blog-post-wide.html\">no sidebar</a>",
+      "(default) a post read straight through, with sharing out of the reading path and the outline beside the text it indexes",
+      "<code>--sidebar</code> a post that has to carry related reading, a course shelf, a signup or a sponsor",
+      "<code>--wide</code> as a modifier, when a page wants neither rail — it does not need a template of its own",
+      "Full pages: <a href=\"./demo-blog-post.html\">no sidebar</a> &middot; <a href=\"./demo-blog-post-sidebar.html\">with sidebar</a>",
     ],
     not: [
       "A TOC rail AND a sidebar. A page cannot put navigation on both sides of the text and still read as text — <code>--sidebar</code> moves the outline into the article as a disclosure",
+      "The author&rsquo;s bio in the sidebar. A reader wants to know who wrote it AFTER reading it; a bio in the rail and a bio under the article is the same block twice",
       "A TOC on a short post. Four headings is furniture pretending to be navigation: it costs the reader a decision and gives them nothing",
       "Widening the article because a rail was dropped",
       "Three levels of heading in the outline. Two is the limit; a page needing three needs splitting",
@@ -3729,6 +3730,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
       "The current section is marked with aria-current, the same attribute the navbar and the lesson row use",
       "Headings without ids get one derived from their text, because an anchor link to nothing is worse than no anchor link",
       "The share rail's buttons are icon-only and every one carries an aria-label",
+      "The rails are written in the order they are drawn — aside, article, nav. A rail placed on the leading edge with grid but written last gives a keyboard user a focus order that jumps across the page and back",
       "Reading progress (.ns-lprogress--article) is a role=\"progressbar\" with a live aria-valuenow",
     ],
     variants: [

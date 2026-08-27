@@ -1,19 +1,33 @@
 <!--
-  NS Design System template — blog post page
+  NS Design System template — blog post, NO SIDEBAR
   =====================================================================
   Framework-agnostic markup: the same .ns-* classes the React components
   render. Ghost → paste into post.hbs, swap the slots for helpers
   ({{title}}, {{content}}, {{primary_author}}, {{#post}}…); Next.js → the
   markup contract the components implement; Static → use directly.
 
+  There are exactly TWO single-post templates, and this is the one without
+  a sidebar:
+
+    blog-post.html          share | article | outline      (this file)
+    blog-post-sidebar.html  article | sidebar
+
+  An earlier revision had a third — a bare `--wide` essay variant with no
+  rails at all — and it was a template, a demo and a doc entry standing for
+  one CSS modifier. `.ns-post--wide` still exists for a page that wants the
+  measure and nothing beside it; it did not need a page of its own to say
+  so, and two post templates that differ in whether they have a sidebar is
+  a distinction a reader can actually hold.
+
   The page in order:
     1. Reading progress   a 2px hairline, the only chrome the page carries
-    2. Post header        five versions; swap the modifier, keep the parts
+    2. Post header        breadcrumb, category, title, standfirst, meta,
+                          and the cover image
     3. Series box         only when the post belongs to one — and near the
                           TOP, because a reader landing on part 3 from
                           search has no idea parts 1 and 2 exist
-    4. TOC | article | share   three columns, both rails droppable
-    5. Author box, prev/next, related shelf
+    4. share | article | outline   both rails droppable
+    5. Post footer        tags, bio, prev/next, related
 
   The article column never widens when a rail is dropped: the measure is
   the point of the page.
@@ -23,6 +37,11 @@
 
 <header class="ns-posthead ns-posthead--center">
   <div class="ns-posthead__inner">
+    <nav class="ns-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <a href="/blog">Writing</a>
+      <a href="/tag/apex">Apex</a>
+    </nav>
     <a class="ns-tag ns-posthead__cat" href="/tag/apex">Apex</a>
     <h1 class="ns-posthead__title">Why your trigger fails at 201 records</h1>
     <p class="ns-posthead__standfirst">Governor limits are per transaction, not per record. Once that lands, bulkification stops being a rule you follow and becomes the only design that makes sense.</p>
@@ -33,20 +52,38 @@
       </span>
       <span><time datetime="2026-08-04">4 August 2026</time></span>
       <span>6 min read</span>
+      <span>1,240 words</span>
     </div>
-    <span class="ns-posthead__cover ns-ph ns-ph--sm" aria-hidden="true"></span>
-    <span class="ns-posthead__credit">Illustration · Namaste Salesforce</span>
+    <!-- The hero image. .ns-posthead__cover is a 16:9 slot that takes an
+         <img> directly:
+
+           <img class="ns-posthead__cover" src="/covers/trigger-201.jpg"
+                alt="" width="1600" height="900">
+
+         Until there is one it carries .ns-ph with a label. A placeholder is
+         the right filler HERE — unlike a card cover, where a glyph is a
+         finished answer — because a post hero is a photograph or an
+         illustration somebody has to make, and the slot should look
+         unfinished until they do. -->
+    <span class="ns-posthead__cover ns-ph" data-ph="Cover image" aria-hidden="true"></span>
+    <span class="ns-posthead__credit">Illustration &middot; Namaste Salesforce</span>
   </div>
 </header>
 
 <div class="ns-post">
-  <!-- Hand-author the outline, OR give the nav data-toc-from="#post-body"
-       and assets/js/toc.js builds it from the article's own h2/h3 and adds
-       ids to any heading missing one. Either way it is real anchor links
-       that work with JavaScript off. -->
-  <nav class="ns-post__rail ns-toc" aria-label="On this page" data-toc-from="#post-body">
-    <p class="ns-toc__title">On this page</p>
-  </nav>
+  <!-- The share rail leads. It is written FIRST because it is drawn first —
+       a rail placed on the leading edge with grid but written last hands a
+       keyboard user a focus order that jumps across the page and back. Four
+       labelled buttons ahead of the article is the smaller cost. -->
+  <aside class="ns-post__aside ns-share ns-share--rail">
+    <span class="ns-share__label">Share</span>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save for later"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
+  </aside>
+
+
 
   <article class="ns-post__body">
     <!-- The series box sits above the text, not at the foot. -->
@@ -162,11 +199,18 @@
     </div>
   </article>
 
-  <aside class="ns-post__aside ns-share ns-share--rail">
-    <span class="ns-share__label">Share</span>
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></button>
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save for later"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
-  </aside>
+
+
+  <!-- The outline trails the article, beside the text it indexes. Hand-author
+       it, OR give the nav data-toc-from="#post-body" and assets/js/toc.js
+       builds it from the article's own h2/h3 and adds ids to any heading
+       missing one. Either way it is real anchor links that work with
+       JavaScript off. -->
+  <!-- Hand-author the outline, OR give the nav data-toc-from="#post-body"
+       and assets/js/toc.js builds it from the article's own h2/h3 and adds
+       ids to any heading missing one. Either way it is real anchor links
+       that work with JavaScript off. -->
+  <nav class="ns-post__rail ns-toc" aria-label="On this page" data-toc-from="#post-body">
+    <p class="ns-toc__title">On this page</p>
+  </nav>
 </div>

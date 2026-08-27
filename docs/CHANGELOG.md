@@ -17,6 +17,65 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — two post templates, not three
+
+`blog-post-wide.html` is gone. It was a template, a demo and a doc entry
+standing for one CSS modifier, and "with a sidebar or without one" is a
+distinction a reader can hold where "rails, sidebar, or neither" is not.
+`.ns-post--wide` still exists for a page that wants the measure and nothing
+beside it; it did not need a page of its own to say so.
+
+### Changed — share on the leading edge, the outline on the trailing one
+
+`.ns-post` is now `share rail | article | TOC rail`. The two rails do
+opposite jobs: the outline is about *this* page and belongs beside the text
+it indexes, on the side the eye returns to after a line; the share rail is
+about what you do with the page afterwards and belongs out of the reading
+path. The share rail is also the narrower of the two, so putting it first
+keeps the gap between the page edge and the text small.
+
+**The DOM follows the visual order** — aside, article, nav — rather than
+being reordered with grid placement. A share rail drawn on the leading edge
+but written last hands a keyboard user a focus order that jumps across the
+page and back; four labelled buttons ahead of the article is the smaller
+cost. Verified: DOM order and left-to-right position agree.
+
+### Changed — the post hero, and what belongs in a sidebar
+
+Both templates carry a real 16:9 hero slot. It holds `.ns-ph` with a label
+until there is an image, which is right *here* even though it is wrong on a
+card cover: a post hero is a photograph or an illustration somebody has to
+make, and the slot should look unfinished until they do.
+
+**The author is out of the sidebar.** A bio in the rail and a bio under the
+article is the same block twice, and the one under the article is the one
+that belongs — a reader wants to know who wrote it after reading it, not
+while deciding whether to. The rail is for what to do next, ordered by how
+much each thing asks: related reading, then courses, then the training CTA,
+then the newsletter, then categories, with the paid slot last.
+
+`.ns-widget__facts` was added for the two checkable lines under the training
+widget's paragraph.
+
+The series box moved from the rail to above the article, where a reader
+landing on part 2 from search needs it — telling them after they have read
+it is telling them too late.
+
+### Fixed — a name set as a serial number, and a doubled hairline
+
+`.ns-postmeta` set the whole line in tracked uppercase monospace, including
+the author's **name**. A date, a reading time and a word count are values
+and belong in that voice; a person's name is not one, and beside them it
+read exactly like a serial number. The container keeps the value voice and
+`.ns-postmeta__author` opts out — one line, two registers, each half set as
+what it is. Same defect already pulled out of `.ns-quote`'s attribution, the
+CTA fine print and the stat labels.
+
+`.ns-blog-archive` ends in a rule, and the widget stack draws one between
+siblings, so a recent-posts widget put two hairlines a few pixels apart with
+nothing between them — which reads as a rendering fault rather than a
+separator. The last row drops its rule inside a widget only.
+
 ### Added — the single post at all three widths, and `.ns-widget`
 
 `.ns-post--sidebar` and `.ns-post--wide` have existed in the stylesheet for a

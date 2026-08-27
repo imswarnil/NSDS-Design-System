@@ -6,12 +6,12 @@
   Next.js → the markup contract the components implement.
 
   This is `.ns-post--sidebar`: the reading column with a real sidebar on the
-  END side, for a post that has to carry a newsletter, a popular shelf or a
-  sponsor. Compare:
+  END side, for a post that has to carry a newsletter, a course shelf or a
+  sponsor. There are two single-post templates and this is the one WITH a
+  sidebar:
 
-    blog-post.html          TOC rail | prose | share rail   (reference)
-    blog-post-sidebar.html  prose | sidebar                 (this file)
-    blog-post-wide.html     prose, nothing beside it        (an essay)
+    blog-post.html          share | article | outline
+    blog-post-sidebar.html  article | sidebar               (this file)
 
   THE TOC RAIL IS GONE ON PURPOSE. A page cannot put navigation on both
   sides of the text and still read as text — so the sidebar layout drops the
@@ -53,6 +53,12 @@
       <span>9 min read</span>
       <span>1,940 words</span>
     </div>
+    <!-- The hero image. Takes an <img class="ns-posthead__cover"> directly;
+         until there is one it carries .ns-ph with a label, because a post
+         hero is a picture somebody has to make and the slot should look
+         unfinished until they do. -->
+    <span class="ns-posthead__cover ns-ph" data-ph="Cover image" aria-hidden="true"></span>
+    <span class="ns-posthead__credit">Illustration &middot; Namaste Salesforce</span>
   </div>
 </header>
 
@@ -68,6 +74,19 @@
       <div>
         <span class="ns-notice__date">Updated <time datetime="2026-08-19">19 August 2026</time></span>
         <p class="ns-notice__text">Rewritten for Summer &rsquo;26. The standard index threshold changed for formula fields, and two of the numbers below were wrong the day the release notes landed.</p>
+      </div>
+    </div>
+
+    <!-- The series box, above the text: a reader landing on part 2 from
+         search has no idea part 1 exists, and telling them after they have
+         read this one is telling them too late. -->
+    <div class="ns-series" style="margin-block-end:var(--space-6)">
+      <span class="ns-series__label">Part 2 of 4 &middot; Query performance</span>
+      <div class="ns-series__list">
+        <a class="ns-series__item" href="#" data-state="done">Selectivity from first principles</a>
+        <span class="ns-series__item" aria-current="true">What the query planner actually does</span>
+        <a class="ns-series__item" href="#">Composite requests, end to end</a>
+        <a class="ns-series__item" href="#">Large data volumes in practice</a>
       </div>
     </div>
 
@@ -196,28 +215,78 @@
   </article>
 
   <!-- ===================== THE SIDEBAR =====================
-       Five widgets, and exactly ONE of them boxed. A sidebar of bordered
-       cards competes with the article for attention, and the article has to
-       win — so the newsletter, the only widget with an action in it, gets
-       the edge, and the rest are a title and their content separated by
-       space and a hairline. -->
+       WHAT IS NOT IN HERE IS THE AUTHOR. A bio in the rail and a bio under
+       the article is the same block twice, and the one under the article is
+       the one that belongs: a reader wants to know who wrote it AFTER
+       reading it, not while deciding whether to. The rail is for what to do
+       NEXT — read more, learn more, subscribe.
+
+       Five widgets, and exactly ONE boxed. A sidebar of bordered cards
+       competes with the article for attention and the article has to win, so
+       the edge goes to the single widget with a real commitment in it.
+
+       Order is by how much it asks of the reader: keep reading (related),
+       then go deeper (courses), then commit (join), then subscribe, then the
+       paid slot last. -->
   <aside class="ns-post__side">
     <div class="ns-widgets">
+
       <div class="ns-widget">
-        <div class="ns-widget__head"><span class="ns-widget__title">Written by</span></div>
+        <div class="ns-widget__head">
+          <span class="ns-widget__title">Related reading</span>
+          <a class="ns-widget__more" href="/tag/soql">All</a>
+        </div>
         <div class="ns-widget__body">
-          <div class="ns-widget__person">
-            <img class="ns-widget__avatar" src="/assets/logo/favicon.svg" alt="">
-            <span class="ns-widget__who">
-              <span class="ns-widget__name">Swarnil Singhai</span>
-              <span class="ns-widget__role">Salesforce Architect</span>
-            </span>
+          <div class="ns-blog-archive">
+            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
+            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>
+            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">02 Jul</span><span class="ns-blog-archive__title">Flow or Apex? A decision table</span><span class="ns-blog-archive__read">5m</span></a>
           </div>
-          <p class="ns-widget__text">Writes about the model first and the syntax second.</p>
         </div>
       </div>
 
+      <!-- Courses. --compact is the no-media course card: at rail width a
+           16:9 cover is 288px of picture above three lines of text, which
+           makes the rail a gallery. The meta row is the whole value here. -->
+      <div class="ns-widget">
+        <div class="ns-widget__head">
+          <span class="ns-widget__title">Learn this properly</span>
+          <a class="ns-widget__more" href="/courses">All 12</a>
+        </div>
+        <div class="ns-widget__body">
+          <div class="ns-card ns-ccard ns-ccard--compact">
+            <div class="ns-card__body">
+              <span class="ns-card__kicker">// Course</span>
+              <a class="ns-card__link" href="#"><span class="ns-card__title">SOQL and the query planner</span></a>
+              <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>9 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>2h 40m</span></span>
+            </div>
+          </div>
+          <div class="ns-card ns-ccard ns-ccard--compact">
+            <div class="ns-card__body">
+              <span class="ns-card__kicker">// Course</span>
+              <a class="ns-card__link" href="#"><span class="ns-card__title">Large data volumes</span></a>
+              <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>11 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>3h 15m</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The free training, and the one commitment on the page. Boxed
+           because it is the widget with an account behind it. -->
       <div class="ns-widget ns-widget--boxed">
+        <div class="ns-widget__head"><span class="ns-widget__title">Start the training</span></div>
+        <div class="ns-widget__body">
+          <p class="ns-widget__text">150 written modules in a fixed order, from your first org to Apex you can defend. 120 of them are free, in full, with no account.</p>
+          <ul class="ns-widget__facts">
+            <li><i class="ph ph-check" aria-hidden="true"></i><span><b>120</b> free modules</span></li>
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Every lab in your own org</span></li>
+          </ul>
+          <a class="ns-btn ns-btn--primary ns-btn--block" href="/training">Start free</a>
+          <a class="ns-btn ns-btn--quiet ns-btn--block" href="/join">Join the platform</a>
+        </div>
+      </div>
+
+      <div class="ns-widget">
         <div class="ns-widget__head"><span class="ns-widget__title">Get new posts</span></div>
         <div class="ns-widget__body">
           <!-- The existing Newsletter pattern, stacked for a narrow rail.
@@ -225,7 +294,7 @@
           <form class="ns-field">
             <label class="ns-visually-hidden" for="side-sub">Email address</label>
             <input class="ns-input" id="side-sub" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-            <button class="ns-btn ns-btn--primary ns-btn--block" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button>
+            <button class="ns-btn ns-btn--outline ns-btn--block" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button>
             <p class="ns-field__help">One email when something ships. No course pitches.</p>
           </form>
         </div>
@@ -242,35 +311,6 @@
             <a class="ns-tag ns-tag--pill" href="/tag/flows">Flows <span class="ns-tag__count">18</span></a>
             <a class="ns-tag ns-tag--pill" href="/tag/soql">SOQL <span class="ns-tag__count">9</span></a>
             <a class="ns-tag ns-tag--pill" href="/tag/architecture">Architecture <span class="ns-tag__count">7</span></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="ns-widget">
-        <div class="ns-widget__head">
-          <span class="ns-widget__title">Recent posts</span>
-          <a class="ns-widget__more" href="/blog">All</a>
-        </div>
-        <div class="ns-widget__body">
-          <div class="ns-blog-archive">
-            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
-            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>
-            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">02 Jul</span><span class="ns-blog-archive__title">Flow or Apex? A decision table</span><span class="ns-blog-archive__read">5m</span></a>
-          </div>
-        </div>
-      </div>
-
-      <div class="ns-widget">
-        <div class="ns-widget__head"><span class="ns-widget__title">In this series</span></div>
-        <div class="ns-widget__body">
-          <div class="ns-series">
-            <span class="ns-series__label">Part 2 of 4 &middot; Query performance</span>
-            <div class="ns-series__list">
-              <a class="ns-series__item" href="#" data-state="done">Selectivity from first principles</a>
-              <span class="ns-series__item" aria-current="true">What the query planner actually does</span>
-              <a class="ns-series__item" href="#">Composite requests, end to end</a>
-              <a class="ns-series__item" href="#">Large data volumes in practice</a>
-            </div>
           </div>
         </div>
       </div>

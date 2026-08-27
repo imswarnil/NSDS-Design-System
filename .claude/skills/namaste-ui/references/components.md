@@ -1318,16 +1318,17 @@ A titled block in a sidebar — categories, recent posts, a newsletter, the auth
 
 ### Post layout & TOC `.ns-post`
 
-One layout, three widths. The default is TOC rail | article | share rail; --sidebar swaps both rails for one real sidebar on the end side; --wide drops everything. The article column never widens whichever rails are present: the measure is the point of the page, and a longer line does not become more readable because there is room for it. That is why these are variants of one layout rather than three layouts.
+One layout, two pages. The default is share rail | article | outline; --sidebar swaps both rails for one real sidebar on the end side. --wide exists for a page that wants the measure and nothing beside it. The article column never widens whichever rails are present: the measure is the point of the page, and a longer line does not become more readable because there is room for it.
 
 **Use it for**
-- (default) REFERENCE material — a long technical piece a reader returns to and navigates within
-- --sidebar a post that has to carry a newsletter, a popular shelf or a sponsor
-- --wide an ESSAY — a piece read start to finish, once
-- Full pages: rails · sidebar · no sidebar
+- (default) a post read straight through, with sharing out of the reading path and the outline beside the text it indexes
+- --sidebar a post that has to carry related reading, a course shelf, a signup or a sponsor
+- --wide as a modifier, when a page wants neither rail — it does not need a template of its own
+- Full pages: no sidebar · with sidebar
 
 **Not for**
 - A TOC rail AND a sidebar. A page cannot put navigation on both sides of the text and still read as text — --sidebar moves the outline into the article as a disclosure
+- The author’s bio in the sidebar. A reader wants to know who wrote it AFTER reading it; a bio in the rail and a bio under the article is the same block twice
 - A TOC on a short post. Four headings is furniture pretending to be navigation: it costs the reader a decision and gives them nothing
 - Widening the article because a rail was dropped
 - Three levels of heading in the outline. Two is the limit; a page needing three needs splitting

@@ -9317,8 +9317,17 @@
 
   /* ========================================================= Post meta ====
      Author · date · reading time. The same line on the card, in the header
-     and in the footer, so a reader learns it once. Mono, because it is data
-     about the text rather than part of it. */
+     and in the footer, so a reader learns it once.
+
+     THE LINE IS MIXED, AND IT HAS TO BE. A date, a reading time and a word
+     count are VALUES: mono, tabular, tracked, and they line up down a column
+     of cards because of it. A person's NAME is not a value — and set in
+     tracked uppercase monospace beside them it read as a serial number,
+     which is the exact defect this system has been pulling out of
+     .ns-quote's attribution, the CTA fine print and the stat labels.
+
+     So the container carries the value voice and the author opts out of it.
+     One line, two registers, and each half set as what it actually is. */
   .ns-postmeta {
     display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-2) var(--space-3);
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -9327,7 +9336,11 @@
   }
   .ns-postmeta > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
   .ns-postmeta__avatar { inline-size: var(--space-6); block-size: var(--space-6); border-radius: var(--radius-pill); object-fit: cover; background: var(--color-surface-sunken); }
-  .ns-postmeta__author { color: var(--color-ink); }
+  .ns-postmeta__author {
+    font-family: var(--font-sans); font-size: var(--size-prose-small);
+    font-weight: var(--weight-semibold); letter-spacing: normal;
+    text-transform: none; color: var(--color-ink);
+  }
   .ns-postmeta a { color: inherit; text-decoration: none; }
   .ns-postmeta a:hover { color: var(--color-brand-600); }
   /* A separator that is not a character in the DOM: middots typed between
@@ -9404,14 +9417,28 @@
   }
 
   /* ====================================================== Post layout ====
-     TOC rail | article | share rail. Three columns is a claim that the two
-     rails earn their width, so they are narrow, sticky, and the first thing
-     dropped: below 80rem the share rail goes, below 64rem the TOC becomes a
-     collapsed <details> above the text. The article column NEVER widens to
-     fill the space they leave — the measure is the point. */
+     share rail | article | TOC rail. Two rails is a claim that both earn
+     their width, so they are narrow, sticky, and the first thing dropped:
+     below 80rem the share rail goes, below 64rem the TOC becomes a collapsed
+     <details> above the text. The article column NEVER widens to fill the
+     space they leave — the measure is the point.
+
+     SHARE ON THE LEADING EDGE, OUTLINE ON THE TRAILING ONE, and the order is
+     deliberate. The two rails are doing opposite jobs: the outline is about
+     THIS page and belongs beside the text it indexes, on the side the eye
+     returns to after a line; the share rail is about what you do with the
+     page afterwards and belongs out of the reading path entirely. It is also
+     the narrower of the two, so putting it first keeps the gap between the
+     page edge and the text small at the width where both are present.
+
+     The DOM follows the visual order — aside, article, nav — rather than
+     being reordered with grid placement. A share rail placed visually first
+     but written last gives a keyboard user a focus order that jumps across
+     the page and back, and four labelled buttons ahead of the article is a
+     smaller cost than that. */
   .ns-post {
     display: grid;
-    grid-template-columns: 14rem minmax(0, var(--container-prose)) 3.5rem;
+    grid-template-columns: 3.5rem minmax(0, var(--container-prose)) 14rem;
     gap: var(--space-10);
     justify-content: center;
     align-items: start;
@@ -9426,7 +9453,9 @@
   .ns-post__aside { display: flex; flex-direction: column; align-items: center; gap: var(--space-2); }
 
   @media (max-width: 79.999rem) {
-    .ns-post { grid-template-columns: 14rem minmax(0, var(--container-prose)); }
+    /* The share rail is the first thing to go, so the remaining two columns
+       are the article and the outline, in that order. */
+    .ns-post { grid-template-columns: minmax(0, var(--container-prose)) 14rem; }
     .ns-post__aside { display: none; }
   }
   @media (max-width: 63.999rem) {
@@ -9616,6 +9645,12 @@
     text-decoration: none; color: var(--color-ink);
   }
   .ns-blog-archive__row:hover .ns-blog-archive__title { color: var(--color-brand-600); }
+  /* Inside a widget the last row drops its rule. The widget stack already
+     draws a hairline between siblings, so an archive that ends in one puts
+     two rules a few pixels apart with nothing between them — which reads as
+     a rendering fault rather than as a separator. The list keeps its closing
+     rule everywhere else, where it is the only thing marking the end. */
+  .ns-widget .ns-blog-archive__row:last-child { border-block-end: 0; }
   .ns-blog-archive__date, .ns-blog-archive__read {
     font-family: var(--font-mono); font-size: var(--size-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase;
@@ -9890,6 +9925,16 @@
   .ns-widget__more:hover { text-decoration: underline; }
   .ns-widget__body { display: flex; flex-direction: column; gap: var(--space-3); min-inline-size: 0; }
   .ns-widget__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); margin: 0; text-wrap: pretty; }
+  /* Two or three checkable facts under a widget's paragraph — what the
+     offer actually contains. One line each: a widget that needs a list of
+     six is a landing page trying to fit in 18rem. */
+  .ns-widget__facts { display: grid; gap: var(--space-1-5); margin: 0; padding: 0; list-style: none; }
+  .ns-widget__facts li {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    font-size: var(--size-prose-small); color: var(--color-muted);
+  }
+  .ns-widget__facts b { color: var(--color-ink); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; }
+  .ns-widget__facts i { color: var(--color-success); }
   /* The boxed variant. One per sidebar. */
   .ns-widget--boxed {
     padding: var(--pad-card);
