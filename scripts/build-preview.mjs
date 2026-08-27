@@ -1977,6 +1977,12 @@ const DEMOS = [
   { out: "demo-navbar-course.html", tpl: "navbar-course.html", title: "Course bar — full width demo", back: "c-coursenav.html", note: "the lesson player's chrome; resize below 48rem to watch it shed", extras: ["course-player.html"] },
   { out: "demo-navbar-dashboard.html", tpl: "navbar-dashboard.html", title: "Dashboard bar — full width demo", back: "c-coursenav.html", note: "signed-in app bar: continue menu, streak, notifications, account", extras: ["search-modal.html"] },
   { out: "demo-blog-post.html", tpl: "blog-post.html", title: "Blog post — full page", back: "c-post-layout.html", note: "scroll: the TOC marks the section you are in, the hairline tracks the article" },
+  /* The same post page at its three widths. They are one layout with the
+     rails added and removed, and the demos exist side by side because the
+     thing worth seeing is what does NOT change: the measure is identical in
+     all three. */
+  { out: "demo-blog-post-sidebar.html", tpl: "blog-post-sidebar.html", title: "Blog post, sidebar — full page", back: "c-post-layout.html", note: "prose + a real sidebar: five widgets, one of them boxed. The TOC moves inside the article as a disclosure — a page cannot put navigation on both sides of the text" },
+  { out: "demo-blog-post-wide.html", tpl: "blog-post-wide.html", title: "Blog post, no sidebar — full page", back: "c-post-layout.html", note: "the measure, centred, nothing beside it. For an essay: share moves to the foot, and there is no outline because a TOC on four headings is furniture" },
   { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
   /* The tag pages are the index with its header swapped and its featured
      card dropped — which is the claim worth being able to check side by

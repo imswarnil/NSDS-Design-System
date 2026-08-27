@@ -2,7 +2,7 @@
 
 # Components
 
-174 documented components. Each entry carries what the
+175 documented components. Each entry carries what the
 component is for and — more usefully — what it is NOT for, because most
 misuse in a design system is a component doing a job a neighbouring one does
 better.
@@ -1301,16 +1301,35 @@ The top of a post, in five versions. Same parts in the same order every time —
 - A page hero — that is Hero, in Sections
 - Repeating the standfirst as the opening paragraph
 
-### Post layout & TOC `.ns-post`
+### Sidebar widget `.ns-widget`
 
-TOC rail | article | share rail. Three columns is a claim that both rails earn their width, so they are narrow, sticky, and the first things dropped — the share rail below 80rem, the TOC folding into a disclosure below 64rem. The article column never widens to fill the space they leave: the measure is the point of the page. The TOC is a real nav of real anchor links that works with JS off; the scroll-spy only adds aria-current.
+A titled block in a sidebar — categories, recent posts, a newsletter, the author, a sponsor. Most are unboxed: a title and its content, separated from the next by space and a hairline.
 
 **Use it for**
-- Any post longer than about four screens
-- Documentation pages with the same shape
+- The sidebar of Post layout --sidebar, or a blog index rail
+- --boxed on exactly ONE widget per sidebar — the one with an action in it, usually the newsletter
+- __more for a quiet “All” link beside the title
 
 **Not for**
-- A short post — a TOC with three entries is chrome
+- Five boxed cards. A sidebar of bordered boxes competes with the article for attention, and the article has to win
+- A mono uppercase title. That is .ns-railbox in the admin, where the title is a field label; a blog sidebar’s headings are words a reader reads, and mono is for values
+- Navigation the page depends on. A widget is supplementary by definition — it is the first thing gone below --lg
+- Buttons. A sidebar with five buttons in it reads as a toolbar
+
+### Post layout & TOC `.ns-post`
+
+One layout, three widths. The default is TOC rail | article | share rail; --sidebar swaps both rails for one real sidebar on the end side; --wide drops everything. The article column never widens whichever rails are present: the measure is the point of the page, and a longer line does not become more readable because there is room for it. That is why these are variants of one layout rather than three layouts.
+
+**Use it for**
+- (default) REFERENCE material — a long technical piece a reader returns to and navigates within
+- --sidebar a post that has to carry a newsletter, a popular shelf or a sponsor
+- --wide an ESSAY — a piece read start to finish, once
+- Full pages: rails · sidebar · no sidebar
+
+**Not for**
+- A TOC rail AND a sidebar. A page cannot put navigation on both sides of the text and still read as text — --sidebar moves the outline into the article as a disclosure
+- A TOC on a short post. Four headings is furniture pretending to be navigation: it costs the reader a decision and gives them nothing
+- Widening the article because a rail was dropped
 - Three levels of heading in the outline. Two is the limit; a page needing three needs splitting
 
 ### Post footer `.ns-authorbox`

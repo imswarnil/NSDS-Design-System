@@ -1,0 +1,294 @@
+<!--
+  NS Design System template — blog post, SIDEBAR layout
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → post.hbs with {{title}} / {{content}} / {{primary_author}};
+  Next.js → the markup contract the components implement.
+
+  This is `.ns-post--sidebar`: the reading column with a real sidebar on the
+  END side, for a post that has to carry a newsletter, a popular shelf or a
+  sponsor. Compare:
+
+    blog-post.html          TOC rail | prose | share rail   (reference)
+    blog-post-sidebar.html  prose | sidebar                 (this file)
+    blog-post-wide.html     prose, nothing beside it        (an essay)
+
+  THE TOC RAIL IS GONE ON PURPOSE. A page cannot put navigation on both
+  sides of the text and still read as text — so the sidebar layout drops the
+  outline and moves it inside the article as a disclosure, where it costs
+  nothing when closed.
+
+  WHAT DOES NOT CHANGE IS THE MEASURE. .ns-post__body is the same width in
+  all three layouts. The rails come and go; the reading line stays where it
+  was. That is why these are variants of one layout rather than three.
+-->
+
+<!-- The only chrome the page carries: a 2px hairline tracking the article. -->
+<span class="ns-lprogress ns-lprogress--article" data-target="#post-body"
+      role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
+
+<header class="ns-posthead">
+  <div class="ns-posthead__inner">
+    <!-- Breadcrumb before the category tag, because "where am I" is a
+         different question from "what is this filed under", and a reader
+         arriving from search has neither answer. -->
+    <nav class="ns-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <a href="/blog">Writing</a>
+      <a href="/tag/soql">SOQL</a>
+    </nav>
+    <a class="ns-tag ns-posthead__cat" href="/tag/soql">SOQL</a>
+    <h1 class="ns-posthead__title">What the query planner actually does</h1>
+    <p class="ns-posthead__standfirst">Selectivity, indexes, and why your report times out at fifty thousand rows while the same query is instant in a sandbox with four hundred.</p>
+
+    <!-- The meta line. Author, publish date, reading time — the three facts
+         a reader checks before committing. The times are <time> elements, so
+         they are machine-readable as well as legible. -->
+    <div class="ns-postmeta">
+      <span>
+        <img class="ns-postmeta__avatar" src="/assets/logo/favicon.svg" alt="">
+        <a class="ns-postmeta__author" href="/author/swarnil">Swarnil Singhai</a>
+      </span>
+      <span><time datetime="2026-07-14">14 July 2026</time></span>
+      <span>9 min read</span>
+      <span>1,940 words</span>
+    </div>
+  </div>
+</header>
+
+<div class="ns-post ns-post--sidebar">
+  <article class="ns-post__body" id="post-body">
+
+    <!-- Updated after publication. It sits at the TOP: a reader who needs to
+         know the piece was revised needs to know it before reading it, not
+         after. Uses .ns-notice, the article-scale note — not .ns-callout,
+         which is for something inside the argument. -->
+    <div class="ns-notice">
+      <i class="ph ph-arrows-clockwise" aria-hidden="true"></i>
+      <div>
+        <span class="ns-notice__date">Updated <time datetime="2026-08-19">19 August 2026</time></span>
+        <p class="ns-notice__text">Rewritten for Summer &rsquo;26. The standard index threshold changed for formula fields, and two of the numbers below were wrong the day the release notes landed.</p>
+      </div>
+    </div>
+
+    <!-- The outline, INSIDE the article, because the sidebar has the rail's
+         old column. A disclosure so it costs nothing when closed, and real
+         anchor links so it works with JavaScript off. -->
+    <details class="ns-toc ns-toc--collapsible">
+      <summary class="ns-toc__title">On this page</summary>
+      <a class="ns-toc__link" href="#selectivity">What selectivity means to the optimiser</a>
+      <a class="ns-toc__link" href="#indexes">Which fields are actually indexed</a>
+      <a class="ns-toc__link" href="#thresholds">The thresholds, and where they come from</a>
+      <a class="ns-toc__link" href="#reading">Reading a query plan without guessing</a>
+    </details>
+
+    <div class="ns-prose">
+      <p class="ns-lead">A query that returns in ninety milliseconds against four hundred records and times out against four hundred thousand has not got slower. It has stopped being selective, and the optimiser has quietly changed its mind about how to run it.</p>
+
+      <h2 id="selectivity">What selectivity means to the optimiser</h2>
+      <p>Selectivity is not a property of a field. It is a property of a <em>filter</em> against the data actually in the table right now: the proportion of rows a <code>WHERE</code> clause eliminates. A status field with two values is unselective on the common value and highly selective on the rare one, and the same query is fast for one user and slow for another for exactly that reason.</p>
+
+      <div class="ns-callout ns-callout--tip">
+        <i class="ph ph-lightbulb" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Tip</span>If a query is fast in a sandbox and slow in production, do not look at the query. Look at how many rows the filter removes in each.</div>
+      </div>
+
+      <h2 id="indexes">Which fields are actually indexed</h2>
+      <p>Standard indexes exist on the id, the name, the owner, the audit fields, and any field marked unique or as an external id. Everything else is a custom index somebody asked for &mdash; and a custom index on a field that is never selective buys nothing.</p>
+
+      <figure class="ns-code" data-lang="soql">
+        <figcaption class="ns-code__bar">
+          <span class="ns-code__lang">SOQL</span>
+          <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>selective.soql</span></span>
+        </figcaption>
+        <div class="ns-code__body">
+          <pre class="ns-code__gutter" aria-hidden="true">1
+2</pre>
+          <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-kw">SELECT</span> <span class="ns-tok-type">Id</span> <span class="ns-tok-kw">FROM</span> <span class="ns-tok-type">Case</span></span><span class="ns-code__line"><span class="ns-tok-kw">WHERE</span> <span class="ns-tok-type">ExternalRef__c</span> <span class="ns-tok-punct">=</span> <span class="ns-tok-str">'A-99213'</span></span></code></pre>
+        </div>
+      </figure>
+
+      <h2 id="thresholds">The thresholds, and where they come from</h2>
+      <p>A standard index is considered when the filter matches under 30% of the first million rows and under 15% of everything above that, capped at a million matches. A custom index is tighter: 10%, and 333,333.</p>
+
+      <div class="ns-callout ns-callout--warn">
+        <i class="ph ph-warning" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Watch out</span>These are thresholds, not promises. The optimiser can decline an index it is entitled to use, and the query plan is the only thing that tells you it did.</div>
+      </div>
+
+      <h2 id="reading">Reading a query plan without guessing</h2>
+      <p>The developer console&rsquo;s query plan tool gives every candidate plan a cost. Under 1.0 means an index will be used; at or above it, a full table scan. That number is the entire conversation.</p>
+
+      <hr>
+      <p>Next: the composite request pattern, and why five round trips are usually one.</p>
+    </div>
+
+    <!-- Post footer: tags, then bio, then prev/next, then the discussion. -->
+    <div class="ns-postfoot">
+      <div class="ns-tagrow">
+        <a class="ns-tag ns-tag--pill" href="/tag/soql">SOQL</a>
+        <a class="ns-tag ns-tag--pill" href="/tag/performance">Performance</a>
+        <a class="ns-tag ns-tag--pill" href="/tag/architecture">Architecture</a>
+      </div>
+
+      <div class="ns-authorbox">
+        <img class="ns-authorbox__avatar" src="/assets/logo/favicon.svg" alt="">
+        <div>
+          <p class="ns-authorbox__name"><a href="/author/swarnil">Swarnil Singhai</a></p>
+          <p class="ns-authorbox__role">Salesforce Architect &middot; 11&times; certified</p>
+          <p class="ns-authorbox__bio">Eleven years building on the platform, most of them cleaning up other people&rsquo;s triggers. Writes about the model first and the syntax second.</p>
+          <div class="ns-authorbox__links">
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="/author/swarnil">All posts</a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <nav class="ns-postnav" aria-label="More posts">
+        <a class="ns-postnav__link" href="#">
+          <span class="ns-postnav__dir"><i class="ph ph-caret-left" aria-hidden="true"></i> Previous</span>
+          <span class="ns-postnav__title">The data model is the product</span>
+        </a>
+        <a class="ns-postnav__link ns-postnav__link--next" href="#">
+          <span class="ns-postnav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+          <span class="ns-postnav__title">Composite requests, end to end</span>
+        </a>
+      </nav>
+
+      <section class="ns-comments">
+        <div class="ns-comments__head">
+          <h2 class="ns-comments__count">3 comments</h2>
+        </div>
+        <div class="ns-comments__list">
+          <article class="ns-comment ns-comment--pinned">
+            <img class="ns-comment__avatar" src="/assets/logo/favicon.svg" alt="">
+            <div class="ns-comment__main">
+              <p class="ns-comment__head">
+                <span class="ns-comment__author">Priya Raman</span>
+                <span class="ns-comment__badge">Editor</span>
+                <time class="ns-comment__time" datetime="2026-07-15">15 Jul</time>
+              </p>
+              <p class="ns-comment__text">Worth adding that the thresholds are per-object, so a query joining two objects can be selective on one and not the other.</p>
+              <p class="ns-comment__actions"><button class="ns-btn ns-btn--quiet ns-btn--sm" type="button">Reply</button></p>
+            </div>
+          </article>
+          <article class="ns-comment">
+            <img class="ns-comment__avatar" src="/assets/logo/favicon.svg" alt="">
+            <div class="ns-comment__main">
+              <p class="ns-comment__head">
+                <span class="ns-comment__author">Ravi K.</span>
+                <time class="ns-comment__time" datetime="2026-07-16">16 Jul</time>
+              </p>
+              <p class="ns-comment__text">The query plan cost under 1.0 rule is the single most useful thing I have read this year.</p>
+              <p class="ns-comment__actions"><button class="ns-btn ns-btn--quiet ns-btn--sm" type="button">Reply</button></p>
+            </div>
+          </article>
+        </div>
+        <form class="ns-commentform">
+          <div class="ns-commentform__row">
+            <label class="ns-visually-hidden" for="post-comment">Add a comment</label>
+            <textarea class="ns-input" id="post-comment" rows="3" placeholder="Add a comment"></textarea>
+          </div>
+          <p class="ns-commentform__hint">Markdown works. Be kind.</p>
+        </form>
+      </section>
+    </div>
+  </article>
+
+  <!-- ===================== THE SIDEBAR =====================
+       Five widgets, and exactly ONE of them boxed. A sidebar of bordered
+       cards competes with the article for attention, and the article has to
+       win — so the newsletter, the only widget with an action in it, gets
+       the edge, and the rest are a title and their content separated by
+       space and a hairline. -->
+  <aside class="ns-post__side">
+    <div class="ns-widgets">
+      <div class="ns-widget">
+        <div class="ns-widget__head"><span class="ns-widget__title">Written by</span></div>
+        <div class="ns-widget__body">
+          <div class="ns-widget__person">
+            <img class="ns-widget__avatar" src="/assets/logo/favicon.svg" alt="">
+            <span class="ns-widget__who">
+              <span class="ns-widget__name">Swarnil Singhai</span>
+              <span class="ns-widget__role">Salesforce Architect</span>
+            </span>
+          </div>
+          <p class="ns-widget__text">Writes about the model first and the syntax second.</p>
+        </div>
+      </div>
+
+      <div class="ns-widget ns-widget--boxed">
+        <div class="ns-widget__head"><span class="ns-widget__title">Get new posts</span></div>
+        <div class="ns-widget__body">
+          <!-- The existing Newsletter pattern, stacked for a narrow rail.
+               Not a second subscribe component. -->
+          <form class="ns-field">
+            <label class="ns-visually-hidden" for="side-sub">Email address</label>
+            <input class="ns-input" id="side-sub" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+            <button class="ns-btn ns-btn--primary ns-btn--block" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button>
+            <p class="ns-field__help">One email when something ships. No course pitches.</p>
+          </form>
+        </div>
+      </div>
+
+      <div class="ns-widget">
+        <div class="ns-widget__head">
+          <span class="ns-widget__title">Categories</span>
+          <a class="ns-widget__more" href="/tags">All</a>
+        </div>
+        <div class="ns-widget__body">
+          <div class="ns-tagrow">
+            <a class="ns-tag ns-tag--pill" href="/tag/apex">Apex <span class="ns-tag__count">24</span></a>
+            <a class="ns-tag ns-tag--pill" href="/tag/flows">Flows <span class="ns-tag__count">18</span></a>
+            <a class="ns-tag ns-tag--pill" href="/tag/soql">SOQL <span class="ns-tag__count">9</span></a>
+            <a class="ns-tag ns-tag--pill" href="/tag/architecture">Architecture <span class="ns-tag__count">7</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ns-widget">
+        <div class="ns-widget__head">
+          <span class="ns-widget__title">Recent posts</span>
+          <a class="ns-widget__more" href="/blog">All</a>
+        </div>
+        <div class="ns-widget__body">
+          <div class="ns-blog-archive">
+            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
+            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>
+            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">02 Jul</span><span class="ns-blog-archive__title">Flow or Apex? A decision table</span><span class="ns-blog-archive__read">5m</span></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ns-widget">
+        <div class="ns-widget__head"><span class="ns-widget__title">In this series</span></div>
+        <div class="ns-widget__body">
+          <div class="ns-series">
+            <span class="ns-series__label">Part 2 of 4 &middot; Query performance</span>
+            <div class="ns-series__list">
+              <a class="ns-series__item" href="#" data-state="done">Selectivity from first principles</a>
+              <span class="ns-series__item" aria-current="true">What the query planner actually does</span>
+              <a class="ns-series__item" href="#">Composite requests, end to end</a>
+              <a class="ns-series__item" href="#">Large data volumes in practice</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- The sponsor, at the FOOT of the rail. One per surface, and never
+           above the content the reader came for. -->
+      <div class="ns-widget">
+        <a class="ns-sponsor ns-sponsor--square" href="#">
+          <span class="ns-sponsor__label">Sponsor</span>
+          <svg class="ns-sponsor__logo" viewBox="0 0 24 24" role="img" aria-label="Orgforce"><use href="/icons/brand-marks.svg#ns-b-orgforce-mark"/></svg>
+          <span class="ns-sponsor__body">
+            <span class="ns-sponsor__name">Orgforce</span>
+            <span class="ns-sponsor__tagline">Deploy without the change set</span>
+            <span class="ns-sponsor__text">A scratch org per pull request.</span>
+          </span>
+          <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+        </a>
+      </div>
+    </div>
+  </aside>
+</div>

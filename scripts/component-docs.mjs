@@ -3637,10 +3637,93 @@ Map<Id, Account> byId = new Map<Id, Account>(
   },
 
   {
+    id: "widget", title: "Sidebar widget", family: "Blog",
+    summary: "A titled block in a sidebar &mdash; categories, recent posts, a newsletter, the author, a sponsor. Most are unboxed: a title and its content, separated from the next by space and a hairline.",
+    use: [
+      "The sidebar of <a href=\"./c-post-layout.html\">Post layout</a> <code>--sidebar</code>, or a blog index rail",
+      "<code>--boxed</code> on exactly ONE widget per sidebar &mdash; the one with an action in it, usually the newsletter",
+      "<code>__more</code> for a quiet \u201cAll\u201d link beside the title",
+    ],
+    not: [
+      "Five boxed cards. A sidebar of bordered boxes competes with the article for attention, and the article has to win",
+      "A mono uppercase title. That is <code>.ns-railbox</code> in the admin, where the title is a field label; a blog sidebar\u2019s headings are words a reader reads, and mono is for values",
+      "Navigation the page depends on. A widget is supplementary by definition &mdash; it is the first thing gone below <code>--lg</code>",
+      "Buttons. A sidebar with five buttons in it reads as a toolbar",
+    ],
+    a11y: [
+      "Each widget is a landmark only if it deserves one &mdash; the categories block is a real <code>&lt;nav&gt;</code> with a name; a recent-posts list is not navigation, it is content",
+      "The title is a <code>span</code>, not a heading, unless the sidebar genuinely forms part of the document outline. A rail of <code>h2</code>s competes with the article\u2019s own headings in a screen reader\u2019s outline",
+      "Widget order is DOM order: the sidebar comes after the article, so a screen reader and a phone both get the post first",
+    ],
+    variants: [
+      { name: "A sidebar", stack: true, note: "Four widgets, one boxed. The rule between the unboxed ones is what makes the stack read as sections rather than as one long column.", html: `<div class="ns-widgets" style="max-inline-size:18rem">
+  <div class="ns-widget">
+    <div class="ns-widget__head"><span class="ns-widget__title">Written by</span></div>
+    <div class="ns-widget__body">
+      <div class="ns-widget__person">
+        <img class="ns-widget__avatar" src="../assets/logo/favicon.svg" alt="">
+        <span class="ns-widget__who">
+          <span class="ns-widget__name">Swarnil Singhai</span>
+          <span class="ns-widget__role">Salesforce Architect</span>
+        </span>
+      </div>
+      <p class="ns-widget__text">Writes about the model first and the syntax second.</p>
+    </div>
+  </div>
+  <div class="ns-widget ns-widget--boxed">
+    <div class="ns-widget__head"><span class="ns-widget__title">Get new posts</span></div>
+    <div class="ns-widget__body">
+      <form class="ns-field">
+        <label class="ns-visually-hidden" for="w-sub">Email address</label>
+        <input class="ns-input" id="w-sub" type="email" placeholder="you@example.com" autocomplete="email">
+        <button class="ns-btn ns-btn--primary ns-btn--block" type="button" style="margin-block-start:var(--space-2)">Subscribe</button>
+        <p class="ns-field__help">One email when something ships.</p>
+      </form>
+    </div>
+  </div>
+  <div class="ns-widget">
+    <div class="ns-widget__head">
+      <span class="ns-widget__title">Categories</span>
+      <a class="ns-widget__more" href="#0">All</a>
+    </div>
+    <div class="ns-widget__body">
+      <div class="ns-tagrow">
+        <a class="ns-tag ns-tag--pill" href="#0">Apex <span class="ns-tag__count">24</span></a>
+        <a class="ns-tag ns-tag--pill" href="#0">Flows <span class="ns-tag__count">18</span></a>
+        <a class="ns-tag ns-tag--pill" href="#0">SOQL <span class="ns-tag__count">9</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="ns-widget">
+    <div class="ns-widget__head">
+      <span class="ns-widget__title">Recent posts</span>
+      <a class="ns-widget__more" href="#0">All</a>
+    </div>
+    <div class="ns-widget__body">
+      <div class="ns-blog-archive">
+        <a class="ns-blog-archive__row" href="#0"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
+        <a class="ns-blog-archive__row" href="#0"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>
+      </div>
+    </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
     id: "post-layout", title: "Post layout & TOC", family: "Blog",
-    summary: "TOC rail | article | share rail. Three columns is a claim that both rails earn their width, so they are narrow, sticky, and the first things dropped — the share rail below 80rem, the TOC folding into a disclosure below 64rem. The article column <strong>never widens</strong> to fill the space they leave: the measure is the point of the page. The TOC is a real nav of real anchor links that works with JS off; the scroll-spy only adds <code>aria-current</code>.",
-    use: ["Any post longer than about four screens", "Documentation pages with the same shape"],
-    not: ["A short post — a TOC with three entries is chrome", "Three levels of heading in the outline. Two is the limit; a page needing three needs splitting"],
+    summary: "One layout, three widths. The default is TOC rail | article | share rail; <code>--sidebar</code> swaps both rails for one real sidebar on the end side; <code>--wide</code> drops everything. The article column <strong>never widens</strong> whichever rails are present: the measure is the point of the page, and a longer line does not become more readable because there is room for it. That is why these are variants of one layout rather than three layouts.",
+    use: [
+      "(default) REFERENCE material — a long technical piece a reader returns to and navigates within",
+      "<code>--sidebar</code> a post that has to carry a newsletter, a popular shelf or a sponsor",
+      "<code>--wide</code> an ESSAY — a piece read start to finish, once",
+      "Full pages: <a href=\"./demo-blog-post.html\">rails</a> &middot; <a href=\"./demo-blog-post-sidebar.html\">sidebar</a> &middot; <a href=\"./demo-blog-post-wide.html\">no sidebar</a>",
+    ],
+    not: [
+      "A TOC rail AND a sidebar. A page cannot put navigation on both sides of the text and still read as text — <code>--sidebar</code> moves the outline into the article as a disclosure",
+      "A TOC on a short post. Four headings is furniture pretending to be navigation: it costs the reader a decision and gives them nothing",
+      "Widening the article because a rail was dropped",
+      "Three levels of heading in the outline. Two is the limit; a page needing three needs splitting",
+    ],
     a11y: [
       "The TOC is a &lt;nav&gt; with an accessible name, containing ordinary anchor links — it works, and is announced, with JavaScript off",
       "The current section is marked with aria-current, the same attribute the navbar and the lesson row use",

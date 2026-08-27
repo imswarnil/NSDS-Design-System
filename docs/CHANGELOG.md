@@ -17,6 +17,71 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — the single post at all three widths, and `.ns-widget`
+
+`.ns-post--sidebar` and `.ns-post--wide` have existed in the stylesheet for a
+while with no template and no demo, which meant two thirds of the post layout
+were undocumented. Both now have a full page:
+
+| Template | Layout | For |
+| --- | --- | --- |
+| `blog-post.html` | TOC rail \| article \| share rail | reference material |
+| `blog-post-sidebar.html` | article \| sidebar | a post carrying a newsletter, a shelf or a sponsor |
+| `blog-post-wide.html` | article alone | an essay |
+
+**The measure is identical in all three** — verified at 672px in each. That
+is the whole reason they are variants of one layout: the rails come and go,
+the reading line does not move. A longer line does not become more readable
+because there is room for it.
+
+The sidebar layout drops the TOC rail and moves the outline into the article
+as a disclosure. A page cannot put navigation on both sides of the text and
+still read as text. The wide layout has no outline at all: four headings is
+furniture pretending to be navigation, and a post that genuinely needs an
+outline is reference material and wants the rail layout.
+
+### Added — `.ns-widget`
+
+A titled block in a sidebar: categories, recent posts, a newsletter, the
+author, a sponsor.
+
+**Not `.ns-railbox`**, which is the admin editor's rail box — a raised card
+with a mono uppercase title, right for "PUBLISH SETTINGS" beside a form
+where the title is a field label. A blog sidebar's headings are words a
+reader reads. Mono is for values.
+
+**Not nothing, either.** The listing rail was hand-rolling each block out of
+`.ns-toc__title` plus an inline `padding-inline: 0` to cancel padding the
+TOC needs and a sidebar does not — three widgets, three copies of the same
+override. An override repeated is a component asking to exist.
+
+Most widgets are unboxed; `--boxed` is for the one with an action in it. A
+sidebar of five bordered cards competes with the article for attention, and
+the article has to win.
+
+`.ns-postfoot` came out of the same observation: the stack of tags, bio,
+pager and comments was an inline `display:grid;gap:…;margin-block-start:…`
+about to be copied into a third template.
+
+### Fixed — three things the build and the browser caught
+
+- **Six invented class names.** `check-markup` rejected `.ns-toc__list`,
+  `.ns-toc__item`, `.ns-prose__lead`, `.ns-code__head`, `.ns-code__name` and
+  `.ns-postfoot` on the first pass. The TOC is flat anchors, the lede is
+  `.ns-lead`, the code header is `.ns-code__bar` / `.ns-code__file`. This is
+  exactly the gate's job and it did it before anything rendered.
+- **The widget stack cancelled its own gap.** `.ns-widgets` had a `gap` and
+  each unboxed widget added a matching `padding-block-start`, so the first
+  version subtracted the gap back off with a negative margin — and the boxed
+  widget, which takes no padding, lost its spacing entirely. Cancelling a gap
+  you set yourself is a sign the gap was wrong. There is no gap now; the
+  following widget owns the margin.
+- **A template comment that described behaviour the CSS does not have.**
+  `.ns-postnav__link--empty` is `visibility: hidden` — a spacer that keeps
+  "Next" on the right rather than letting it slide over and read as a
+  previous. The comment claimed the slot announced itself. It is now
+  `aria-hidden` with the correct explanation.
+
 ### Added — `.claude/skills/namaste-ui/`, the portable skill bundle
 
 A self-contained knowledge pack that lets an agent build in this design

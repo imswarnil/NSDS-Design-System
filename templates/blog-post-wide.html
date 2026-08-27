@@ -1,0 +1,154 @@
+<!--
+  NS Design System template — blog post, NO SIDEBAR
+  =====================================================================
+  Framework-agnostic markup: the same .ns-* classes the React components
+  render. Ghost → post.hbs; Next.js → the markup contract.
+
+  This is `.ns-post--wide`: the measure, centred, and nothing beside it.
+
+  The three single-post layouts, and when each is right:
+
+    blog-post.html          TOC rail | prose | share rail
+                            REFERENCE material — a long technical piece a
+                            reader will return to and navigate within.
+    blog-post-sidebar.html  prose | sidebar
+                            A post that has to carry a newsletter, a
+                            popular shelf or a sponsor.
+    blog-post-wide.html     prose alone                       (this file)
+                            AN ESSAY. A piece read start to finish, once.
+
+  WHY NO OUTLINE HERE, EVEN COLLAPSED. A table of contents on a piece with
+  four headings is furniture pretending to be navigation: it costs a reader
+  a decision and gives them nothing, because they were always going to read
+  the next paragraph. If a post genuinely needs an outline, it is reference
+  material and it wants the rail layout instead.
+
+  WHAT DOES NOT CHANGE IS THE MEASURE. .ns-post__body is exactly as wide
+  here as it is with two rails beside it. Dropping the rails does not widen
+  the text; a longer line does not become more readable because there is
+  room for it.
+
+  The share affordance moves to the foot, since there is no rail to hold it.
+-->
+
+<span class="ns-lprogress ns-lprogress--article" data-target="#post-body"
+      role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
+
+<!-- --center suits an essay: the headline is the event, and there is
+     nothing beside it competing for the first glance. -->
+<header class="ns-posthead ns-posthead--center">
+  <div class="ns-posthead__inner">
+    <nav class="ns-breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Home</a>
+      <a href="/blog">Writing</a>
+      <a href="/tag/architecture">Architecture</a>
+    </nav>
+    <a class="ns-tag ns-posthead__cat" href="/tag/architecture">Architecture</a>
+    <h1 class="ns-posthead__title">The data model is the product</h1>
+    <p class="ns-posthead__standfirst">Every automation problem I have been called in to fix was a schema problem wearing a costume. Here is how to tell the difference before you write a line of Apex.</p>
+    <div class="ns-postmeta">
+      <span>
+        <img class="ns-postmeta__avatar" src="/assets/logo/favicon.svg" alt="">
+        <a class="ns-postmeta__author" href="/author/swarnil">Swarnil Singhai</a>
+      </span>
+      <span><time datetime="2026-07-28">28 July 2026</time></span>
+      <span>12 min read</span>
+    </div>
+    <span class="ns-posthead__cover ns-ph" data-ph="Cover image" aria-hidden="true"></span>
+    <span class="ns-posthead__credit">Illustration &middot; Namaste Salesforce</span>
+  </div>
+</header>
+
+<div class="ns-post ns-post--wide">
+  <article class="ns-post__body" id="post-body">
+    <div class="ns-prose">
+      <p class="ns-lead">The request is always the same shape. Something in the org is slow, or wrong, or both, and the automation is blamed. Nine times out of ten the automation is doing exactly what it was told, against a schema that was never designed to be asked the question.</p>
+
+      <h2>The costume</h2>
+      <p>A flow that runs for ninety seconds is not a flow problem. It is a query returning forty thousand rows because the object it filters on has no selective field, and the person who added the field three years ago had no reason to think anyone would filter on it.</p>
+      <p>The tell is that the fix keeps moving. You optimise the flow and the batch job slows down. You fix the batch job and the report times out. Each fix is real and none of them holds, because the thing they have in common is underneath all three.</p>
+
+      <blockquote>If two fixes in a row move the problem rather than removing it, stop fixing and go and look at the schema.</blockquote>
+
+      <h2>What a good model buys</h2>
+      <p>A schema that matches the questions people actually ask makes the automation boring. The query is selective because the filter is on a field that means something. The rollup is cheap because the relationship is the one the business already has. Nothing is clever, and nothing needs to be.</p>
+
+      <div class="ns-callout ns-callout--tip">
+        <i class="ph ph-lightbulb" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Tip</span>Before adding a field, write down the query it exists to make possible. If you cannot write the query, you do not need the field yet.</div>
+      </div>
+
+      <h2>The uncomfortable part</h2>
+      <p>Changing a data model in a live org is expensive and slow and everybody knows it, which is exactly why the costume keeps working. It is always cheaper this quarter to add another automation than to admit the shape is wrong.</p>
+      <p>The honest thing is to say so out loud, in the review, with the number attached: this fix costs a day and buys six months; the model change costs three weeks and buys the rest of the org&rsquo;s life. Then let somebody decide with the real figures in front of them.</p>
+
+      <hr>
+      <p>The next piece in this series is about doing the model change without a freeze, which is possible more often than people think.</p>
+    </div>
+
+    <div class="ns-postfoot">
+      <div class="ns-tagrow">
+        <a class="ns-tag ns-tag--pill" href="/tag/architecture">Architecture</a>
+        <a class="ns-tag ns-tag--pill" href="/tag/data-model">Data model</a>
+      </div>
+
+      <!-- No rail, so sharing lives here, inline. Same component, no
+           --rail modifier. -->
+      <div class="ns-share">
+        <span class="ns-share__label">Share</span>
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Copy link"><i class="ph ph-link-simple" aria-hidden="true"></i></button>
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></button>
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Share on X"><i class="ph ph-x-logo" aria-hidden="true"></i></button>
+        <button type="button" class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save for later"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
+      </div>
+
+      <!-- --stack: the avatar above the name rather than beside it, which is
+           what a bio wants when it has the full measure to itself. -->
+      <div class="ns-authorbox ns-authorbox--stack">
+        <img class="ns-authorbox__avatar" src="/assets/logo/favicon.svg" alt="">
+        <div>
+          <p class="ns-authorbox__name"><a href="/author/swarnil">Swarnil Singhai</a></p>
+          <p class="ns-authorbox__role">Salesforce Architect &middot; 11&times; certified</p>
+          <p class="ns-authorbox__bio">Eleven years building on the platform, most of them cleaning up other people&rsquo;s triggers. Writes about the model first and the syntax second.</p>
+          <div class="ns-authorbox__links">
+            <a class="ns-btn ns-btn--outline ns-btn--sm" href="/author/swarnil">All posts</a>
+            <a class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- --empty is a SPACER, not a message. The first post in a series has
+           no previous, and the modifier is `visibility: hidden` — it holds
+           the grid cell so "Next" stays on the right where it belongs
+           instead of sliding over to the left and reading as a previous.
+           Below 48rem the column collapses and the spacer is removed
+           outright.
+
+           It is aria-hidden and its text is never announced, so the content
+           inside is a placeholder for whoever is reading the markup rather
+           than anything a user receives. -->
+      <nav class="ns-postnav" aria-label="More posts">
+        <span class="ns-postnav__link ns-postnav__link--empty" aria-hidden="true">
+          <span class="ns-postnav__dir">Previous</span>
+          <span class="ns-postnav__title">&mdash;</span>
+        </span>
+        <a class="ns-postnav__link ns-postnav__link--next" href="#">
+          <span class="ns-postnav__dir">Next <i class="ph ph-caret-right" aria-hidden="true"></i></span>
+          <span class="ns-postnav__title">Changing a data model without a freeze</span>
+        </a>
+      </nav>
+
+      <section>
+        <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
+          <div><span class="ns-kicker">Related</span><h2 class="ns-band__title" style="font-size:var(--size-h3)">More on architecture</h2></div>
+          <div class="ns-band__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="/tag/architecture">All posts <i class="ph ph-arrow-right ns-btn__arrow" aria-hidden="true"></i></a></div>
+        </div>
+        <div class="ns-strip">
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Five orgs, one deployment pipeline</h3></a><div class="ns-postmeta ns-postmeta--dotted"><span>11 min read</span><span>Architecture</span></div></div></article>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">What the query planner actually does</h3></a><div class="ns-postmeta ns-postmeta--dotted"><span>9 min read</span><span>SOQL</span></div></div></article>
+          <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Notes on naming things</h3></a><div class="ns-postmeta ns-postmeta--dotted"><span>3 min read</span><span>Craft</span></div></div></article>
+        </div>
+      </section>
+    </div>
+  </article>
+</div>
