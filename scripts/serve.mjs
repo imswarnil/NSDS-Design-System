@@ -7,7 +7,7 @@
    is the one thing that must always work.
 
    Serves from the REPO ROOT, not from preview/, because the generated page
-   references ../dist/namaste-ui.css and ../<group>/<name>.card.html — the real
+   references ../dist/nsds.css and ../<group>/<name>.card.html — the real
    files, not copies. Serving the real tree is what makes the preview show what
    actually ships.
 

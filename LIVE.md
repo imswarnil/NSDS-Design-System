@@ -80,7 +80,7 @@ and the git history are all excluded. What ships:
 | `/sitemap.xml` | the homepage and every generated page |
 | `/CNAME` | `nsds.imswarnil.com` — what actually pins the custom domain |
 | `/preview/` | the generated multi-page styleguide (home, one page per foundation, one per specimen group) |
-| `/dist/` | the flat CSS bundle `namaste-ui.css` + `.min.css` the preview links |
+| `/dist/` | the flat CSS bundle `nsds.css` + `.min.css` the preview links |
 | `/styles.css` | the entry stylesheet the specimen cards link as `../styles.css` |
 | `/tokens/` | authored token CSS + generated `tokens.json` / `tokens.js` / `tailwind.css` |
 | `/components/css/` | the portable `.ns-*` component layer both products render |
@@ -247,7 +247,7 @@ npm i github:imswarnil/NSDS-Design-System
 ```js
 import tokens from "@namaste-salesforce/design-system";           // tokens.js
 import "@namaste-salesforce/design-system/styles.css";            // full layer
-import "@namaste-salesforce/design-system/dist/namaste-ui.min.css"; // flat bundle
+import "@namaste-salesforce/design-system/dist/nsds.min.css"; // flat bundle
 import "@namaste-salesforce/design-system/tokens/tailwind.css";   // Tailwind v4 @theme
 ```
 
@@ -267,7 +267,7 @@ theme or the Next.js LMS.
 | Domain reverts to `imswarnil.github.io` after a deploy | the artifact shipped no `CNAME` | confirm `build-site.mjs` still writes `_site/CNAME`; it is read from the artifact, not from repo settings |
 | Custom domain 404s or shows a cert error right after setup | DNS not propagated, or the record is proxied | `dig nsds.imswarnil.com CNAME` must return `imswarnil.github.io`; set the record to DNS-only and wait for the cert |
 | A page is missing from the sitemap | it isn't in `preview/pages.json` | it is generated from `PAGES` in `build-preview.mjs` — if the page exists there, rebuild |
-| Icons render as empty boxes | `dist/` font `url()` paths weren't rebased for the bundle's location | check the woff2 paths inside `dist/namaste-ui.css` and rebuild |
+| Icons render as empty boxes | `dist/` font `url()` paths weren't rebased for the bundle's location | check the woff2 paths inside `dist/nsds.css` and rebuild |
 | Specimen iframes are blank | the `.card.html` wasn't copied — `build-site.mjs` only walks `*.card.html` and skips dot-dirs, `node_modules`, `dist`, `preview`, `_site` | confirm the filename ends in `.card.html` and sits outside those dirs |
 | `check` fails on `git diff --exit-code` | a generated file was hand-edited, or a regeneration wasn't committed | `npm run build && git add -A && git commit` |
 | Deploy skipped | the job only runs on `push` to `main`; PR events never deploy | merge to `main` |

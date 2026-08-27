@@ -18,7 +18,7 @@
                script: demo-only wiring (dialogs need showModal).
                dark: render this demo on a forced dark navy band. */
 
-import { highlightLines, gutter } from "../components/core/highlight.js";
+import { highlightLines, gutter } from "../src/react/core/highlight.js";
 
 /* The code-block demos are tokenised HERE, at build time, by the same module
    the React component uses — so the markup printed under each demo is

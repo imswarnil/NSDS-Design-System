@@ -42,12 +42,12 @@ const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const LIST = process.argv.includes("--list");
 
 /* ---- every class the CSS defines ---------------------------------------- */
-const cssFiles = cssFilesOf(ROOT).map((rel) => rel.replace("components/css/", ""));
+const cssFiles = cssFilesOf(ROOT).map((rel) => rel.replace("src/css/", ""));
 /* patterns/ is part of the component layer too — it is imported with
    layer(ns-components) rather than living in the folder. */
 const cssSources = [
-  ...cssFiles.map((f) => ["components/css/" + f, read("components/css/" + f)]),
-  ["patterns/patterns.css", read("patterns/patterns.css")],
+  ...cssFiles.map((f) => ["src/css/" + f, read("src/css/" + f)]),
+  ["src/patterns/patterns.css", read("src/patterns/patterns.css")],
 ];
 
 const definedIn = new Map();   // class -> file that defines it

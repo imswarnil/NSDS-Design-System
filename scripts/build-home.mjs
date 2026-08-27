@@ -122,7 +122,7 @@ ${list.map((p) => `          <li><a href="./preview/${p.file}"><span class="idx_
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="./assets/logo/favicon.svg">
 <script>${themeInit}</script>
-<link rel="stylesheet" href="./dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="./dist/nsds.tailwind.css">
 <script type="application/ld+json">${jsonLd}</script>
 <style>
   .wrap { max-inline-size: 72rem; margin-inline: auto; padding-inline: var(--space-6); }
@@ -394,7 +394,7 @@ ${demos.slice(0, 9).map((d) => `    <a class="tile" href="./preview/${esc(d.file
   <h2>Use it</h2>
   <div class="ns-prose">
     <p>The flat bundle is a single stylesheet with no build step: link it and every <code>.ns-*</code> class works, in light and dark, with the fonts and icons self-hosted alongside.</p>
-    <pre><code>&lt;link rel="stylesheet" href="dist/namaste-ui.css"&gt;</code></pre>
+    <pre><code>&lt;link rel="stylesheet" href="dist/nsds.css"&gt;</code></pre>
     <p>Consuming it from a project instead — tokens as JavaScript, the Tailwind v4 theme, or the component CSS on its own — is covered in <a href="${esc(repo)}/blob/main/docs/INTEGRATION.md">the integration guide</a>.</p>
   </div>
 

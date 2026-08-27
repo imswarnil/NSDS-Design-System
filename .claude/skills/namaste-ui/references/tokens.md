@@ -2,7 +2,7 @@
 
 # Tokens
 
-Every public token, generated from `tokens/tokens.json`. These are the light
+Every public token, generated from `dist/tokens.json`. These are the light
 theme's values; 63 private `--ns-*`
 sources are omitted because a consuming project never types one — they exist
 so Tailwind's `@theme` can own the public names without aliasing itself.

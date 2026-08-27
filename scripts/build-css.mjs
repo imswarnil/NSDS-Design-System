@@ -12,7 +12,7 @@
 
    TWO bundles come out of here, and the difference matters:
 
-     dist/namaste-ui.css          styles.css only. Framework-neutral plain CSS
+     dist/nsds.css          styles.css only. Framework-neutral plain CSS
                                   with no Tailwind, so it can be dropped into a
                                   page with no build step at all (Ghost code
                                   injection, a CodePen, a static prototype).
@@ -22,7 +22,7 @@
                                   them a second preflight and a second copy of
                                   every utility.
 
-     dist/namaste-ui.tailwind.css tailwind.entry.css — Tailwind v4 + the design
+     dist/nsds.tailwind.css tailwind.entry.css — Tailwind v4 + the design
                                   system, layered so utilities win. This is what
                                   every page in THIS repo loads, which is why a
                                   Tailwind class works on the styleguide.
@@ -41,8 +41,8 @@ import cssnano from "cssnano";
 import tailwindcss from "@tailwindcss/postcss";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ENTRY = join(ROOT, "styles.css");
-const TW_ENTRY = join(ROOT, "tailwind.entry.css");
+const ENTRY = join(ROOT, "src/styles.css");
+const TW_ENTRY = join(ROOT, "src/tailwind.css");
 const check = process.argv.includes("--check");
 
 const banner = (min) => `/*! NS Design System — design tokens + component layer${min ? " (minified)" : ""}
@@ -100,7 +100,7 @@ const minify = (css) => postcss([cssnano({ preset: ["default", {
   reduceIdents: false,
 }] })]).process(css, { from: undefined });
 
-const expanded = await postcss([atImport(), rebaseUrls]).process(source, { from: ENTRY, to: join(ROOT, "dist/namaste-ui.css") });
+const expanded = await postcss([atImport(), rebaseUrls]).process(source, { from: ENTRY, to: join(ROOT, "dist/nsds.css") });
 const minified = await minify(banner(true) + expanded.css);
 
 /* Tailwind's plugin resolves its own @import graph, so postcss-import is not in
@@ -109,17 +109,17 @@ const minified = await minify(banner(true) + expanded.css);
    relative to icons/ and have to survive the move into dist/. */
 const twExpanded = await postcss([tailwindcss(), rebaseFromRoot]).process(readFileSync(TW_ENTRY, "utf8"), {
   from: TW_ENTRY,
-  to: join(ROOT, "dist/namaste-ui.tailwind.css"),
+  to: join(ROOT, "dist/nsds.tailwind.css"),
 });
 const twMinified = await minify(twBanner(true) + twExpanded.css);
 
 mkdirSync(join(ROOT, "dist"), { recursive: true });
 
 const outputs = [
-  ["dist/namaste-ui.css", banner(false) + expanded.css],
-  ["dist/namaste-ui.min.css", minified.css],
-  ["dist/namaste-ui.tailwind.css", twBanner(false) + twExpanded.css],
-  ["dist/namaste-ui.tailwind.min.css", twMinified.css],
+  ["dist/nsds.css", banner(false) + expanded.css],
+  ["dist/nsds.min.css", minified.css],
+  ["dist/nsds.tailwind.css", twBanner(false) + twExpanded.css],
+  ["dist/nsds.tailwind.min.css", twMinified.css],
 ];
 
 let stale = false;

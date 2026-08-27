@@ -37,7 +37,7 @@
    There used to be a second import here — icons-gap.css, 31 glyphs redrawn as
    inline-SVG masks because the subset was missing them and the subsetter was
    missing too. Both are back; one file is the icon source again. */
-@import "./icons/phosphor.css" layer(ns-components);
+@import "../icons/phosphor.css" layer(ns-components);
 @import "./patterns/patterns.css" layer(ns-components);
 
-@import "./components/css/index.css";
+@import "./css/index.css";

@@ -38,9 +38,9 @@ All three of these matter and all three are easy to miss:
 - **Fixed 1920×1080 with `overflow: hidden`**, so the page *is* the canvas and
   every pixel coordinate in `OBS.md` §4 is literal. Do not resize the source;
   set the width and height on the source itself.
-- **The stylesheet path is relative** (`../../../dist/namaste-ui.tailwind.css`).
+- **The stylesheet path is relative** (`../../../dist/nsds.tailwind.css`).
   Keep these files where they are, or switch the link to
-  `https://nsds.imswarnil.com/dist/namaste-ui.tailwind.css` — and download it
+  `https://nsds.imswarnil.com/dist/nsds.tailwind.css` — and download it
   locally if you record somewhere without a connection.
 
 ## Parameters

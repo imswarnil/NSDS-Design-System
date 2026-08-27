@@ -24,13 +24,13 @@ Zero runtime dependencies. Then take exactly one bundle:
 
 | Import | Use |
 | --- | --- |
-| `nsds-design-system/dist/namaste-ui.css` | plain CSS, everything, no build step |
-| `nsds-design-system/dist/namaste-ui.min.css` | the same, minified |
-| `nsds-design-system/dist/namaste-ui.tailwind.css` | for a project already on Tailwind v4 |
-| `nsds-design-system/dist/namaste-ui.tailwind.min.css` | the same, minified |
+| `nsds-design-system/css` | plain CSS, everything, no build step |
+| `nsds-design-system/css/min` | the same, minified |
+| `nsds-design-system/tailwind` | for a project already on Tailwind v4 |
+| `nsds-design-system/tailwind/min` | the same, minified |
 
 ```js
-import "nsds-design-system/dist/namaste-ui.css";
+import "nsds-design-system/css";
 ```
 
 If npm is not an option, copy the `dist/` file in directly. Either way:

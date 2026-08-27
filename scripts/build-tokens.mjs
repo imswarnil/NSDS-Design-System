@@ -11,7 +11,7 @@
    CI:   node scripts/build-tokens.mjs --check   (exits 1 if outputs are stale)
 
    Outputs:
-     tokens/tokens.json  — W3C DTCG-shaped token document (Figma, Style
+     dist/tokens.json  — W3C DTCG-shaped token document (Figma, Style
                            Dictionary, any downstream tooling)
      tokens/tokens.js    — plain ESM export for the Next.js app
      tokens/tokens.d.ts  — types for the above
@@ -25,13 +25,13 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 /* Order matters: later files may reference earlier ones, and this is also the
    order the docs table renders in. */
 const SOURCES = [
-  "tokens/colors.css",
-  "tokens/dataviz.css",
-  "tokens/spacing.css",
-  "tokens/layout.css",
-  "tokens/fonts.css",
-  "tokens/typography.css",
-  "tokens/effects.css",
+  "src/tokens/colors.css",
+  "src/tokens/dataviz.css",
+  "src/tokens/spacing.css",
+  "src/tokens/layout.css",
+  "src/tokens/fonts.css",
+  "src/tokens/typography.css",
+  "src/tokens/effects.css",
 ];
 
 /* Classify a token by name + value so downstream tools (Figma especially)
@@ -393,7 +393,7 @@ const twLines = [
   "  /* One curve only. ease-in / ease-in-out are intentionally absent —",
   "     Principle 5 allows no springy or decelerating alternative. */",
   `  --ease-out: ${lit("--ns-ease-out")};`,
-  /* Both name keyframes defined in components/css/motion.css, not in tokens/ —
+  /* Both name keyframes defined in src/css/motion.css, not in tokens/ —
      a keyframe is not a value, and an unprefixed one is a global name a
      consuming app can collide with. `animate-fade-up` keeps its utility name
      (renaming it would break consumers) but now resolves to the canonical
@@ -502,11 +502,22 @@ const twLines = [
   }
 }
 
+/* AUTHORED LIVES IN src/, GENERATED LIVES IN dist/ — with one deliberate
+   exception. The three consumer artifacts (a DTCG document for Figma, an ESM
+   object for the app, and its types) are build output and go to dist/, which
+   is where a consumer of the package looks for them.
+
+   src/tokens/tailwind.css does NOT, and the reason is that it is not a
+   consumer artifact at all: it is a link in the SOURCE graph, @imported by
+   src/tailwind.css so Tailwind's @theme can see the token names. Writing it
+   to dist/ would make a source file import a build output, which is a worse
+   wart than a generated file sitting beside the authored ones that produce
+   it. It carries a do-not-edit header for the same reason. */
 const outputs = [
-  ["tokens/tokens.json", JSON.stringify(doc, null, 2) + "\n"],
-  ["tokens/tokens.js", jsLines.join("\n")],
-  ["tokens/tokens.d.ts", dtsLines.join("\n")],
-  ["tokens/tailwind.css", twLines.join("\n")],
+  ["dist/tokens.json", JSON.stringify(doc, null, 2) + "\n"],
+  ["dist/tokens.js", jsLines.join("\n")],
+  ["dist/tokens.d.ts", dtsLines.join("\n")],
+  ["src/tokens/tailwind.css", twLines.join("\n")],
 ];
 
 const check = process.argv.includes("--check");

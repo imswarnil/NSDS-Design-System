@@ -156,7 +156,7 @@ overlay, table, code), `navigation/`, `content/` (prose, content, sections,
 blog), `product/` (lms, training, catalog, player, deck, ai, admin,
 helpdesk, auth, chart) and `integrations/` (ghost, ads, monetization).
 
-**The output is byte-identical.** `dist/namaste-ui.css` diffed clean against
+**The output is byte-identical.** `dist/nsds.css` diffed clean against
 the pre-move build, which is the only proof that matters for a refactor whose
 entire promise is that it changes nothing.
 
@@ -1949,7 +1949,7 @@ Two things this fixes, both of which were silent:
 - There was no `utilities` layer at all for a standalone consumer, so "a
   utility always beats a component default" was true only by accident.
 
-**If you consume `dist/namaste-ui.css` and never wrote `@layer` yourself,
+**If you consume `dist/nsds.css` and never wrote `@layer` yourself,
 nothing changes.** If you did put your own CSS in `@layer components`, it now
 beats the design system where it did not before — which is what you wanted.
 
@@ -2051,7 +2051,7 @@ grey people mean when they say a page looks washed out", at 6.87:1 — holds.
 Shadow-based elevation, pastel status fills, additional hue families and
 300–500ms motion were likewise not adopted: they revoke Principles 1, 3 and 5.
 
-### Added — `dist/namaste-ui.tailwind.css`
+### Added — `dist/nsds.tailwind.css`
 
 A second bundle: Tailwind v4 + the design system, correctly layered, built
 from the new `tailwind.entry.css`. Every page in this repo loads it, which is
@@ -2566,7 +2566,7 @@ subset regeneration, Pages deploy).
 
 Two real bugs, both long-standing:
 
-- `dist/namaste-ui.css` shipped the Phosphor `@font-face` URLs un-rebased
+- `dist/nsds.css` shipped the Phosphor `@font-face` URLs un-rebased
   (`../../fonts/…` resolves outside the repo), so **no icon-font glyph
   rendered at all** for any dist consumer — including the styleguide
   itself. `scripts/build-css.mjs` now rebases both relative depths.
@@ -2732,7 +2732,7 @@ they agreed.
   `bg-brand-500`, `p-card`, `rounded-card`, `text-label`, `z-dropdown` and
   `max-w-page` resolve identically in both products. Tailwind's numeric spacing
   scale is pinned to the same 4px base as `--space-*`.
-- **CSS bundle** (`dist/namaste-ui.css` + `.min.css`) — framework-neutral flat
+- **CSS bundle** (`dist/nsds.css` + `.min.css`) — framework-neutral flat
   CSS for pipelines that cannot resolve `@import` across `node_modules`.
 - **`package.json`** with `build`, `check` and an `exports` map.
 

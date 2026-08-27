@@ -5,7 +5,7 @@
 Every `.ns-*` class in the component layer, grouped by the file that defines
 it. 2089 classes across 33 stylesheets.
 
-A class here is available the moment `dist/namaste-ui.css` is linked. If you
+A class here is available the moment `dist/nsds.css` is linked. If you
 find yourself about to invent a class name, search this list first — the
 odds are the thing already exists under a name you did not guess.
 

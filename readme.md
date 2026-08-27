@@ -110,7 +110,7 @@ Governed by the five Design Principles above. In short:
 - **Elevation:** a `1px` hairline border is the primary structuring device; hover brightens the border to brand-blue (or draws a left/top accent line), it never lifts on a shadow.
 - **Spacing:** a 4px scale (`--space-*`) whose index matches Tailwind's 1:1, so `p-4` in a Handlebars template and `var(--space-4)` in a React component are the same 16px. Semantic aliases (`--pad-card`, `--gap-grid`, `--stack-lg`) carry the repeated structural relationships.
 - **Backgrounds:** a faint hairline grid dissolving via a radial mask, used behind dark hero sections only. No photography, no gradients, no hand-drawn illustration.
-- **Motion:** a rise entrance (`.ns-anim--rise`) + one gentle float loop (illustrations only); everything else is a 120–180ms plain ease-out. No springs, no bounce, no hover-lift. Every keyframe is `ns-`-prefixed and lives in `components/css/motion.css` — keyframe names are global and unlayered, so an unprefixed one is a collision waiting for a consuming app.
+- **Motion:** a rise entrance (`.ns-anim--rise`) + one gentle float loop (illustrations only); everything else is a 120–180ms plain ease-out. No springs, no bounce, no hover-lift. Every keyframe is `ns-`-prefixed and lives in `src/css/motion.css` — keyframe names are global and unlayered, so an unprefixed one is a collision waiting for a consuming app.
 - **Hover/press:** hover = border brightens to brand-blue + an accent line (top on cards, left on rows); press = instant opacity dim. No color-lightening, no scale-pop except the video-poster play ring and card-media zoom (1.03–1.05x).
 - **Buttons:** the default is a `--size-small` label at a 40px target — a control lives *inside* something, and a default button set at body size is visually larger than the card title above it. Height is the accessibility property, type size the typographic one, and they are set independently. Sections never define their own action; they leave `.ns-band__actions` and the page puts a button in it.
 - **Cards:** `1px` hairline border + `6px` radius, no shadow at rest; brand-blue border + top accent line on hover.
@@ -261,8 +261,8 @@ each page loads only its own content, each URL is shareable, and prev/next
 links walk the whole system in order.
 
 Every page is **generated from the real artifacts**, so it cannot drift from
-the system: token tables come from `tokens/tokens.json`, the class index is
-scraped out of `components/css/*.css`, and every specimen is the actual
+the system: token tables come from `dist/tokens.json`, the class index is
+scraped out of `src/css/*.css`, and every specimen is the actual
 `.card.html` file in an iframe. The theme switch flips the page *and* its
 specimens together, and the choice persists across pages.
 
@@ -386,13 +386,13 @@ npm run check     # what CI runs
 
 | Command | Proves |
 |---|---|
-| `check:tokens` | `tokens.json` / `.js` / `.d.ts` / `tailwind.css` still match `tokens/*.css` |
+| `check:tokens` | `tokens.json` / `.js` / `.d.ts` / `tailwind.css` still match `src/tokens/*.css` |
 | `check:principles` | No raw color, radius, z-index, timing, font or spacing in the component layer |
 | `check:palette` | The chart palette still clears its lightness, chroma, CVD, normal-vision and contrast checks |
 | `check:css` | `dist/` is not stale |
 
-`tokens/*.css` is the **source of truth**. `tokens/tokens.json` (W3C DTCG),
-`tokens/tokens.js`, `tokens/tokens.d.ts` and `tokens/tailwind.css` are all
+`src/tokens/*.css` is the **source of truth**. `dist/tokens.json` (W3C DTCG),
+`dist/tokens.js`, `dist/tokens.d.ts` and `src/tokens/tailwind.css` are all
 generated from it by `scripts/build-tokens.mjs`; editing them by hand will be
 overwritten, and CI will say so.
 
@@ -405,12 +405,12 @@ conventions someone has to remember.
 ## What's in this project
 
 - `styles.css` — the single entry point; imports tokens, base, icons and the
-  component layer. `dist/namaste-ui.css` is the same thing flattened, for
+  component layer. `dist/nsds.css` is the same thing flattened, for
   pipelines that cannot resolve `@import` across `node_modules`.
 - `tokens/` — `colors.css`, `dataviz.css`, `spacing.css`, `layout.css`,
   `fonts.css`, `typography.css`, `effects.css`, `base.css`, plus the generated
   `tokens.json` / `tokens.js` / `tokens.d.ts` / `tailwind.css` exports.
-- `components/css/` — the portable component layer both products render:
+- `src/css/` — the portable component layer both products render:
   `button`, `form`, `overlay`, `navigation`, `navbar`, `feedback`, `progress`,
   `icon`, `sections`, `admin`, `a11y`, **`code`** (the syntax highlighter),
   **`type-fx`** (the typographic effects), `lms` (course card, curriculum,

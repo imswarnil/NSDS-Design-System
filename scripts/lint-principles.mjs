@@ -37,7 +37,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 /* Only the component layer is linted. tokens/ is where literals are SUPPOSED
    to live — that is the entire point of a token file — and assets/css is
    generated icon-font output. */
-const TARGET_DIRS = ["components/css"];
+const TARGET_DIRS = ["src/css"];
 
 const walk = (dir) => readdirSync(join(ROOT, dir), { withFileTypes: true })
   .flatMap((e) => e.isDirectory() ? walk(join(dir, e.name)) : (e.name.endsWith(".css") ? [join(dir, e.name)] : []));

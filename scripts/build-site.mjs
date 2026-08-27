@@ -9,8 +9,8 @@
 
      preview/            the generated styleguide
      dist/               the CSS bundles — pages and cards link the Tailwind
-                         one (dist/namaste-ui.tailwind.css) so utilities work
-     styles.css + tokens/ + components/css/   the un-bundled source, shipped so
+                         one (dist/nsds.tailwind.css) so utilities work
+     styles.css + tokens/ + src/css/   the un-bundled source, shipped so
                          the site doubles as a readable reference
      assets/             icons, logo, theme-init, the runtime scripts
      fonts/              Switzer + Roboto Mono (latin-subset variable woff2)
@@ -30,7 +30,7 @@ import { renderHome } from "./build-home.mjs";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "_site");
 
-for (const rel of ["preview/index.html", "preview/pages.json", "preview/demos.json", "dist/namaste-ui.css", "dist/namaste-ui.tailwind.css"]) {
+for (const rel of ["preview/index.html", "preview/pages.json", "preview/demos.json", "dist/nsds.css", "dist/nsds.tailwind.css"]) {
   if (!existsSync(join(ROOT, rel))) {
     console.error(`missing ${rel} — run \`npm run build && npm run build:preview\` first (gulp site does all of it)`);
     process.exit(2);
@@ -46,14 +46,14 @@ rmSync(OUT, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
 mkdirSync(OUT, { recursive: true });
 
 /* Whole directories the preview references. */
-const DIRS = ["preview", "dist", "assets", "icons", "fonts", "patterns", "tokens", "components/css", "templates"];
+const DIRS = ["preview", "dist", "assets", "icons", "fonts", "templates", "src"];
 for (const d of DIRS) cpSync(join(ROOT, d), join(OUT, d), { recursive: true });
 
 /* Nothing links this any more — the pages and cards all load
-   dist/namaste-ui.tailwind.css. It ships because tokens/ and components/css/
+   dist/nsds.tailwind.css. It ships because tokens/ and src/css/
    are copied above and styles.css is the file that explains how they fit
    together, including the @layer order the whole override contract rests on. */
-cpSync(join(ROOT, "styles.css"), join(OUT, "styles.css"));
+cpSync(join(ROOT, "src/styles.css"), join(OUT, "src/styles.css"));
 
 /* Every specimen card, preserving its repo-relative path — the preview's
    iframe srcs are ../<path>, so the structure must match exactly. */

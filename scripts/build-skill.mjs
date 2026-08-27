@@ -22,7 +22,7 @@
    is a snapshot, and a snapshot of a design system is wrong within a week —
    quietly, in the direction of whatever the author remembered. Every list
    here is read out of the real artifacts at build time: token values from
-   tokens/tokens.json, classes by parsing components/css/, components from
+   dist/tokens.json, classes by parsing src/css/, components from
    the COMPONENTS array the styleguide already renders from. When a token
    changes, this changes in the same commit or `--check` fails.
 
@@ -48,7 +48,7 @@ const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const pkg = JSON.parse(read("package.json"));
 
 /* ---- tokens, flattened out of the generated design-token file ----------- */
-const tokenJson = JSON.parse(read("tokens/tokens.json"));
+const tokenJson = JSON.parse(read("dist/tokens.json"));
 function flatten(node, out = []) {
   for (const [k, v] of Object.entries(node)) {
     if (k.startsWith("$")) continue;
@@ -67,7 +67,7 @@ const publicTokens = tokens.filter((t) => !t.name.startsWith("--ns-"));
 /* ---- the class inventory, parsed from the component layer --------------- */
 const classesByFile = new Map();
 for (const rel of cssFilesOf(ROOT)) {
-  const f = rel.replace("components/css/", "");
+  const f = rel.replace("src/css/", "");
   const src = read(rel).replace(/\/\*[\s\S]*?\*\//g, "");
   const found = new Set([...src.matchAll(/\.(ns-[a-zA-Z0-9_-]+)/g)].map((m) => m[1]));
   if (found.size) classesByFile.set(f, [...found].sort());
@@ -143,13 +143,13 @@ Zero runtime dependencies. Then take exactly one bundle:
 
 | Import | Use |
 | --- | --- |
-| \`${pkg.name}/dist/namaste-ui.css\` | plain CSS, everything, no build step |
-| \`${pkg.name}/dist/namaste-ui.min.css\` | the same, minified |
-| \`${pkg.name}/dist/namaste-ui.tailwind.css\` | for a project already on Tailwind v4 |
-| \`${pkg.name}/dist/namaste-ui.tailwind.min.css\` | the same, minified |
+| \`${pkg.name}/css\` | plain CSS, everything, no build step |
+| \`${pkg.name}/css/min\` | the same, minified |
+| \`${pkg.name}/tailwind\` | for a project already on Tailwind v4 |
+| \`${pkg.name}/tailwind/min\` | the same, minified |
 
 \`\`\`js
-import "${pkg.name}/dist/namaste-ui.css";
+import "${pkg.name}/css";
 \`\`\`
 
 If npm is not an option, copy the \`dist/\` file in directly. Either way:
@@ -222,7 +222,7 @@ files["references/tokens.md"] = `${stamp}
 
 # Tokens
 
-Every public token, generated from \`tokens/tokens.json\`. These are the light
+Every public token, generated from \`dist/tokens.json\`. These are the light
 theme's values; ${tokens.length - publicTokens.length} private \`--ns-*\`
 sources are omitted because a consuming project never types one — they exist
 so Tailwind's \`@theme\` can own the public names without aliasing itself.
@@ -235,7 +235,7 @@ hard-coded hex is a bug in exactly one theme and nobody notices which.
 ${(() => {
   const groups = new Map();
   for (const t of publicTokens) {
-    const g = t.file.replace("tokens/", "").replace(".css", "") || "other";
+    const g = t.file.replace("src/tokens/", "").replace(".css", "") || "other";
     if (!groups.has(g)) groups.set(g, []);
     groups.get(g).push(t);
   }
@@ -252,7 +252,7 @@ files["references/classes.md"] = `${stamp}
 Every \`.ns-*\` class in the component layer, grouped by the file that defines
 it. ${classCount} classes across ${classesByFile.size} stylesheets.
 
-A class here is available the moment \`dist/namaste-ui.css\` is linked. If you
+A class here is available the moment \`dist/nsds.css\` is linked. If you
 find yourself about to invent a class name, search this list first — the
 odds are the thing already exists under a name you did not guess.
 

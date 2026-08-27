@@ -11,7 +11,7 @@
       whole system rests on: Handlebars cannot use a JavaScript style object,
       so an inline-styled React component is one the Ghost theme has to
       reimplement, and two implementations of one thing drift. Styling belongs
-      in components/css/*.css as .ns-* classes that both products render.
+      in src/css/*.css as .ns-* classes that both products render.
 
    A small number of one-off layout nudges inside demo/wrapper markup are
    legitimate; the rule targets style objects carrying COLOR, SIZE, RADIUS or
@@ -35,7 +35,7 @@ const walk = (dir) => {
   return out;
 };
 
-const files = walk("components");
+const files = walk("src/react");
 let problems = 0;
 
 /* --- 1. Parse ---------------------------------------------------------- */
@@ -59,7 +59,7 @@ try {
    reimplement each one, and the two copies would drift.
 
    Converting them is a real migration, not a rename: each needs its styles
-   lifted into components/css/ as .ns-* classes and a .hbs partial written.
+   lifted into src/css/ as .ns-* classes and a .hbs partial written.
    Until that happens they are listed here so that:
      - new components are held to the rule from day one, and
      - the size of the debt is a number in the build output rather than a
@@ -86,13 +86,13 @@ for (const file of files) {
     problems++;
     console.error(`${relative(ROOT, join(ROOT, file))}:${i + 1}  [inline-styling]`);
     console.error(`    ${line.trim()}`);
-    console.error("    → move it to components/css/*.css as an .ns-* class, or the Ghost theme cannot render it\n");
+    console.error("    → move it to src/css/*.css as an .ns-* class, or the Ghost theme cannot render it\n");
   });
 }
 
 if (problems) {
   console.error(`${problems} inline-styling violation(s) in non-legacy components.`);
-  console.error("Move the styling into components/css/*.css as .ns-* classes so the Ghost theme can render it too.");
+  console.error("Move the styling into src/css/*.css as .ns-* classes so the Ghost theme can render it too.");
   process.exit(1);
 }
 console.log(`Components check passed — ${files.length} .jsx files parse, ${files.length - legacyHits} hold the no-self-styling rule.`);

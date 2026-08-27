@@ -18,19 +18,19 @@ if you want the Tailwind-flavoured bundle.
 
 | Import | Use |
 | --- | --- |
-| `nsds-design-system/dist/namaste-ui.css` | plain CSS, everything, no build step |
-| `nsds-design-system/dist/namaste-ui.min.css` | the same, minified |
-| `nsds-design-system/dist/namaste-ui.tailwind.css` | a project already on Tailwind v4 |
-| `nsds-design-system/dist/namaste-ui.tailwind.min.css` | the same, minified |
+| `nsds-design-system/css` | plain CSS, everything, no build step |
+| `nsds-design-system/css/min` | the same, minified |
+| `nsds-design-system/tailwind` | a project already on Tailwind v4 |
+| `nsds-design-system/tailwind/min` | the same, minified |
 
 ```js
 // any bundler
-import "nsds-design-system/dist/namaste-ui.css";
+import "nsds-design-system/css";
 ```
 
 ```html
 <!-- or plain HTML -->
-<link rel="stylesheet" href="/node_modules/nsds-design-system/dist/namaste-ui.min.css">
+<link rel="stylesheet" href="/node_modules/nsds-design-system/css/min">
 ```
 
 Tokens are importable as JS/TS too, with types:
@@ -206,4 +206,5 @@ to reimplement.
 
 ---
 
+Changing how it looks? See [CUSTOMISING.md](./CUSTOMISING.md).
 Maintaining this package? See [RELEASING.md](./RELEASING.md).

@@ -1,6 +1,6 @@
 /* NS Design System — Tailwind entry point.
    =========================================================================
-   Source for dist/namaste-ui.tailwind.css: Tailwind v4 + this design system,
+   Source for dist/nsds.tailwind.css: Tailwind v4 + this design system,
    correctly layered. This is what every page in THIS repo loads (styleguide,
    guideline cards, templates preview), so a Tailwind class works anywhere on
    the site and can always override a DS default.

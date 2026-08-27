@@ -48,7 +48,7 @@ Two consequences worth knowing:
 
 - **A utility always wins.** `<button class="ns-btn ns-btn--primary p-8 bg-error">`
   is red with 2rem padding, no `!important` anywhere. Specificity inside
-  `components/css/` no longer competes with anything outside it — a `:has()`
+  `src/css/` no longer competes with anything outside it — a `:has()`
   chain scoring (0,5,0) still loses to a plain `.p-4`.
 - **Nothing may sit outside a layer.** An unlayered rule beats every layered
   rule regardless of specificity, so a single stray one silently revokes the
@@ -84,7 +84,7 @@ In `assets/css/screen.css`, replacing the theme's own `@theme` block:
 ```css
 @import "tailwindcss";
 @import "@namaste-salesforce/design-system/styles.css";
-@import "@namaste-salesforce/design-system/tokens/tailwind.css";
+@import "@namaste-salesforce/design-system/src/tokens/tailwind.css";
 
 /* Theme-only styles below. Anything reusable belongs in the design system's
    component layer, not here — that is the boundary that keeps the two
@@ -94,7 +94,7 @@ In `assets/css/screen.css`, replacing the theme's own `@theme` block:
 The existing gulp + `@tailwindcss/postcss` pipeline handles this unchanged.
 `postcss-import` resolves the package paths; no gulp config change is needed.
 
-> **Do not import `dist/namaste-ui.tailwind.css` here.** That bundle is
+> **Do not import `dist/nsds.tailwind.css` here.** That bundle is
 > Tailwind *plus* the design system, built for this repo's own styleguide. In a
 > product that already runs Tailwind it would add a second preflight and a
 > second copy of every utility. The three imports above are the supported path.
@@ -104,8 +104,8 @@ The existing gulp + `@tailwindcss/postcss` pipeline handles this unchanged.
 > the prebuilt flat bundle instead — same bytes, no import graph:
 > ```css
 > @import "tailwindcss";
-> @import "@namaste-salesforce/design-system/dist/namaste-ui.css";
-> @import "@namaste-salesforce/design-system/tokens/tailwind.css";
+> @import "@namaste-salesforce/design-system/dist/nsds.css";
+> @import "@namaste-salesforce/design-system/src/tokens/tailwind.css";
 > ```
 
 ### 3. Fonts and icons
@@ -194,7 +194,7 @@ In `app/globals.css`:
 ```css
 @import "tailwindcss";
 @import "@namaste-salesforce/design-system/styles.css";
-@import "@namaste-salesforce/design-system/tokens/tailwind.css";
+@import "@namaste-salesforce/design-system/src/tokens/tailwind.css";
 ```
 
 Fonts resolve from the package automatically — Next's bundler rewrites the
@@ -274,7 +274,7 @@ npm run check          # everything CI runs
 
 | Command | Proves |
 |---|---|
-| `check:tokens` | `tokens.json` / `.js` / `.d.ts` / `tailwind.css` match `tokens/*.css` |
+| `check:tokens` | `tokens.json` / `.js` / `.d.ts` / `tailwind.css` match `src/tokens/*.css` |
 | `check:principles` | No raw colors, radii, z-indexes, timings, fonts or spacing in the component layer |
 | `check:palette` | The chart palette still clears the lightness, chroma, CVD, normal-vision and contrast checks |
 | `check:css` | `dist/` is not stale |
@@ -292,8 +292,8 @@ Wire it into both products' CI:
 
 | Change | Goes in |
 |---|---|
-| A color, size, radius, duration | `tokens/*.css` — never in a component |
-| A visual style used by both products | `components/css/*.css` |
+| A color, size, radius, duration | `src/tokens/*.css` — never in a component |
+| A visual style used by both products | `src/css/*.css` |
 | Keyboard/ARIA behaviour for React | the `.jsx` in `components/<domain>/` |
 | The same markup for Ghost / static | the matching `templates/*.html` |
 | Something only one product needs | that product's repo, not here |

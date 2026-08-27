@@ -356,7 +356,7 @@ it as `furniture.html` anywhere on disk and point a Browser Source at it:
 
 ```html
 <!DOCTYPE html><html><head><meta charset="utf-8">
-<link rel="stylesheet" href="https://nsds.imswarnil.com/dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="https://nsds.imswarnil.com/dist/nsds.tailwind.css">
 <style>
   html,body{margin:0;width:1920px;height:1080px;background:transparent;overflow:hidden}
   .bar{position:absolute;inset-inline:0;top:0;height:4px;background:var(--color-brand-500)}
@@ -464,7 +464,7 @@ current one.
 | Camera black in one scene, fine in another | you added a *second* Video Capture Device instead of `Add Existing` | delete it; re-add with `Add Existing` |
 | Browser Source shows a white box over the screen | the page has an opaque background | `background: transparent` on `html, body` |
 | Browser Source is blank | wrong path, or the page needs a moment | use `Local file`, then `Refresh cache of current page` |
-| Overlay fonts are wrong | the stylesheet did not load | check the URL, or download `namaste-ui.tailwind.css` and link it locally |
+| Overlay fonts are wrong | the stylesheet did not load | check the URL, or download `nsds.tailwind.css` and link it locally |
 | Screen share looks soft | base ≠ output, or HiDPI scaling | make both `1920x1080`; set the shared display to native 1080p |
 | Screen looks stretched | the source was resized non-uniformly | `Transform → Reset Transform`, then `Fit to screen` |
 | A 4:3 source has black bars | nothing is behind it | put `_backdrop` under it — the gap becomes brand navy, not letterbox black |

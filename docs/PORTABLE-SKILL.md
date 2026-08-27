@@ -66,13 +66,13 @@ artifact instead:
 
 | File | Use |
 | --- | --- |
-| `dist/namaste-ui.css` | plain CSS, everything, no build step |
-| `dist/namaste-ui.min.css` | the same, minified |
-| `dist/namaste-ui.tailwind.css` | for a project already on Tailwind v4 |
-| `dist/namaste-ui.tailwind.min.css` | the same, minified |
+| `dist/nsds.css` | plain CSS, everything, no build step |
+| `dist/nsds.min.css` | the same, minified |
+| `dist/nsds.tailwind.css` | for a project already on Tailwind v4 |
+| `dist/nsds.tailwind.min.css` | the same, minified |
 
 ```bash
-cp /path/to/NS-Design-System/dist/namaste-ui.min.css other-project/public/
+cp /path/to/NS-Design-System/dist/nsds.min.css other-project/public/
 ```
 
 Then link it, and the `.ns-*` classes in the reference files all work.
@@ -95,8 +95,8 @@ Every list in the bundle is read out of the real artifacts at build time:
 
 | Reference | Generated from |
 | --- | --- |
-| `tokens.md` | `tokens/tokens.json` — itself generated from `tokens/*.css` |
-| `classes.md` | parsing every file in `components/css/` |
+| `tokens.md` | `dist/tokens.json` — itself generated from `src/tokens/*.css` |
+| `classes.md` | parsing every file in `src/css/` |
 | `components.md` | the `COMPONENTS` array in `scripts/component-docs.mjs` — the same array the styleguide renders from |
 
 So a token that changes value, a class that gets renamed, or a component

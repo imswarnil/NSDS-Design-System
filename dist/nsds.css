@@ -13183,6 +13183,7 @@
 
   .ns-aiside__list { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding-block: var(--space-2); }
 
+  .ns-aiside__group + .ns-aiside__group { margin-block-start: var(--space-4); }
   .ns-aiside__group { padding-block-start: var(--space-3); }
   .ns-aiside__label {
     padding: var(--space-1) var(--space-4);
@@ -13194,10 +13195,13 @@
   .ns-aiside__item {
     display: grid; grid-template-columns: minmax(0, 1fr) auto;
     align-items: baseline; gap: var(--space-3);
-    padding: var(--space-2-5) var(--space-4);
+    /* Two lines of content per row — a course and a question — so the row
+       needs the vertical room for two, not the padding of a single-line
+       list item. */
+    padding: var(--space-3) var(--space-4);
     border-inline-start: 2px solid transparent;
     color: var(--color-ink); text-decoration: none;
-    font-size: var(--size-small);
+    font-size: var(--size-prose-small);
     transition: background-color var(--duration-fast) var(--ease-out),
                 border-color var(--duration-fast) var(--ease-out);
   }
@@ -13240,7 +13244,11 @@
      The unit of transcript. Student and assistant are told apart by
      structure — measure, surface, alignment — not by hue. */
   .ns-aiturn { display: flex; flex-direction: column; gap: var(--space-4); }
-  .ns-aiturn + .ns-aiturn { margin-block-start: var(--space-10); }
+  /* The gap BETWEEN turns has to beat the gap between paragraphs inside one,
+     or a long answer and the next question read as one continuous column of
+     text. At --space-10 against a --space-6 paragraph rhythm the margin was
+     less than two paragraph gaps; --space-14 is unmistakably a new speaker. */
+  .ns-aiturn + .ns-aiturn { margin-block-start: var(--space-14); }
 
   /* One quiet line. This carried an avatar, a mono role label and a timestamp
      on every turn — three pieces of chrome per message, repeated down the
@@ -13269,17 +13277,31 @@
   }
   [data-theme="dark"] .ns-aiturn__mark { color: var(--color-brand-300); }
 
-  .ns-aiturn__body { font-size: var(--size-body); line-height: var(--leading-body); }
-  .ns-aiturn__body > * + * { margin-block-start: var(--space-5); }
+  /* AN ANSWER IS READ, NOT SCANNED, and it was set at the UI size with UI
+     leading — 14px at 1.6, the setting for a table row. A model's reply is
+     three or four paragraphs a person reads straight through, which is the
+     reading side of the scanned-versus-read fork by any measure. At the UI
+     size it looked exactly as crowded as it was.
+
+     17px at 1.7 is the same setting .ns-prose gives an article, and the
+     paragraph rhythm goes up with it: leading and paragraph spacing are one
+     system, and raising the size without the gaps makes a denser block, not
+     a looser one. */
+  .ns-aiturn__body { font-size: var(--size-prose); line-height: var(--leading-prose); }
+  .ns-aiturn__body > * + * { margin-block-start: var(--space-6); }
 
   /* The student's turn: sunken, hairline, capped narrow. Narrow because a
      question is short and a full-measure question reads as an essay. */
   .ns-aiturn--user .ns-aiturn__body {
     max-inline-size: var(--measure-narrow);
-    padding: var(--space-3) var(--pad-card);
+    padding: var(--space-4) var(--pad-card);
     border: 1px solid var(--color-border); border-radius: var(--radius-card);
     background: var(--color-surface-sunken);
-    font-size: var(--size-small);
+    /* 15, not 13. The question is quieter than the answer and should be —
+       but a step BELOW the UI base put it level with a table caption, and
+       the reader wrote it. */
+    font-size: var(--size-prose-small);
+    line-height: var(--leading-snug);
   }
   /* Assistant turns get the reading measure and no container at all. */
   .ns-aiturn--agent .ns-aiturn__body { max-inline-size: var(--measure-prose); }

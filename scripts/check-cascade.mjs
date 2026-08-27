@@ -33,7 +33,7 @@ import postcss from "postcss";
 import atImport from "postcss-import";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const ENTRY = join(ROOT, "styles.css");
+const ENTRY = join(ROOT, "src/styles.css");
 
 /* The layer order every consumer inherits. Asserted rather than assumed —
    dropping a layer from the statement is as breaking as dropping a rule. */
@@ -43,10 +43,10 @@ const REQUIRED_ORDER = ["theme", "base", "ns-components", "components", "utiliti
    declaration is not a style preference but the meaning of the thing.
    Keyed by source file + selector so "somewhere in a11y.css" is not enough. */
 const IMPORTANT_ALLOWLIST = [
-  { file: "tokens/base.css", selector: "[hidden]", why: "the attribute's meaning, not a preference — UA display:none loses to any author rule" },
-  { file: "tokens/effects.css", selector: "*", why: "prefers-reduced-motion is an accessibility guard and must outrank component motion" },
+  { file: "src/tokens/base.css", selector: "[hidden]", why: "the attribute's meaning, not a preference — UA display:none loses to any author rule" },
+  { file: "src/tokens/effects.css", selector: "*", why: "prefers-reduced-motion is an accessibility guard and must outrank component motion" },
   /* Matched on the BASENAME, not the full path. The component layer is
-     grouped into folders, and an allowlist keyed on "components/css/a11y.css"
+     grouped into folders, and an allowlist keyed on "src/css/a11y.css"
      stopped matching the moment that file became "foundation/a11y.css" —
      which did not report a missing entry, it reported two brand-new cascade
      violations in a file nobody had touched. An allowlist that silently
@@ -79,9 +79,9 @@ result.root.each((n) => {
   }
 });
 if (!declared) {
-  problems.push(["styles.css", "no `@layer theme, base, ns-components, components, utilities;` statement — layer order would fall out of import order instead"]);
+  problems.push(["src/styles.css", "no `@layer theme, base, ns-components, components, utilities;` statement — layer order would fall out of import order instead"]);
 } else if (declared.join() !== REQUIRED_ORDER.join()) {
-  problems.push(["styles.css", `layer order is \`${declared.join(", ")}\`, expected \`${REQUIRED_ORDER.join(", ")}\``]);
+  problems.push(["src/styles.css", `layer order is \`${declared.join(", ")}\`, expected \`${REQUIRED_ORDER.join(", ")}\``]);
 }
 
 /* ---- 2. nothing outside a layer ----------------------------------------- */

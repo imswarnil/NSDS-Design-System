@@ -21,7 +21,7 @@ import { fileURLToPath } from "node:url";
 import { validate, validateOrdinal } from "./validate-palette.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const css = readFileSync(join(ROOT, "tokens/dataviz.css"), "utf8");
+const css = readFileSync(join(ROOT, "src/tokens/dataviz.css"), "utf8");
 
 /* Split :root from [data-theme="dark"] so each mode is checked against its
    own surface — a dark palette validated against white proves nothing. */

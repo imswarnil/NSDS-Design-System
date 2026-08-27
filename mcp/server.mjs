@@ -13,7 +13,7 @@
 
    THE DATA IS READ FROM THE REAL ARTIFACTS, never from a copy: components
    from the COMPONENTS array the styleguide renders from, tokens from the
-   generated tokens.json, classes by walking components/css/. A rename
+   generated tokens.json, classes by walking src/css/. A rename
    reaches this server in the commit that made it, because there is nothing
    here to update.
 
@@ -64,7 +64,7 @@ for (const rel of cssFiles(ROOT)) {
   }
 }
 
-const tokenJson = JSON.parse(read("tokens/tokens.json"));
+const tokenJson = JSON.parse(read("dist/tokens.json"));
 const TOKENS = [];
 (function flatten(node) {
   for (const [k, v] of Object.entries(node)) {
@@ -72,7 +72,7 @@ const TOKENS = [];
     if (v && typeof v === "object" && v.$value !== undefined) {
       const name = v.$extensions?.["ns.cssVar"] ?? `--${k}`;
       if (!name.startsWith("--ns-")) {
-        TOKENS.push({ name, value: String(v.$value), group: (v.$extensions?.["ns.definedIn"] ?? "").replace("tokens/", "").replace(".css", "") });
+        TOKENS.push({ name, value: String(v.$value), group: (v.$extensions?.["ns.definedIn"] ?? "").replace("src/tokens/", "").replace(".css", "") });
       }
     } else if (v && typeof v === "object") flatten(v);
   }
@@ -217,13 +217,13 @@ const TOOLS = [
       "",
       "| Import | Use |",
       "| --- | --- |",
-      `| \`${pkg.name}/dist/namaste-ui.css\` | plain CSS, everything, no build step |`,
-      `| \`${pkg.name}/dist/namaste-ui.min.css\` | the same, minified |`,
-      `| \`${pkg.name}/dist/namaste-ui.tailwind.css\` | a project already on Tailwind v4 |`,
-      `| \`${pkg.name}/dist/namaste-ui.tailwind.min.css\` | the same, minified |`,
+      `| \`${pkg.name}/css\` | plain CSS, everything, no build step |`,
+      `| \`${pkg.name}/css/min\` | the same, minified |`,
+      `| \`${pkg.name}/tailwind\` | a project already on Tailwind v4 |`,
+      `| \`${pkg.name}/tailwind/min\` | the same, minified |`,
       "",
       "```js",
-      `import "${pkg.name}/dist/namaste-ui.css";`,
+      `import "${pkg.name}/css";`,
       "```",
       "",
       "Tokens are also importable as JS/TS:",

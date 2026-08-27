@@ -39,7 +39,7 @@ Every gulp task is a thin wrapper over `scripts/*.mjs`, so `node scripts/<x>.mjs
 
 This system feeds a **Ghost theme** (Handlebars + Tailwind v4) and a **Next.js LMS** (React). The only thing they can genuinely share is CSS, so:
 
-- `components/css/**/*.css` — the `.ns-*` class layer. **All styling lives here**, grouped into six folders: `foundation/` (a11y, icon, motion, type-fx), `primitives/` (button, form, display, media, feedback, progress, overlay, table, code), `navigation/`, `content/` (prose, content, sections, blog), `product/` (lms, training, catalog, player, deck, ai, admin, helpdesk, auth, chart) and `integrations/` (ghost, ads, monetization). `index.css` is the import manifest and **its order is the cascade order** — inside one layer, source order decides ties, so never reorder it casually.
+- `src/css/**/*.css` — the `.ns-*` class layer. **All styling lives here**, grouped into six folders: `foundation/` (a11y, icon, motion, type-fx), `primitives/` (button, form, display, media, feedback, progress, overlay, table, code), `navigation/`, `content/` (prose, content, sections, blog), `product/` (lms, training, catalog, player, deck, ai, admin, helpdesk, auth, chart) and `integrations/` (ghost, ads, monetization). `index.css` is the import manifest and **its order is the cascade order** — inside one layer, source order decides ties, so never reorder it casually.
   - A component owns its own file; a *container* owns how a component looks inside it. `.ns-topnav__actions .ns-btn` belongs in `navigation/navbar.css`, not in `primitives/button.css` — otherwise the button has to know about the navbar, the player and the deck.
   - Scripts that read this directory must use `scripts/lib/css-files.mjs`, which walks it recursively and **throws when the walk is empty**. A flat `readdirSync` returns nothing after a move and a checker that examines zero files still passes.
 - `components/<domain>/*.jsx` — thin React wrappers. Behaviour only: generated ids, ARIA wiring, roving tabindex, focus restoration. `check-components.mjs` fails the build on inline styling.
@@ -50,22 +50,22 @@ A React component that styles itself is a component the Ghost theme has to reimp
 
 ### Tokens are generated, and the generation is enforced
 
-`tokens/*.css` is **authored**. `tokens/tokens.json`, `tokens.js`, `tokens.d.ts` and `tokens/tailwind.css` are **generated** by `npm run build`. CI runs `git diff --exit-code` after building, so a hand-edit or a forgotten regeneration fails.
+`src/tokens/*.css` is **authored**. `dist/tokens.json`, `tokens.js`, `tokens.d.ts` and `src/tokens/tailwind.css` are **generated** by `npm run build`. CI runs `git diff --exit-code` after building, so a hand-edit or a forgotten regeneration fails.
 
-**Adding a token requires a matching Tailwind emit.** `build-tokens.mjs` has a "bridge" check that fails if a `tokens/*.css` variable has no corresponding `--text-*` / `--color-*` / `--space-*` utility. Add the emit line in `build-tokens.mjs` in the same commit, or the build refuses.
+**Adding a token requires a matching Tailwind emit.** `build-tokens.mjs` has a "bridge" check that fails if a `src/tokens/*.css` variable has no corresponding `--text-*` / `--color-*` / `--space-*` utility. Add the emit line in `build-tokens.mjs` in the same commit, or the build refuses.
 
 ### The cascade contract
 
 `styles.css` declares `@layer theme, base, ns-components, components, utilities` before any import. That single line is why a Tailwind utility always beats a `.ns-*` default with no `!important`, and why a consuming app's own `components` layer beats ours regardless of import order. Two things silently revoke it — a rule outside any layer, and a changed order — so `check-cascade.mjs` parses the `@import` graph and guards it.
 
-Consequence: specificity inside `components/css/` only decides DS-vs-DS conflicts. A `:has()` chain still loses to `.p-4`.
+Consequence: specificity inside `src/css/` only decides DS-vs-DS conflicts. A `:has()` chain still loses to `.p-4`.
 
 ### The styleguide generates itself from the real artifacts
 
 - `scripts/component-docs.mjs` — a single `COMPONENTS` array is the **source** for every per-component page. One entry → `preview/c-<id>.html`. The `html` string in a variant both renders the demo and prints as the code sample, so they cannot disagree.
 - `scripts/build-preview.mjs` — renders those into pages, plus the foundation sections, chart docs and content-creation docs, plus the full-page demos (a `DEMOS` array maps a `templates/*.html` to `preview/demo-*.html`).
 - `.ns-band--dark` clips with **`overflow: clip`, not `hidden`** — and that is load-bearing. `hidden` makes the band a scroll container, which silently kills `position: sticky` (it pins to a box that never scrolls) and freezes `view()` timelines at 50%. Any new clipping container on a band should use `clip` for the same reason.
-- `components/css/motion.css` — nine entrances plus `.ns-parallax`. Scroll-driven motion needs **two** classes: `.ns-parallax-frame` declares the named view timeline and must be an element whose own nearest scroll container is the page; `.ns-parallax` layers inside it consume it. A bare `view()` inside an `overflow: hidden` box resolves against a container that never scrolls and freezes at 50% — which looks exactly like no animation at all. Debugging note: a hidden document (a background tab, an automation window) deactivates every scroll timeline and stops IntersectionObserver, so "the motion is dead" is worth checking against `document.visibilityState` before it is worth debugging.
+- `src/css/motion.css` — nine entrances plus `.ns-parallax`. Scroll-driven motion needs **two** classes: `.ns-parallax-frame` declares the named view timeline and must be an element whose own nearest scroll container is the page; `.ns-parallax` layers inside it consume it. A bare `view()` inside an `overflow: hidden` box resolves against a container that never scrolls and freezes at 50% — which looks exactly like no animation at all. Debugging note: a hidden document (a background tab, an automation window) deactivates every scroll timeline and stops IntersectionObserver, so "the motion is dead" is worth checking against `document.visibilityState` before it is worth debugging.
 - `icons/brand-marks.svg` — placeholder logo lockups for `.ns-brandmark`. **Every company in it is fictional on purpose** (Acme, Globex, Initech, Initrode, Umbrella, Northwind, Contoso). Do not add a real company: a logo wall showing a mark its owner never granted is a fabricated endorsement. Each symbol carries its own viewBox width and the host `<svg>` must repeat it — an external `<use>` gives the host no intrinsic size.
 - `**/*.card.html` — standalone specimens, discovered by walking the tree. Config lives in an HTML comment on **line 1**: `<!-- @dsCard group="…" viewport="760x1200" name="…" subtitle="…" -->`. The `viewport` height must match what the card actually renders to, or the styleguide frames it with a scrollbar or dead space — measure it in a browser rather than guessing.
 - `preview/pages.json` — a manifest `build-preview.mjs` writes; `build-site.mjs` reads it to generate the homepage's link index and `sitemap.xml`. A new page appears in both automatically or in neither.
@@ -76,7 +76,7 @@ Consequence: specificity inside `components/css/` only decides DS-vs-DS conflict
 
 `--size-body` (14px) is the **UI** base — rails, tables, admin, player chrome. `--size-prose` (17px) / `--size-prose-lead` (20px) / `--size-prose-small` (15px) are the **reading** scale, used by `.ns-prose` and the surfaces built on it. The axis is scanned-versus-read. Do not set an article at `--size-body` or a table row at `--size-prose`.
 
-**Marketing bands are on the reading side of that fork.** `components/css/sections.css` takes `--size-prose-lead` for a lede, `--size-prose` for a card heading and `--size-prose-small` for body copy — it was on the UI scale once, which put homepage paragraphs at 13px, one step *below* the base and level with a table caption. Nobody scans a homepage; they read it once, deciding. The mono label voice (`--size-label`) does not move on either side of the fork: a kicker, an index, a duration and a stat label are data, not prose.
+**Marketing bands are on the reading side of that fork.** `src/css/sections.css` takes `--size-prose-lead` for a lede, `--size-prose` for a card heading and `--size-prose-small` for body copy — it was on the UI scale once, which put homepage paragraphs at 13px, one step *below* the base and level with a table caption. Nobody scans a homepage; they read it once, deciding. The mono label voice (`--size-label`) does not move on either side of the fork: a kicker, an index, a duration and a stat label are data, not prose.
 
 A card composed **into** a band follows the band (rule at the foot of `sections.css`); the same card in a catalogue grid or a rail keeps the UI scale. That is the fork applied, not an exception to it — three courses on a homepage are read, forty in a catalogue are scanned. `.ns-lesson` is deliberately excluded, because "a lesson row looks the same everywhere" is a promise `lms.css` makes.
 
@@ -86,7 +86,7 @@ Leading forks with it: `--leading-prose` (1.7) is for prose paragraphs only, `--
 
 ## Rules the build enforces
 
-`lint-principles.mjs` fails on any raw color, radius, `z-index`, transition duration, `font-family` or padding/margin/gap literal inside `components/css/`, plus any border wider than 3px.
+`lint-principles.mjs` fails on any raw color, radius, `z-index`, transition duration, `font-family` or padding/margin/gap literal inside `src/css/`, plus any border wider than 3px.
 
 **It also catches raw values inside `var()` fallbacks** — `var(--duration-slow, 240ms)` fails. Use the token with no fallback.
 

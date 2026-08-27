@@ -14,7 +14,7 @@
    is the same numbered index on every page, with the current page marked.
 
    Everything is derived from the real artifacts — token tables from
-   tokens/tokens.json, the class index scraped from components/css/*.css,
+   dist/tokens.json, the class index scraped from src/css/*.css,
    specimens are the actual .card.html files — so the styleguide cannot
    drift from the system.
 
@@ -30,7 +30,7 @@ const OUT = join(ROOT, "preview");
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 /* ---- inputs ------------------------------------------------------------ */
-const tokens = JSON.parse(readFileSync(join(ROOT, "tokens/tokens.json"), "utf8"));
+const tokens = JSON.parse(readFileSync(join(ROOT, "dist/tokens.json"), "utf8"));
 /* The two runtime scripts the system actually ships. theme-init is INLINED
    in the head — that is its documented requirement and the styleguide should
    demonstrate the correct usage, not a convenient one. nav.js is deferred,
@@ -71,10 +71,10 @@ const cards = walk(".").map((path) => {
 
 const classIndex = {};
 for (const rel of cssFilesOf(ROOT)) {
-  /* Keyed by the path under components/css/ — "primitives/button.css" rather
+  /* Keyed by the path under src/css/ — "primitives/button.css" rather
      than "button.css" — so the class index shows which family a class belongs
      to, which is the question the index is usually being asked. */
-  const f = rel.replace("components/css/", "");
+  const f = rel.replace("src/css/", "");
   const css = readFileSync(join(ROOT, rel), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
   const found = new Set();
   for (const m of css.matchAll(/\.(ns-[a-z0-9_-]+)/g)) found.add(m[1]);
@@ -322,7 +322,7 @@ ${PROSE}
     ${spec(["guidelines/type-headings.card.html", "guidelines/type-body.card.html", "guidelines/type-kicker.card.html", "guidelines/type-mono-code.card.html"])}
 
     <p class="sub">Text effects — the three rules</p>
-    <p class="variant-note">Everything below is decoration over text that already reads correctly without it. <strong>1. The effect is never the meaning</strong> — struck text is a real <code>&lt;s&gt;</code>, a highlight is a real <code>&lt;mark&gt;</code>, a citation is a real link to a footnote that exists. <strong>2. It draws once</strong> — these fire when scrolled into view and then stop; a thing that loops forever mid-paragraph is an ad. <strong>3. It collapses under reduced motion</strong> — each effect's <em>final</em> state is the correct rendering, so flattening leaves a drawn highlight rather than an invisible one. Source: <code>components/css/type-fx.css</code> + <code>assets/js/type-fx.js</code>.</p>
+    <p class="variant-note">Everything below is decoration over text that already reads correctly without it. <strong>1. The effect is never the meaning</strong> — struck text is a real <code>&lt;s&gt;</code>, a highlight is a real <code>&lt;mark&gt;</code>, a citation is a real link to a footnote that exists. <strong>2. It draws once</strong> — these fire when scrolled into view and then stop; a thing that loops forever mid-paragraph is an ad. <strong>3. It collapses under reduced motion</strong> — each effect's <em>final</em> state is the correct rendering, so flattening leaves a drawn highlight rather than an invisible one. Source: <code>src/css/type-fx.css</code> + <code>assets/js/type-fx.js</code>.</p>
     <div class="demo demo--stack" style="gap:var(--space-4);font-size:var(--size-body-lg)">
       <p><mark class="ns-mark">Highlight</mark> marks a phrase, never a paragraph — and four tints exist so one page can mark two different things: <mark class="ns-mark ns-mark--success">shipped</mark>, <mark class="ns-mark ns-mark--warning">deprecated</mark>, <mark class="ns-mark ns-mark--error">removed</mark>, <mark class="ns-mark ns-mark--solid">or filled solid</mark>.</p>
       <p><s class="ns-strike ns-strike--muted">One record at a time</s> <strong>collections, always</strong> — the correction pattern: struck text goes muted so the eye lands on the live value.</p>
@@ -655,7 +655,7 @@ ${PROSE}
       <li><strong>Cut from the bottom.</strong> A shorter page drops voices, then FAQ, then stats — never the path or the merchandise.</li>
     </ul></div></div>` },
   { id: "accessibility", title: "Accessibility", lede: "The contract every component ships with: focus is always visible, motion collapses under reduced-motion, status never relies on color alone, and every icon-only control has a name.", body: () => spec(["guidelines/accessibility.card.html"]) },
-  { id: "classes", title: "Class index", lede: "Scraped from <code>components/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
+  { id: "classes", title: "Class index", lede: "Scraped from <code>src/css/</code>. These are the class names the Ghost theme and the Next.js app both render — the actual shared surface between the two products.", body: () => Object.entries(classIndex).map(([file, list]) => `
     <p class="sub">${esc(file)}.css — ${list.length}</p>
     <div class="cls">${list.map((c) => `<code>.${esc(c)}</code>`).join("")}</div>`).join("") },
 ];
@@ -987,7 +987,7 @@ const LIVESTREAM_BODY = `
   </ul></div></div>`;
 
 /* ---- Charts docs --------------------------------------------------------
-   Live demos built from the .ns-chart layer (components/css/chart.css) and
+   Live demos built from the .ns-chart layer (src/css/chart.css) and
    the dataviz tokens — the markup under each demo IS the demo, so sample
    and rendering cannot disagree. */
 const demoBlock = (name, note, html) => `
@@ -1989,7 +1989,7 @@ const shell = (page, inner) => {
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="../assets/logo/favicon.svg">
 <script>${THEME_INIT}</script>
-<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="../dist/nsds.tailwind.css">
 <style>${CSS}</style>
 </head>
 <body>
@@ -2441,7 +2441,7 @@ writeFileSync(join(OUT, "demo-player-responsive.html"), `<!DOCTYPE html>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Course player — responsive</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
-<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="../dist/nsds.tailwind.css">
 <style>
   body { padding: var(--space-8) var(--gutter) var(--space-16); }
   .rgrid { display: flex; gap: var(--space-8); align-items: flex-start; overflow-x: auto; padding-block-end: var(--space-4); }
@@ -2495,7 +2495,7 @@ writeFileSync(join(OUT, "demo-blog-ads-responsive.html"), `<!DOCTYPE html>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ad units — responsive</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
-<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="../dist/nsds.tailwind.css">
 <style>
   body { padding: var(--space-8) var(--gutter) var(--space-16); }
   .rgrid { display: flex; gap: var(--space-8); align-items: flex-start; overflow-x: auto; padding-block-end: var(--space-4); }
@@ -2645,7 +2645,7 @@ for (const d of DEMOS) {
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(d.title)}</title>
 <link rel="icon" href="../assets/logo/favicon.svg">
-<link rel="stylesheet" href="../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="../dist/nsds.tailwind.css">
 </head>
 <body>
 ${d.realHeader ? realHeader(d) : d.bare ? `<a class="ns-btn ns-btn--quiet ns-btn--sm" href="./${d.back}" style="position:fixed;inset-block-start:var(--space-3);inset-inline-start:var(--space-3);z-index:var(--z-sticky)">&larr; back to docs</a>` : `<div class="flex items-center gap-row px-card py-inline border-b border-border font-mono text-label uppercase text-label-ink">templates/${esc(d.tpl)} — ${esc(d.note)}

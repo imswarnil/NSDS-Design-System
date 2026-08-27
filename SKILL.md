@@ -32,7 +32,7 @@ font-family or padding value in the component layer fails `npm run check`.
 
 If creating visual artifacts (slides, mocks, throwaway prototypes), copy assets
 out and create static HTML files for the user to view — link `styles.css` or
-`dist/namaste-ui.css` and use the `.ns-*` classes. If working on production
+`dist/nsds.css` and use the `.ns-*` classes. If working on production
 code, read the five Design Principles in `readme.md` and
 `guidelines/accessibility.card.html` and become an expert in designing with this
 brand.
