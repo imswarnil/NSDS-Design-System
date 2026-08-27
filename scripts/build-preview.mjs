@@ -1319,6 +1319,92 @@ ${[["Active learners", "1,284", "up", "▲ 12%", "0,26 29,22 58,24 87,18 116,20 
   </div>`).join("\n")}
 </dl>`)}` },
 
+  { id: "chart-more", title: "Scatter, waterfall, bullet, slope", lede: "Four shapes for questions the bar and the line cannot answer: is there a relationship, how did the total get here, are we hitting target, and what changed between two moments.", body: `
+${demoBlock("Scatter — is there a relationship", "The one chart here where the reader is meant to look at the SHAPE of the cloud rather than read any single mark. Dots are semi-transparent, so overlap reads as density instead of hiding records — five points on one spot is a darker dot, and that is information.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Hours studied vs score</span><span class="ns-chart__sub">128 learners</span></div>
+  <div class="ns-chart__scatter">
+    <span class="ns-chart__point" data-c="1" style="--x:12%;--y:22%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:18%;--y:31%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:24%;--y:28%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:31%;--y:44%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:34%;--y:39%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:42%;--y:52%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:46%;--y:47%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:53%;--y:61%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:58%;--y:58%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:64%;--y:71%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:69%;--y:66%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:76%;--y:79%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:82%;--y:74%"></span>
+    <span class="ns-chart__point" data-c="1" style="--x:88%;--y:86%"></span>
+  </div>
+  <div class="ns-chart__x"><span>0h</span><span>20h</span><span>40h</span></div>
+</figure>`)}
+${demoBlock("Bubble — a third measure as area", "Radius carries a third number. Capped deliberately: past about 40px a bubble stops being a mark and becomes a region the reader tries to read boundaries into. Two series at most, or the cloud is unreadable.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Modules by traffic and completion</span><span class="ns-chart__sub">area = enrolments</span></div>
+  <div class="ns-chart__scatter">
+    <span class="ns-chart__point ns-chart__point--bubble" data-c="1" style="--x:18%;--y:30%;--_r:22px"></span>
+    <span class="ns-chart__point ns-chart__point--bubble" data-c="1" style="--x:36%;--y:52%;--_r:34px"></span>
+    <span class="ns-chart__point ns-chart__point--bubble" data-c="1" style="--x:55%;--y:44%;--_r:16px"></span>
+    <span class="ns-chart__point ns-chart__point--bubble" data-c="2" style="--x:68%;--y:72%;--_r:40px"></span>
+    <span class="ns-chart__point ns-chart__point--bubble" data-c="2" style="--x:84%;--y:63%;--_r:24px"></span>
+  </div>
+</figure>`)}
+${demoBlock("Waterfall — how the total got here", "Every bar is a DELTA except the first and last, which are totals sitting on the baseline. That distinction is the whole chart: a waterfall drawn with every bar from zero is a bar chart that has lost its argument. Up and down take the status hues because direction is the meaning, not a category.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Active learners, Q3 to Q4</span><span class="ns-chart__sub">net +410</span></div>
+  <div class="ns-chart__plot">
+    <div class="ns-chart__wcol"><span class="ns-chart__wbar" style="--v:52%;--base:0%"></span><span class="ns-chart__wlink" style="--link:52%"></span></div>
+    <div class="ns-chart__wcol"><span class="ns-chart__wbar ns-chart__wbar--up" style="--v:24%;--base:52%"></span><span class="ns-chart__wlink" style="--link:76%"></span></div>
+    <div class="ns-chart__wcol"><span class="ns-chart__wbar ns-chart__wbar--up" style="--v:11%;--base:76%"></span><span class="ns-chart__wlink" style="--link:87%"></span></div>
+    <div class="ns-chart__wcol"><span class="ns-chart__wbar ns-chart__wbar--down" style="--v:14%;--base:73%"></span><span class="ns-chart__wlink" style="--link:73%"></span></div>
+    <div class="ns-chart__wcol"><span class="ns-chart__wbar" style="--v:73%;--base:0%"></span></div>
+  </div>
+  <div class="ns-chart__x"><span>Q3</span><span>New</span><span>Won back</span><span>Churn</span><span>Q4</span></div>
+</figure>`)}
+${demoBlock("Bullet — actual against target", "One measure against its target, in a row. It replaces a gauge for the same job in a fraction of the space and without the two problems a gauge has: a needle at an angle is hard to compare between rows, and a dial spends most of its pixels on the part of the range nobody is in. The target is a rule in ink, not a hue — it is a threshold, not a series, and a category colour would send the reader to the legend.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Against quarterly target</span><span class="ns-chart__sub">tick = target</span></div>
+  <div class="ns-chart__bullet">
+    <span class="ns-chart__row-label">Completions</span>
+    <span class="ns-chart__btrack"><span class="ns-chart__bfill" data-c="1" style="--v:88%"></span><span class="ns-chart__btarget" style="--t:75%"></span></span>
+    <span class="ns-chart__bvalue">88%</span>
+  </div>
+  <div class="ns-chart__bullet">
+    <span class="ns-chart__row-label">Certifications</span>
+    <span class="ns-chart__btrack"><span class="ns-chart__bfill" data-c="2" style="--v:61%"></span><span class="ns-chart__btarget" style="--t:80%"></span></span>
+    <span class="ns-chart__bvalue">61%</span>
+  </div>
+  <div class="ns-chart__bullet">
+    <span class="ns-chart__row-label">Labs finished</span>
+    <span class="ns-chart__btrack"><span class="ns-chart__bfill" data-c="3" style="--v:94%"></span><span class="ns-chart__btarget" style="--t:70%"></span></span>
+    <span class="ns-chart__bvalue">94%</span>
+  </div>
+</figure>`)}
+${demoBlock("Slope — what changed between two moments", "Two points in time, one line per series. It beats a grouped bar at that job because crossing lines make a REORDERING visible, which is usually the finding. Four or five series at most: past that the middle is a knot, the labels collide, and the honest chart is a table.", `<figure class="ns-chart">
+  <div class="ns-chart__head"><span class="ns-chart__title">Track popularity</span><span class="ns-chart__sub">2025 → 2026</span></div>
+  <div class="ns-chart__slope">
+    <div class="ns-chart__slope-side">
+      <span class="ns-chart__slope-label">Apex 41%</span>
+      <span class="ns-chart__slope-label">Flows 28%</span>
+      <span class="ns-chart__slope-label">SOQL 19%</span>
+      <span class="ns-chart__slope-label">LWC 12%</span>
+    </div>
+    <div class="ns-chart__slope-plot">
+      <svg class="ns-chart__svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" style="block-size:100%">
+        <line class="ns-chart__line" data-c="1" x1="0" y1="8" x2="100" y2="30" vector-effect="non-scaling-stroke"/>
+        <line class="ns-chart__line" data-c="2" x1="0" y1="34" x2="100" y2="12" vector-effect="non-scaling-stroke"/>
+        <line class="ns-chart__line" data-c="3" x1="0" y1="60" x2="100" y2="64" vector-effect="non-scaling-stroke"/>
+        <line class="ns-chart__line" data-c="4" x1="0" y1="86" x2="100" y2="78" vector-effect="non-scaling-stroke"/>
+      </svg>
+    </div>
+    <div class="ns-chart__slope-side">
+      <span class="ns-chart__slope-label">Flows 37%</span>
+      <span class="ns-chart__slope-label">Apex 30%</span>
+      <span class="ns-chart__slope-label">SOQL 18%</span>
+      <span class="ns-chart__slope-label">LWC 15%</span>
+    </div>
+  </div>
+</figure>`)}
+` },
   { id: "chart-controls", title: "Filters & controls", lede: "The interactive layer, working end to end: a range toggle re-scaling the data, legend keys that hide a series without repainting the rest, and a crosshair tooltip tracking the pointer. This demo is live — click things.", body: `
   <p class="sub">The working module</p>
   <p class="variant-note">Range segments re-render the columns; the legend keys toggle line series (a hidden series never shifts the survivors' colors — color follows the entity); the line plot carries a crosshair tooltip on hover. In product this wiring is React state; here it is the same markup driven by demo JS.</p>
@@ -1986,6 +2072,14 @@ const DEMOS = [
      rails added and removed, and the demos exist side by side because the
      thing worth seeing is what does NOT change: the measure is identical in
      all three. */
+  /* The light templates — small, self-contained pages anybody can preview
+     and lift. Between them they use almost nothing that is not already on
+     a product page: the point is that the same band grammar, the same
+     cards and the same rails build a personal site, a docs page and a link
+     page without a component being added for any of them. */
+  { out: "demo-personal-site.html", tpl: "personal-site.html", title: "Personal site — full page", back: "c-shero.html", note: "a one-page personal site, built from the product homepage's own bands — ZERO new classes were needed for this page" },
+  { out: "demo-docs.html", tpl: "docs.html", title: "Documentation page — full page", back: "c-post-layout.html", note: "nav | article | outline. The one shape that genuinely wants navigation on both sides: the left is what else exists, the right is what is on this page" },
+  { out: "demo-links.html", tpl: "links.html", title: "Link page — full page", back: "c-button.html", note: "the one-link-in-a-bio page. Narrow on every screen, exactly one filled row, and the links are a real nav rather than cards" },
   { out: "demo-blog-post-sidebar.html", tpl: "blog-post-sidebar.html", title: "Blog post, sidebar — full page", back: "c-post-layout.html", note: "article + a real sidebar: related, courses, the training CTA, newsletter, categories, sponsor. The author is NOT in the rail — a bio belongs after the piece, not beside it" },
   { out: "demo-blog-listing.html", tpl: "blog-listing.html", title: "Blog index — full page", back: "c-blog-listing.html", note: "one featured post, a grid, and the category / archive / newsletter rail" },
   /* The tag pages are the index with its header swapped and its featured

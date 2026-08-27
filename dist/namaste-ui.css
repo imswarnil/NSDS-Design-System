@@ -5330,6 +5330,121 @@
     .ns-chart__donut { gap: var(--space-4); }
     .ns-chart--lg .ns-chart__plot { --_h: 10rem; }
   }
+
+  /* ======================================================== SCATTER ====
+     Two measures against each other, one dot per record. The only chart
+     here that answers "is there a relationship" rather than "how much" —
+     and the only one where the reader is meant to look at the SHAPE of the
+     cloud rather than read any single mark.
+
+     Dots are semi-transparent so overlap reads as density instead of
+     hiding records: five points on the same spot is a darker dot, which is
+     information. Ringed in surface like every other marker in this file, so
+     a dot on top of another is still countable.
+
+     --x and --y are percentages of the plot, set at the call site. The y is
+     inverted here rather than in the markup so the author writes the value
+     they mean and not 100-minus-it. */
+  .ns-chart__scatter { position: relative; block-size: var(--_h, 10rem); }
+  .ns-chart--sm .ns-chart__scatter { --_h: 6rem; }
+  .ns-chart--lg .ns-chart__scatter { --_h: 15rem; }
+  .ns-chart__point {
+    position: absolute;
+    inline-size: var(--_r, 9px); block-size: var(--_r, 9px);
+    inset-inline-start: var(--x, 50%);
+    inset-block-start: calc(100% - var(--y, 50%));
+    translate: -50% -50%;
+    border-radius: var(--radius-pill);
+    background: var(--_c, var(--chart-cat-1));
+    opacity: 0.72; /* lint-ok: overlap density — see the note above */
+    box-shadow: 0 0 0 2px var(--chart-surface);
+  }
+  /* Bubble: a third measure as area. Radius is set per point, and the cap
+     matters — past about 40px a bubble stops being a mark and becomes a
+     region the reader tries to read boundaries into. */
+  .ns-chart__point--bubble { opacity: 0.55; /* lint-ok: larger marks need more transparency to stay countable */ }
+
+  /* ====================================================== WATERFALL ====
+     How a total got from one number to another. Every bar is a DELTA except
+     the first and last, which are totals sitting on the baseline — and that
+     distinction is the whole chart: a waterfall drawn with every bar from
+     zero is a bar chart that has lost its argument.
+
+     --v is the bar's size, --base is where its bottom sits, both as a
+     percentage of the plot. Rise and fall take the success and error hues
+     because up and down are the meaning here, not a category; the totals
+     stay neutral so the eye reads them as rests rather than as another
+     movement. */
+  .ns-chart__wcol { flex: 1; min-inline-size: 0; block-size: 100%; position: relative; }
+  .ns-chart__wbar {
+    position: absolute; inset-inline: 12%;
+    block-size: var(--v, 10%);
+    inset-block-end: var(--base, 0%);
+    background: var(--chart-muted);
+    border-radius: var(--radius-sm);
+  }
+  .ns-chart__wbar--up { background: var(--color-success); }
+  .ns-chart__wbar--down { background: var(--color-error); }
+  /* The connector: a hairline from the top of one bar to the start of the
+     next, which is what makes the steps read as one running total. */
+  .ns-chart__wlink {
+    position: absolute; inset-inline-start: 88%; inline-size: 24%;
+    block-size: 1px; background: var(--chart-axis);
+    inset-block-end: var(--link, 0%);
+  }
+
+  /* ========================================================= BULLET ====
+     One measure against its target, in a row. Replaces a gauge for the same
+     job in a fraction of the space and without the two problems a gauge
+     has: a needle at an angle is hard to compare between rows, and a dial
+     spends most of its pixels on the part of the range nobody is in.
+
+     The bar is the actual, the tick is the target, the band behind is the
+     range. A row where the bar clears the tick is legible at a glance
+     without reading a number, which is the whole point of putting one of
+     these in a dashboard. */
+  .ns-chart__bullet { display: grid; grid-template-columns: 7rem minmax(0, 1fr) auto; gap: var(--space-3); align-items: center; }
+  .ns-chart__bullet + .ns-chart__bullet { margin-block-start: var(--space-3); }
+  .ns-chart__btrack {
+    position: relative; block-size: var(--space-5);
+    background: var(--chart-grid); border-radius: var(--radius-sm);
+  }
+  .ns-chart__bfill {
+    position: absolute; inset-block: 25%; inset-inline-start: 0;
+    inline-size: var(--v, 50%);
+    background: var(--_c, var(--chart-cat-1));
+    border-radius: var(--radius-sm);
+  }
+  /* The target. A 2px rule across the track, in ink rather than a hue —
+     it is a threshold, not a series, and giving it a category colour makes
+     the reader look for it in the legend. */
+  .ns-chart__btarget {
+    position: absolute; inset-block: 10%; inline-size: 2px;
+    inset-inline-start: var(--t, 80%);
+    background: var(--chart-ink);
+  }
+  .ns-chart__bvalue {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--chart-ink); font-variant-numeric: tabular-nums;
+  }
+
+  /* ========================================================== SLOPE ====
+     Two points in time, one line per series. The chart for "what changed
+     between these two moments" — and it beats a grouped bar at that job
+     because crossing lines make a reordering visible, which is usually the
+     finding.
+
+     Four or five series at most. Past that the middle becomes a knot and
+     the labels collide, and the honest chart is a table. */
+  .ns-chart__slope { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-3); align-items: stretch; }
+  .ns-chart__slope-side { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-1); }
+  .ns-chart__slope-label {
+    font-size: var(--size-label); color: var(--chart-muted);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .ns-chart__slope-plot { position: relative; block-size: var(--_h, 10rem); }
+  .ns-chart--lg .ns-chart__slope-plot { --_h: 15rem; }
+
 }
 
 @keyframes ns-chart-grow { from { transform: scaleY(0); } }
@@ -18546,6 +18661,140 @@
   .ns-ytcard:hover .ns-ytcard__title { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-ytcard:hover .ns-ytcard__title { color: var(--color-brand-300); }
   .ns-ytcard__meta { font-size: var(--size-prose-small); color: var(--color-muted); }
+
+  /* ========================================================= LINK PAGE ====
+     The "one link in a bio" page: an avatar, a name, a sentence, and a
+     stack of destinations.
+
+     WHAT MAKES IT HARD IS RESTRAINT. The page has exactly one job and
+     every element on it competes with the only thing that matters. So no
+     cover image, no follower counts, no widgets — and the links are a real
+     <nav> of links rather than a grid of cards, because a card implies
+     content behind the click and these are doors.
+
+     Narrow on every screen. This is the one layout in the system that does
+     not widen on a desktop: it is designed for a thumb arriving from a
+     phone's browser, and a 60rem-wide column of buttons on a laptop looks
+     like a settings screen. */
+  .ns-linkpage {
+    max-inline-size: 30rem; margin-inline: auto;
+    padding: var(--stack-lg) var(--gutter);
+    display: flex; flex-direction: column; gap: var(--stack-md);
+  }
+  .ns-linkpage__head { display: flex; flex-direction: column; align-items: center; text-align: center; gap: var(--space-3); }
+  .ns-linkpage__avatar {
+    inline-size: var(--space-20); block-size: var(--space-20);
+    border-radius: var(--radius-pill); object-fit: cover;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-linkpage__name {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    color: var(--color-ink);
+  }
+  .ns-linkpage__bio {
+    margin: 0; font-size: var(--size-prose-small); line-height: var(--leading-snug);
+    color: var(--color-muted); text-wrap: pretty;
+  }
+  /* Two checkable numbers. Values, so the mono voice is correct here. */
+  .ns-linkpage__meta {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-linkpage__meta > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
+
+  .ns-links { display: flex; flex-direction: column; gap: var(--space-3); }
+  .ns-links__item {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-3); align-items: center;
+    padding: var(--space-4);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    color: inherit; text-decoration: none;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-links__item:hover {
+    border-color: var(--color-brand-500);
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+  }
+  /* --lead: the one destination the page exists for. EXACTLY ONE. Two
+     filled rows is a page with no first choice, which is the same as a page
+     with no order. */
+  .ns-links__item--lead {
+    background: var(--color-brand-500);
+    border-color: var(--color-brand-500);
+    color: var(--color-on-brand);
+  }
+  .ns-links__item--lead:hover { background: var(--color-brand-600); border-color: var(--color-brand-600); box-shadow: none; }
+  .ns-links__item--lead .ns-links__sub { color: color-mix(in srgb, var(--color-on-brand) 78%, transparent); }
+  .ns-links__item--lead .ns-links__icon { background: color-mix(in srgb, var(--color-on-brand) 18%, transparent); color: var(--color-on-brand); }
+  .ns-links__icon {
+    display: grid; place-items: center; flex: none;
+    inline-size: var(--space-10); block-size: var(--space-10);
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-50); color: var(--color-brand-600);
+    font-size: var(--size-h4);
+  }
+  [data-theme="dark"] .ns-links__icon { background: var(--color-surface-sunken); color: var(--color-brand-300); }
+  .ns-links__text { display: grid; gap: var(--space-0-5); min-inline-size: 0; }
+  .ns-links__title { font-size: var(--size-prose); font-weight: var(--weight-semibold); }
+  .ns-links__sub { font-size: var(--size-prose-small); color: var(--color-muted); }
+  .ns-links__go { color: var(--color-label); transition: translate var(--duration-fast) var(--ease-out); }
+  .ns-links__item:hover .ns-links__go { translate: var(--space-1) 0; }
+  .ns-links__item--lead .ns-links__go { color: var(--color-on-brand); }
+
+  .ns-linkpage__socials { display: flex; justify-content: center; gap: var(--space-2); }
+  .ns-linkpage__foot { text-align: center; font-size: var(--size-prose-small); color: var(--color-muted); margin: 0; }
+
+
+  /* ============================================================== DOCS ====
+     nav | article | outline. A documentation page is the one shape that
+     genuinely wants navigation on BOTH sides of the text, and it is the
+     exception that proves the rule .ns-post follows: a blog post gets one
+     rail because a reader arrives to READ; a docs page gets two because a
+     reader arrives to FIND, and the two rails answer different questions —
+     the left is "what else exists", the right is "what is on this page".
+
+     Reusing .ns-post here would have been wrong in a way worth naming: its
+     leading rail is 3.5rem, sized for icon buttons, and a section tree does
+     not fit in it. Same grammar, different measurements, so it is its own
+     grid rather than a modifier that overrides two of three columns. */
+  .ns-docs {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, var(--container-prose)) 13rem;
+    gap: var(--space-10);
+    justify-content: center; align-items: start;
+    padding: var(--stack-md) var(--gutter) var(--stack-lg);
+  }
+  .ns-docs__nav, .ns-docs__aside {
+    position: sticky; inset-block-start: var(--space-6);
+    max-block-size: calc(100dvh - var(--space-12)); overflow-y: auto;
+  }
+  .ns-docs__body { min-inline-size: 0; }
+  /* A version/label row at the top of the nav — what these docs describe. */
+  .ns-docs__badge {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    margin-block-end: var(--space-4);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  @media (max-width: 79.999rem) {
+    /* The outline goes first: it is the rail a reader can rebuild from the
+       headings themselves, so it is the cheaper of the two to lose. */
+    .ns-docs { grid-template-columns: 15rem minmax(0, var(--container-prose)); }
+    .ns-docs__aside { display: none; }
+  }
+  @media (max-width: 63.999rem) {
+    .ns-docs { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); justify-content: stretch; }
+    .ns-docs__nav { position: static; max-block-size: none; overflow: visible; }
+    .ns-docs__body { max-inline-size: var(--container-prose); margin-inline: auto; }
+  }
+
 }
 /* NS Design System — admin: the builder's console.
    =========================================================================
@@ -18996,6 +19245,16 @@
     white-space: nowrap;
   }
   .ns-slug .ns-input { border-start-start-radius: 0; border-end-start-radius: 0; }
+
+  /* The dashboard's chart shelf. Two columns on a desktop, one below --md:
+     a chart squeezed under about 20rem stops being readable, and half a bar
+     chart is worse than a number. */
+  .ns-admin__charts {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    margin-block-start: var(--space-8);
+  }
+
 }
 /* NS Design System — accessibility utilities and the layout primitives.
    =========================================================================

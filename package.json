@@ -24,7 +24,8 @@
     "LICENSE",
     "mcp",
     "SKILL.md",
-    ".claude/skills"
+    ".claude/skills",
+    "!assets/social"
   ],
   "exports": {
     ".": {

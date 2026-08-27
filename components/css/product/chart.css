@@ -231,6 +231,121 @@
     .ns-chart__donut { gap: var(--space-4); }
     .ns-chart--lg .ns-chart__plot { --_h: 10rem; }
   }
+
+  /* ======================================================== SCATTER ====
+     Two measures against each other, one dot per record. The only chart
+     here that answers "is there a relationship" rather than "how much" —
+     and the only one where the reader is meant to look at the SHAPE of the
+     cloud rather than read any single mark.
+
+     Dots are semi-transparent so overlap reads as density instead of
+     hiding records: five points on the same spot is a darker dot, which is
+     information. Ringed in surface like every other marker in this file, so
+     a dot on top of another is still countable.
+
+     --x and --y are percentages of the plot, set at the call site. The y is
+     inverted here rather than in the markup so the author writes the value
+     they mean and not 100-minus-it. */
+  .ns-chart__scatter { position: relative; block-size: var(--_h, 10rem); }
+  .ns-chart--sm .ns-chart__scatter { --_h: 6rem; }
+  .ns-chart--lg .ns-chart__scatter { --_h: 15rem; }
+  .ns-chart__point {
+    position: absolute;
+    inline-size: var(--_r, 9px); block-size: var(--_r, 9px);
+    inset-inline-start: var(--x, 50%);
+    inset-block-start: calc(100% - var(--y, 50%));
+    translate: -50% -50%;
+    border-radius: var(--radius-pill);
+    background: var(--_c, var(--chart-cat-1));
+    opacity: 0.72; /* lint-ok: overlap density — see the note above */
+    box-shadow: 0 0 0 2px var(--chart-surface);
+  }
+  /* Bubble: a third measure as area. Radius is set per point, and the cap
+     matters — past about 40px a bubble stops being a mark and becomes a
+     region the reader tries to read boundaries into. */
+  .ns-chart__point--bubble { opacity: 0.55; /* lint-ok: larger marks need more transparency to stay countable */ }
+
+  /* ====================================================== WATERFALL ====
+     How a total got from one number to another. Every bar is a DELTA except
+     the first and last, which are totals sitting on the baseline — and that
+     distinction is the whole chart: a waterfall drawn with every bar from
+     zero is a bar chart that has lost its argument.
+
+     --v is the bar's size, --base is where its bottom sits, both as a
+     percentage of the plot. Rise and fall take the success and error hues
+     because up and down are the meaning here, not a category; the totals
+     stay neutral so the eye reads them as rests rather than as another
+     movement. */
+  .ns-chart__wcol { flex: 1; min-inline-size: 0; block-size: 100%; position: relative; }
+  .ns-chart__wbar {
+    position: absolute; inset-inline: 12%;
+    block-size: var(--v, 10%);
+    inset-block-end: var(--base, 0%);
+    background: var(--chart-muted);
+    border-radius: var(--radius-sm);
+  }
+  .ns-chart__wbar--up { background: var(--color-success); }
+  .ns-chart__wbar--down { background: var(--color-error); }
+  /* The connector: a hairline from the top of one bar to the start of the
+     next, which is what makes the steps read as one running total. */
+  .ns-chart__wlink {
+    position: absolute; inset-inline-start: 88%; inline-size: 24%;
+    block-size: 1px; background: var(--chart-axis);
+    inset-block-end: var(--link, 0%);
+  }
+
+  /* ========================================================= BULLET ====
+     One measure against its target, in a row. Replaces a gauge for the same
+     job in a fraction of the space and without the two problems a gauge
+     has: a needle at an angle is hard to compare between rows, and a dial
+     spends most of its pixels on the part of the range nobody is in.
+
+     The bar is the actual, the tick is the target, the band behind is the
+     range. A row where the bar clears the tick is legible at a glance
+     without reading a number, which is the whole point of putting one of
+     these in a dashboard. */
+  .ns-chart__bullet { display: grid; grid-template-columns: 7rem minmax(0, 1fr) auto; gap: var(--space-3); align-items: center; }
+  .ns-chart__bullet + .ns-chart__bullet { margin-block-start: var(--space-3); }
+  .ns-chart__btrack {
+    position: relative; block-size: var(--space-5);
+    background: var(--chart-grid); border-radius: var(--radius-sm);
+  }
+  .ns-chart__bfill {
+    position: absolute; inset-block: 25%; inset-inline-start: 0;
+    inline-size: var(--v, 50%);
+    background: var(--_c, var(--chart-cat-1));
+    border-radius: var(--radius-sm);
+  }
+  /* The target. A 2px rule across the track, in ink rather than a hue —
+     it is a threshold, not a series, and giving it a category colour makes
+     the reader look for it in the legend. */
+  .ns-chart__btarget {
+    position: absolute; inset-block: 10%; inline-size: 2px;
+    inset-inline-start: var(--t, 80%);
+    background: var(--chart-ink);
+  }
+  .ns-chart__bvalue {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--chart-ink); font-variant-numeric: tabular-nums;
+  }
+
+  /* ========================================================== SLOPE ====
+     Two points in time, one line per series. The chart for "what changed
+     between these two moments" — and it beats a grouped bar at that job
+     because crossing lines make a reordering visible, which is usually the
+     finding.
+
+     Four or five series at most. Past that the middle becomes a knot and
+     the labels collide, and the honest chart is a table. */
+  .ns-chart__slope { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-3); align-items: stretch; }
+  .ns-chart__slope-side { display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-1); }
+  .ns-chart__slope-label {
+    font-size: var(--size-label); color: var(--chart-muted);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .ns-chart__slope-plot { position: relative; block-size: var(--_h, 10rem); }
+  .ns-chart--lg .ns-chart__slope-plot { --_h: 15rem; }
+
 }
 
 @keyframes ns-chart-grow { from { transform: scaleY(0); } }

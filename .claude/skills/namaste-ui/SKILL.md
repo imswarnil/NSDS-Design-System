@@ -12,7 +12,7 @@ System repository is **not** present, and it carries what an agent needs to
 produce work that belongs to the same system.
 
 Generated from v3.0.0: 201 public tokens,
-2039 `.ns-*` classes, 175 documented components.
+2078 `.ns-*` classes, 175 documented components.
 
 ## Step 1 — get the stylesheet, do not reimplement it
 

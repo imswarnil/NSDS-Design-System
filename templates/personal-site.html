@@ -1,0 +1,139 @@
+<!--
+  NS Design System template — personal site
+  =====================================================================
+  A one-page personal site: who you are, what you have built, what you
+  have written, how to reach you. Framework-agnostic markup.
+
+  IT IS THE SAME BAND GRAMMAR AS THE PRODUCT HOMEPAGE, and that is the
+  point of showing it here — no component was added for this page. A
+  personal site is a marketing page with one person as the subject, and
+  if it needed its own component layer the layer was too specific.
+
+  Four bands, and the admission test is the same: each answers a question
+  no other band answers. Cut from the bottom.
+-->
+<section class="ns-band ns-hero ns-hero--split ns-band--dark ns-band--grid">
+  <div class="ns-band__inner">
+    <div>
+      <span class="ns-hero__eyebrow"><i class="ph ph-globe" aria-hidden="true"></i>Bengaluru, India</span>
+      <h1 class="ns-hero__title">Swarnil builds on Salesforce and writes about <span class="ns-hero__mark">why</span></h1>
+      <p class="ns-hero__lede">Architect by trade, teacher by accident. Eleven years on the platform, most of them cleaning up other people&rsquo;s triggers.</p>
+      <div class="ns-hero__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="#work">See the work</a>
+        <a class="ns-btn ns-btn--ghost ns-btn--lg" href="#contact">Get in touch</a>
+      </div>
+      <ul class="ns-hero__facts">
+        <li><i class="ph ph-check" aria-hidden="true"></i><span><b>11&times;</b> Salesforce certified</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span><b>24,100</b> people have taken a course</span></li>
+      </ul>
+    </div>
+    <div class="ns-hero__media">
+      <img class="ns-profile__avatar" src="/assets/logo/favicon.svg" alt="" style="inline-size:12rem;block-size:12rem;margin:0 auto;display:block">
+    </div>
+  </div>
+</section>
+
+<!-- What I do. Three rows rather than three cells, because each claim
+     needs a paragraph and somewhere to go. -->
+<section class="ns-band" id="work">
+  <div class="ns-band__inner">
+    <header class="ns-band__head">
+      <span class="ns-kicker">Selected work</span>
+      <h2 class="ns-band__title">Things I built and still maintain</h2>
+    </header>
+    <div class="ns-showcase">
+      <div class="ns-showcase__row">
+        <div class="ns-showcase__body">
+          <span class="ns-showcase__step"><i class="ph ph-graduation-cap" aria-hidden="true"></i>01 &middot; Product</span>
+          <h3 class="ns-showcase__title">Namaste Salesforce</h3>
+          <p class="ns-showcase__text">A learning platform: 12 courses, 150 written training modules, and a design system that feeds both the Ghost theme and the Next.js app.</p>
+          <ul class="ns-showcase__list">
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>120 of 150 modules free, in full</span></li>
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Every lab runs in a free Developer Edition org</span></li>
+          </ul>
+          <a class="ns-btn ns-btn--outline" href="#">Visit the site <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="ns-showcase__art">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="A schema of three objects and the relationships between them"><use href="/icons/hero-scenes.svg#ns-s-schema"/></svg>
+        </div>
+      </div>
+      <div class="ns-showcase__row">
+        <div class="ns-showcase__body">
+          <span class="ns-showcase__step"><i class="ph ph-briefcase" aria-hidden="true"></i>02 &middot; Open source</span>
+          <h3 class="ns-showcase__title">NSDS — the design system</h3>
+          <p class="ns-showcase__text">One set of tokens and one portable class layer, consumed by two products that share no framework. Published on npm, with an agent skill and an MCP server in the box.</p>
+          <ul class="ns-showcase__list">
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Zero runtime dependencies</span></li>
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Seven build gates, none of them optional</span></li>
+          </ul>
+          <a class="ns-btn ns-btn--outline" href="#">Read the docs <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="ns-showcase__art">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Four governor limits drawn as meters against a shared ceiling"><use href="/icons/hero-scenes.svg#ns-s-limits"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Writing. A shelf, not a grid: three posts is a sample, and the link
+     goes to the rest. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between">
+      <div>
+        <span class="ns-kicker">Writing</span>
+        <h2 class="ns-band__title">Recent posts</h2>
+      </div>
+      <div class="ns-band__actions"><a class="ns-btn" href="/blog">All posts</a></div>
+    </header>
+    <div class="ns-grid">
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ph ph-lightning"></i></span>
+          <span class="ns-tag ns-bcard__cat">Apex</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Why your trigger fails at 201 records</h3></a>
+          <p class="ns-bcard__excerpt">Governor limits are per transaction, not per record &mdash; and the fix is a pattern, not a setting.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-08-04">4 Aug 2026</time></span><span>6 min read</span></div>
+        </div>
+      </article>
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ph ph-blueprint"></i></span>
+          <span class="ns-tag ns-bcard__cat">Architecture</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">The data model is the product</h3></a>
+          <p class="ns-bcard__excerpt">Every automation problem I have been called in to fix was a schema problem wearing a costume.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-28">28 Jul 2026</time></span><span>12 min read</span></div>
+        </div>
+      </article>
+      <article class="ns-card ns-bcard">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ph ph-magnifying-glass"></i></span>
+          <span class="ns-tag ns-bcard__cat">SOQL</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">What the query planner actually does</h3></a>
+          <p class="ns-bcard__excerpt">Selectivity, indexes, and why your report times out at 50,000 rows.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-14">14 Jul 2026</time></span><span>9 min read</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- The closer. One action, and the fine print removes the last excuse. -->
+<section class="ns-band ns-band--dark ns-band--grid" id="contact">
+  <div class="ns-band__inner">
+    <div class="ns-cta">
+      <h2 class="ns-band__title">Working on something Salesforce-shaped?</h2>
+      <div class="ns-cta__actions">
+        <a class="ns-btn ns-btn--white ns-btn--lg" href="mailto:hello@example.com">Send an email</a>
+      </div>
+      <span class="ns-cta__fine">I read everything. I reply to most of it.</span>
+    </div>
+  </div>
+</section>

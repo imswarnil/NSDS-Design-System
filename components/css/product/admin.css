@@ -447,4 +447,14 @@
     white-space: nowrap;
   }
   .ns-slug .ns-input { border-start-start-radius: 0; border-end-start-radius: 0; }
+
+  /* The dashboard's chart shelf. Two columns on a desktop, one below --md:
+     a chart squeezed under about 20rem stops being readable, and half a bar
+     chart is worse than a number. */
+  .ns-admin__charts {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    margin-block-start: var(--space-8);
+  }
+
 }

@@ -17,6 +17,81 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — four chart types the bar and the line cannot cover
+
+`chart-more` documents them, and the admin dashboard now uses three:
+
+- **Scatter / bubble** — the only chart here about a *relationship* rather
+  than an amount, and the only one where the reader looks at the shape of
+  the cloud rather than any single mark. Dots are semi-transparent so
+  overlap reads as density instead of hiding records.
+- **Waterfall** — how a total got from one number to another. Every bar is a
+  delta except the first and last, which are totals on the baseline; a
+  waterfall drawn with every bar from zero is a bar chart that has lost its
+  argument. Up and down take the status hues, because direction is the
+  meaning here rather than a category.
+- **Bullet** — actual against target, in a row. It replaces a gauge in a
+  fraction of the space and without a gauge's two problems: a needle at an
+  angle is hard to compare between rows, and a dial spends most of its
+  pixels on the part of the range nobody is in. The target is a rule in ink,
+  not a hue — it is a threshold, not a series.
+- **Slope** — what changed between two moments. It beats a grouped bar
+  because crossing lines make a *reordering* visible, which is usually the
+  finding.
+
+### Fixed — an append that landed inside a `@keyframes`
+
+Worth recording because the failure was invisible. `chart.css` ends with its
+keyframes **outside** the `@layer` block, and the last one is a one-liner —
+so "strip the file's final brace and append inside the layer" put the four
+new chart types *inside* `@keyframes ns-chart-arc`, and closed the keyframe
+at the end.
+
+Brace count stayed balanced, `lint-principles` passed, `check-cascade`
+passed, and `grep` found every new selector in `dist/`. The only thing that
+caught it was reading `position` back off a rendered element and getting
+`static`. It had also silently broken the donut's arc animation.
+
+New CSS now goes in *before* the layer's closing brace rather than by
+stripping the last one in the file.
+
+### Added — three light templates
+
+Small, self-contained pages anyone can preview and lift:
+
+- **`personal-site.html`** — a one-page personal site, and the interesting
+  thing about it is that it needed **zero new classes**. It is the product
+  homepage's own bands with one person as the subject, which is the argument
+  for the band grammar made in one file.
+- **`docs.html`** — nav | article | outline. The one shape that genuinely
+  wants navigation on *both* sides of the text, and the exception that proves
+  the rule `blog-post.html` follows: a post gets one rail because a reader
+  arrives to READ, a docs page gets two because they arrive to FIND, and the
+  rails answer different questions. It is its own grid rather than a
+  `.ns-post` modifier, because reusing a layout whose leading rail is 3.5rem
+  of icon buttons for a 15rem section tree would have been a modifier that
+  overrides two of three columns.
+- **`links.html`** — the one-link-in-a-bio page. `.ns-linkpage` is the only
+  layout in the system that does not widen on a desktop: it is built for a
+  thumb arriving from a phone, and a 60rem column of buttons on a laptop
+  looks like a settings screen. Exactly one row carries the brand fill —
+  two filled rows is a page with no first choice.
+
+The measure is 672px on the docs page, same as every other reading surface.
+
+### Changed — the admin dashboard has charts
+
+It was 98 lines of stat tiles and draft rows. The tiles say *what* a number
+is; the four charts added say how it got there, whether it is on target, and
+what changed.
+
+### Removed — 696 KB of YouTube channel art from the npm package
+
+`assets/social/youtube/` is banner and avatar PNGs used only by the
+brand-content cards, which are not in the package at all — so every consumer
+was downloading them for nothing. Excluded via a `!` pattern in `files`.
+2.6 MB → 2.0 MB packed. Stray `.DS_Store` files deleted.
+
 ### Changed — the component layer is grouped into folders
 
 34 flat stylesheets became six folders: `foundation/` (a11y, icon, motion,

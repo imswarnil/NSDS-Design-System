@@ -1,0 +1,89 @@
+<!--
+  NS Design System template — link page
+  =====================================================================
+  The "one link in a bio" page: an avatar, a name, a sentence, and a
+  stack of destinations. Framework-agnostic markup; Ghost → a page
+  template, Next.js → a route, Static → use directly.
+
+  WHAT MAKES THIS ONE HARD IS RESTRAINT. A link page has exactly one job
+  and every extra element competes with the only thing on it that
+  matters. So: no cover image, no counters, no widgets, and the links are
+  a real <nav> of real links rather than cards — a card implies content
+  behind the click, and these are just doors.
+
+  The order is the whole design. The link people came for goes first,
+  because a list ordered by what YOU want to promote is a list nobody
+  reaches the bottom of.
+-->
+<main class="ns-linkpage">
+  <header class="ns-linkpage__head">
+    <img class="ns-linkpage__avatar" src="/assets/logo/favicon.svg" alt="">
+    <h1 class="ns-linkpage__name">Namaste Salesforce</h1>
+    <p class="ns-linkpage__bio">Salesforce, explained properly. Written training, courses, and working code &mdash; in the order the platform actually makes sense.</p>
+    <div class="ns-linkpage__meta">
+      <span><i class="ph ph-users-three" aria-hidden="true"></i>24,100 learners</span>
+      <span><i class="ph ph-books" aria-hidden="true"></i>150 modules</span>
+    </div>
+  </header>
+
+  <nav class="ns-links" aria-label="Links">
+    <!-- --lead: the one destination this page exists for. Exactly one, and
+         it is the only link carrying the brand fill. -->
+    <a class="ns-links__item ns-links__item--lead" href="/training">
+      <span class="ns-links__icon" aria-hidden="true"><i class="ph ph-rocket-launch"></i></span>
+      <span class="ns-links__text">
+        <span class="ns-links__title">Start the free training</span>
+        <span class="ns-links__sub">120 modules, no account</span>
+      </span>
+      <i class="ph ph-arrow-right ns-links__go" aria-hidden="true"></i>
+    </a>
+
+    <a class="ns-links__item" href="/courses">
+      <span class="ns-links__icon" aria-hidden="true"><i class="ph ph-graduation-cap"></i></span>
+      <span class="ns-links__text">
+        <span class="ns-links__title">All 12 courses</span>
+        <span class="ns-links__sub">Admin to architect</span>
+      </span>
+      <i class="ph ph-arrow-right ns-links__go" aria-hidden="true"></i>
+    </a>
+
+    <a class="ns-links__item" href="/blog">
+      <span class="ns-links__icon" aria-hidden="true"><i class="ph ph-article"></i></span>
+      <span class="ns-links__text">
+        <span class="ns-links__title">Notes from the platform</span>
+        <span class="ns-links__sub">What broke, and why</span>
+      </span>
+      <i class="ph ph-arrow-right ns-links__go" aria-hidden="true"></i>
+    </a>
+
+    <a class="ns-links__item" href="#">
+      <span class="ns-links__icon" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+      <span class="ns-links__text">
+        <span class="ns-links__title">YouTube</span>
+        <span class="ns-links__sub">Lessons, weekly</span>
+      </span>
+      <i class="ph ph-arrow-up-right ns-links__go" aria-hidden="true"></i>
+    </a>
+
+    <a class="ns-links__item" href="#">
+      <span class="ns-links__icon" aria-hidden="true"><i class="ph ph-envelope-simple"></i></span>
+      <span class="ns-links__text">
+        <span class="ns-links__title">The newsletter</span>
+        <span class="ns-links__sub">One email when something ships</span>
+      </span>
+      <i class="ph ph-arrow-right ns-links__go" aria-hidden="true"></i>
+    </a>
+  </nav>
+
+  <!-- Socials as icon-only buttons, because at this point in the page the
+       reader has already decided and these are a courtesy rather than a
+       choice. Every one carries an aria-label. -->
+  <div class="ns-linkpage__socials">
+    <a class="ns-btn ns-btn--quiet ns-btn--icon" href="#" aria-label="LinkedIn"><i class="ph ph-linkedin-logo" aria-hidden="true"></i></a>
+    <a class="ns-btn ns-btn--quiet ns-btn--icon" href="#" aria-label="X"><i class="ph ph-x-logo" aria-hidden="true"></i></a>
+    <a class="ns-btn ns-btn--quiet ns-btn--icon" href="#" aria-label="GitHub"><i class="ph ph-github-logo" aria-hidden="true"></i></a>
+    <a class="ns-btn ns-btn--quiet ns-btn--icon" href="#" aria-label="RSS"><i class="ph ph-rss-simple" aria-hidden="true"></i></a>
+  </div>
+
+  <p class="ns-linkpage__foot">Built with the Namaste UI design system.</p>
+</main>

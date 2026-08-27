@@ -1,0 +1,111 @@
+<!--
+  NS Design System template — documentation page
+  =====================================================================
+  nav | article | outline. Framework-agnostic markup.
+
+  A docs page is the one shape that genuinely wants navigation on BOTH
+  sides of the text, and it is the exception that proves the rule
+  templates/blog-post.html follows. A blog post gets one rail because a
+  reader arrives to READ. A docs page gets two because a reader arrives to
+  FIND, and the rails answer different questions: the left is "what else
+  exists", the right is "what is on this page".
+
+  Both rails are droppable — the outline below 80rem, the tree below 64rem
+  where it becomes the page's own top matter. The article column never
+  widens to fill what they leave.
+
+  Nothing here is new except the grid: the tree, the TOC, the prose, the
+  callouts and the code block are all the components the rest of the
+  system already renders.
+-->
+<div class="ns-docs">
+  <!-- What else exists. A native <details> tree — open/closed state,
+       keyboard operation and in-page find all come from the platform, so
+       this ships no JavaScript. -->
+  <nav class="ns-docs__nav" aria-label="Documentation">
+    <span class="ns-docs__badge"><i class="ph ph-book-open" aria-hidden="true"></i>Docs · v3.0</span>
+    <ul class="ns-tree">
+      <li><details class="ns-tree__branch" open>
+        <summary><i class="ph ph-caret-right ns-tree__twist" aria-hidden="true"></i><span class="ns-tree__label">Getting started</span></summary>
+        <ul>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Install</span></a></li>
+          <li><a class="ns-tree__node" href="#" aria-current="true"><span class="ns-tree__label">Tokens</span></a></li>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Dark mode</span></a></li>
+        </ul>
+      </details></li>
+      <li><details class="ns-tree__branch" open>
+        <summary><i class="ph ph-caret-right ns-tree__twist" aria-hidden="true"></i><span class="ns-tree__label">Foundations</span></summary>
+        <ul>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Colour</span></a></li>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Typography</span></a></li>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Spacing</span></a></li>
+        </ul>
+      </details></li>
+      <li><details class="ns-tree__branch">
+        <summary><i class="ph ph-caret-right ns-tree__twist" aria-hidden="true"></i><span class="ns-tree__label">Components</span><span class="ns-tree__meta">175</span></summary>
+        <ul>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Button</span></a></li>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Card</span></a></li>
+          <li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Band</span></a></li>
+        </ul>
+      </details></li>
+      <li><details class="ns-tree__branch">
+        <summary><i class="ph ph-caret-right ns-tree__twist" aria-hidden="true"></i><span class="ns-tree__label">Recipes</span></summary>
+        <ul><li><a class="ns-tree__node" href="#"><span class="ns-tree__label">Building a page</span></a></li></ul>
+      </details></li>
+    </ul>
+  </nav>
+
+  <article class="ns-docs__body" id="docs-body">
+    <nav class="ns-breadcrumb" aria-label="Breadcrumb">
+      <a href="/docs">Docs</a>
+      <a href="/docs/start">Getting started</a>
+    </nav>
+    <div class="ns-prose">
+      <h1>Tokens</h1>
+      <p class="ns-lead">Every colour, size, radius and duration in this system is a token. A literal value in a component is a bug in exactly one theme, and nobody notices which.</p>
+
+      <h2 id="using">Using them</h2>
+      <p>Tokens are CSS custom properties on <code>:root</code>. Use the semantic name rather than the scale position: <code>--color-ink</code> rather than <code>--color-brand-900</code>, because the semantic one flips in dark mode and the scale one does not.</p>
+
+      <figure class="ns-code" data-lang="css">
+        <figcaption class="ns-code__bar">
+          <span class="ns-code__file"><i class="ph ph-code" aria-hidden="true"></i><span>card.css</span></span>
+          <span class="ns-code__actions"><span class="ns-code__lang">css</span></span>
+        </figcaption>
+        <div class="ns-code__body">
+          <pre class="ns-code__gutter" aria-hidden="true">1
+2
+3
+4</pre>
+          <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-punct">.</span><span class="ns-tok-type">card</span> <span class="ns-tok-punct">{</span></span><span class="ns-code__line">  <span class="ns-tok-kw">color</span><span class="ns-tok-punct">:</span> <span class="ns-tok-fn">var</span><span class="ns-tok-punct">(</span><span class="ns-tok-str">--color-ink</span><span class="ns-tok-punct">);</span></span><span class="ns-code__line">  <span class="ns-tok-kw">border-radius</span><span class="ns-tok-punct">:</span> <span class="ns-tok-fn">var</span><span class="ns-tok-punct">(</span><span class="ns-tok-str">--radius-card</span><span class="ns-tok-punct">);</span></span><span class="ns-code__line"><span class="ns-tok-punct">}</span></span></code></pre>
+        </div>
+      </figure>
+
+      <div class="ns-callout ns-callout--tip">
+        <i class="ph ph-lightbulb" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Tip</span>Import the tokens as JS too — <code>import tokens from "nsds-design-system"</code> — when a chart library needs the values rather than the variables.</div>
+      </div>
+
+      <h2 id="generated">They are generated, and it is enforced</h2>
+      <p><code>tokens/*.css</code> is authored. <code>tokens.json</code>, <code>tokens.js</code>, <code>tokens.d.ts</code> and the Tailwind bridge are generated by the build, and CI runs a diff afterwards — so a hand-edit or a forgotten regeneration fails rather than drifting quietly.</p>
+
+      <div class="ns-callout ns-callout--warn">
+        <i class="ph ph-warning" aria-hidden="true"></i>
+        <div><span class="ns-callout__label">Watch out</span>Adding a token requires a matching Tailwind emit in the same commit. The build refuses otherwise, because a token no utility can reach is a token half the codebase cannot use.</div>
+      </div>
+
+      <h2 id="dark">Dark mode</h2>
+      <p>The tokens flip under <code>[data-theme="dark"]</code>. There is no second stylesheet and no media query of your own to write: use the semantic names and both themes are correct.</p>
+    </div>
+  </article>
+
+  <!-- What is on this page. Real anchor links; the scroll-spy only adds
+       aria-current, so the outline works with JavaScript off. -->
+  <nav class="ns-docs__aside ns-toc" aria-label="On this page">
+    <span class="ns-toc__title">On this page</span>
+    <a class="ns-toc__link" href="#using" aria-current="true">Using them</a>
+    <a class="ns-toc__link" href="#generated">They are generated</a>
+    <a class="ns-toc__link" href="#dark">Dark mode</a>
+  </nav>
+</div>

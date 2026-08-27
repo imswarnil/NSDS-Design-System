@@ -73,6 +73,93 @@
       </div>
     </div>
 
+    <!-- The charts. A dashboard earns each one by answering a question the
+         stat tiles above cannot: the tiles say WHAT the number is, these say
+         how it got there, whether it is on target, and what changed. -->
+    <div class="ns-admin__charts">
+      <figure class="ns-chart ns-chart--lg">
+        <div class="ns-chart__head">
+          <span class="ns-chart__title">Enrolments</span>
+          <span class="ns-chart__sub">last 8 weeks</span>
+        </div>
+        <div class="ns-chart__plot">
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:42%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:55%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:48%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:67%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:74%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:63%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:88%"></span></div>
+          <div class="ns-chart__col"><span class="ns-chart__bar" data-c="1" style="--v:95%"></span></div>
+        </div>
+        <div class="ns-chart__x"><span>W1</span><span>W2</span><span>W3</span><span>W4</span><span>W5</span><span>W6</span><span>W7</span><span>W8</span></div>
+      </figure>
+
+      <!-- Bullet rather than a gauge: a needle at an angle is hard to
+           compare between rows, and a dial spends most of its pixels on the
+           part of the range nobody is in. -->
+      <figure class="ns-chart">
+        <div class="ns-chart__head">
+          <span class="ns-chart__title">Against quarterly target</span>
+          <span class="ns-chart__sub">tick = target</span>
+        </div>
+        <div class="ns-chart__bullet">
+          <span class="ns-chart__row-label">Completions</span>
+          <span class="ns-chart__btrack"><span class="ns-chart__bfill" data-c="1" style="--v:88%"></span><span class="ns-chart__btarget" style="--t:75%"></span></span>
+          <span class="ns-chart__bvalue">88%</span>
+        </div>
+        <div class="ns-chart__bullet">
+          <span class="ns-chart__row-label">Certifications</span>
+          <span class="ns-chart__btrack"><span class="ns-chart__bfill" data-c="2" style="--v:61%"></span><span class="ns-chart__btarget" style="--t:80%"></span></span>
+          <span class="ns-chart__bvalue">61%</span>
+        </div>
+        <div class="ns-chart__bullet">
+          <span class="ns-chart__row-label">Labs finished</span>
+          <span class="ns-chart__btrack"><span class="ns-chart__bfill" data-c="3" style="--v:94%"></span><span class="ns-chart__btarget" style="--t:70%"></span></span>
+          <span class="ns-chart__bvalue">94%</span>
+        </div>
+      </figure>
+
+      <!-- Waterfall: every bar is a delta except the first and last, which
+           are totals on the baseline. That distinction is the chart. -->
+      <figure class="ns-chart">
+        <div class="ns-chart__head">
+          <span class="ns-chart__title">Active learners, Q3 to Q4</span>
+          <span class="ns-chart__sub">net +410</span>
+        </div>
+        <div class="ns-chart__plot">
+          <div class="ns-chart__wcol"><span class="ns-chart__wbar" style="--v:52%;--base:0%"></span><span class="ns-chart__wlink" style="--link:52%"></span></div>
+          <div class="ns-chart__wcol"><span class="ns-chart__wbar ns-chart__wbar--up" style="--v:24%;--base:52%"></span><span class="ns-chart__wlink" style="--link:76%"></span></div>
+          <div class="ns-chart__wcol"><span class="ns-chart__wbar ns-chart__wbar--up" style="--v:11%;--base:76%"></span><span class="ns-chart__wlink" style="--link:87%"></span></div>
+          <div class="ns-chart__wcol"><span class="ns-chart__wbar ns-chart__wbar--down" style="--v:14%;--base:73%"></span><span class="ns-chart__wlink" style="--link:73%"></span></div>
+          <div class="ns-chart__wcol"><span class="ns-chart__wbar" style="--v:73%;--base:0%"></span></div>
+        </div>
+        <div class="ns-chart__x"><span>Q3</span><span>New</span><span>Back</span><span>Churn</span><span>Q4</span></div>
+      </figure>
+
+      <!-- Scatter: the one chart here about a RELATIONSHIP rather than an
+           amount. Semi-transparent dots, so overlap reads as density. -->
+      <figure class="ns-chart">
+        <div class="ns-chart__head">
+          <span class="ns-chart__title">Hours studied vs score</span>
+          <span class="ns-chart__sub">128 learners</span>
+        </div>
+        <div class="ns-chart__scatter">
+          <span class="ns-chart__point" data-c="1" style="--x:12%;--y:22%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:20%;--y:33%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:28%;--y:28%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:35%;--y:46%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:44%;--y:41%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:52%;--y:59%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:60%;--y:54%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:68%;--y:72%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:77%;--y:68%"></span>
+          <span class="ns-chart__point" data-c="1" style="--x:86%;--y:84%"></span>
+        </div>
+        <div class="ns-chart__x"><span>0h</span><span>20h</span><span>40h</span></div>
+      </figure>
+    </div>
+
     <p class="ns-pagehead__kicker" style="margin-block-start:var(--space-8)">// Drafts in progress</p>
     <div class="ns-tickets">
       <a class="ns-ticket" href="#">
