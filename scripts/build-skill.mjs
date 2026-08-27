@@ -39,6 +39,7 @@ import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMPONENTS } from "./component-docs.mjs";
+import { cssFiles as cssFilesOf } from "./lib/css-files.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, ".claude/skills/namaste-ui");
@@ -64,10 +65,10 @@ const tokens = flatten(tokenJson.light ?? {});
 const publicTokens = tokens.filter((t) => !t.name.startsWith("--ns-"));
 
 /* ---- the class inventory, parsed from the component layer --------------- */
-const cssDir = join(ROOT, "components/css");
 const classesByFile = new Map();
-for (const f of readdirSync(cssDir).filter((f) => f.endsWith(".css") && f !== "index.css")) {
-  const src = read(`components/css/${f}`).replace(/\/\*[\s\S]*?\*\//g, "");
+for (const rel of cssFilesOf(ROOT)) {
+  const f = rel.replace("components/css/", "");
+  const src = read(rel).replace(/\/\*[\s\S]*?\*\//g, "");
   const found = new Set([...src.matchAll(/\.(ns-[a-zA-Z0-9_-]+)/g)].map((m) => m[1]));
   if (found.size) classesByFile.set(f, [...found].sort());
 }
@@ -134,19 +135,31 @@ ${classCount} \`.ns-*\` classes, ${COMPONENTS.length} documented components.
 
 ## Step 1 — get the stylesheet, do not reimplement it
 
-There is one build artifact and it is the whole component layer:
+\`\`\`bash
+npm install ${pkg.name}
+\`\`\`
 
-| File | Use |
+Zero runtime dependencies. Then take exactly one bundle:
+
+| Import | Use |
 | --- | --- |
-| \`dist/namaste-ui.css\` | plain CSS, everything, no build step |
-| \`dist/namaste-ui.min.css\` | the same, minified |
-| \`dist/namaste-ui.tailwind.css\` | for a project already on Tailwind v4 |
-| \`dist/namaste-ui.tailwind.min.css\` | the same, minified |
+| \`${pkg.name}/dist/namaste-ui.css\` | plain CSS, everything, no build step |
+| \`${pkg.name}/dist/namaste-ui.min.css\` | the same, minified |
+| \`${pkg.name}/dist/namaste-ui.tailwind.css\` | for a project already on Tailwind v4 |
+| \`${pkg.name}/dist/namaste-ui.tailwind.min.css\` | the same, minified |
 
-Copy one into the target project and link it. **Never hand-copy rules out of
-the reference files below into a new stylesheet** — the whole value of the
-system is that one layer feeds every surface, and a second copy diverges on
-the first change.
+\`\`\`js
+import "${pkg.name}/dist/namaste-ui.css";
+\`\`\`
+
+If npm is not an option, copy the \`dist/\` file in directly. Either way:
+**never hand-copy rules out of the reference files below into a new
+stylesheet** — the whole value of the system is that one layer feeds every
+surface, and a second copy diverges on the first change.
+
+There is also an MCP server in the package (\`npx nsds-mcp\`) if the client
+supports one — it answers the same questions as these reference files, but
+live. The files below work with no client at all.
 
 If the target project cannot take the bundle, say so plainly rather than
 approximating the look with new CSS. An approximation is worse than an

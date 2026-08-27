@@ -17,6 +17,84 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — the component layer is grouped into folders
+
+34 flat stylesheets became six folders: `foundation/` (a11y, icon, motion,
+type-fx), `primitives/` (button, form, display, media, feedback, progress,
+overlay, table, code), `navigation/`, `content/` (prose, content, sections,
+blog), `product/` (lms, training, catalog, player, deck, ai, admin,
+helpdesk, auth, chart) and `integrations/` (ghost, ads, monetization).
+
+**The output is byte-identical.** `dist/namaste-ui.css` diffed clean against
+the pre-move build, which is the only proof that matters for a refactor whose
+entire promise is that it changes nothing.
+
+The `@import` order in `index.css` is preserved exactly, because inside one
+cascade layer source order decides ties.
+
+**What did NOT move, and why.** `.ns-btn` appears in seven files, but only
+`primitives/button.css` styles the button; the rest are contextual rules like
+`.ns-topnav__actions .ns-btn`. Those stay with their container. A component
+owns its own file; a container owns how a component looks *inside* it —
+pulling them into a button folder would make the button know about the
+navbar, the player, the deck and the LMS, which is worse than a grep. The
+problem this solves was discoverability, not scattering.
+
+Keyframes also stay together in `foundation/motion.css`: a keyframe name is
+global and unlayered, and one file with one prefix is what stands between
+this system and a silent collision with a consuming app's own `float`.
+
+### Added — `scripts/lib/css-files.mjs`, and the failure it guards
+
+Six scripts read `components/css`, and four did a flat `readdirSync` that
+returns **nothing** once files move down a level — no error, no warning, just
+a linter that checks zero files and reports success. So the shared walker
+throws when the walk comes back empty: a checker that finds no input has to
+be loud, or a green build starts meaning "nothing was examined".
+
+`check-cascade.mjs` caught the move for real. Its `!important` allowlist was
+keyed on `components/css/a11y.css`, and the moment that became
+`foundation/a11y.css` the entries stopped matching — which did not report a
+stale allowlist, it reported two brand-new cascade violations in a file
+nobody had touched. It matches on the basename now.
+
+### Added — an MCP server, with no dependencies
+
+`mcp/server.mjs`, exposed as `npx nsds-mcp`. Six tools: `list_components`,
+`get_component`, `search_classes`, `list_tokens`, `get_guide`, `get_setup` —
+so an agent building in another repo can ask what exists instead of guessing
+at class names.
+
+It speaks JSON-RPC over stdio directly rather than importing an SDK. A
+package whose job is to ship CSS should not make every consumer install a
+transport and its transitive tree to read its own component list; `npm
+install nsds-design-system` stays a zero-runtime-dependency install.
+
+Everything is read from the real artifacts — components from the `COMPONENTS`
+array the styleguide renders from, tokens from the generated `tokens.json`,
+classes by walking the component layer — so a rename reaches the server in
+the commit that made it. `search_classes` reports the folder each class lives
+in, which is the question the reorganisation above exists to answer.
+
+### Changed — published as `nsds-design-system`
+
+Renamed from `@namaste-salesforce/design-system`, so the install line is
+`npm install nsds-design-system`. The package now also ships `mcp/` and the
+agent skill in `.claude/`.
+
+Verified end to end rather than assumed: `npm pack`, install the tarball into
+a clean project, then confirm the tokens import, the CSS subpath resolves,
+the skill is present, and `./node_modules/.bin/nsds-mcp` answers a
+`tools/call`. 2.5 MB packed.
+
+### Added — `docs/GETTING-STARTED.md`
+
+The consumer guide: install, take one stylesheet, compose with bands, the two
+rules that make work look like it belongs (the scanned-versus-read type fork,
+and mono-is-for-values), then how to hand the job to an agent via either the
+skill or the MCP server. Ends with what not to do — chiefly, do not
+re-implement the look from the class list.
+
 ### Added — a header-style switcher on both post templates
 
 A segmented control that swaps the modifier on `.ns-posthead`, so all five

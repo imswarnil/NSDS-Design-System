@@ -33,6 +33,7 @@
 
    Run: node scripts/check-markup.mjs [--list] */
 import { readFileSync, readdirSync } from "node:fs";
+import { cssFiles as cssFilesOf } from "./lib/css-files.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -41,7 +42,7 @@ const read = (p) => readFileSync(join(ROOT, p), "utf8");
 const LIST = process.argv.includes("--list");
 
 /* ---- every class the CSS defines ---------------------------------------- */
-const cssFiles = readdirSync(join(ROOT, "components/css")).filter((f) => f.endsWith(".css") && f !== "index.css");
+const cssFiles = cssFilesOf(ROOT).map((rel) => rel.replace("components/css/", ""));
 /* patterns/ is part of the component layer too — it is imported with
    layer(ns-components) rather than living in the folder. */
 const cssSources = [

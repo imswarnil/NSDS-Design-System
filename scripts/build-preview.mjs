@@ -20,6 +20,7 @@
 
    Run:  gulp build   (or node scripts/build-preview.mjs) */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from "node:fs";
+import { cssFiles as cssFilesOf } from "./lib/css-files.mjs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { COMPONENTS, FAMILIES } from "./component-docs.mjs";
@@ -69,8 +70,12 @@ const cards = walk(".").map((path) => {
 }).sort((a, b) => a.group.localeCompare(b.group) || a.name.localeCompare(b.name));
 
 const classIndex = {};
-for (const f of readdirSync(join(ROOT, "components/css")).filter((f) => f.endsWith(".css") && f !== "index.css")) {
-  const css = readFileSync(join(ROOT, "components/css", f), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+for (const rel of cssFilesOf(ROOT)) {
+  /* Keyed by the path under components/css/ — "primitives/button.css" rather
+     than "button.css" — so the class index shows which family a class belongs
+     to, which is the question the index is usually being asked. */
+  const f = rel.replace("components/css/", "");
+  const css = readFileSync(join(ROOT, rel), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
   const found = new Set();
   for (const m of css.matchAll(/\.(ns-[a-z0-9_-]+)/g)) found.add(m[1]);
   classIndex[f.replace(".css", "")] = [...found].sort();

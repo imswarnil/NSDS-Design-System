@@ -1,7 +1,7 @@
 {
-  "name": "@namaste-salesforce/design-system",
+  "name": "nsds-design-system",
   "version": "3.0.0",
-  "description": "NSDS — NS Design System, the design system behind Namaste Salesforce. One set of tokens and one component layer, consumed by both the Ghost theme (Handlebars + Tailwind v4) and the Next.js LMS (React).",
+  "description": "NSDS — the Namaste Salesforce design system. One set of tokens and one portable .ns-* component layer, consumed by a Ghost theme (Handlebars + Tailwind v4) and a Next.js LMS (React). Ships a built CSS bundle, an agent skill, and an MCP server.",
   "license": "MIT",
   "type": "module",
   "sideEffects": [
@@ -21,7 +21,10 @@
     "gulpfile.mjs",
     "readme.md",
     "LIVE.md",
-    "LICENSE"
+    "LICENSE",
+    "mcp",
+    "SKILL.md",
+    ".claude"
   ],
   "exports": {
     ".": {
@@ -38,7 +41,9 @@
     "./components/*": "./components/*",
     "./assets/*": "./assets/*",
     "./templates/*": "./templates/*",
-    "./fonts/*": "./fonts/*"
+    "./fonts/*": "./fonts/*",
+    "./mcp": "./mcp/server.mjs",
+    "./skill": "./.claude/skills/namaste-ui/SKILL.md"
   },
   "scripts": {
     "dev": "gulp",
@@ -61,7 +66,10 @@
     "prepublishOnly": "gulp build && gulp check",
     "check:cascade": "node scripts/check-cascade.mjs",
     "check:links": "node scripts/check-links.mjs",
-    "check:markup": "node scripts/check-markup.mjs"
+    "check:markup": "node scripts/check-markup.mjs",
+    "mcp": "node mcp/server.mjs",
+    "build:skill": "node scripts/build-skill.mjs",
+    "check:skill": "node scripts/build-skill.mjs --check"
   },
   "author": {
     "name": "Swarnil Singhai",
@@ -75,14 +83,19 @@
   },
   "bugs": "https://github.com/imswarnil/NSDS-Design-System/issues",
   "keywords": [
+    "agent-skill",
+    "component-library",
+    "css",
     "design-system",
     "design-tokens",
-    "nsds",
     "ghost-theme",
+    "mcp",
     "nextjs",
-    "tailwindcss",
+    "nsds",
     "salesforce",
-    "slds"
+    "slds",
+    "tailwindcss",
+    "ui-kit"
   ],
   "engines": {
     "node": ">=20"
@@ -107,5 +120,8 @@
     "postcss": "^8.5.10",
     "postcss-import": "^16.1.0",
     "tailwindcss": "^4.3.3"
+  },
+  "bin": {
+    "nsds-mcp": "./mcp/server.mjs"
   }
 }

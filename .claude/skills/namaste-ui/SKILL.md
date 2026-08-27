@@ -16,19 +16,31 @@ Generated from v3.0.0: 201 public tokens,
 
 ## Step 1 — get the stylesheet, do not reimplement it
 
-There is one build artifact and it is the whole component layer:
+```bash
+npm install nsds-design-system
+```
 
-| File | Use |
+Zero runtime dependencies. Then take exactly one bundle:
+
+| Import | Use |
 | --- | --- |
-| `dist/namaste-ui.css` | plain CSS, everything, no build step |
-| `dist/namaste-ui.min.css` | the same, minified |
-| `dist/namaste-ui.tailwind.css` | for a project already on Tailwind v4 |
-| `dist/namaste-ui.tailwind.min.css` | the same, minified |
+| `nsds-design-system/dist/namaste-ui.css` | plain CSS, everything, no build step |
+| `nsds-design-system/dist/namaste-ui.min.css` | the same, minified |
+| `nsds-design-system/dist/namaste-ui.tailwind.css` | for a project already on Tailwind v4 |
+| `nsds-design-system/dist/namaste-ui.tailwind.min.css` | the same, minified |
 
-Copy one into the target project and link it. **Never hand-copy rules out of
-the reference files below into a new stylesheet** — the whole value of the
-system is that one layer feeds every surface, and a second copy diverges on
-the first change.
+```js
+import "nsds-design-system/dist/namaste-ui.css";
+```
+
+If npm is not an option, copy the `dist/` file in directly. Either way:
+**never hand-copy rules out of the reference files below into a new
+stylesheet** — the whole value of the system is that one layer feeds every
+surface, and a second copy diverges on the first change.
+
+There is also an MCP server in the package (`npx nsds-mcp`) if the client
+supports one — it answers the same questions as these reference files, but
+live. The files below work with no client at all.
 
 If the target project cannot take the bundle, say so plainly rather than
 approximating the look with new CSS. An approximation is worse than an

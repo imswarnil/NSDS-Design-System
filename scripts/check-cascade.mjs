@@ -45,8 +45,14 @@ const REQUIRED_ORDER = ["theme", "base", "ns-components", "components", "utiliti
 const IMPORTANT_ALLOWLIST = [
   { file: "tokens/base.css", selector: "[hidden]", why: "the attribute's meaning, not a preference — UA display:none loses to any author rule" },
   { file: "tokens/effects.css", selector: "*", why: "prefers-reduced-motion is an accessibility guard and must outrank component motion" },
-  { file: "components/css/a11y.css", selector: ".ns-visually-hidden:not(:focus):not(:active)", why: "a visually-hidden element that a component un-hides is a screen-reader bug" },
-  { file: "components/css/a11y.css", selector: ".ns-motion-safe", why: "same guard as above, opt-in form" },
+  /* Matched on the BASENAME, not the full path. The component layer is
+     grouped into folders, and an allowlist keyed on "components/css/a11y.css"
+     stopped matching the moment that file became "foundation/a11y.css" —
+     which did not report a missing entry, it reported two brand-new cascade
+     violations in a file nobody had touched. An allowlist that silently
+     stops applying is worse than no allowlist. */
+  { file: "a11y.css", selector: ".ns-visually-hidden:not(:focus):not(:active)", why: "a visually-hidden element that a component un-hides is a screen-reader bug" },
+  { file: "a11y.css", selector: ".ns-motion-safe", why: "same guard as above, opt-in form" },
 ];
 
 const rel = (node) => {
@@ -54,8 +60,11 @@ const rel = (node) => {
   return f ? relative(ROOT, f) : "(unknown)";
 };
 
+/* Compared on the basename so an entry survives its file being moved into a
+   folder — see the note on the allowlist above. */
+const base = (p) => p.split("/").pop();
 const isAllowed = (decl, rule) => IMPORTANT_ALLOWLIST.some(
-  (a) => rel(decl) === a.file && rule.selector.split(",").map((s) => s.trim()).includes(a.selector),
+  (a) => base(rel(decl)) === base(a.file) && rule.selector.split(",").map((s) => s.trim()).includes(a.selector),
 );
 
 const problems = [];
