@@ -17,6 +17,55 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — a header-style switcher on both post templates
+
+A segmented control that swaps the modifier on `.ns-posthead`, so all five
+header variants can be compared on real content instead of five screenshots
+that go stale separately. The parts stay in the same order in every variant
+(category, title, standfirst, meta, cover), which is the thing worth seeing.
+
+**It is a preview affordance, not a feature**, and it is built to be
+deleted: an `@strip:preview` region carrying its own inline script, so
+removing it is one cut that leaves nothing dangling. A real post picks one
+header and hard-codes it — a page that lets a reader restyle its own
+masthead is a page with no art direction.
+
+The first version bound to `document.querySelector(".ns-posthead")` at load,
+and the control sits directly *above* the header it drives, so the parser had
+not reached it yet: it silently bound to null and did nothing. It resolves
+the header on change instead, which also survives a framework replacing the
+header after hydration. Caught by driving all five radios and reading the
+class back, not by looking at it.
+
+### Added — `.ns-widget__item`, the browsing list
+
+A link row with a thumbnail, for related posts, videos and lessons. The
+thumb draws the same glyph ground the video shelf and card covers use, so a
+rail with no artwork yet still looks built; add a play badge and a runtime
+and the same item is a video.
+
+It exists beside `.ns-blog-archive` rather than replacing it because the two
+are opposite arrangements: the archive is a DATED list where the date is the
+scanning key and a thumbnail would push it out; this is a browsing list where
+the picture is the key and the date is a footnote. A rail can carry one of
+each without reading as the same widget twice.
+
+5.5rem of thumbnail is the constraint — wide enough for a legible 16:9 crop,
+narrow enough that two lines of title still fit beside it at 18rem. That is
+why it is not `.ns-bcard--row`, whose 12rem of media would leave about four
+characters a line here.
+
+### Added — ad placements across the post
+
+One in-article unit per page, below the fold, after the reader has had
+something: `--article` is hairlines top and bottom with no fill and no
+radius — the grammar of an interruption rather than an inclusion, so it
+cannot be mistaken for a pull-quote the writer endorsed.
+
+The rail takes a `--halfpage`, not a skyscraper: at 18rem a 160×600 leaves a
+column of dead margin either side. Both reserve their height, so nothing
+below them shifts when a fill lands.
+
 ### Changed — two post templates, not three
 
 `blog-post-wide.html` is gone. It was a template, a demo and a doc entry

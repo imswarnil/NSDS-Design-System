@@ -9951,6 +9951,73 @@
     border-block-start: 1px solid var(--color-border);
   }
 
+  /* --- The media item -----------------------------------------------------
+     A link row with a thumbnail: a related post, a video, a lesson. It is
+     what .ns-blog-archive is when the entries have pictures, and the two are
+     not interchangeable — the archive is a DATED list where the date is the
+     scanning key and a thumbnail would push it out; this is a browsing list
+     where the picture is the key and the date is a footnote. A rail can
+     carry one of each and they will not read as the same widget twice.
+
+     5.5rem of thumbnail. Wide enough that a 16:9 crop is legible, narrow
+     enough that two lines of title still fit beside it at 18rem — which is
+     the actual constraint, and the reason this is not .ns-bcard--row (whose
+     media is 12rem and would leave four characters per line here). */
+  .ns-widget__item {
+    display: grid; grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-3); align-items: start;
+    padding-block: var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    text-decoration: none; color: inherit;
+  }
+  .ns-widget__item:first-child { padding-block-start: 0; border-block-start: 0; }
+  .ns-widget__item:last-child { padding-block-end: 0; }
+  .ns-widget__item:hover .ns-widget__ititle { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-widget__item:hover .ns-widget__ititle { color: var(--color-brand-300); }
+  /* The thumb draws its own glyph ground, the same motif the video shelf and
+     the card covers use, so a rail with no artwork yet still looks built. */
+  .ns-widget__thumb {
+    position: relative; aspect-ratio: 16 / 9;
+    border-radius: var(--radius-sm); overflow: clip;
+    background-color: var(--color-brand-900);
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-on-dark) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-on-dark) 10%, transparent) 1px, transparent 1px);
+    background-size: var(--space-4) var(--space-4);
+    display: grid; place-items: center;
+    color: var(--color-brand-300); font-size: var(--size-h4);
+  }
+  .ns-widget__thumb > img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; grid-area: 1 / 1; }
+  /* Present at rest, not revealed on hover: on a touch screen there is no
+     hover, and a card whose only affordance is hidden is one nobody presses. */
+  .ns-widget__play {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: var(--color-on-dark); font-size: var(--size-h4);
+    background: color-mix(in srgb, var(--color-brand-900) 22%, transparent);
+  }
+  .ns-widget__item:hover .ns-widget__play { background: color-mix(in srgb, var(--color-brand-900) 45%, transparent); }
+  .ns-widget__dur {
+    position: absolute; inset-block-end: var(--space-1); inset-inline-end: var(--space-1);
+    padding: 0 var(--space-1);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-brand-900) 84%, transparent);
+    color: var(--color-on-dark);
+    font-family: var(--font-mono); font-size: var(--size-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-widget__itext { display: grid; gap: var(--space-1); min-inline-size: 0; }
+  .ns-widget__ititle {
+    font-size: var(--size-prose-small); font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug); color: var(--color-ink); text-wrap: pretty;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  /* Values — a duration, a date, a lesson count. The title above is words. */
+  .ns-widget__imeta {
+    display: flex; flex-wrap: wrap; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+
   /* A compact person block for a sidebar — the author of the post you are
      reading, at rail width. .ns-authorbox is the full bio that closes a
      post and is far too wide for 18rem; .ns-profile is a homepage record

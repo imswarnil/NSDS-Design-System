@@ -35,6 +35,63 @@
 <span class="ns-lprogress ns-lprogress--article" data-target="#post-body"
       role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
 
+<!-- @strip:preview -->
+<!-- ======================= PREVIEW CONTROL — DELETE THIS BLOCK =========
+     A styleguide affordance, not a feature. It swaps the modifier on
+     .ns-posthead so all five header variants can be compared on real
+     content instead of five screenshots that go stale separately.
+
+     It is inside an @strip:preview region and it carries its own script, so
+     removing it is one cut that leaves nothing dangling — the only honest
+     way to put a demo control inside a production template. A real post
+     picks ONE header and hard-codes it; a page that lets a reader restyle
+     its own masthead is a page with no art direction.
+
+     The parts stay in the same order in every variant (category, title,
+     standfirst, meta, cover), so the page does not re-teach itself when the
+     art direction changes. That is the thing worth seeing here.
+     ================================================================== -->
+<div class="ns-band ns-band--tight ns-band--sunken" data-ns-preview>
+  <div class="ns-band__inner">
+    <fieldset style="border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4)">
+      <legend class="ns-visually-hidden">Header style</legend>
+      <span class="ns-widget__title">Header style</span>
+      <div class="ns-segmented" data-ns-posthead>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="" checked><span>Default</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--center"><span>Centred</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--wide"><span>Wide</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--console"><span>Console</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--minimal"><span>Minimal</span></label>
+      </div>
+    </fieldset>
+  </div>
+</div>
+<script>
+  /* Swaps one modifier class. Inline because it belongs to the control above
+     and dies with it — an external file would outlive the block it exists
+     for. Real radios, so the keyboard and a screen reader get the group for
+     free. */
+  (() => {
+    const group = document.querySelector("[data-ns-posthead]");
+    if (!group) return;
+    const MODS = ["ns-posthead--center", "ns-posthead--wide", "ns-posthead--console", "ns-posthead--minimal", "ns-posthead--cover"];
+    /* The header is looked up ON CHANGE, not now. This control sits directly
+       ABOVE the <header> it drives, so at the moment this script runs the
+       parser has not reached it yet and querySelector returns null — the
+       first version bound to nothing and failed silently, which is the worst
+       way for a control to fail. Resolving at event time also survives a
+       framework replacing the header after hydration. */
+    group.addEventListener("change", (e) => {
+      if (!e.target.name) return;
+      const head = document.querySelector(".ns-posthead");
+      if (!head) return;
+      head.classList.remove(...MODS);
+      if (e.target.value) head.classList.add(e.target.value);
+    });
+  })();
+</script>
+<!-- /@strip:preview -->
+
 <header class="ns-posthead ns-posthead--center">
   <div class="ns-posthead__inner">
     <nav class="ns-breadcrumb" aria-label="Breadcrumb">
@@ -143,6 +200,20 @@
       <div class="ns-callout ns-callout--warn">
         <i class="ph ph-warning" aria-hidden="true"></i>
         <div><span class="ns-callout__label">Watch out</span>A map keyed on a field that is not unique silently drops records. Key on the id unless you can prove otherwise.</div>
+      </div>
+
+      <!-- ONE in-article placement, below the fold, after the reader has
+           had something. --article is hairlines top and bottom with no fill
+           and no radius: the grammar of an interruption rather than of an
+           inclusion, so it cannot read as a pull-quote the writer endorsed. -->
+      <div class="ns-ad ns-ad--article" data-state="filled" data-placement="In-article · after the pattern">
+        <span class="ns-ad__label">Advertisement</span>
+        <div class="ns-ad__frame">
+          <span class="ns-ad__dummy" aria-hidden="true">
+            <span class="ns-ad__dummy-name">In-article</span>
+            <span class="ns-ad__dummy-size">fluid</span>
+          </span>
+        </div>
       </div>
 
       <h2>Testing it honestly</h2>

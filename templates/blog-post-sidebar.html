@@ -27,6 +27,63 @@
 <span class="ns-lprogress ns-lprogress--article" data-target="#post-body"
       role="progressbar" aria-label="Reading progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></span>
 
+<!-- @strip:preview -->
+<!-- ======================= PREVIEW CONTROL — DELETE THIS BLOCK =========
+     A styleguide affordance, not a feature. It swaps the modifier on
+     .ns-posthead so all five header variants can be compared on real
+     content instead of five screenshots that go stale separately.
+
+     It is inside an @strip:preview region and it carries its own script, so
+     removing it is one cut that leaves nothing dangling — the only honest
+     way to put a demo control inside a production template. A real post
+     picks ONE header and hard-codes it; a page that lets a reader restyle
+     its own masthead is a page with no art direction.
+
+     The parts stay in the same order in every variant (category, title,
+     standfirst, meta, cover), so the page does not re-teach itself when the
+     art direction changes. That is the thing worth seeing here.
+     ================================================================== -->
+<div class="ns-band ns-band--tight ns-band--sunken" data-ns-preview>
+  <div class="ns-band__inner">
+    <fieldset style="border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4)">
+      <legend class="ns-visually-hidden">Header style</legend>
+      <span class="ns-widget__title">Header style</span>
+      <div class="ns-segmented" data-ns-posthead>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="" checked><span>Default</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--center"><span>Centred</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--wide"><span>Wide</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--console"><span>Console</span></label>
+        <label class="ns-segmented__option"><input type="radio" name="posthead" value="ns-posthead--minimal"><span>Minimal</span></label>
+      </div>
+    </fieldset>
+  </div>
+</div>
+<script>
+  /* Swaps one modifier class. Inline because it belongs to the control above
+     and dies with it — an external file would outlive the block it exists
+     for. Real radios, so the keyboard and a screen reader get the group for
+     free. */
+  (() => {
+    const group = document.querySelector("[data-ns-posthead]");
+    if (!group) return;
+    const MODS = ["ns-posthead--center", "ns-posthead--wide", "ns-posthead--console", "ns-posthead--minimal", "ns-posthead--cover"];
+    /* The header is looked up ON CHANGE, not now. This control sits directly
+       ABOVE the <header> it drives, so at the moment this script runs the
+       parser has not reached it yet and querySelector returns null — the
+       first version bound to nothing and failed silently, which is the worst
+       way for a control to fail. Resolving at event time also survives a
+       framework replacing the header after hydration. */
+    group.addEventListener("change", (e) => {
+      if (!e.target.name) return;
+      const head = document.querySelector(".ns-posthead");
+      if (!head) return;
+      head.classList.remove(...MODS);
+      if (e.target.value) head.classList.add(e.target.value);
+    });
+  })();
+</script>
+<!-- /@strip:preview -->
+
 <header class="ns-posthead">
   <div class="ns-posthead__inner">
     <!-- Breadcrumb before the category tag, because "where am I" is a
@@ -126,6 +183,21 @@
           <pre class="ns-code__pre"><code><span class="ns-code__line"><span class="ns-tok-kw">SELECT</span> <span class="ns-tok-type">Id</span> <span class="ns-tok-kw">FROM</span> <span class="ns-tok-type">Case</span></span><span class="ns-code__line"><span class="ns-tok-kw">WHERE</span> <span class="ns-tok-type">ExternalRef__c</span> <span class="ns-tok-punct">=</span> <span class="ns-tok-str">'A-99213'</span></span></code></pre>
         </div>
       </figure>
+
+      <!-- ONE in-article placement, and it sits after the reader has had
+           something. --article is the in-flow unit: hairlines top and
+           bottom, no fill, no radius — the grammar of an interruption
+           rather than of an inclusion, so it cannot be mistaken for a
+           pull-quote the writer endorsed. -->
+      <div class="ns-ad ns-ad--article" data-state="filled" data-placement="In-article · after the second heading">
+        <span class="ns-ad__label">Advertisement</span>
+        <div class="ns-ad__frame">
+          <span class="ns-ad__dummy" aria-hidden="true">
+            <span class="ns-ad__dummy-name">In-article</span>
+            <span class="ns-ad__dummy-size">fluid</span>
+          </span>
+        </div>
+      </div>
 
       <h2 id="thresholds">The thresholds, and where they come from</h2>
       <p>A standard index is considered when the filter matches under 30% of the first million rows and under 15% of everything above that, capped at a million matches. A custom index is tighter: 10%, and 333,333.</p>
@@ -231,17 +303,72 @@
   <aside class="ns-post__side">
     <div class="ns-widgets">
 
+      <!-- Related, WITH pictures. .ns-widget__item is the browsing list: the
+           thumbnail is the scanning key and the date is a footnote. The
+           dated list further down (.ns-blog-archive, under Categories) is
+           the opposite arrangement on purpose, so the two widgets do not
+           read as the same widget twice. Each thumb takes an <img>; the
+           glyph ground is what shows until there is one. -->
       <div class="ns-widget">
         <div class="ns-widget__head">
           <span class="ns-widget__title">Related reading</span>
           <a class="ns-widget__more" href="/tag/soql">All</a>
         </div>
         <div class="ns-widget__body">
-          <div class="ns-blog-archive">
-            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
-            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>
-            <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">02 Jul</span><span class="ns-blog-archive__title">Flow or Apex? A decision table</span><span class="ns-blog-archive__read">5m</span></a>
-          </div>
+          <a class="ns-widget__item" href="#">
+            <span class="ns-widget__thumb"><i class="ph ph-lightning" aria-hidden="true"></i></span>
+            <span class="ns-widget__itext">
+              <span class="ns-widget__ititle">Why your trigger fails at 201 records</span>
+              <span class="ns-widget__imeta"><span>04 Aug</span><span>6 min</span></span>
+            </span>
+          </a>
+          <a class="ns-widget__item" href="#">
+            <span class="ns-widget__thumb"><i class="ph ph-blueprint" aria-hidden="true"></i></span>
+            <span class="ns-widget__itext">
+              <span class="ns-widget__ititle">The data model is the product</span>
+              <span class="ns-widget__imeta"><span>28 Jul</span><span>12 min</span></span>
+            </span>
+          </a>
+          <a class="ns-widget__item" href="#">
+            <span class="ns-widget__thumb"><i class="ph ph-flow-arrow" aria-hidden="true"></i></span>
+            <span class="ns-widget__itext">
+              <span class="ns-widget__ititle">Flow or Apex? A decision table</span>
+              <span class="ns-widget__imeta"><span>02 Jul</span><span>5 min</span></span>
+            </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Video. Same item, plus a play badge and a runtime — the two things
+           that tell a reader this one costs minutes rather than a scroll. -->
+      <div class="ns-widget">
+        <div class="ns-widget__head">
+          <span class="ns-widget__title">Watch instead</span>
+          <a class="ns-widget__more" href="#">Channel</a>
+        </div>
+        <div class="ns-widget__body">
+          <a class="ns-widget__item" href="#">
+            <span class="ns-widget__thumb">
+              <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+              <span class="ns-widget__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-widget__dur">09:55</span>
+            </span>
+            <span class="ns-widget__itext">
+              <span class="ns-widget__ititle">The query planner, on screen</span>
+              <span class="ns-widget__imeta"><span>SOQL</span><span>Free</span></span>
+            </span>
+          </a>
+          <a class="ns-widget__item" href="#">
+            <span class="ns-widget__thumb">
+              <i class="ph ph-shield-check" aria-hidden="true"></i>
+              <span class="ns-widget__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-widget__dur">11:04</span>
+            </span>
+            <span class="ns-widget__itext">
+              <span class="ns-widget__ititle">Recalculation is asynchronous</span>
+              <span class="ns-widget__imeta"><span>Security</span><span>Free</span></span>
+            </span>
+          </a>
         </div>
       </div>
 
@@ -311,6 +438,23 @@
             <a class="ns-tag ns-tag--pill" href="/tag/flows">Flows <span class="ns-tag__count">18</span></a>
             <a class="ns-tag ns-tag--pill" href="/tag/soql">SOQL <span class="ns-tag__count">9</span></a>
             <a class="ns-tag ns-tag--pill" href="/tag/architecture">Architecture <span class="ns-tag__count">7</span></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- The rail ad. A half-page rather than a skyscraper: at 18rem a
+           160x600 leaves a column of dead margin either side, and the unit
+           reserves its own height so nothing below it shifts when the fill
+           lands. `data-state` drives the skeleton; the network swaps it to
+           filled, or the slot collapses honestly if no fill comes back. -->
+      <div class="ns-widget">
+        <div class="ns-ad ns-ad--halfpage ns-ad-rail" data-state="filled" data-placement="Half page · post rail">
+          <span class="ns-ad__label">Advertisement</span>
+          <div class="ns-ad__frame">
+            <span class="ns-ad__dummy" aria-hidden="true">
+              <span class="ns-ad__dummy-name">Half page</span>
+              <span class="ns-ad__dummy-size">300x600</span>
+            </span>
           </div>
         </div>
       </div>

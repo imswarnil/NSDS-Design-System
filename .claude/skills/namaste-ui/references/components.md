@@ -1309,6 +1309,8 @@ A titled block in a sidebar — categories, recent posts, a newsletter, the auth
 - The sidebar of Post layout --sidebar, or a blog index rail
 - --boxed on exactly ONE widget per sidebar — the one with an action in it, usually the newsletter
 - __more for a quiet “All” link beside the title
+- __item for a browsing list with thumbnails — related posts, videos, lessons
+- __facts for two or three checkable lines under an offer
 
 **Not for**
 - Five boxed cards. A sidebar of bordered boxes competes with the article for attention, and the article has to win

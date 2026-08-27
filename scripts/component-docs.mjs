@@ -3643,6 +3643,8 @@ Map<Id, Account> byId = new Map<Id, Account>(
       "The sidebar of <a href=\"./c-post-layout.html\">Post layout</a> <code>--sidebar</code>, or a blog index rail",
       "<code>--boxed</code> on exactly ONE widget per sidebar &mdash; the one with an action in it, usually the newsletter",
       "<code>__more</code> for a quiet \u201cAll\u201d link beside the title",
+      "<code>__item</code> for a browsing list with thumbnails &mdash; related posts, videos, lessons",
+      "<code>__facts</code> for two or three checkable lines under an offer",
     ],
     not: [
       "Five boxed cards. A sidebar of bordered boxes competes with the article for attention, and the article has to win",
@@ -3656,6 +3658,46 @@ Map<Id, Account> byId = new Map<Id, Account>(
       "Widget order is DOM order: the sidebar comes after the article, so a screen reader and a phone both get the post first",
     ],
     variants: [
+      { name: "Media items", stack: true, note: "<code>__item</code> is the browsing list: the thumbnail is the scanning key and the date is a footnote. <code>.ns-blog-archive</code> is the opposite arrangement &mdash; a DATED list where the date is the key and a thumbnail would push it out &mdash; so a rail can carry one of each without reading as the same widget twice. 5.5rem of thumb is the constraint: wide enough for a legible 16:9 crop, narrow enough that two lines of title still fit beside it at 18rem, which is why this is not <code>.ns-bcard--row</code> (12rem of media, four characters per line here). Add a play badge and a runtime and the same item is a video.", html: `<div class="ns-widgets" style="max-inline-size:18rem">
+  <div class="ns-widget">
+    <div class="ns-widget__head">
+      <span class="ns-widget__title">Related reading</span>
+      <a class="ns-widget__more" href="#0">All</a>
+    </div>
+    <div class="ns-widget__body">
+      <a class="ns-widget__item" href="#0">
+        <span class="ns-widget__thumb"><i class="ph ph-lightning" aria-hidden="true"></i></span>
+        <span class="ns-widget__itext">
+          <span class="ns-widget__ititle">Why your trigger fails at 201 records</span>
+          <span class="ns-widget__imeta"><span>04 Aug</span><span>6 min</span></span>
+        </span>
+      </a>
+      <a class="ns-widget__item" href="#0">
+        <span class="ns-widget__thumb"><i class="ph ph-blueprint" aria-hidden="true"></i></span>
+        <span class="ns-widget__itext">
+          <span class="ns-widget__ititle">The data model is the product</span>
+          <span class="ns-widget__imeta"><span>28 Jul</span><span>12 min</span></span>
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="ns-widget">
+    <div class="ns-widget__head"><span class="ns-widget__title">Watch instead</span></div>
+    <div class="ns-widget__body">
+      <a class="ns-widget__item" href="#0">
+        <span class="ns-widget__thumb">
+          <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+          <span class="ns-widget__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+          <span class="ns-widget__dur">09:55</span>
+        </span>
+        <span class="ns-widget__itext">
+          <span class="ns-widget__ititle">The query planner, on screen</span>
+          <span class="ns-widget__imeta"><span>SOQL</span><span>Free</span></span>
+        </span>
+      </a>
+    </div>
+  </div>
+</div>` },
       { name: "A sidebar", stack: true, note: "Four widgets, one boxed. The rule between the unboxed ones is what makes the stack read as sections rather than as one long column.", html: `<div class="ns-widgets" style="max-inline-size:18rem">
   <div class="ns-widget">
     <div class="ns-widget__head"><span class="ns-widget__title">Written by</span></div>
