@@ -17,6 +17,62 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Fixed — the templates were unfindable
+
+31 full-page templates existed and were reachable only from a **Demos
+dropdown** in the homepage's nav bar, which is not where anybody looks for a
+template. They are now a card shelf under their own heading, above the page
+index, with the one-line note from each demo entry as the description.
+
+A menu is where you put things people already know exist.
+
+### Added — site-wide search
+
+A command palette over a generated `preview/search.json`: 237 rows covering
+every styleguide page, every full-page template, and every documented
+component **including the class names it defines** — because "where is
+`.ns-btn--ghost`" is the question people actually arrive with, and a
+title-only index cannot answer it.
+
+`/` or `⌘K` from anywhere; the trigger sits in the homepage bar and in the
+styleguide rail. It is a real `<dialog>`, so the backdrop, Escape, focus
+trapping and inertness of the page behind all come from the platform.
+
+**No dependency and no index format.** A few hundred rows filtered with
+`includes` is instant at this size, and a design system shipping a search
+bundle larger than its own stylesheet would have lost the plot.
+
+Two things it deliberately does:
+
+- **The trigger is created by script**, not written into the markup, so a
+  page with JS off never shows a search control that cannot run.
+- **A failed fetch says so.** An empty list there would read as "no results",
+  which is a different and much more confusing statement.
+
+The rail keeps its own "Filter pages" input alongside. They are different
+tools: the palette searches everything, the filter narrows *this rail*, needs
+no fetch, and is faster when you already know roughly where you are going.
+
+Ranking is four rules and stops there, but one of them earns its place: a
+**whole-word** keyword match beats a substring. Without it, searching "links"
+tied the Link page template with four navigation components whose class names
+contain `__links`, and array order decided — so the page somebody typing
+"links" actually wants came fifth.
+
+### Note — the chart widgets were already there
+
+Checked rather than assumed, since the question was whether the common
+dashboard widgets exist. They do: sparkline stat tiles (six on the LMS chart
+page), donut with a centre figure, rings, progress, heatmap, funnel,
+horizontal bar rows, stacked and grouped bars, plus the scatter, waterfall,
+bullet and slope added in the last change.
+
+The one common widget deliberately **absent** is a gauge, and the bullet
+chart's own documentation says why: a needle at an angle is hard to compare
+between rows, and a dial spends most of its pixels on the part of the range
+nobody is in. Adding one now would contradict an argument this system already
+makes in writing.
+
 ### Added — four chart types the bar and the line cannot cover
 
 `chart-more` documents them, and the admin dashboard now uses three:

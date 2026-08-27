@@ -2557,6 +2557,88 @@
     }
     .ns-lessonmodal__head { position: relative; padding-block-start: var(--space-6); }
   }
+
+  /* ============================================================ PALETTE ====
+     Site-wide search as a command palette. A real <dialog>, so the backdrop,
+     Escape, focus trapping and inertness of the page behind it all come from
+     the platform rather than from three hundred lines of ours.
+
+     It sits near the TOP of the viewport, not centred. A centred palette
+     jumps as the result list grows and shrinks under the caret; anchored to
+     the top, the input stays exactly where the eye left it and only the list
+     below it moves. */
+  .ns-palette {
+    inline-size: min(40rem, calc(100vw - var(--space-8)));
+    max-block-size: min(32rem, calc(100dvh - var(--space-16)));
+    margin: var(--space-16) auto auto;
+    padding: 0;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-overlay, none); /* lint-ok: falls back to flat where the system defines no overlay shadow */
+    overflow: hidden;
+  }
+  .ns-palette::backdrop { background: color-mix(in srgb, var(--color-brand-900) 42%, transparent); }
+  .ns-palette__box { display: flex; flex-direction: column; min-block-size: 0; max-block-size: inherit; }
+  .ns-palette__field {
+    display: flex; align-items: center; gap: var(--space-3);
+    padding: var(--space-4);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-palette__field > i { color: var(--color-label); font-size: var(--size-h4); }
+  .ns-palette__input {
+    flex: 1; min-inline-size: 0;
+    border: 0; background: none; padding: 0;
+    font: inherit; font-size: var(--size-prose); color: var(--color-ink);
+  }
+  .ns-palette__input:focus { outline: none; }        /* the dialog is the focus ring */
+  .ns-palette__input::-webkit-search-cancel-button { display: none; }
+  .ns-palette__status {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--size-prose-small); color: var(--color-muted);
+    border-block-end: 1px solid var(--color-border);
+  }
+  .ns-palette__list { list-style: none; margin: 0; padding: var(--space-2); overflow-y: auto; min-block-size: 0; }
+  .ns-palette__hit {
+    display: grid; grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--space-1) var(--space-3); align-items: baseline;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    text-decoration: none; color: inherit;
+  }
+  /* The highlight is aria-selected, not a class. One attribute drives the
+     look AND what a screen reader announces, so the two cannot drift. */
+  .ns-palette__hit[aria-selected="true"] { background: var(--color-surface-sunken); }
+  .ns-palette__hit:hover { background: var(--color-surface-sunken); }
+  .ns-palette__kind {
+    grid-row: 1 / 3;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); overflow: hidden; text-overflow: ellipsis;
+  }
+  .ns-palette__t { font-size: var(--size-prose-small); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-palette__d {
+    font-size: var(--size-prose-small); color: var(--color-muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* The trigger. Script-created, so a page with JS off never shows a control
+     that cannot work — see assets/js/search.js. */
+  .ns-searchbtn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-1-5) var(--space-3);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    background: var(--color-surface); color: var(--color-muted);
+    font: inherit; font-size: var(--size-prose-small); cursor: pointer;
+    transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+  }
+  .ns-searchbtn:hover { border-color: var(--color-brand-500); color: var(--color-ink); }
+  @media (max-width: 47.999rem) {
+    .ns-palette { margin-block-start: var(--space-6); }
+    .ns-palette__hit { grid-template-columns: minmax(0, 1fr); }
+    .ns-palette__kind { grid-row: auto; }
+    .ns-searchbtn span, .ns-searchbtn kbd { display: none; }
+  }
+
 }
 /* NS Design System — navigation: tabs, accordion, breadcrumb, pagination, sidebar.
    =========================================================================

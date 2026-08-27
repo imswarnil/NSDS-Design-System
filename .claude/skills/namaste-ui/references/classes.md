@@ -3,7 +3,7 @@
 # Class inventory
 
 Every `.ns-*` class in the component layer, grouped by the file that defines
-it. 2078 classes across 33 stylesheets.
+it. 2089 classes across 33 stylesheets.
 
 A class here is available the moment `dist/namaste-ui.css` is linked. If you
 find yourself about to invent a class name, search this list first — the
@@ -91,7 +91,7 @@ odds are the thing already exists under a name you did not guess.
 
 ## primitives/overlay.css
 
-`.ns-drawer` · `.ns-drawer--end` · `.ns-drawer--start` · `.ns-drawer__body` · `.ns-drawer__header` · `.ns-lessonmodal` · `.ns-lessonmodal__count` · `.ns-lessonmodal__foot` · `.ns-lessonmodal__head` · `.ns-lessonmodal__list` · `.ns-lessonmodal__title` · `.ns-menu` · `.ns-menu__item` · `.ns-menu__item--danger` · `.ns-menu__label` · `.ns-menu__sep` · `.ns-modal` · `.ns-modal--lg` · `.ns-modal--sm` · `.ns-modal--video` · `.ns-modal__body` · `.ns-modal__close` · `.ns-modal__footer` · `.ns-modal__header` · `.ns-modal__title` · `.ns-player__side-search` · `.ns-popover` · `.ns-tooltip` · `.ns-tooltip--below` · `.ns-tooltip-host` · `.ns-video`
+`.ns-drawer` · `.ns-drawer--end` · `.ns-drawer--start` · `.ns-drawer__body` · `.ns-drawer__header` · `.ns-lessonmodal` · `.ns-lessonmodal__count` · `.ns-lessonmodal__foot` · `.ns-lessonmodal__head` · `.ns-lessonmodal__list` · `.ns-lessonmodal__title` · `.ns-menu` · `.ns-menu__item` · `.ns-menu__item--danger` · `.ns-menu__label` · `.ns-menu__sep` · `.ns-modal` · `.ns-modal--lg` · `.ns-modal--sm` · `.ns-modal--video` · `.ns-modal__body` · `.ns-modal__close` · `.ns-modal__footer` · `.ns-modal__header` · `.ns-modal__title` · `.ns-palette` · `.ns-palette__box` · `.ns-palette__d` · `.ns-palette__field` · `.ns-palette__hit` · `.ns-palette__input` · `.ns-palette__kind` · `.ns-palette__list` · `.ns-palette__status` · `.ns-palette__t` · `.ns-player__side-search` · `.ns-popover` · `.ns-searchbtn` · `.ns-tooltip` · `.ns-tooltip--below` · `.ns-tooltip-host` · `.ns-video`
 
 ## primitives/progress.css
 

@@ -1611,6 +1611,7 @@ const CSS = `
     background: var(--color-surface);
   }
   .side__brand { display: flex; align-items: center; gap: var(--space-2); margin-block-end: var(--space-1); }
+  .side__find { margin-block: var(--space-3) var(--space-2); }
   .side__brand img { inline-size: 1.5rem; block-size: 1.5rem; }
   .side__brand a { color: inherit; text-decoration: none; }
   .side__ver { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); margin-block-end: var(--space-5); display: block; }
@@ -1911,6 +1912,11 @@ const sidebar = (current) => {
   return `<div class="side">
   <div class="side__brand"><img src="../assets/logo/favicon.svg" alt=""><strong><a href="./index.html">NS Design System</a></strong></div>
   <span class="side__ver">v${esc(pkg.version)} · ${all.length} tokens</span>
+  <!-- Two different things, deliberately both here. The palette searches the
+       whole site — pages, templates, component summaries and class names.
+       The input under it only narrows THIS rail, needs no fetch, and is the
+       faster tool when you already know roughly where you are going. -->
+  <div class="side__find" data-ns-search></div>
   <input class="ns-input side__search" type="search" id="side-search" placeholder="Filter pages…" aria-label="Filter pages">
   <nav aria-label="Pages" data-ns-rail>
   ${foundations.map(link).join("\n  ")}
@@ -2012,6 +2018,7 @@ ${sidebar(page.file)}
 </main>
 <script>${JS}</script>
 <script src="../assets/js/nav.js" defer></script>
+<script src="../assets/js/search.js" defer></script>
 <script src="../assets/js/code.js" defer></script>
 <script src="../assets/js/type-fx.js" defer></script>
 <script src="../assets/js/lms.js" defer></script>
@@ -2645,6 +2652,7 @@ ${d.realHeader ? realHeader(d) : d.bare ? `<a class="ns-btn ns-btn--quiet ns-btn
   <a class="ns-btn ns-btn--outline ns-btn--sm ms-auto" href="./${d.back}">&larr; back to docs</a></div>`}
 ${body}
 <script src="../assets/js/nav.js" defer></script>
+<script src="../assets/js/search.js" defer></script>
 <script src="../assets/js/code.js" defer></script>
 <script src="../assets/js/type-fx.js" defer></script>
 <script src="../assets/js/lms.js" defer></script>
@@ -2685,5 +2693,52 @@ writeFileSync(join(OUT, "pages.json"), `${JSON.stringify(PAGES.map((p) => ({
   group: p.family || p.side || null,
   summary: summary(p),
 })), null, 2)}\n`);
+
+/* Every .ns-* class a component's own demos render — used to make the search
+   index answer "which page documents this class". */
+const classesOf = (c) => {
+  const seen = new Set();
+  for (const v of c.variants ?? [])
+    for (const m of (v.html ?? "").matchAll(/class="([^"]*)"/g))
+      for (const cls of m[1].split(/\s+/)) if (cls.startsWith("ns-")) seen.add(cls);
+  return [...seen];
+};
+
+/* ---- the search index ----------------------------------------------------
+   One flat list covering everything a visitor could be looking for: the
+   styleguide pages, the full-page templates, and every documented component
+   INCLUDING the classes it defines — because "where is .ns-btn--ghost" is
+   the question people actually arrive with, and a title-only index cannot
+   answer it.
+
+   Deliberately not a search engine. No stemming, no ranking model, no index
+   format: a few hundred rows of {title, url, kind, keywords} that the client
+   filters with `includes`. At this size that is instant, it needs no
+   dependency, and it degrades to a plain list if the fetch fails. A design
+   system that shipped a search bundle bigger than its stylesheet would have
+   lost the plot. */
+const searchRows = [
+  ...PAGES.map((p) => ({
+    t: p.title,
+    u: p.file,
+    k: p.kind === "component" ? (p.family || "Component") : p.kind === "section" ? "Foundation" : p.side || "Page",
+    d: summary(p) || "",
+    /* A component page carries its own class names, so searching for a
+       class lands on the page that documents it. */
+    x: p.comp ? (classesOf(p.comp) || []).join(" ") : "",
+  })),
+  /* The template's own filename goes in the keywords, because a page called
+     "Link page" is what somebody searches for as "links" — and the file they
+     are about to copy is links.html. Matching the artifact's name is more
+     useful than matching the prose title. */
+  ...DEMOS.map((d) => ({
+    t: d.title.replace(/ — .*$/, ""),
+    u: d.out,
+    k: "Template",
+    d: d.note || "",
+    x: `template full page ${d.tpl} ${d.tpl.replace(/\.html$/, "").replace(/-/g, " ")}`,
+  })),
+];
+writeFileSync(join(OUT, "search.json"), `${JSON.stringify(searchRows)}\n`);
 
 console.log(`wrote preview/ — ${PAGES.length} pages (home + ${SECTIONS.length} sections + ${COMPONENTS.length} components + ${CHART_DOCS.length + CONTENT_DOCS.length} chart/content docs), ${all.length} tokens, ${cards.length} specimens embedded in place`);

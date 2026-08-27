@@ -105,7 +105,7 @@ ${list.map((p) => `          <li><a href="./preview/${p.file}"><span class="idx_
   }, null, 2);
 
   return `<!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-ns-base="./preview/" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -200,6 +200,21 @@ ${list.map((p) => `          <li><a href="./preview/${p.file}"><span class="idx_
   .tile__kicker { display: block; font-family: var(--font-mono); font-size: var(--size-label);
                   font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
                   text-transform: uppercase; color: var(--color-label); margin-block-end: var(--space-2); }
+  /* The template shelf. A grid of real cards rather than another index
+     list, because these are the thing most visitors actually came for and
+     a list item does not look like something you open. */
+  .tpl { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(17rem, 100%), 1fr));
+         gap: var(--space-3); margin-block-end: var(--space-10); }
+  .tpl__item { display: grid; gap: var(--space-1); padding: var(--space-4);
+               border: 1px solid var(--color-border); border-radius: var(--radius-card);
+               background: var(--color-surface); text-decoration: none; color: inherit;
+               box-shadow: inset 0 2px 0 transparent;
+               transition: border-color var(--duration-fast) var(--ease-out),
+                           box-shadow var(--duration-fast) var(--ease-out); }
+  .tpl__item:hover { border-color: var(--color-brand-500); box-shadow: inset 0 2px 0 var(--color-brand-500); }
+  .tpl__name { font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .tpl__note { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); }
+
   .idx { margin-block-end: var(--space-8); break-inside: avoid; }
   .idx__head { font-family: var(--font-mono); font-size: var(--size-fine); text-transform: uppercase;
                letter-spacing: var(--tracking-label); color: var(--color-muted); margin: 0 0 var(--space-2);
@@ -236,6 +251,9 @@ ${menu("Demos", demoItems)}
       <a class="navlink" href="./preview/homepage.html">Page recipes</a>
     </nav>
     <div class="bar__end">
+      <!-- The palette's trigger is injected here by assets/js/search.js, so
+           a page with JS off never shows a search control that cannot run. -->
+      <span data-ns-search></span>
       <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" type="button" data-theme-toggle aria-label="Toggle dark mode">
         <i class="ph ph-circle-half" aria-hidden="true"></i>
       </button>
@@ -380,6 +398,15 @@ ${demos.slice(0, 9).map((d) => `    <a class="tile" href="./preview/${esc(d.file
     <p>Consuming it from a project instead — tokens as JavaScript, the Tailwind v4 theme, or the component CSS on its own — is covered in <a href="${esc(repo)}/blob/main/docs/INTEGRATION.md">the integration guide</a>.</p>
   </div>
 
+  <h2>Full-page templates</h2>
+  <p class="sub">${demos.length} complete pages, each rendered from the real <code>templates/*.html</code> file it documents &mdash; open one, then copy the markup. These were reachable only from the Demos menu before, which is not where anybody looks for a template.</p>
+  <div class="tpl">
+${demos.map((d) => `    <a class="tpl__item" href="./preview/${d.file}">
+      <span class="tpl__name">${esc(d.title.replace(/ — .*$/, ""))}</span>
+      <span class="tpl__note">${esc((d.note || "").split(/[.—]/)[0].trim())}</span>
+    </a>`).join("\n")}
+  </div>
+
   <h2>Every page</h2>
   <p class="sub">${pages.length} generated pages. Each one is built from the artifact it documents, and each is a stable, linkable URL.</p>
   <div>
@@ -424,6 +451,7 @@ ${indexBlocks}
   });
 })();
 </script>
+<script src="./assets/js/search.js" defer></script>
 </body>
 </html>
 `;
