@@ -9,202 +9,348 @@
   finish date — rather than abstract feature copy.
 
   The order is an argument, and each band answers the next question a
-  visitor actually has:
+  visitor actually has. No band repeats another's question — that is the
+  admission test, and it is why there is no second feature grid wearing a
+  different arrangement:
 
-    01 hero (split)     what is this, and what do I do first
-    02 logo marquee     who else trusts it            (borrowed credibility)
-    03 features         why this instead of YouTube   (the method)
-    04 learning path    where do I enter              (the curriculum's shape)
-    05 courses          what exactly do I get         (the merchandise)
-    06 training tracks  what is free                  (the open half)
-    07 stats            how big / how real            (concrete numbers only)
-    08 pace             how long will it take         (a date, not hours)
-    09 testimonials     did it work for someone like me
-    10 FAQ              the last three objections
-    11 CTA              the one closer
+    01 hero (split, tall)  what is this, and what do I do first
+    02 logo marquee        who else trusts it          (borrowed credibility)
+    03 router              which of these am I         (mutually exclusive)
+    04 showcase            why this instead of YouTube (the method, in rows)
+    05 learning path       where do I enter            (the curriculum's shape)
+    06 courses             what exactly do I get       (the merchandise)
+    07 video               show me one lesson          (and what is in it)
+    08 training tracks     what is free                (the open half)
+    09 stats               how big / how real          (checkable numbers)
+    10 sample lesson       is the writing any good     (shows, does not say)
+    11 scope               is the thing MY job needs in here
+    12 compare             what changes about me       (before / after)
+    13 membership          what does it cost, and what does the money buy
+    14 the story          who is behind this, and why    (as an exec log)
+    15 authors             who is actually teaching me
+    16 testimonials        did it work for someone like me
+    17 photo band          what does the journey look like  (weeks 1/6/14)
+    18 latest writing      what does a normal week look like
+    19 shipped             is this thing still alive   (dated, time-ordered)
+    20 fit                 should I NOT buy this       (argues against itself)
+    21 sponsors            who pays for the free half  (disclosed, once)
+    22 newsletter          the exit for someone not ready to start
+    23 FAQ                 the last three objections
+    24 CTA                 the one closer
 
   Cut from the bottom, never the middle: a homepage without testimonials
   still works, a homepage without the merchandise is a brochure.
+
+  TWO LOGO BANDS, AND THEY ARE NOT THE SAME BAND. 02 is other people's
+  marks vouching for us; 18 is us disclosing who pays us. Both draw from
+  icons/brand-marks.svg, and every mark in that file belongs to a company
+  that does not exist — read the warning at the top of it before swapping
+  any of them for a real one.
+
+  CARDS WITH GLYPH COVERS. Courses, tracks, path stops and posts all take
+  .ns-card__media--glyph / .ns-tthumb--glyph rather than .ns-ph: an icon on
+  the hairline grid is FINISHED artwork, while a placeholder is a promise to
+  supply a picture later. A catalogue that ships placeholders as its covers
+  reads as unbuilt, and every card in it looks like the same card.
 
     Ghost   → paste bands into partials/, swap copy for Ghost helpers.
     Next.js → compose from components/sections/ + course/ + training/.
 -->
 
-<!-- 01 · Hero: split — the one page where showing beats telling, and the
-     thing being shown is the system itself. --grid-live drifts the hairline
-     motif one cell every twenty seconds: slow enough that nobody reading the
-     headline notices it moving, fast enough that the band is not a flat
-     image. A hero that animates faster than a reader reads is an advert. -->
-<section class="ns-band ns-hero ns-hero--split ns-hero--flush ns-band--dark ns-band--grid ns-band--grid-live">
+<!-- 01 · Hero: two columns, fixed. Words left, the assembly right.
+
+     --tall is the marketing height: min-block-size on the INNER, so the band
+     keeps its own padding and the hero can never end up shorter than its own
+     content. 82svh rather than 100 on purpose — a hero that exactly fills
+     the viewport gives the reader no reason to think anything is under it,
+     and the cut-off top edge of the next band is the cheapest scroll
+     affordance there is.
+
+     The media slot holds the ASSEMBLY: this system's own primitives arranged
+     into a miniature of the product they build, animated arriving. It is not
+     drawn art — change a radius token and the illustration changes with it,
+     which is the only kind of "our components make this" picture that cannot
+     go stale.
+
+     (An earlier revision made this a sticky scroll hero. That component
+     still exists as .ns-shero with its own page; it is the right shape when
+     a claim needs four pieces of evidence, and the wrong shape for a
+     homepage opener, which needs to say one thing on one screen.) -->
+<section class="ns-band ns-hero ns-hero--split ns-hero--tall ns-band--dark ns-band--grid ns-band--grid-live">
   <div class="ns-band__inner">
     <div>
-      <span class="ns-kicker">Learn Salesforce, properly</span>
-      <h1 class="ns-hero__title">From your first org to Apex you can defend</h1>
-      <p class="ns-hero__lede">Courses, a step-by-step training roadmap and working code — in the order the platform actually makes sense.</p>
+      <span class="ns-hero__eyebrow"><i class="ph ph-compass" aria-hidden="true"></i>Learn Salesforce, properly</span>
+      <h1 class="ns-hero__title">From your first org to Apex you can <span class="ns-hero__mark">defend</span></h1>
+      <p class="ns-hero__lede">Courses, a step-by-step training roadmap and working code &mdash; in the order the platform actually makes sense.</p>
       <div class="ns-hero__actions">
-        <a class="ns-btn ns-btn--white ns-btn--lg" href="#">Start learning free</a>
+        <a class="ns-btn ns-btn--white ns-btn--xl" href="#">Start learning free</a>
         <a class="ns-btn ns-btn--ghost ns-btn--lg" href="#">Browse the roadmap</a>
       </div>
-      <span class="ns-hero__proof">12 courses · 150 training modules · most of it free</span>
+      <!-- Three facts on three lines. This was one tracked uppercase mono
+           string — "12 COURSES · 150 TRAINING MODULES · MOST OF IT FREE" —
+           which is three separate claims wearing the grammar of a serial
+           number. -->
+      <ul class="ns-hero__facts">
+        <li><i class="ph ph-check" aria-hidden="true"></i><span><b>12</b> courses, each mapped to a certification outline</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span><b>150</b> written training modules, <b>120</b> of them free in full</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Every lab runs in a free Developer Edition org</span></li>
+      </ul>
     </div>
-    <!-- The media slot holds the ASSEMBLY: this system's own primitives
-         arranged into a miniature of the product they build, animated
-         arriving. It is not drawn art — change a radius token and the
-         illustration changes with it, which is the only kind of "our
-         components make this" picture that cannot go stale. -->
     <div class="ns-hero__media">
       <div class="ns-assembly" aria-hidden="true">
-        <div class="ns-assembly__window">
-          <div class="ns-assembly__chrome">
-            <span class="ns-assembly__dot"></span>
-            <span class="ns-assembly__dot"></span>
-            <span class="ns-assembly__dot"></span>
-            <span class="ns-assembly__url">namastesalesforce.com</span>
-          </div>
-
-          <!-- Every slot holds TWO layers in the same box: the component's
-               file name, and the thing that file renders. They cross-fade on
-               one shared timeline, so each label becomes its own component in
-               the exact place that component lives on the page. -->
-          <div class="ns-assembly__page">
-            <div class="ns-assembly__slot ns-assembly__slot--nav">
-              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>nav.cmp</span>
-              <div class="ns-assembly__render">
-                <span class="ns-assembly__bar">
-                  <span class="ns-assembly__mark"></span>
-                  <span class="ns-assembly__line ns-assembly__line--short"></span>
-                  <span class="ns-assembly__line"></span>
-                </span>
-              </div>
+          <div class="ns-assembly__window">
+            <div class="ns-assembly__chrome">
+              <span class="ns-assembly__dot"></span>
+              <span class="ns-assembly__dot"></span>
+              <span class="ns-assembly__dot"></span>
+              <span class="ns-assembly__url">namastesalesforce.com</span>
             </div>
-
-            <div class="ns-assembly__slot ns-assembly__slot--hero">
-              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>hero.cmp</span>
-              <div class="ns-assembly__render">
-                <span class="ns-assembly__stack">
-                  <span class="ns-assembly__line ns-assembly__line--wide"></span>
-                  <span class="ns-assembly__line ns-assembly__line--mid"></span>
-                </span>
-              </div>
-            </div>
-
-            <div class="ns-assembly__slot ns-assembly__slot--image">
-              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>image.cmp</span>
-              <div class="ns-assembly__render">
-                <span class="ns-assembly__media"><i class="ph ph-image" aria-hidden="true"></i></span>
-              </div>
-            </div>
-
-            <div class="ns-assembly__slot ns-assembly__slot--button">
-              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>button.cmp</span>
-              <div class="ns-assembly__render">
-                <span class="ns-assembly__actions">
-                  <span class="ns-assembly__chip">Start</span>
-                  <span class="ns-assembly__chip ns-assembly__chip--quiet">Browse</span>
-                </span>
-              </div>
-            </div>
-
-            <div class="ns-assembly__slot ns-assembly__slot--card">
-              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>card.cmp</span>
-              <div class="ns-assembly__render">
-                <span class="ns-assembly__cards">
-                  <span class="ns-assembly__mini-card">
+            <div class="ns-assembly__page">
+              <div class="ns-assembly__slot ns-assembly__slot--nav">
+                <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>nav.cmp</span>
+                <div class="ns-assembly__render">
+                  <span class="ns-assembly__bar">
+                    <span class="ns-assembly__mark"></span>
                     <span class="ns-assembly__line ns-assembly__line--short"></span>
                     <span class="ns-assembly__line"></span>
                   </span>
-                  <span class="ns-assembly__mini-card">
-                    <span class="ns-assembly__line ns-assembly__line--short"></span>
-                    <span class="ns-assembly__line"></span>
-                  </span>
-                </span>
+                </div>
               </div>
-            </div>
-
-            <div class="ns-assembly__slot ns-assembly__slot--chart">
-              <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>chart.cmp</span>
-              <div class="ns-assembly__render">
-                <span class="ns-assembly__bars"><i style="block-size:40%"></i><i style="block-size:70%"></i><i style="block-size:52%"></i><i style="block-size:90%"></i><i style="block-size:64%"></i></span>
+              <div class="ns-assembly__slot ns-assembly__slot--hero">
+                <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>hero.cmp</span>
+                <div class="ns-assembly__render">
+                  <span class="ns-assembly__stack">
+                    <span class="ns-assembly__line ns-assembly__line--wide"></span>
+                    <span class="ns-assembly__line ns-assembly__line--mid"></span>
+                  </span>
+                </div>
+              </div>
+              <div class="ns-assembly__slot ns-assembly__slot--image">
+                <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>image.cmp</span>
+                <div class="ns-assembly__render">
+                  <span class="ns-assembly__media"><i class="ph ph-image" aria-hidden="true"></i></span>
+                </div>
+              </div>
+              <div class="ns-assembly__slot ns-assembly__slot--button">
+                <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>button.cmp</span>
+                <div class="ns-assembly__render">
+                  <span class="ns-assembly__actions">
+                    <span class="ns-assembly__chip">Start</span>
+                    <span class="ns-assembly__chip ns-assembly__chip--quiet">Browse</span>
+                  </span>
+                </div>
+              </div>
+              <div class="ns-assembly__slot ns-assembly__slot--card">
+                <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>card.cmp</span>
+                <div class="ns-assembly__render">
+                  <span class="ns-assembly__cards">
+                    <span class="ns-assembly__mini-card">
+                      <span class="ns-assembly__line ns-assembly__line--short"></span>
+                      <span class="ns-assembly__line"></span>
+                    </span>
+                    <span class="ns-assembly__mini-card">
+                      <span class="ns-assembly__line ns-assembly__line--short"></span>
+                      <span class="ns-assembly__line"></span>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="ns-assembly__slot ns-assembly__slot--chart">
+                <span class="ns-assembly__cmp"><i class="ph ph-brackets-curly"></i>chart.cmp</span>
+                <div class="ns-assembly__render">
+                  <span class="ns-assembly__bars"><i style="block-size:40%"></i><i style="block-size:70%"></i><i style="block-size:52%"></i><i style="block-size:90%"></i><i style="block-size:64%"></i></span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
     </div>
   </div>
 </section>
 
-<!-- 02 · Trust: a windowed marquee of employer names. Text marks, not logo
-     images, until real permission-cleared logos exist — a fake logo wall
-     is worse than a quiet one. -->
+<!-- 02 · Trust: a windowed marquee of the companies people learn here
+     from, as real MARKS rather than names set in our mono face.
+
+     THE LOGOS ARE PLACEHOLDERS AND EVERY NAME IN THEM IS FICTIONAL — Acme,
+     Northwind, Globex, Initech, Umbrella, Contoso. That is deliberate and it
+     is not a detail to fix later by swapping in real ones off a search
+     engine: a logo wall showing a mark its owner never granted is a
+     fabricated endorsement, and it is worse than the quiet text row this
+     replaced. The marks exist so the LAYOUT can be built and reviewed
+     against real lockups; the moment permission-cleared logos exist they
+     drop into exactly this markup. See icons/brand-marks.svg.
+
+     Monochrome on currentColor, so the row dims at rest and comes to ink on
+     hover as a colour change — which is also why it survives the dark theme,
+     where a filter-based logo wall goes black on black. -->
 <section class="ns-band ns-band--tight ns-band--sunken">
   <div class="ns-band__inner">
+    <p class="ns-logorow__title">GTM Engineers at Salesforce companies</p>
     <div class="ns-marquee ns-marquee--window ns-marquee--slow">
+      <!-- Each track carries the set TWICE. .ns-marquee__track is translated
+           by exactly half its own width, which only lands on an identical
+           frame if the track already tiles its content — and six marks do
+           not fill a desktop row, so a track holding the set once dragged a
+           visible hole across the band once per lap. The repeat is
+           aria-hidden: the row announces six companies, not twelve. -->
       <div class="ns-marquee__track">
-        <span class="ns-marquee__item">Learners at <b>Acme Cloud</b></span>
-        <span class="ns-marquee__item"><b>Northwind</b></span>
-        <span class="ns-marquee__item"><b>Globex</b></span>
-        <span class="ns-marquee__item"><b>Initech</b></span>
-        <span class="ns-marquee__item"><b>Umbrella Ops</b></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" role="img" aria-label="Acme Cloud"><use href="../icons/brand-marks.svg#ns-b-acme"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 106 24" role="img" aria-label="Northwind"><use href="../icons/brand-marks.svg#ns-b-northwind"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 85 24" role="img" aria-label="Globex"><use href="../icons/brand-marks.svg#ns-b-globex"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 91 24" role="img" aria-label="Initech"><use href="../icons/brand-marks.svg#ns-b-initech"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 147 24" role="img" aria-label="Umbrella Ops"><use href="../icons/brand-marks.svg#ns-b-umbrella"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" role="img" aria-label="Contoso Data"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-acme"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 106 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-northwind"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 85 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-globex"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 91 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-initech"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 147 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-umbrella"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg></span>
       </div>
       <div class="ns-marquee__track" aria-hidden="true">
-        <span class="ns-marquee__item">Learners at <b>Acme Cloud</b></span>
-        <span class="ns-marquee__item"><b>Northwind</b></span>
-        <span class="ns-marquee__item"><b>Globex</b></span>
-        <span class="ns-marquee__item"><b>Initech</b></span>
-        <span class="ns-marquee__item"><b>Umbrella Ops</b></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-acme"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 106 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-northwind"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 85 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-globex"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 91 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-initech"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 147 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-umbrella"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-acme"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 106 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-northwind"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 85 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-globex"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 91 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-initech"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 147 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-umbrella"/></svg></span>
+        <span class="ns-marquee__item ns-marquee__item--logo"><svg class="ns-brandmark" viewBox="0 0 111 24" aria-hidden="true"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg></span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 03 · The method: why a curriculum beats a pile of videos. -->
+<!-- 03 · The router: "which of these am I?" — the first question a
+     multi-audience curriculum has to answer, and the reason it sits above
+     the method rather than below it. An admin, a developer and an architect
+     want three different first lessons, and a page that describes all three
+     at once serves none of them.
+
+     Not a feature grid: feature cells are all true at once, router cells are
+     MUTUALLY EXCLUSIVE. That is why each is a link with a destination
+     instead of a claim with an icon, and why the whole cell is the target. -->
 <section class="ns-band">
   <div class="ns-band__inner">
-    <header class="ns-band__head">
-      <span class="ns-kicker">Why this works</span>
-      <h2 class="ns-band__title">A curriculum, not a pile of videos</h2>
-      <p class="ns-band__lede">Every lesson follows the same shape: a plain-English concept, a concrete example in your own org, then a bridge to the next step.</p>
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Start where you are</span>
+      <h2 class="ns-band__title">Three ways in</h2>
+      <p class="ns-band__lede">Pick the one that describes your Monday. Each opens on a different first lesson.</p>
     </header>
-    <div class="ns-features">
-      <article class="ns-feature">
-        <div class="ns-feature__top">
-          <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
-          <span class="ns-feature__num">01</span>
-        </div>
-        <h3 class="ns-feature__name">One roadmap</h3>
-        <p class="ns-feature__text">Admin to developer in an explicit order — every course knows what comes before and after it.</p>
-      </article>
-      <article class="ns-feature">
-        <div class="ns-feature__top">
-          <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-lesson-lab"/></svg>
-          <span class="ns-feature__num">02</span>
-        </div>
-        <h3 class="ns-feature__name">Hands-on labs</h3>
-        <p class="ns-feature__text">Every section ends in your own free org: create the object, load the data, break the trigger, fix it.</p>
-      </article>
-      <article class="ns-feature">
-        <div class="ns-feature__top">
-          <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-certificate"/></svg>
-          <span class="ns-feature__num">03</span>
-        </div>
-        <h3 class="ns-feature__name">Cert-aligned</h3>
-        <p class="ns-feature__text">Courses map to the certification outlines — Admin, App Builder, Platform Developer I — so studying here counts twice.</p>
-      </article>
+    <div class="ns-router ns-anim-stagger ns-anim-stagger--onview">
+      <a class="ns-router__card" href="#">
+        <span class="ns-router__mark"><i class="ph ph-gear" aria-hidden="true"></i></span>
+        <span class="ns-router__role">Administrator</span>
+        <p class="ns-router__when">You own an org, you live in Setup, and the last thing that broke was a validation rule nobody documented.</p>
+        <span class="ns-router__go">Start with objects <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="ns-router__card" href="#">
+        <span class="ns-router__mark"><i class="ph ph-code" aria-hidden="true"></i></span>
+        <span class="ns-router__role">Developer</span>
+        <p class="ns-router__when">You write Apex or LWC, you can read a stack trace, and you want the platform&rsquo;s reasons rather than its syntax.</p>
+        <span class="ns-router__go">Start with governor limits <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
+      <a class="ns-router__card" href="#">
+        <span class="ns-router__mark"><i class="ph ph-blueprint" aria-hidden="true"></i></span>
+        <span class="ns-router__role">Architect</span>
+        <p class="ns-router__when">You sign off designs, and the question is never &ldquo;can it&rdquo; but &ldquo;what does this cost at 40 million rows&rdquo;.</p>
+        <span class="ns-router__go">Start with the sharing model <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- 04 · The path: the curriculum's shape, as a journey with an entrance.
+<!-- 04 · The method, as three full rows rather than three cells.
+
+     This replaced a .ns-features 3-up grid answering the same question. A
+     feature grid is right when each claim is a SENTENCE; the moment a claim
+     needs a picture, a paragraph, two specifics and somewhere to go next,
+     three cells stop working — the picture becomes a thumbnail, the
+     paragraph gets clipped, and there is nowhere to put the link.
+
+     The rows alternate. Not for decoration: two rows the same way round read
+     as a list, and alternating stops the eye running down a column of
+     pictures ignoring the words beside them. The flip comes off below --lg,
+     because alternating in one column is just a picture that is sometimes
+     above and sometimes below, which reads as a mistake.
+
+     The art is from icons/hero-scenes.svg — illustration scale, drawn in
+     currentColor, and every one is a diagram of something the curriculum
+     actually teaches. An illustration a reader can learn from is the only
+     kind that survives being looked at twice. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Why this works</span>
+      <h2 class="ns-band__title">A curriculum, not a pile of videos</h2>
+      <p class="ns-band__lede">Every lesson follows the same shape: the platform's own reason for a thing, then the thing built in your own org, then the bridge to what it makes possible.</p>
+    </header>
+    <div class="ns-showcase">
+      <div class="ns-showcase__row ns-anim ns-anim--rise ns-anim--onview">
+        <div class="ns-showcase__body">
+          <span class="ns-showcase__step"><i class="ph ph-cube" aria-hidden="true"></i>01 · Foundations</span>
+          <h3 class="ns-showcase__title">The data model, before the buttons</h3>
+          <p class="ns-showcase__text">Objects, fields and relationships first, because every automation problem anybody has ever asked us to fix was a schema problem wearing a costume.</p>
+          <ul class="ns-showcase__list">
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Lookup vs master-detail, and what each one does on delete</span></li>
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Rollup summaries, and the three places they quietly recalculate</span></li>
+          </ul>
+          <a class="ns-btn ns-btn--outline" href="#">Start with objects <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="ns-showcase__art">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Account and Contact above, Opportunity below on a master-detail relationship"><use href="../icons/hero-scenes.svg#ns-s-schema"/></svg>
+        </div>
+      </div>
+
+      <div class="ns-showcase__row ns-anim ns-anim--rise ns-anim--onview">
+        <div class="ns-showcase__body">
+          <span class="ns-showcase__step"><i class="ph ph-flow-arrow" aria-hidden="true"></i>02 · Automation</span>
+          <h3 class="ns-showcase__title">Order of execution, drawn once and never guessed again</h3>
+          <p class="ns-showcase__text">What runs when a record is saved, in what order, and which step is the one that is not synchronous. This is the lesson people arrive looking for and the one most courses skip.</p>
+          <ul class="ns-showcase__list">
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Triggers, flows and validation in the order the platform runs them</span></li>
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Why a reparent is right eventually and wrong for a minute</span></li>
+          </ul>
+          <a class="ns-btn ns-btn--outline" href="#">See the sequence <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="ns-showcase__art">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Four steps down a spine, one of them queued and asynchronous"><use href="../icons/hero-scenes.svg#ns-s-order"/></svg>
+        </div>
+      </div>
+
+      <div class="ns-showcase__row ns-anim ns-anim--rise ns-anim--onview">
+        <div class="ns-showcase__body">
+          <span class="ns-showcase__step"><i class="ph ph-code" aria-hidden="true"></i>03 · Development</span>
+          <h3 class="ns-showcase__title">Limits as a budget, not a rulebook</h3>
+          <p class="ns-showcase__text">A hundred SOQL queries is an allowance you spend, and bulkification is how you spend it. That framing is why the Apex track sticks when a list of best practices does not.</p>
+          <ul class="ns-showcase__list">
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Every limit as a meter, against the one ceiling they share</span></li>
+            <li><i class="ph ph-check" aria-hidden="true"></i><span>Labs that break at 201 records, so you see it happen</span></li>
+          </ul>
+          <a class="ns-btn ns-btn--outline" href="#">Start with governor limits <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="ns-showcase__art">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Four governor limits drawn as meters against a shared ceiling, one nearly full"><use href="../icons/hero-scenes.svg#ns-s-limits"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 · The path: the curriculum's shape, as a journey with an entrance.
      The reader is choosing where to ENTER, which is why every stop links. -->
 <section class="ns-band ns-band--sunken">
   <div class="ns-band__inner">
-    <header class="ns-band__head">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
       <span class="ns-kicker">The learning path</span>
       <h2 class="ns-band__title">Four stages, in order</h2>
       <p class="ns-band__lede">Start anywhere you already are. Each stage ends where the next begins.</p>
     </header>
-    <ol class="ns-path" style="list-style:none;margin:0;padding:0">
+    <ol class="ns-path ns-anim-stagger ns-anim-stagger--onview" style="list-style:none;margin:0;padding:0">
       <li class="ns-path__stop">
         <span class="ns-path__node">01</span>
         <a class="ns-path__card" href="#">
@@ -245,12 +391,12 @@
   </div>
 </section>
 
-<!-- 05 · The merchandise: three courses, and the way to the rest. The head
+<!-- 06 · The merchandise: three courses, and the way to the rest. The head
      puts "View all" on the band's own baseline — a homepage section shows
      the best three of a thing, never the whole catalogue. -->
 <section class="ns-band">
   <div class="ns-band__inner">
-    <header class="ns-band__head ns-band__head--between">
+    <header class="ns-band__head ns-band__head--between ns-anim ns-anim--rise ns-anim--onview">
       <div>
         <span class="ns-kicker">Courses</span>
         <h2 class="ns-band__title">Start with one of these</h2>
@@ -259,9 +405,9 @@
         <a class="ns-btn" href="#">View all 12 courses</a>
       </div>
     </header>
-    <div class="ns-grid">
-      <div class="ns-card ns-ccard">
-        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Beginner</span></span>
+    <div class="ns-grid ns-anim-stagger ns-anim-stagger--onview">
+      <div class="ns-card ns-ccard ns-parallax-frame">
+        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-gear"></i></span><span class="ns-tag ns-ccard__level">Beginner</span></span>
         <div class="ns-card__body">
           <span class="ns-card__kicker">// Course</span>
           <a class="ns-card__link" href="#"><span class="ns-card__title">Admin fundamentals</span></a>
@@ -269,8 +415,8 @@
           <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>14 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>4h 05m</span></span>
         </div>
       </div>
-      <div class="ns-card ns-ccard">
-        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Beginner</span></span>
+      <div class="ns-card ns-ccard ns-parallax-frame">
+        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-code"></i></span><span class="ns-tag ns-ccard__level">Beginner</span></span>
         <div class="ns-card__body">
           <span class="ns-card__kicker">// Course</span>
           <a class="ns-card__link" href="#"><span class="ns-card__title">Apex basics</span></a>
@@ -278,8 +424,8 @@
           <span class="ns-ccard__meta"><span><i class="ph ph-play-circle" aria-hidden="true"></i>12 lessons</span><span><i class="ph ph-clock" aria-hidden="true"></i>3h 40m</span></span>
         </div>
       </div>
-      <div class="ns-card ns-ccard">
-        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-ph" aria-hidden="true"></span><span class="ns-tag ns-ccard__level">Intermediate</span></span>
+      <div class="ns-card ns-ccard ns-parallax-frame">
+        <span class="ns-ccard__mediawrap"><span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-flow-arrow"></i></span><span class="ns-tag ns-ccard__level">Intermediate</span></span>
         <div class="ns-card__body">
           <span class="ns-card__kicker">// Course</span>
           <a class="ns-card__link" href="#"><span class="ns-card__title">Flows, end to end</span></a>
@@ -291,13 +437,83 @@
   </div>
 </section>
 
-<!-- 06 · The open half: the training, told through its tracks. This band is
+<!-- 07 · One lesson, playable, with its contents listed beside it.
+
+     The list is the point, and it is why this is not simply a video dropped
+     in a band. A play button on a marketing page asks for eleven minutes on
+     faith; the chapter list spends ten seconds instead and lets the reader
+     decide whether those eleven minutes contain the thing they came for. It
+     is real text in the page, so it is searchable, translatable, and
+     readable with the video unplayed, unplayable or blocked.
+
+     THE STAGE HOLDS A SPECIMEN, NOT A FILE. A design system cannot ship a
+     recording: it is a binary nobody can diff, it is wrong in one of the two
+     themes, and it goes stale the first time the UI changes. So the frame
+     holds .ns-screencast — the product's own primitives, animated, weighing
+     nothing. In a real product this is one swap:
+
+       <div class="ns-videoband__stage">
+         <video src="/lessons/order-of-execution.mp4"
+                poster="/lessons/order-of-execution.jpg"
+                controls preload="none" playsinline></video>
+       </div>
+
+     and nothing around it changes. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between ns-anim ns-anim--rise ns-anim--onview">
+      <div>
+        <span class="ns-kicker">Watch one</span>
+        <h2 class="ns-band__title">Eleven minutes, and the code is on screen for all of them</h2>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">All 214 lessons</a>
+      </div>
+    </header>
+    <div class="ns-videoband">
+      <div class="ns-videoband__stage">
+        <div class="ns-screencast" role="img" aria-label="A lesson in progress: an Apex trigger being written line by line">
+          <div class="ns-screencast__bar" aria-hidden="true">
+            <span class="ns-screencast__tab" data-state="active">AccountTrigger.trigger</span>
+            <span class="ns-screencast__tab">AccountService.cls</span>
+            <span class="ns-screencast__tab">AccountServiceTest.cls</span>
+          </div>
+          <div class="ns-screencast__body" aria-hidden="true">
+            <span class="ns-screencast__line" style="--_i:0;--_w:72%"></span>
+            <span class="ns-screencast__line" style="--_i:1;--_w:54%"></span>
+            <span class="ns-screencast__line ns-screencast__line--hot" style="--_i:2;--_w:88%"></span>
+            <span class="ns-screencast__line" style="--_i:3;--_w:41%"></span>
+            <span class="ns-screencast__line" style="--_i:4;--_w:66%"></span>
+            <span class="ns-screencast__line" style="--_i:5;--_w:30%"></span>
+            <span class="ns-screencast__line" style="--_i:6;--_w:79%"></span>
+            <span class="ns-screencast__caret"></span>
+          </div>
+          <span class="ns-screencast__progress" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="ns-videoband__side">
+        <span class="ns-videoband__title">Recalculation is asynchronous</span>
+        <p class="ns-showcase__text">Security &amp; access &middot; lesson 4 of 12. Free, no account.</p>
+        <ol class="ns-videoband__chapters">
+          <li class="ns-videoband__chapter"><span class="ns-videoband__at">0:00</span><a href="#">What a share row actually is</a></li>
+          <li class="ns-videoband__chapter"><span class="ns-videoband__at">1:48</span><a href="#">Why access is checked against rows, not rules</a></li>
+          <li class="ns-videoband__chapter"><span class="ns-videoband__at">4:12</span><a href="#">The reparent, and what it enqueues</a></li>
+          <li class="ns-videoband__chapter"><span class="ns-videoband__at">7:30</span><a href="#">Reproducing it on purpose in a scratch org</a></li>
+          <li class="ns-videoband__chapter"><span class="ns-videoband__at">9:55</span><a href="#">Chaining the read so it cannot recur</a></li>
+        </ol>
+        <a class="ns-btn ns-btn--primary" href="#">Watch the lesson <i class="ph ph-play" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 · The open half: the training, told through its tracks. This band is
      what separates a learning site from a course shop — most of the
      curriculum is free and the homepage says so with the merchandise, not
      with a badge. -->
 <section class="ns-band ns-band--sunken">
   <div class="ns-band__inner">
-    <header class="ns-band__head ns-band__head--between">
+    <header class="ns-band__head ns-band__head--between ns-anim ns-anim--rise ns-anim--onview">
       <div>
         <span class="ns-kicker">Training · free</span>
         <h2 class="ns-band__title">150 modules of written training</h2>
@@ -306,7 +522,7 @@
         <a class="ns-btn" href="#">Browse the training</a>
       </div>
     </header>
-    <div class="ns-grid">
+    <div class="ns-grid ns-anim-stagger ns-anim-stagger--onview">
       <a class="ns-trackcard" href="#">
         <span class="ns-trackcard__head">
           <span class="ns-trackcard__icon"><i class="ph ph-cube" aria-hidden="true"></i></span>
@@ -338,10 +554,10 @@
   </div>
 </section>
 
-<!-- 07 · Concrete numbers only — a stat earns its cell by being checkable. -->
+<!-- 09 · Concrete numbers only — a stat earns its cell by being checkable. -->
 <section class="ns-band ns-band--tight">
   <div class="ns-band__inner">
-    <dl class="ns-statband">
+    <dl class="ns-statband ns-anim-stagger ns-anim-stagger--onview">
       <div class="ns-statband__cell"><dd class="ns-statband__value">12</dd><dt class="ns-statband__label">Courses</dt></div>
       <div class="ns-statband__cell"><dd class="ns-statband__value">150</dd><dt class="ns-statband__label">Training modules</dt></div>
       <div class="ns-statband__cell"><dd class="ns-statband__value">1,482</dd><dt class="ns-statband__label">Learners</dt></div>
@@ -350,75 +566,1269 @@
   </div>
 </section>
 
-<!-- 08 · The commitment, as a date. Static values here; in product the pace
-     control recomputes the date (see the Pace planner component page). -->
+<!-- 10 · The sample: stop describing the writing and show it. The only
+     quality claim a reader can check from a homepage is one they can read,
+     so this is a real lesson picked up where it gets technical — not a
+     summary of one, and not the opening paragraph. The fade is a mask, so
+     it works on any ground and in dark. -->
 <section class="ns-band">
   <div class="ns-band__inner">
-    <header class="ns-band__head">
-      <span class="ns-kicker">How long?</span>
-      <h2 class="ns-band__title">Pick a pace, get a date</h2>
-      <p class="ns-band__lede">Forty-two hours is not a number anyone can say yes to. A finish date is.</p>
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Read before you buy</span>
+      <h2 class="ns-band__title">A lesson, mid-flow</h2>
+      <p class="ns-band__lede">Not a summary of a lesson. The actual page, picked up at the part that is hard.</p>
     </header>
-    <div class="ns-pace ns-pace--inline">
-      <div>
-        <span class="ns-pace__label">Finish by</span>
-        <time class="ns-pace__date" datetime="2026-11-30">30 November 2026</time>
-        <span class="ns-pace__meta"><b>100 days at 30 min a day</b><span>42 hours · 8 modules</span></span>
-      </div>
-      <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0">
-        <legend class="ns-visually-hidden">How much time per day</legend>
-        <div class="ns-segmented">
-          <label class="ns-segmented__option"><input type="radio" name="home-pace" value="15"><span>15 min</span></label>
-          <label class="ns-segmented__option"><input type="radio" name="home-pace" value="30" checked><span>30 min</span></label>
-          <label class="ns-segmented__option"><input type="radio" name="home-pace" value="60"><span>1 hr</span></label>
+    <div class="ns-sample ns-anim ns-anim--rise ns-anim--onview">
+      <p class="ns-sample__bar">
+        <i class="ph ph-article" aria-hidden="true"></i>
+        <b>Recalculation is asynchronous</b>
+        <span>&middot; Security and access &middot; 11 min</span>
+      </p>
+      <div class="ns-sample__body">
+        <div class="ns-prose">
+          <h2>What actually happens on reparent</h2>
+          <p>Sharing in Salesforce is materialized, not computed on read: the share tables hold a row for every grant, and a query checks rows, not rules. That design is why record access is fast at scale &mdash; and it has a consequence. When you change the thing the rows were derived <em>from</em>, the platform has to rebuild them, and it does that in a queue, not in your transaction.</p>
+          <p>So the sequence on a reparent is: your DML commits; a recalculation job is enqueued behind every other recalculation in the org; until it runs, the old share rows answer every access check.</p>
         </div>
-      </fieldset>
+      </div>
+      <div class="ns-sample__foot">
+        <p class="ns-sample__note">Every lesson is written before it is filmed, so all of it is searchable.</p>
+        <a class="ns-btn ns-btn--outline" href="#">Read the whole lesson <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- 09 · Testimonials: one voice set large, then a strip read in passing.
-     The quote is the argument; the marquee is the crowd behind it. -->
+<!-- 11 · The scope: breadth at a glance. The path above shows DEPTH and the
+     order to walk it; this answers the different question a buyer actually
+     has — is the specific thing my job needs in here. Deliberately dense:
+     forty terms scanned beats six benefit statements, and a term that is
+     missing from this list is genuinely missing from the curriculum. -->
 <section class="ns-band ns-band--sunken">
   <div class="ns-band__inner">
-    <figure class="ns-quote">
-      <blockquote>I passed Platform Developer I after the Apex course — but the real win is that my triggers stopped scaring me.</blockquote>
-      <figcaption>Priya S. · Salesforce Developer · batch 2025</figcaption>
-    </figure>
-  </div>
-  <div class="ns-band__inner" style="margin-block-start:var(--space-8)">
-    <div class="ns-marquee ns-marquee--window ns-marquee--slow">
-      <div class="ns-marquee__track">
-        <span class="ns-marquee__item">&ldquo;The labs are the reason it stuck.&rdquo; <b>Ravi K.</b></span>
-        <span class="ns-marquee__item">&ldquo;Passed PD1 in nine weeks.&rdquo; <b>Anita M.</b></span>
-        <span class="ns-marquee__item">&ldquo;Short lessons, no filler, no intro music.&rdquo; <b>Dev N.</b></span>
-        <span class="ns-marquee__item">&ldquo;Explained governor limits like a budget.&rdquo; <b>Priya J.</b></span>
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">The whole terrain</span>
+      <h2 class="ns-band__title">What is actually covered</h2>
+      <p class="ns-band__lede">Every area, with the number of lessons in it. The marked terms are the ones people arrive looking for.</p>
+    </header>
+    <div class="ns-scope ns-anim-stagger ns-anim-stagger--onview">
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-cube" aria-hidden="true"></i> Data model <span class="ns-scope__count">24</span></h3>
+        <ul class="ns-scope__items">
+          <li>Standard objects</li><li>Custom objects</li><li data-key>Relationships</li><li>Record types</li>
+          <li>Field types</li><li>Formula fields</li><li data-key>Rollup summaries</li><li>Schema Builder</li>
+        </ul>
       </div>
-      <div class="ns-marquee__track" aria-hidden="true">
-        <span class="ns-marquee__item">&ldquo;The labs are the reason it stuck.&rdquo; <b>Ravi K.</b></span>
-        <span class="ns-marquee__item">&ldquo;Passed PD1 in nine weeks.&rdquo; <b>Anita M.</b></span>
-        <span class="ns-marquee__item">&ldquo;Short lessons, no filler, no intro music.&rdquo; <b>Dev N.</b></span>
-        <span class="ns-marquee__item">&ldquo;Explained governor limits like a budget.&rdquo; <b>Priya J.</b></span>
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-shield-check" aria-hidden="true"></i> Security <span class="ns-scope__count">31</span></h3>
+        <ul class="ns-scope__items">
+          <li>Profiles</li><li>Permission sets</li><li data-key>Sharing rules</li><li>Role hierarchy</li>
+          <li data-key>Implicit sharing</li><li>OWD</li><li>Field-level security</li><li>Shield</li>
+        </ul>
+      </div>
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-flow-arrow" aria-hidden="true"></i> Automation <span class="ns-scope__count">27</span></h3>
+        <ul class="ns-scope__items">
+          <li data-key>Record-triggered flows</li><li>Screen flows</li><li>Scheduled paths</li><li>Approval processes</li>
+          <li>Entry criteria</li><li data-key>Order of execution</li><li>Platform events</li>
+        </ul>
+      </div>
+      <div class="ns-scope__group">
+        <h3 class="ns-scope__area"><i class="ph ph-code" aria-hidden="true"></i> Apex &amp; APIs <span class="ns-scope__count">46</span></h3>
+        <ul class="ns-scope__items">
+          <li data-key>Governor limits</li><li>Triggers</li><li>Queueable</li><li>Batch Apex</li>
+          <li>Test classes</li><li data-key>Bulk API</li><li>REST</li><li>Composite requests</li>
+        </ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 10 · The last three objections, as native details rows. -->
+<!-- 12 · Before / after: what changes about the READER, which is the only
+     outcome claim a curriculum can honestly make. The two panels are
+     deliberately not peers — the left is a state to leave, the right is
+     where the training puts you — so styling them identically would be a
+     layout arguing the opposite of the copy. -->
 <section class="ns-band">
   <div class="ns-band__inner">
-    <header class="ns-band__head ns-band__head--center">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">What changes</span>
+      <h2 class="ns-band__title">The same problem, eight weeks apart</h2>
+    </header>
+    <div class="ns-compare ns-anim-stagger ns-anim-stagger--onview">
+      <div class="ns-compare__side ns-compare__side--before">
+        <span class="ns-compare__label"><i class="ph ph-warning-circle" aria-hidden="true"></i> Before</span>
+        <p class="ns-compare__text">&ldquo;Sharing is broken.&rdquo; You reproduce it once, cannot reproduce it again, and the fix is a manual share that quietly becomes permanent. The incident report says <em>intermittent</em>.</p>
+      </div>
+      <span class="ns-compare__seam" aria-hidden="true"><i class="ph ph-arrow-right"></i></span>
+      <div class="ns-compare__side ns-compare__side--after">
+        <span class="ns-compare__label"><i class="ph ph-check-circle" aria-hidden="true"></i> After</span>
+        <p class="ns-compare__text">&ldquo;Recalculation is asynchronous, the reparent queued behind a migration, and the report ran inside the window.&rdquo; You name it, you chain the read, and it does not recur.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · Membership: what it costs and what the money buys, as three
+     columns rather than a paragraph. This band replaced a two-column
+     .ns-tiers free-vs-Pro argument, which asked the same question one step
+     more vaguely — two price bands on one page is one price band and a
+     rehearsal of it.
+
+     The free column carries no ornament at all: if it needed a badge to look
+     like a real offer, it would not be one. Only Pro takes the leading-edge
+     accent, because exactly one column can be "this one", and it is a border
+     rather than a fill or a scale-up so it survives forced colours.
+
+     NO BILLING SWITCH HERE, on purpose. .ns-plans ships a monthly/yearly
+     segmented control and it belongs on the pricing page, where flipping it
+     recomputes the prices. Nothing on this page recomputes anything, and a
+     control that moves a dot and changes no number is the same dead
+     affordance the pace band was cut for. The yearly saving is stated as a
+     NUMBER in .ns-plan__save instead — "£22 off when billed yearly" is
+     something a reader can evaluate; "save up to 20%" applied to a figure
+     they have not seen yet is not. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Membership</span>
+      <h2 class="ns-band__title">Most of it is free. Here is the rest.</h2>
+      <p class="ns-band__lede">No trial to forget to cancel and no card to start. The free half is the whole free half, permanently &mdash; membership buys the part that took longest to write.</p>
+    </header>
+    <div class="ns-plans">
+      <div class="ns-plans__grid ns-anim-stagger ns-anim-stagger--onview">
+        <div class="ns-plan">
+          <span class="ns-plan__name">Free</span>
+          <span class="ns-plan__price">&pound;0<span class="ns-plan__period">/ forever</span></span>
+          <p class="ns-plan__text">The written training and the weekly post. No account, no email, no meter.</p>
+          <ul class="ns-plan__list">
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>120 of the 150 training modules, in full</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>The first section of every course</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Every code sample and lab file</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Search across all 900 posts</span></li>
+          </ul>
+          <div class="ns-plan__foot"><a class="ns-btn" href="#">Start reading</a></div>
+        </div>
+        <div class="ns-plan ns-plan--featured">
+          <span class="ns-plan__name"><i class="ph ph-crown-simple" aria-hidden="true"></i>Pro</span>
+          <span class="ns-plan__price">&pound;9<span class="ns-plan__period">/ month</span></span>
+          <span class="ns-plan__save">&pound;22 off when billed yearly</span>
+          <p class="ns-plan__text">All twelve courses end to end, plus the two tracks that assume you already ship.</p>
+          <ul class="ns-plan__list">
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Everything in Free</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>All 12 courses, every section</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>The 30 architecture and AI modules</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Certification practice sets, marked</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>A downloadable org for every lab</span></li>
+          </ul>
+          <div class="ns-plan__foot"><a class="ns-btn ns-btn--primary" href="#">Go Pro</a></div>
+        </div>
+        <div class="ns-plan">
+          <span class="ns-plan__name">Team</span>
+          <span class="ns-plan__price">&pound;79<span class="ns-plan__period">/ month</span></span>
+          <span class="ns-plan__save">Ten seats &mdash; &pound;7.90 each</span>
+          <p class="ns-plan__text">For an admin team onboarding together, on one invoice.</p>
+          <ul class="ns-plan__list">
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Everything in Pro, ten seats</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Shared progress and a completion report</span></li>
+            <li><i class="ph ph-check-circle" aria-hidden="true"></i><span>Seat management, one invoice</span></li>
+          </ul>
+          <div class="ns-plan__foot"><a class="ns-btn" href="#">Talk to us</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · About the author. Visual first, and short.
+
+     The first version of this told the whole story in six log lines of
+     forty words each, which is a bio wearing a costume — the reader still
+     had to read three hundred words to find out who this is. Cut to four
+     log lines of one clause each, three numbers set large, a portrait and a
+     signature. The device survives; the essay does not.
+
+     The mono is correct here, which is worth saying in a week spent moving
+     words OUT of the label voice: a timestamp is a value and a log level is
+     a value. The clause beside them is prose and is set as prose. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--center ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">About the author</span>
+      <h2 class="ns-band__title">Eleven years, one stack trace at a time</h2>
+    </header>
+    <div class="ns-story">
+      <div class="ns-story__log ns-anim ns-anim--rise ns-anim--onview">
+        <div class="ns-story__line" style="--_i:0">
+          <span class="ns-story__at">2015</span>
+          <span class="ns-story__level">USER_DEBUG</span>
+          <p class="ns-story__says">First org, created to escape a spreadsheet.</p>
+        </div>
+        <div class="ns-story__line" style="--_i:1">
+          <span class="ns-story__at">2016</span>
+          <span class="ns-story__level">CODE_UNIT_STARTED</span>
+          <p class="ns-story__says">First trigger in production. No tests worth the name.</p>
+        </div>
+        <div class="ns-story__line ns-story__line--fatal" style="--_i:2">
+          <span class="ns-story__at">2018</span>
+          <span class="ns-story__level">FATAL_ERROR</span>
+          <p class="ns-story__says"><b>Too many SOQL queries: 101.</b> Midnight, a data load, a client on the phone.</p>
+        </div>
+        <div class="ns-story__line ns-story__line--ok" style="--_i:3">
+          <span class="ns-story__at">Now</span>
+          <span class="ns-story__level">SUCCESS</span>
+          <p class="ns-story__says">Writing the lesson I needed that night, and the 149 around it.</p>
+        </div>
+      </div>
+
+      <dl class="ns-statband ns-anim-stagger ns-anim-stagger--onview">
+        <div class="ns-statband__cell"><dd class="ns-statband__value">11</dd><dt class="ns-statband__label">Years on the platform</dt></div>
+        <div class="ns-statband__cell"><dd class="ns-statband__value">11&times;</dd><dt class="ns-statband__label">Certified</dt></div>
+        <div class="ns-statband__cell"><dd class="ns-statband__value">24,100</dd><dt class="ns-statband__label">Learners taught</dt></div>
+        <div class="ns-statband__cell"><dd class="ns-statband__value">150</dd><dt class="ns-statband__label">Modules written</dt></div>
+      </dl>
+
+      <div class="ns-story__resolve ns-anim ns-anim--rise ns-anim--onview">
+        <img class="ns-story__portrait" src="../assets/logo/favicon.svg" alt="">
+        <div class="ns-story__prose">
+          <p>The platform is not hard. It is <b>explicable</b>, and almost nobody explains it &mdash; so every lesson here is the one I wanted at 23:17 on a Thursday.</p>
+          <div class="ns-story__sign">
+            <!-- Signed, not stamped. The path draws itself over --duration-draw:
+                 a signature that fades in is a picture of a signature, one that
+                 draws is somebody signing. pathLength normalises the dash so
+                 stroke length does not change the timing.
+
+                 THIS IS A DRAWN SCRAWL, NOT ANYBODY'S REAL SIGNATURE, and it
+                 should stay that way unless the person whose name is under it
+                 asks otherwise — a real signature is a specimen of somebody's
+                 handwriting published on a public page. Delete the <svg> if it
+                 is not wanted; the name line below carries the attribution. -->
+            <svg class="ns-sig" viewBox="0 0 260 64" role="img" aria-label="Signed, Swarnil Singhai">
+              <path pathLength="100" d="M10 46c9-20 17-32 23-36 5-3 8 0 6 6-3 9-10 20-15 28-3 5-2 8 1 8 5 0 11-7 16-15 5-9 9-15 12-15 3 0 3 4 1 10-3 7-6 12-4 13 3 1 8-5 13-13 5-9 9-14 12-14 3 0 3 4 0 10-3 7-6 12-3 13 3 1 8-5 13-13"/>
+              <path pathLength="100" d="M92 22c-1 12-3 20-2 24 1 3 4 2 7-3 5-7 9-16 12-16 2 0 2 4 0 10-2 6-4 10-2 11 3 1 8-5 13-14 4-8 7-12 10-12 3 0 3 4 1 10-3 7-5 11-3 12 3 1 7-3 11-9"/>
+              <path pathLength="100" d="M152 20c9-2 16 0 18 5 2 6-4 11-11 14-8 3-14 6-13 11 1 5 9 7 18 4 8-2 14-6 18-11"/>
+              <path pathLength="100" d="M206 42c14-6 26-9 40-7"/>
+            </svg>
+            <span class="ns-story__who">Swarnil Singhai &middot; Salesforce Architect, and the person who broke it first</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 · Who is teaching, as profile cards.
+
+     This was .ns-maker, which leads with a first-person sentence. That is a
+     good TESTIMONIAL shape and a poor PROFILE shape: a reader asking who is
+     teaching them had to read a paragraph before reaching a name. A profile
+     answers the identity question in the first glance — cover, face, name,
+     title, fields — and puts the voice underneath where it belongs.
+
+     The avatar overlapping the cover is the only element in the card allowed
+     to break a boundary, which is exactly what makes it the first thing the
+     eye lands on. The cover is the brand's own console ground rather than a
+     photograph: a cover image at this size is forty pixels of an
+     unrecognisable picture, and every profile ends up wearing the same
+     stock gradient. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Who wrote it</span>
+      <h2 class="ns-band__title">Two people, and they still answer the email</h2>
+    </header>
+    <div class="ns-profiles ns-anim-stagger ns-anim-stagger--onview">
+      <article class="ns-profile">
+        <div class="ns-profile__cover" aria-hidden="true"></div>
+        <div class="ns-profile__body">
+          <img class="ns-profile__avatar" src="../assets/logo/favicon.svg" alt="">
+          <div class="ns-profile__ident">
+            <span class="ns-profile__name">Swarnil Singhai</span>
+            <span class="ns-profile__role">Salesforce Architect &middot; 11&times; certified</span>
+          </div>
+          <div class="ns-profile__fields">
+            <div class="ns-profile__field"><span class="ns-profile__value">9</span><span class="ns-profile__label">Courses</span></div>
+            <div class="ns-profile__field"><span class="ns-profile__value">24,100</span><span class="ns-profile__label">Learners</span></div>
+            <div class="ns-profile__field"><span class="ns-profile__value">11</span><span class="ns-profile__label">Years</span></div>
+          </div>
+          <p class="ns-profile__says">Eleven years cleaning up other people&rsquo;s triggers. That list became the Apex course.</p>
+          <div class="ns-profile__foot">
+            <a class="ns-btn ns-btn--sm" href="#">Courses</a>
+            <a class="ns-btn ns-btn--sm ns-btn--quiet" href="#">Email</a>
+          </div>
+        </div>
+      </article>
+      <article class="ns-profile">
+        <div class="ns-profile__cover" aria-hidden="true"></div>
+        <div class="ns-profile__body">
+          <img class="ns-profile__avatar" src="../assets/logo/favicon.svg" alt="">
+          <div class="ns-profile__ident">
+            <span class="ns-profile__name">Priya Raman</span>
+            <span class="ns-profile__role">Flows &amp; automation</span>
+          </div>
+          <div class="ns-profile__fields">
+            <div class="ns-profile__field"><span class="ns-profile__value">4</span><span class="ns-profile__label">Courses</span></div>
+            <div class="ns-profile__field"><span class="ns-profile__value">9,300</span><span class="ns-profile__label">Learners</span></div>
+            <div class="ns-profile__field"><span class="ns-profile__value">7</span><span class="ns-profile__label">Years</span></div>
+          </div>
+          <p class="ns-profile__says">Ran platform ops for a 4,000-seat org. The order-of-execution lesson came out of one bad weekend.</p>
+          <div class="ns-profile__foot">
+            <a class="ns-btn ns-btn--sm" href="#">Courses</a>
+            <a class="ns-btn ns-btn--sm ns-btn--quiet" href="#">Email</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · Testimonials, as a crowd rather than a table.
+
+     One voice set large is .ns-quote and it is still here at the top, doing
+     what it is for: the single earned quotation a page is built around. What
+     follows it is a different job — showing that there are MANY, which a
+     grid cannot do because a grid has a visible end and a crowd does not.
+
+     Two loops, on two axes, set back in space. The tilt is on a wrapper and
+     never on the animating track: a rotation on the track composes with the
+     translate the loop is driving, so the card nearest the camera changes as
+     it moves and the whole strip appears to swing. Rotating a parent leaves
+     the loop translating inside a plane that is already tilted, which is
+     what "set back" actually means.
+
+     Shallow on purpose — nine degrees, 600px of perspective. Past that the
+     far edge is unreadable, and a testimonial nobody can read is decoration
+     with somebody's name on it. Both loops pause on hover and focus, and the
+     tilt flattens under prefers-reduced-motion. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner ns-anim ns-anim--rise ns-anim--onview">
+    <figure class="ns-quote">
+      <blockquote>I passed Platform Developer I after the Apex course &mdash; but the real win is that my triggers stopped scaring me.</blockquote>
+      <figcaption>Priya S. &middot; Salesforce Developer &middot; batch 2025</figcaption>
+    </figure>
+  </div>
+  <div class="ns-band__inner" style="margin-block-start:var(--space-10)">
+    <!-- THREE ROWS, ALTERNATING DIRECTION, THREE DIFFERENT SPEEDS.
+
+         The alternation is what turns a strip into a crowd. Three rows all
+         travelling the same way at the same rate is one sheet sliding —
+         the eye locks onto it, tracks it, and stops reading. Opposing the
+         middle row breaks that lock, and giving each row its own speed (70s,
+         52s, 88s) means the three never return to the same relative position,
+         so there is no repeating frame for the eye to latch onto.
+
+         The speeds are set per row as --ns-marquee-speed rather than as new
+         modifiers: a marquee's speed is a distance-per-second chosen for the
+         content in it, not a step on a scale, and three named speeds would
+         be three names nobody can order.
+
+         All three pause on hover and focus-within, and stop dead under
+         prefers-reduced-motion via the global guard. -->
+    <div class="ns-marquee-deck">
+      <div class="ns-marquee-deck__tilt" style="display:grid;gap:var(--space-5)">
+        <div class="ns-marquee ns-marquee--window">
+          <div class="ns-marquee__track">
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The labs are the reason it stuck. I broke the trigger on purpose and then I understood it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Ravi K.</b><span class="ns-bubble__meta">Salesforce Admin &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Passed PD1 in nine weeks, and the certificate was the side effect rather than the goal.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Anita M.</b><span class="ns-bubble__meta">Developer &middot; Northwind</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Short lessons, no filler, no intro music. I watched four in a lunch break.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Dev N.</b><span class="ns-bubble__meta">Consultant</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Explained governor limits like a budget. Eight years in and nobody had put it that way.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya J.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The labs are the reason it stuck. I broke the trigger on purpose and then I understood it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Ravi K.</b><span class="ns-bubble__meta">Salesforce Admin &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Passed PD1 in nine weeks, and the certificate was the side effect rather than the goal.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Anita M.</b><span class="ns-bubble__meta">Developer &middot; Northwind</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Short lessons, no filler, no intro music. I watched four in a lunch break.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Dev N.</b><span class="ns-bubble__meta">Consultant</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Explained governor limits like a budget. Eight years in and nobody had put it that way.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya J.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          </div>
+          <div class="ns-marquee__track" aria-hidden="true">
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The labs are the reason it stuck. I broke the trigger on purpose and then I understood it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Ravi K.</b><span class="ns-bubble__meta">Salesforce Admin &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Passed PD1 in nine weeks, and the certificate was the side effect rather than the goal.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Anita M.</b><span class="ns-bubble__meta">Developer &middot; Northwind</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Short lessons, no filler, no intro music. I watched four in a lunch break.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Dev N.</b><span class="ns-bubble__meta">Consultant</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Explained governor limits like a budget. Eight years in and nobody had put it that way.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya J.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The labs are the reason it stuck. I broke the trigger on purpose and then I understood it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Ravi K.</b><span class="ns-bubble__meta">Salesforce Admin &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Passed PD1 in nine weeks, and the certificate was the side effect rather than the goal.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Anita M.</b><span class="ns-bubble__meta">Developer &middot; Northwind</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Short lessons, no filler, no intro music. I watched four in a lunch break.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Dev N.</b><span class="ns-bubble__meta">Consultant</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Explained governor limits like a budget. Eight years in and nobody had put it that way.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya J.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          </div>
+        </div>
+        <div class="ns-marquee ns-marquee--window ns-marquee--reverse" style="--ns-marquee-speed:52s">
+          <div class="ns-marquee__track">
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The order-of-execution walkthrough alone was worth the year.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Sam O.</b><span class="ns-bubble__meta">Platform Owner</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">I stopped guessing at sharing. That is the whole review, honestly.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Meera T.</b><span class="ns-bubble__meta">Admin &middot; Globex</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">My triggers stopped scaring me, which I did not expect from a course.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya S.</b><span class="ns-bubble__meta">Developer &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The written version means I can search it at 2am.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Tom A.</b><span class="ns-bubble__meta">Architect</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The order-of-execution walkthrough alone was worth the year.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Sam O.</b><span class="ns-bubble__meta">Platform Owner</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">I stopped guessing at sharing. That is the whole review, honestly.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Meera T.</b><span class="ns-bubble__meta">Admin &middot; Globex</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">My triggers stopped scaring me, which I did not expect from a course.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya S.</b><span class="ns-bubble__meta">Developer &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The written version means I can search it at 2am.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Tom A.</b><span class="ns-bubble__meta">Architect</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          </div>
+          <div class="ns-marquee__track" aria-hidden="true">
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The order-of-execution walkthrough alone was worth the year.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Sam O.</b><span class="ns-bubble__meta">Platform Owner</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">I stopped guessing at sharing. That is the whole review, honestly.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Meera T.</b><span class="ns-bubble__meta">Admin &middot; Globex</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">My triggers stopped scaring me, which I did not expect from a course.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya S.</b><span class="ns-bubble__meta">Developer &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The written version means I can search it at 2am.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Tom A.</b><span class="ns-bubble__meta">Architect</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The order-of-execution walkthrough alone was worth the year.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Sam O.</b><span class="ns-bubble__meta">Platform Owner</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">I stopped guessing at sharing. That is the whole review, honestly.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Meera T.</b><span class="ns-bubble__meta">Admin &middot; Globex</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">My triggers stopped scaring me, which I did not expect from a course.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Priya S.</b><span class="ns-bubble__meta">Developer &middot; batch 2025</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">The written version means I can search it at 2am.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Tom A.</b><span class="ns-bubble__meta">Architect</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          </div>
+        </div>
+        <div class="ns-marquee ns-marquee--window" style="--ns-marquee-speed:88s">
+          <div class="ns-marquee__track">
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Nine minutes a day for a hundred days. That was the whole commitment.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Jai R.</b><span class="ns-bubble__meta">Admin &middot; Initech</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">First course where the lab failed on purpose. I have never forgotten why.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Lena F.</b><span class="ns-bubble__meta">Developer</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">It told me which parts NOT to buy. That is when I bought it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Karan D.</b><span class="ns-bubble__meta">Consultant &middot; Contoso</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Went from scared of Apex to reviewing other people&rsquo;s.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Nisha B.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Nine minutes a day for a hundred days. That was the whole commitment.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Jai R.</b><span class="ns-bubble__meta">Admin &middot; Initech</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">First course where the lab failed on purpose. I have never forgotten why.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Lena F.</b><span class="ns-bubble__meta">Developer</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">It told me which parts NOT to buy. That is when I bought it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Karan D.</b><span class="ns-bubble__meta">Consultant &middot; Contoso</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Went from scared of Apex to reviewing other people&rsquo;s.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Nisha B.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          </div>
+          <div class="ns-marquee__track" aria-hidden="true">
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Nine minutes a day for a hundred days. That was the whole commitment.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Jai R.</b><span class="ns-bubble__meta">Admin &middot; Initech</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">First course where the lab failed on purpose. I have never forgotten why.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Lena F.</b><span class="ns-bubble__meta">Developer</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">It told me which parts NOT to buy. That is when I bought it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Karan D.</b><span class="ns-bubble__meta">Consultant &middot; Contoso</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Went from scared of Apex to reviewing other people&rsquo;s.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Nisha B.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Nine minutes a day for a hundred days. That was the whole commitment.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Jai R.</b><span class="ns-bubble__meta">Admin &middot; Initech</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">First course where the lab failed on purpose. I have never forgotten why.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Lena F.</b><span class="ns-bubble__meta">Developer</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">It told me which parts NOT to buy. That is when I bought it.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Karan D.</b><span class="ns-bubble__meta">Consultant &middot; Contoso</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="ns-marquee__item ns-marquee__item--card" aria-hidden="true">
+            <figure class="ns-bubble">
+              <blockquote class="ns-bubble__say">Went from scared of Apex to reviewing other people&rsquo;s.</blockquote>
+              <figcaption class="ns-bubble__who">
+                <img class="ns-bubble__avatar" src="../assets/logo/favicon.svg" alt="">
+                <span><b class="ns-bubble__name">Nisha B.</b><span class="ns-bubble__meta">Technical Lead</span></span>
+              </figcaption>
+            </figure>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 · The photo band: a picture held still while the words move over it.
+
+     THE PARALLAX IS `position: sticky` AND NOTHING ELSE. The media pins for
+     the height of the band and the beats scroll past it, which is the depth
+     cue a parallax band is after, produced entirely by layout: no scroll
+     listener, no observer, no view() timeline, correct on iOS — where
+     `background-attachment: fixed` is silently ignored — and impossible to
+     desynchronise from the thing it is pinned to. It needs one thing to be
+     true, and .ns-band--dark's switch from `overflow: hidden` to
+     `overflow: clip` is what makes it true elsewhere on this page: no
+     ancestor may be a scroll container.
+
+     THE PICTURES ARE MISSING AND THE PAGE SAYS SO.
+     ------------------------------------------------------------------------
+     Every other empty slot in this system takes a glyph cover, because an
+     icon is a finished answer for a course or a post. This band is the one
+     place where that is wrong. It wants a PHOTOGRAPH — a face, a desk, a
+     room, the actual thing — and there is no honest illustration of a person
+     who has not been photographed. So the slots carry .ns-ph with a
+     data-ph label, which is deliberately embarrassing: it should look
+     unfinished until somebody supplies the picture, and it should not be
+     possible to ship it looking finished.
+
+     Replace each one with the <img> the markup is shaped for:
+
+       <img src="/photos/cohort-2026.jpg" alt="…" loading="lazy"
+            width="900" height="1200">
+
+     Do not substitute stock photography of strangers at laptops. A learning
+     site's photo band is a claim about who is actually here, and a stock
+     photo makes that claim falsely. -->
+<section class="ns-band ns-photoband ns-band--sunken">
+  <div class="ns-photoband__inner">
+    <div class="ns-photoband__media">
+      <figure class="ns-photoband__frame">
+        <span class="ns-ph" data-ph="Photograph" aria-hidden="true"></span>
+        <figcaption class="ns-photoband__cap">Nikhil, six weeks in &mdash; the org he broke on purpose</figcaption>
+      </figure>
+    </div>
+    <div class="ns-photoband__copy">
+      <div class="ns-photoband__beat ns-anim ns-anim--rise ns-anim--onview">
+        <span class="ns-photoband__when">Week 1</span>
+        <h2 class="ns-photoband__what">You create the org before you read anything</h2>
+        <p class="ns-photoband__says">Lesson one is not a lecture on what a CRM is. It is a signup form, a Developer Edition org that is yours forever, and an object you build in the first nine minutes.</p>
+      </div>
+      <div class="ns-photoband__beat ns-anim ns-anim--rise ns-anim--onview">
+        <span class="ns-photoband__when">Week 6</span>
+        <h2 class="ns-photoband__what">You break it on purpose, then fix it</h2>
+        <p class="ns-photoband__says">Every section ends in a lab that fails first. The trigger blows the query limit at 201 records, you watch it happen in the debug log, and then you make it stop.</p>
+      </div>
+      <div class="ns-photoband__beat ns-anim ns-anim--rise ns-anim--onview">
+        <span class="ns-photoband__when">Week 14</span>
+        <h2 class="ns-photoband__what">You can defend the design in a review</h2>
+        <p class="ns-photoband__says">Not &ldquo;this is how I did it&rdquo; but &ldquo;this is what it costs at forty million rows, and here is the query plan&rdquo;. That sentence is the whole point of the roadmap.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 18 · The lesson shelf: six videos, scrolling sideways, WITH THE
+     SCROLLBAR SHOWING.
+
+     The visible scrollbar is the whole accessibility argument and it is not
+     an aesthetic compromise. A horizontal shelf with a hidden scrollbar is
+     content most people never find: no affordance on a trackpad, no target
+     for a mouse, and nothing for a keyboard until something inside it takes
+     focus. Every elegant hidden-scrollbar carousel is a decision to hide
+     content from the people least able to discover it. So the scrollbar is
+     styled and present, and scroll-snap makes a partial card at the edge
+     land square instead of half-cut.
+
+     FACADES, NOT IFRAMES. Each card is a link to YouTube rather than an
+     embedded player. Three reasons, and only the first is about speed: an
+     embed pulls about a megabyte and sets third-party cookies before anybody
+     presses play; six embeds do it six times; and a design-system template
+     that ships a tracker inside it makes that choice on behalf of every
+     product that pastes the markup. Swapping a facade for a real iframe on
+     click is a dozen lines in the consuming app, which is where the decision
+     belongs.
+
+     The thumbnails are glyph covers rather than YouTube's own poster images,
+     for the same reason: i.ytimg.com is a third-party request per card. A
+     product with its own posters uses <img> here. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between ns-anim ns-anim--rise ns-anim--onview">
+      <div>
+        <span class="ns-kicker">On video</span>
+        <h2 class="ns-band__title">Six lessons, free, no account</h2>
+        <p class="ns-band__lede">Scroll sideways &mdash; there are 214 more where these came from.</p>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">The channel <i class="ph ph-arrow-up-right" aria-hidden="true"></i></a>
+      </div>
+    </header>
+    <div class="ns-ytstrip">
+        <a class="ns-ytcard" href="https://www.youtube.com/watch?v=M7lc1UVf-VE" target="_blank" rel="noopener">
+          <span class="ns-ytcard__frame">
+            <!-- The numeral precedes the thumb so paint order tucks its top
+                 half behind the picture — no z-index involved. -->
+            <span class="ns-ytcard__num" aria-hidden="true">01</span>
+            <span class="ns-ytcard__thumb">
+              <span class="ns-ytcard__glyph" aria-hidden="true"><i class="ph ph-shield-check"></i></span>
+              <span class="ns-ytcard__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-ytcard__dur">11:04</span>
+            </span>
+          </span>
+          <span class="ns-ytcard__body">
+            <span class="ns-ytcard__title">Recalculation is asynchronous</span>
+            <span class="ns-ytcard__meta">Security &amp; access &middot; free</span>
+          </span>
+        </a>
+        <a class="ns-ytcard" href="https://www.youtube.com/watch?v=M7lc1UVf-VE" target="_blank" rel="noopener">
+          <span class="ns-ytcard__frame">
+            <!-- The numeral precedes the thumb so paint order tucks its top
+                 half behind the picture — no z-index involved. -->
+            <span class="ns-ytcard__num" aria-hidden="true">02</span>
+            <span class="ns-ytcard__thumb">
+              <span class="ns-ytcard__glyph" aria-hidden="true"><i class="ph ph-lightning"></i></span>
+              <span class="ns-ytcard__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-ytcard__dur">08:12</span>
+            </span>
+          </span>
+          <span class="ns-ytcard__body">
+            <span class="ns-ytcard__title">Why your trigger fails at 201 records</span>
+            <span class="ns-ytcard__meta">Apex &middot; free</span>
+          </span>
+        </a>
+        <a class="ns-ytcard" href="https://www.youtube.com/watch?v=M7lc1UVf-VE" target="_blank" rel="noopener">
+          <span class="ns-ytcard__frame">
+            <!-- The numeral precedes the thumb so paint order tucks its top
+                 half behind the picture — no z-index involved. -->
+            <span class="ns-ytcard__num" aria-hidden="true">03</span>
+            <span class="ns-ytcard__thumb">
+              <span class="ns-ytcard__glyph" aria-hidden="true"><i class="ph ph-flow-arrow"></i></span>
+              <span class="ns-ytcard__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-ytcard__dur">14:37</span>
+            </span>
+          </span>
+          <span class="ns-ytcard__body">
+            <span class="ns-ytcard__title">Order of execution, start to finish</span>
+            <span class="ns-ytcard__meta">Automation &middot; free</span>
+          </span>
+        </a>
+        <a class="ns-ytcard" href="https://www.youtube.com/watch?v=M7lc1UVf-VE" target="_blank" rel="noopener">
+          <span class="ns-ytcard__frame">
+            <!-- The numeral precedes the thumb so paint order tucks its top
+                 half behind the picture — no z-index involved. -->
+            <span class="ns-ytcard__num" aria-hidden="true">04</span>
+            <span class="ns-ytcard__thumb">
+              <span class="ns-ytcard__glyph" aria-hidden="true"><i class="ph ph-magnifying-glass"></i></span>
+              <span class="ns-ytcard__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-ytcard__dur">09:55</span>
+            </span>
+          </span>
+          <span class="ns-ytcard__body">
+            <span class="ns-ytcard__title">What the query planner actually does</span>
+            <span class="ns-ytcard__meta">SOQL &middot; Pro</span>
+          </span>
+        </a>
+        <a class="ns-ytcard" href="https://www.youtube.com/watch?v=M7lc1UVf-VE" target="_blank" rel="noopener">
+          <span class="ns-ytcard__frame">
+            <!-- The numeral precedes the thumb so paint order tucks its top
+                 half behind the picture — no z-index involved. -->
+            <span class="ns-ytcard__num" aria-hidden="true">05</span>
+            <span class="ns-ytcard__thumb">
+              <span class="ns-ytcard__glyph" aria-hidden="true"><i class="ph ph-cube"></i></span>
+              <span class="ns-ytcard__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-ytcard__dur">06:48</span>
+            </span>
+          </span>
+          <span class="ns-ytcard__body">
+            <span class="ns-ytcard__title">Rollup summaries and where they recalculate</span>
+            <span class="ns-ytcard__meta">Data model &middot; free</span>
+          </span>
+        </a>
+        <a class="ns-ytcard" href="https://www.youtube.com/watch?v=M7lc1UVf-VE" target="_blank" rel="noopener">
+          <span class="ns-ytcard__frame">
+            <!-- The numeral precedes the thumb so paint order tucks its top
+                 half behind the picture — no z-index involved. -->
+            <span class="ns-ytcard__num" aria-hidden="true">06</span>
+            <span class="ns-ytcard__thumb">
+              <span class="ns-ytcard__glyph" aria-hidden="true"><i class="ph ph-code"></i></span>
+              <span class="ns-ytcard__play" aria-hidden="true"><i class="ph ph-play-circle"></i></span>
+              <span class="ns-ytcard__dur">12:20</span>
+            </span>
+          </span>
+          <span class="ns-ytcard__body">
+            <span class="ns-ytcard__title">Bulkification as a habit, not a rule</span>
+            <span class="ns-ytcard__meta">Apex &middot; Pro</span>
+          </span>
+        </a>
+    </div>
+  </div>
+</section>
+
+<!-- 19 · Latest writing. The blog answers a question the curriculum
+     cannot: what does a normal week here look like. Glyph covers rather
+     than .ns-ph — three posts under three identical placeholder slashes
+     read as three copies of the same post. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--between ns-anim ns-anim--rise ns-anim--onview">
+      <div>
+        <span class="ns-kicker">Writing</span>
+        <h2 class="ns-band__title">Notes from the platform</h2>
+      </div>
+      <div class="ns-band__actions">
+        <a class="ns-btn" href="#">Read the blog</a>
+      </div>
+    </header>
+    <div class="ns-grid ns-anim-stagger ns-anim-stagger--onview">
+      <article class="ns-card ns-bcard ns-parallax-frame">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-lightning"></i></span>
+          <span class="ns-tag ns-bcard__cat">Apex</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Why your trigger fails at 201 records</h3></a>
+          <p class="ns-bcard__excerpt">Governor limits are per transaction, not per record &mdash; and the fix is a pattern, not a setting.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-08-04">4 Aug 2026</time></span><span>6 min read</span></div>
+        </div>
+      </article>
+      <article class="ns-card ns-bcard ns-parallax-frame">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-magnifying-glass"></i></span>
+          <span class="ns-tag ns-bcard__cat">SOQL</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">What the query planner actually does</h3></a>
+          <p class="ns-bcard__excerpt">Selectivity, indexes, and why your report times out at 50,000 rows.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-07-14">14 Jul 2026</time></span><span>9 min read</span></div>
+        </div>
+      </article>
+      <article class="ns-card ns-bcard ns-parallax-frame">
+        <span class="ns-bcard__cover">
+          <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-blueprint"></i></span>
+          <span class="ns-tag ns-bcard__cat">Architecture</span>
+        </span>
+        <div class="ns-card__body">
+          <a class="ns-card__link" href="#"><h3 class="ns-bcard__title">The data model is the product</h3></a>
+          <p class="ns-bcard__excerpt">Every automation problem I have been called in to fix was a schema problem wearing a costume.</p>
+          <div class="ns-postmeta"><span><time datetime="2026-06-30">30 Jun 2026</time></span><span>12 min read</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- 20 · Shipped recently: the one band that gets WORSE if nobody
+     maintains it, which is exactly what makes it credible. A dead curriculum
+     and a living one look identical on a homepage.
+
+     Drawn as a real timeline rather than a table of rows. .ns-shipped is a
+     LIST of changes — four independent facts that happen to be sorted — and
+     it reads as one, which is a shame when the whole argument of the band is
+     that they are consecutive: the work did not stop between July and
+     August. A timeline says that with its spine and its dots, in the same
+     geometry the training rail and the account activity feed already use.
+
+     --icons because the KIND of change is what is being scanned. The newest
+     entry takes data-state="current": the spine is a thing still being
+     extended, and the top dot is where it is being extended from.
+
+     If this is ever three months stale, delete the band rather than
+     back-date it. -->
+<section class="ns-band ns-band--tight ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Still being written</span>
+      <h2 class="ns-band__title">Shipped recently</h2>
+      <p class="ns-band__lede">The last four changes to the curriculum, newest first. This band is deliberately easy to catch out.</p>
+    </header>
+    <ol class="ns-timeline ns-timeline--icons ns-anim-stagger ns-anim-stagger--onview">
+      <li class="ns-timeline__item" data-state="current">
+        <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-plus"></i></span>
+        <span class="ns-timeline__time"><time datetime="2026-08-18">18 Aug 2026</time> &middot; New</span>
+        <div class="ns-timeline__title">Six lessons on record-triggered flows</div>
+        <p class="ns-timeline__text">Including the order-of-execution walkthrough people kept asking for, with a trigger and a flow firing against the same record.</p>
+      </li>
+      <li class="ns-timeline__item" data-state="done">
+        <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-arrows-clockwise"></i></span>
+        <span class="ns-timeline__time"><time datetime="2026-08-11">11 Aug 2026</time> &middot; Updated</span>
+        <div class="ns-timeline__title">Sharing and access, rewritten for Summer &rsquo;26</div>
+        <p class="ns-timeline__text">Implicit sharing behaviour changed on reparent. Four lessons and two labs were wrong the day the release notes landed; they are not now.</p>
+      </li>
+      <li class="ns-timeline__item" data-state="done">
+        <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-flask"></i></span>
+        <span class="ns-timeline__time"><time datetime="2026-07-29">29 Jul 2026</time> &middot; Lab</span>
+        <div class="ns-timeline__title">Build a sharing rule, end to end</div>
+        <p class="ns-timeline__text">In your own Developer Edition org, with the recalculation queue visible while it runs.</p>
+      </li>
+      <li class="ns-timeline__item">
+        <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-trash"></i></span>
+        <span class="ns-timeline__time"><time datetime="2026-07-21">21 Jul 2026</time> &middot; Retired</span>
+        <div class="ns-timeline__title">Workflow Rules lessons archived</div>
+        <p class="ns-timeline__text">They still open, and they say at the top why they are no longer the answer. Deleting them would break every link anyone ever saved.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- 21 · Fit: the band that argues against itself, and the only one on the
+     page that can. Everything above is advocacy, which a reader discounts
+     automatically. Naming who should leave is what earns the rest of it. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker">Before you sign up</span>
+      <h2 class="ns-band__title">Who this is for, and who it is not</h2>
+    </header>
+    <div class="ns-fit ns-anim-stagger ns-anim-stagger--onview">
+      <div class="ns-fit__col ns-fit__col--yes">
+        <h3 class="ns-fit__head"><i class="ph ph-check-circle" aria-hidden="true"></i> Worth your time if</h3>
+        <ul class="ns-fit__list">
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You already touch a real org and keep hitting things you cannot explain.</span></li>
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You want the platform&rsquo;s reasons, not a click-path you will forget by Thursday.</span></li>
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You are preparing for a certification and want it to be a side effect rather than the goal.</span></li>
+          <li><i class="ph ph-check" aria-hidden="true"></i><span>You read faster than you watch, and want the written version of everything.</span></li>
+        </ul>
+      </div>
+      <div class="ns-fit__col ns-fit__col--no">
+        <h3 class="ns-fit__head"><i class="ph ph-x-circle" aria-hidden="true"></i> Look elsewhere if</h3>
+        <ul class="ns-fit__list">
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You have never opened Salesforce. Start with Trailhead&rsquo;s basics &mdash; it is free and it is good at that.</span></li>
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You want a certification dump. There are no exam questions here, on purpose.</span></li>
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You need instructor-led sessions on a schedule. Everything here is self-paced.</span></li>
+          <li><i class="ph ph-minus" aria-hidden="true"></i><span>You are looking for Marketing Cloud or CPQ. Not covered, and not planned this year.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 · Sponsors. It sits DOWN HERE and not up by the trust marquee,
+     and the difference between the two bands is who is vouching for whom:
+     band 02 is other people's logos saying something about us, this is us
+     saying something about people who pay. Putting a paid placement in the
+     credibility slot spends trust that was not ours to spend.
+
+     Two shapes, and only one of them is the persuasive one. The row is the
+     full list, drawn in the same dimmed marks as band 02. The single
+     --leaderboard card is the headline sponsor, and there is exactly one:
+     .ns-sponsor's whole argument is that two sponsors on a surface is a
+     surface nobody looks at. Its CTA is a text link with an arrow rather
+     than a button, so it cannot compete with the one real action on the
+     page, and the mono "Sponsored" label is real DOM text — it is not
+     decoration and it is never dropped because the band looks tidier
+     without it.
+
+     The marks here are the same fictional placeholders as band 02. See
+     icons/brand-marks.svg before replacing any of them. -->
+<section class="ns-band ns-band--tight">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--center ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker ns-kicker--center">Sponsors</span>
+      <h2 class="ns-band__title">Who keeps the free half free</h2>
+      <p class="ns-band__lede">Three tools pay for the writing. None of them get a say in what it says.</p>
+    </header>
+    <div class="ns-logorow ns-anim-stagger ns-anim-stagger--onview">
+      <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 86 24" role="img" aria-label="Orgforce"><use href="../icons/brand-marks.svg#ns-b-orgforce"/></svg>
+      <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 111 24" role="img" aria-label="Contoso Data"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg>
+      <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 97 24" role="img" aria-label="Initrode"><use href="../icons/brand-marks.svg#ns-b-initrode"/></svg>
+    </div>
+    <div style="margin-block-start:var(--space-8)">
+      <a class="ns-sponsor ns-sponsor--leaderboard" href="#" style="inline-size:100%">
+        <span class="ns-sponsor__label">Sponsored</span>
+        <!-- The MARK, not the lockup. .ns-sponsor__name sets the company name
+             as real text right beside this — a11y requires it, and the docs
+             are explicit that it is not optional — so a full lockup here
+             renders "Orgforce / Orgforce". The glyph alone is what a sponsor
+             card wants; the lockup is what the logo row above wants. Sizing
+             is by height with inline-size:auto, the same contract
+             .ns-brandmark uses, so the sprite drops straight in. A real
+             sponsor supplying a two-colour PNG gets an <img> instead. -->
+        <svg class="ns-sponsor__logo" viewBox="0 0 24 24" role="img" aria-label="Orgforce"><use href="../icons/brand-marks.svg#ns-b-orgforce-mark"/></svg>
+        <span class="ns-sponsor__body">
+          <span class="ns-sponsor__name">Orgforce</span>
+          <span class="ns-sponsor__tagline">Deploy without the change set</span>
+          <span class="ns-sponsor__text">A scratch org per pull request. A deploy per merge. Nobody clicking through Setup at midnight.</span>
+        </span>
+        <span class="ns-sponsor__cta">Try it free <i class="ph ph-arrow-right" aria-hidden="true"></i></span>
+      </a>
+    </div>
+    <!-- The inbound half. Deliberately not .ns-adslot — that one is dashed
+         and unfinished because it is scaffolding, and its own docs say never
+         to ship it to a reader. This is the opposite object: something the
+         site meant to publish, addressed to the one person on the page who
+         buys ad space. It is also not a .ns-cta, because the page gets one
+         closer and spending it on "sponsor us" would sell the wrong thing to
+         the 99% who came here to learn. -->
+    <div class="ns-sponsorask ns-anim ns-anim--rise ns-anim--onview" style="margin-block-start:var(--space-6)">
+      <span class="ns-sponsorask__icon" aria-hidden="true"><i class="ph ph-megaphone"></i></span>
+      <div class="ns-sponsorask__body">
+        <span class="ns-sponsorask__title">Put your tool in front of people who will actually install it</span>
+        <p class="ns-sponsorask__text"><b>1,482</b> Salesforce admins, developers and architects, <b>18,400</b> reads a month, and one placement per page. Sponsors get the slot and no say in the writing &mdash; that is the whole deal, in writing.</p>
+      </div>
+      <a class="ns-btn ns-btn--outline" href="#">Sponsor a month <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- 23 · The newsletter: the exit for a reader who is interested but not
+     starting today. It is NOT a second closer competing with band 21 — the
+     ask is deliberately smaller (an address, not an account), and it sits
+     before the FAQ so the page still ends on one action. Both response
+     messages exist up front, hidden: a live region created together with
+     its message announces nothing. -->
+<section class="ns-band ns-band--sunken">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--center ns-anim ns-anim--rise ns-anim--onview">
+      <span class="ns-kicker ns-kicker--center">Not starting today?</span>
+      <h2 class="ns-band__title">One lesson in your inbox, every Tuesday</h2>
+      <p class="ns-band__lede">The same writing as the training, a module at a time. No launch emails, no webinars.</p>
+    </header>
+    <form class="ns-field" data-members-form="subscribe" action="#" style="max-inline-size:32rem;margin-inline:auto">
+      <label class="ns-field__label" for="home-subscribe-email">Email address</label>
+      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+        <input id="home-subscribe-email" class="ns-input" style="flex:1;min-inline-size:14rem"
+               type="email" name="email" autocomplete="email" required
+               placeholder="you@example.com" data-members-email>
+        <button class="ns-btn ns-btn--primary" type="submit">Subscribe</button>
+      </div>
+      <p class="ns-field__help">Weekly. Unsubscribe from any email, in one click.</p>
+      <p class="ns-field__help" data-members-success role="status" hidden>Check your inbox &mdash; the confirmation link is on its way.</p>
+      <p class="ns-field__error" data-members-error role="alert" hidden>That did not work. Check the address and try again.</p>
+    </form>
+  </div>
+</section>
+
+<!-- 24 · The last three objections, as native details rows. Free-vs-Pro
+     used to live here and now has its own band at 12 — an FAQ row is where
+     a question goes when it does NOT deserve a section, so a question that
+     earned one must leave. -->
+<section class="ns-band">
+  <div class="ns-band__inner">
+    <header class="ns-band__head ns-band__head--center ns-anim ns-anim--rise ns-anim--onview">
       <span class="ns-kicker">Questions</span>
       <h2 class="ns-band__title">Before you start</h2>
     </header>
-    <div class="ns-faq">
+    <div class="ns-faq ns-anim-stagger ns-anim-stagger--onview">
       <details class="ns-faq__item">
         <summary>Do I need a Salesforce license?</summary>
         <div class="ns-faq__body"><p>No — every lab runs in a free Developer Edition org. Lesson one walks you through creating it.</p></div>
       </details>
       <details class="ns-faq__item" open>
-        <summary>What is free and what is Pro?</summary>
-        <div class="ns-faq__body"><p>120 of 150 training modules and every course's first section are free, in full, with no account. Pro adds the architecture and AI tracks, certification practice sets, and downloadable orgs for every lab.</p></div>
+        <summary>How long does this actually take?</summary>
+        <div class="ns-faq__body"><p>The whole roadmap is about forty-two hours of lessons. At half an hour a day that is a hundred days; most people finish the course they actually needed in three weeks and come back for the rest when a project makes them.</p></div>
       </details>
       <details class="ns-faq__item">
         <summary>Where should I start?</summary>
@@ -428,10 +1838,10 @@
   </div>
 </section>
 
-<!-- 11 · The closer. One action; the fine print removes the last excuse. -->
+<!-- 25 · The closer. One action; the fine print removes the last excuse. -->
 <section class="ns-band ns-band--dark ns-band--grid">
   <div class="ns-band__inner">
-    <div class="ns-cta">
+    <div class="ns-cta ns-anim ns-anim--rise ns-anim--onview">
       <h2 class="ns-band__title">Create your free org. Start lesson one.</h2>
       <div class="ns-cta__actions">
         <a class="ns-btn ns-btn--white ns-btn--lg" href="#">Start the roadmap</a>

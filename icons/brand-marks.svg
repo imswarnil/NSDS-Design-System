@@ -1,0 +1,141 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- Namaste UI — PLACEHOLDER brand lockups.
+       ==================================================================
+       READ THIS BEFORE SHIPPING ANY OF THEM.
+
+       These are not partner logos. They are eight lockups for companies
+       that do not exist, drawn so that .ns-logorow and the trust marquee
+       can be developed, reviewed and screenshotted against real MARKS
+       rather than against five words set in our own mono face.
+
+       Every name here is a canonical fictional placeholder — Acme,
+       Globex, Initech, Initrode, Umbrella, Northwind, Contoso — chosen
+       precisely because nobody can mistake one for a real customer. Do
+       not add a real company to this file. A logo wall that shows a mark
+       the company never granted is a fabricated endorsement, and it is
+       worse than the quiet text row it replaced. When real,
+       permission-cleared logos exist, they replace these; until then a
+       screenshot of this row is a screenshot of a layout, not of a
+       customer list, and any copy near it has to be honest about that.
+
+       Drawn monochrome on currentColor with no fills of their own, so the
+       row's grayscale-at-rest / ink-on-hover treatment is a colour change
+       rather than a filter — which is also what makes them survive the
+       dark theme, where a filter-based logo wall goes black on black.
+
+       The wordmarks deliberately do NOT use Switzer. Each carries a
+       different generic family, because a real logo wall is a row of
+       other people's typography; five marks in our own face would read as
+       five of our own products.
+
+       EVERY SYMBOL HAS ITS OWN viewBox WIDTH, and that is the point rather
+       than an oversight. Real logos are drawn at wildly different aspect
+       ratios; forcing eight of them into one box is how a wordmark ends up
+       squeezed and a monogram ends up floating in whitespace. The heights
+       are all 24 so the row shares a cap height, and the widths are
+       whatever each lockup actually measures.
+
+       Because an externally-referenced <use> gives the host <svg> no
+       intrinsic size, the HOST has to repeat the viewBox for the browser to
+       resolve `inline-size: auto` against it:
+
+         <svg class="ns-brandmark" viewBox="0 0 111 24" role="img" aria-label="Acme Cloud">
+           <use href="../icons/brand-marks.svg#ns-b-acme"/>
+         </svg>
+
+       The widths, for copying: acme 111 · northwind 106 · globex 85 ·
+       initech 91 · umbrella 147 · orgforce 86 · contoso 111 · initrode 97.
+       Sizing and colour come from .ns-brandmark (components/css/sections.css). -->
+
+  <!-- Acme Cloud — a cloud, drawn open. -->
+  <symbol id="ns-b-acme" viewBox="0 0 111 24">
+    <path d="M6.5 17.5h9.8a3.6 3.6 0 0 0 .5-7.2 5.2 5.2 0 0 0-9.9-1.2 3.7 3.7 0 0 0-.4 8.4Z"
+          fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="27" y="17.5" fill="currentColor" font-family="ui-sans-serif, system-ui, sans-serif"
+          font-size="14" font-weight="700" letter-spacing="-0.2">Acme Cloud</text>
+  </symbol>
+
+  <!-- Northwind — a compass rose reduced to two chevrons on a stem. -->
+  <symbol id="ns-b-northwind" viewBox="0 0 106 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 18 11 6l7 12"/>
+      <path d="M6.6 13.5h8.8"/>
+    </g>
+    <text x="24" y="17.5" fill="currentColor" font-family="Georgia, 'Times New Roman', serif"
+          font-size="14" font-weight="600">Northwind</text>
+  </symbol>
+
+  <!-- Globex — a globe with one meridian. -->
+  <symbol id="ns-b-globex" viewBox="0 0 85 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7">
+      <circle cx="11" cy="12" r="7"/>
+      <ellipse cx="11" cy="12" rx="2.9" ry="7"/>
+      <path d="M4.3 9.6h13.4M4.3 14.4h13.4"/>
+    </g>
+    <text x="24" y="17.5" fill="currentColor" font-family="ui-sans-serif, system-ui, sans-serif"
+          font-size="14.5" font-weight="800" letter-spacing="-0.45">GLOBEX</text>
+  </symbol>
+
+  <!-- Initech — a chip: a square with legs. -->
+  <symbol id="ns-b-initech" viewBox="0 0 91 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <rect x="5.5" y="6.5" width="11" height="11" rx="1.6"/>
+      <path d="M9 4.4v2.1M13 4.4v2.1M9 17.5v2.1M13 17.5v2.1M3.4 9.5h2.1M3.4 14.5h2.1M16.5 9.5h2.1M16.5 14.5h2.1"/>
+    </g>
+    <text x="24" y="17.2" fill="currentColor" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace"
+          font-size="12.5" font-weight="700" letter-spacing="1.6">INITECH</text>
+  </symbol>
+
+  <!-- Umbrella Ops — a canopy over a stem. -->
+  <symbol id="ns-b-umbrella" viewBox="0 0 147 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M3.4 12.4a7.6 7.6 0 0 1 15.2 0Z"/>
+      <path d="M11 12.4v5.2a2.1 2.1 0 0 0 4.2 0"/>
+    </g>
+    <text x="24" y="17.2" fill="currentColor" font-family="ui-sans-serif, system-ui, sans-serif"
+          font-size="12" font-weight="500" letter-spacing="2.2">UMBRELLA OPS</text>
+  </symbol>
+
+  <!-- Orgforce — the sponsor in the component docs. A hexagon and an arrow. -->
+  <symbol id="ns-b-orgforce" viewBox="0 0 86 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 3.6 18.1 7.8v8.4L11 20.4 3.9 16.2V7.8Z"/>
+      <path d="M8.2 12h5.6M11.6 9.6 14 12l-2.4 2.4"/>
+    </g>
+    <text x="24" y="17.5" fill="currentColor" font-family="ui-sans-serif, system-ui, sans-serif"
+          font-size="14" font-weight="700" letter-spacing="-0.3">Orgforce</text>
+  </symbol>
+
+  <!-- Orgforce, mark only. The lockup above already contains the wordmark,
+       and .ns-sponsor__name sets the company name as real text right beside
+       it — so a card using the full lockup reads "Orgforce / Orgforce". The
+       glyph alone is what a sponsor card wants; the lockup is what a logo
+       row wants. -->
+  <symbol id="ns-b-orgforce-mark" viewBox="0 0 24 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 3.6 19.1 7.8v8.4L12 20.4 4.9 16.2V7.8Z"/>
+      <path d="M9.2 12h5.6M12.6 9.6 15 12l-2.4 2.4"/>
+    </g>
+  </symbol>
+
+  <!-- Contoso Data — stacked discs, the universal "database". -->
+  <symbol id="ns-b-contoso" viewBox="0 0 111 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+      <ellipse cx="11" cy="7.2" rx="6.6" ry="2.8"/>
+      <path d="M4.4 7.2v9.6c0 1.5 3 2.8 6.6 2.8s6.6-1.3 6.6-2.8V7.2"/>
+      <path d="M4.4 12c0 1.5 3 2.8 6.6 2.8s6.6-1.3 6.6-2.8"/>
+    </g>
+    <text x="24" y="17.5" fill="currentColor" font-family="Georgia, 'Times New Roman', serif"
+          font-size="13.5" font-weight="400" letter-spacing="0.3">Contoso Data</text>
+  </symbol>
+
+  <!-- Initrode — a plug, drawn as two prongs into a body. -->
+  <symbol id="ns-b-initrode" viewBox="0 0 97 24">
+    <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6.4 8.6h9.2v3.6a4.6 4.6 0 0 1-9.2 0Z"/>
+      <path d="M8.8 8.6V4.4M13.2 8.6V4.4M11 16.8v2.8"/>
+    </g>
+    <text x="24" y="17.2" fill="currentColor" font-family="ui-monospace, 'SFMono-Regular', Menlo, monospace"
+          font-size="12.5" font-weight="500" letter-spacing="1.2">initrode</text>
+  </symbol>
+</svg>

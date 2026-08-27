@@ -42,7 +42,16 @@ export const preview = run("build-preview.mjs");
    because it is what `gulp` serves at http://127.0.0.1:4322/. */
 export const home = run("build-home.mjs");
 
-export const build = gulp.series(tokens, css, preview, home);
+/* The portable skill bundle — .claude/skills/namaste-ui/, the pack an agent
+   loads in a DIFFERENT repo. It is generated from the tokens, the component
+   layer and the COMPONENTS array for the same reason the styleguide is: a
+   hand-written knowledge pack is a snapshot, and a snapshot of a design
+   system is wrong within a week. It runs in `build` so it cannot be
+   forgotten, and `--check` in `check` so a token change that skipped it
+   fails CI. */
+export const skill = run("build-skill.mjs");
+
+export const build = gulp.series(tokens, css, preview, home, skill);
 
 export const check = gulp.series(
   run("build-tokens.mjs", "--check"),
@@ -58,6 +67,9 @@ export const check = gulp.series(
   run("check-icons.mjs"),
   run("check-palette.mjs"),
   run("build-css.mjs", "--check"),
+  /* A stale bundle teaches an agent a version of this system that no longer
+     exists, and it does it silently in somebody else's repository. */
+  run("build-skill.mjs", "--check"),
 );
 
 /* The deployable static site — what CI publishes to Pages, and what you

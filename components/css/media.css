@@ -282,4 +282,110 @@
      is a smudge rather than a mark. */
   .ns-ph--sm { min-block-size: 0; }
   .ns-ph--sm::before { display: none; }
+
+  /* ========================================================= Screencast ====
+     A lesson playing, without a lesson to play.
+
+     WHY THIS EXISTS INSTEAD OF A <video src>. A marketing page needs to show
+     the product moving, and the honest options for a design system are a
+     real recording or nothing. A real recording cannot live here: it is a
+     binary nobody can diff, it goes stale the first time the UI changes, it
+     is wrong in one of the two themes, and it costs megabytes to prove a
+     point about a layout. A generic stock clip of somebody at a laptop is
+     worse — it shows a person, not the product.
+
+     So the "video" is built out of the same primitives as the product it is
+     showing. It weighs nothing, it is correct in both themes because it is
+     drawn in tokens, and it cannot go stale: change a radius and the footage
+     changes with it. It is a SPECIMEN of the interface, in the way
+     .ns-assembly is, rather than a picture of one.
+
+     It is not pretending to be a video file. Real product pages replace this
+     wholesale with `<video src poster muted loop playsinline>` inside the
+     same .ns-vplayer chrome, and nothing around it changes.
+
+     THE MOTION IS DECORATIVE AND SAYS SO. Nothing here is readable content —
+     the "code" is bars, the "caption" is a rule. A reader who needs to know
+     what is in the lesson gets that from the panel's caption, in text, on
+     the page. Under prefers-reduced-motion the global guard in
+     tokens/effects.css stops all of it dead and leaves a still frame. */
+  .ns-screencast {
+    /* The take's length. A local custom property rather than a duration
+       token for the same reason .ns-marquee's speed is: this is the length of
+       a piece of FOOTAGE, not the response time of a control, and Principle 5
+       governs the second thing only. Seven seconds is the shortest loop that
+       does not read as a stutter. */
+    --ns-screencast-run: 7s; /* lint-ok: a take's length, not a UI timing */
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: clip;
+    border-radius: var(--radius-sm);
+    background: var(--color-brand-900);
+    display: grid; grid-template-rows: auto 1fr;
+  }
+  /* The editor chrome — a tab strip, so the frame reads as a screen recording
+     of an IDE rather than as an abstract animation. */
+  .ns-screencast__bar {
+    display: flex; align-items: center; gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-block-end: 1px solid color-mix(in srgb, var(--color-on-dark) 14%, transparent);
+  }
+  .ns-screencast__tab {
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: color-mix(in srgb, var(--color-on-dark) 55%, transparent);
+  }
+  .ns-screencast__tab[data-state="active"] {
+    background: color-mix(in srgb, var(--color-on-dark) 12%, transparent);
+    color: var(--color-on-dark);
+  }
+  .ns-screencast__body { position: relative; padding: var(--space-4); display: grid; gap: var(--space-2-5); align-content: start; }
+  /* A line of "code". Width is set per line at the call site so the block has
+     the ragged silhouette real code has; a stack of equal bars reads as a
+     loading skeleton, which is the opposite of "this is finished". */
+  .ns-screencast__line {
+    block-size: var(--space-2); inline-size: var(--_w, 60%);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-on-dark) 22%, transparent);
+    /* Typed in, one line at a time, on a loop. --_i is the line's index; the
+       delay is what makes it read as typing rather than as eight bars
+       fading together. */
+    transform-origin: left center;
+    animation: ns-screencast-type var(--ns-screencast-run) var(--ease-out) infinite; /* lint-ok: a looping specimen runs on its own clock, not a UI timing */
+    animation-delay: calc(var(--_i, 0) * 420ms); /* lint-ok: the typing cadence is content, not interaction feedback */
+  }
+  .ns-screencast__line--hot { background: var(--color-brand-400); }
+  @keyframes ns-screencast-type {
+    0%   { scale: 0 1; opacity: 0; }
+    12%  { scale: 1 1; opacity: 1; }
+    82%  { scale: 1 1; opacity: 1; }
+    100% { scale: 1 1; opacity: 0.25; }
+  }
+  /* The caret, which is the single detail that sells it as typing — and it
+     only sells it if it sits where the next character would go. Pinned to
+     the bottom of the frame it was a blue tick in the corner with six lines
+     of dead space above it, which reads as a rendering bug rather than as a
+     cursor. In flow, as the row after the last line, it is where a person
+     typing would leave it. */
+  .ns-screencast__caret {
+    inline-size: 2px; block-size: var(--space-4);
+    background: var(--color-brand-300);
+    animation: ns-screencast-caret var(--ns-screencast-run) steps(1) infinite; /* lint-ok: blink cadence, not a UI timing */
+  }
+  @keyframes ns-screencast-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+  /* The runtime bar. It fills across the loop, so the panel has the one cue
+     that says "this is playing" rather than "this is animated". */
+  .ns-screencast__progress {
+    position: absolute; inset-inline: 0; inset-block-end: 0;
+    block-size: 3px;
+    background: color-mix(in srgb, var(--color-on-dark) 14%, transparent);
+  }
+  .ns-screencast__progress::after {
+    content: ""; display: block; block-size: 100%;
+    background: var(--color-brand-400);
+    transform-origin: left center;
+    animation: ns-screencast-play var(--ns-screencast-run) linear infinite; /* lint-ok: playback cadence, not a UI timing */
+  }
+  @keyframes ns-screencast-play { from { scale: 0 1; } to { scale: 1 1; } }
 }

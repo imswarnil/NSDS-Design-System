@@ -8,7 +8,7 @@ every scene.
 The design intent lives on the site and is not repeated here:
 
 - **[Lesson video scenes](https://nsds.imswarnil.com/preview/cc-lesson-scenes.html)** — 17 recording layouts, light and dark
-- **[Live stream scenes](https://nsds.imswarnil.com/preview/cc-livestream.html)** — 8 broadcast scenes and the overlay kit
+- **[Live stream scenes](https://nsds.imswarnil.com/preview/cc-livestream.html)** — 18 broadcast scenes, the camera crops, the comment rail, the action chips and the notification toasts
 
 This file is the mechanics. When the two disagree, the site wins.
 
@@ -51,11 +51,11 @@ The same goes for the display/window capture and the mic.
 | Collection | For | Carries |
 | --- | --- | --- |
 | `NSDS Lesson` | recorded course videos | kicker, lesson index, camera, watermark |
-| `NSDS Live` | live sessions on YouTube | the above **plus** the live badge, question card, CTA sting, handle bug |
+| `NSDS Live` | live sessions on YouTube | the above **plus** the live badge, question card, comment rail, action chips, notification toasts, CTA sting, handle bug |
 
 They are separate because the difference is a rule, not a preference: a
-recorded lesson must never carry a LIVE badge, a ticker, a chat panel or a
-countdown. A file has no live moment to acknowledge, and that furniture dates
+recorded lesson must never carry a LIVE badge, a ticker, a comment rail, a
+subscribe chip, a notification toast or a countdown. A file has no live moment to acknowledge, and that furniture dates
 the video the instant the stream ends. Two collections make the mistake
 impossible rather than merely discouraged.
 
@@ -129,13 +129,22 @@ camera ends up three pixels off in one scene out of seventeen.
 | Kicker | 96, 78 | — | Roboto Mono 20px, uppercase, `.1em` tracking |
 | Lesson index / live badge | right edge 1824, y 78 | — | Roboto Mono 20px, right-aligned |
 | Topic / step bar | 96, 205 | 1728 × 40 | 1px rule under it |
-| Camera, standard | 1440, 748 | **384 × 216** | 20% of width, exactly 16:9 |
-| Camera, small | 1498, 780 | **326 × 184** | 17%, when the corner is tight |
-| Camera, column | 1459, 162 | 384 × 216 | right column layouts |
-| Camera, two-up | 96 / 979 , 300 | 845 × 475 | two equal cams, guest scenes |
-| Lower third | 96, 878 | ~700 × 86 | 8 seconds, then off |
+| Camera C1, standard 16:9 | 1440, 748 | **384 × 216** | 20% of width, exactly 16:9 |
+| Camera C1, small 16:9 | 1498, 780 | **326 × 184** | 17%, when the corner is tight |
+| Camera C4, column 16:9 | 1459, 162 | 384 × 216 | right column / slide layouts |
+| Camera C3, two-up 16:9 | 96 / 979 , 300 | 845 × 475 | two equal cams, guest scenes |
+| Camera C5, stacked 16:9 | 1459, 173 / 394 | 365 × 205 | guest + screen |
+| Camera C6, block 4:3 | 96, 173 | **1070 × 802** | beside a 33% comment rail |
+| Camera C7, bust 1:1 | 1524, 654 | 300 × 300 | narrow gutters |
+| Camera C8, rail 9:16 | 1520, 97 | 304 × 540 | standing shot; survives a Shorts crop |
+| Name plate | 96, 878 | ~700 × 86 | 8 seconds, then off |
+| Chip lane | 96, 806 | — | two chips, one filled, open/break/close only |
+| Toast lane | right edge 1824, bottom edge 966 | ~460 × 78 | one at a time, they queue |
+| Comment rail, standard | 1373, 238 | **451 × 734** | 23.5%, scenes 13–14 |
+| Comment rail, wide | 1190, 173 | **634 × 799** | 33%, scene 12 only |
 | Watermark | right edge 1824, bottom edge 1026 | height 38 | 55–65% opacity |
 | Question card (live) | 96, 280 | 900 × 200 | |
+| Title strip | 0, 1000 | 1920 × 80 | full bleed, dark in **both** themes |
 
 **The screen capture is full-bleed.** A 16:9 source inset on all four sides of
 a 16:9 canvas cannot stay 16:9 — so in the scenes where the screen "fills the
@@ -151,6 +160,10 @@ When the screen genuinely shrinks (the column and rail layouts), scale it
 | Screen + camera column | 67% | 1286 × 723 | 77, 179 |
 | Screen + step rail | 65% | 1248 × 702 | 77, 189 |
 | Code + result split | 48% | 922 × 519 | 77, 281 |
+| Screen + comments (13) | 74% | 1421 × 799 | 96, 173 |
+| Screen + cam + comments (14) | 67% | 1286 × 723 | 96, 173 |
+| Guest + screen (18) | 69% | 1325 × 745 | 96, 173 |
+| Screen + title strip (07) | 93% | 1786 × 1004 | 67, 0 |
 
 ---
 
@@ -232,28 +245,79 @@ If you must do it in OBS, duplicate `SCREEN` with `Add Existing`, put a
 pointed at an HTML deck. `CODE` is a window capture of a prepared snippet at
 18–20pt — not your working editor.
 
-### `NSDS Live` — 8 scenes
+### `NSDS Live` — 18 scenes
+
+Grouped by purpose; the grouping is also the build order, because every scene
+in a group shares its furniture with the others.
+
+**Open & close** — the four scenes nobody is being taught in, and the only
+ones allowed to carry an ask.
 
 | # | Scene name | Sources, top to bottom |
 | --- | --- | --- |
-| 01 | `01 Starting soon` | `_furniture-live` · countdown Browser Source · title · handles · `_backdrop` |
-| 02 | `02 Camera` | `_furniture-live` · lower third · `CAM` (fit) · `_backdrop` |
-| 03 | `03 Screen + Cam` | `_furniture-live` · `CAM` (1440, 748) · `SCREEN` (fit) · `_backdrop` |
-| 04 | `04 Slides + Cam` | `_furniture-live` · topic bar · `CAM` (1459, 280) · `SLIDE` (67%) · `_backdrop` |
-| 05 | `05 Code focus` | `_furniture-live` · `CODE` (fit) · `_backdrop` |
-| 06 | `06 Guest` | `_furniture-live` · lower third · `CAM` (96, 300) · `GUEST` (979, 300) · `_backdrop` |
-| 07 | `07 Q&A` | `_furniture-live` · question card · `CAM` (1180, 280, 634×357) · `_backdrop` |
-| 08 | `08 Ending` | `_furniture-live` · next-session card · handles · `_backdrop` |
+| 01 | `01 Starting soon` | `starting-soon.html` (Browser, `?mode=start&at=19:00&chips=subscribe,bell`) · `_backdrop` |
+| 02 | `02 Welcome` | `_furniture-live` · `name-plate.html` · agenda Browser Source · `CAM` (1440, 748) · `_backdrop` |
+| 03 | `03 Intermission` | `starting-soon.html` (`?mode=break&minutes=5`) · `_backdrop` — **mic muted at the switcher** |
+| 04 | `04 Ending` | `_furniture-live` (badge off) · end-card Browser Source · `actions.html` (`?chips=subscribe,newsletter`) · `_backdrop` |
 
-`_furniture-live` is `_furniture` plus the LIVE badge and the handle bug. Build
-it as its own scene and nest it, exactly as before.
+**Teaching** — where the hour actually goes.
 
-The **CTA sting** and the **chat highlight** are not scenes — they are sources
-inside `_furniture-live` that you toggle with a hotkey, because they appear
-over whatever is already on screen and then leave. Give each one an exit rule
-and honour it: 6 seconds for the sting, twice an hour maximum.
+| # | Scene name | Sources, top to bottom |
+| --- | --- | --- |
+| 05 | `05 Camera` | `_furniture-live` · `CAM` (fit) · `_backdrop` |
+| 06 | `06 Screen` | LIVE badge · mark · `SCREEN` (fit) · `_backdrop` — no kicker, no cam |
+| 07 | `07 Screen + Title` | title strip Browser Source · LIVE badge · `SCREEN` (fit) · `_backdrop` |
+| 08 | `08 Screen + Cam` | `_furniture-live` · `CAM` (1440, 748) · `SCREEN` (fit) · `_backdrop` |
+| 09 | `09 Slide` | `_furniture-live` · `SLIDE` (fit) · `_backdrop` |
+| 10 | `10 Slide + Cam` | `_furniture-live` · topic bar · `CAM` (1459, 291) · `SLIDE` (67%, at 96/291) · `_backdrop` |
+| 11 | `11 Code` | title strip · LIVE badge · `CODE` (fit) · `_backdrop` |
 
----
+**Comments & guests** — the scenes where somebody other than you is on the
+frame. Every one of them *narrows* the stage rather than covering it.
+
+| # | Scene name | Sources, top to bottom |
+| --- | --- | --- |
+| 12 | `12 Cam + Comments` | `_furniture-live` · `comments.html` (wide, 1190/173, 634×799) · `CAM` **4:3** (96, 173, 1070×802) · `_backdrop` |
+| 13 | `13 Screen + Comments` | LIVE badge · mark · `comments.html` (1373, 238) · `SCREEN` (74%, at 96/173) · `_backdrop` |
+| 14 | `14 Screen + Cam + Comments` | `_furniture-live` · `comments.html` (1373, 238) · `CAM` (1373, 700, 451×254) · `SCREEN` (67%, at 96/173) · `_backdrop` |
+| 15 | `15 Comment wall` | `_furniture-live` · wall Browser Source (six curated questions) · `_backdrop` |
+| 16 | `16 Q&A` | `_furniture-live` · question card · `CAM` (1180, 280, 634×357) · `_backdrop` |
+| 17 | `17 Guest` | `_furniture-live` · two `name-plate.html` · `CAM` (96, 300) · `GUEST` (979, 300) · `_backdrop` |
+| 18 | `18 Guest + Screen` | `_furniture-live` · `name-plate.html?variant=driving&hold=0` · `CAM` (1459, 173) · `GUEST` (1459, 394) · `SCREEN` (69%, at 96/173) · `_backdrop` |
+
+`_furniture-live` is `_furniture` plus the LIVE badge and the handle bug —
+which is exactly what `export/furniture.html` renders, so build it as one
+Browser Source and nest it.
+
+Three things are **not** scenes, because they appear over whatever is already
+on screen and then leave. Build them as sources inside `_furniture-live` and
+toggle each with a hotkey:
+
+| Source | File | Exit rule |
+| --- | --- | --- |
+| Name plate | `export/name-plate.html` | 8s host, 10s guest, never for `variant=driving` |
+| Action chips / CTA sting | `export/actions.html` | 8s chips, 6s sting, twice an hour maximum |
+| Notification toasts | `export/toast.html` | 4–10s each, one lane, they queue |
+
+Give each one an exit rule and honour it. An overlay with no timer becomes
+furniture, and furniture is what makes a frame look busy.
+
+**One hotkey you will not regret binding: &ldquo;mute overlays.&rdquo;** Put the
+plate, the chips and the toast lane in a single OBS *group* inside
+`_furniture-live` and bind the group's visibility. Code focus, Q&A and a
+guest's answer all want everything off, and remembering three toggles at 19:40
+is not a plan.
+
+### Choosing the theme
+
+Both collections are built once per theme, not switched mid-session. Every
+overlay in `export/` takes `?theme=light`, and `_backdrop`'s colour source
+goes from `#001a3e` to `#ffffff` — that is the whole change. The geometry is
+identical, so a duplicated scene collection with the theme flipped is a
+five-minute job and there is never a reason to redesign a scene for light.
+
+The one exception is the **title strip**: it stays dark in both themes,
+because it is broadcast furniture rather than part of your desktop.
 
 ## 7. Overlays as Browser Sources
 
@@ -266,8 +330,29 @@ Text source.
 **Shutdown source when not visible** so a card is not burning CPU in the
 background.
 
-A complete furniture overlay to start from. Save it as `furniture.html`
-anywhere on disk and point a Browser Source at it:
+**Seven of them are already written.** `brand-content-creation/livestream/export/`
+contains `furniture.html`, `starting-soon.html`, `name-plate.html`,
+`actions.html`, `toast.html`, `comments.html` and the `overlay.css` they all
+share — configured entirely through the query string, so one file serves every
+session and you never edit HTML at 19:04:
+
+```
+furniture.html?kicker=live%20session%2004&live=1&theme=dark
+starting-soon.html?mode=break&minutes=5&title=Back%20in
+name-plate.html?name=Priya%20Nair&role=Flow%20Architect%20·%20guest&variant=guest
+actions.html?chips=subscribe,bell&hold=8
+toast.html?kind=member&who=@meera_dt%20joined%20as%20a%20member
+comments.html?rows=4&count=412
+```
+
+`?safe=1` on any of them draws the title-safe and action-safe boxes while you
+position the source — take it off before you go live. `toast.html` and
+`comments.html` also accept `postMessage`, so a moderator page or an
+`obs-websocket` script can push to them without a refresh. Read
+`export/README.md` for the full parameter list.
+
+If you would rather start from scratch, this is the minimum that works. Save
+it as `furniture.html` anywhere on disk and point a Browser Source at it:
 
 ```html
 <!DOCTYPE html><html><head><meta charset="utf-8">
@@ -335,8 +420,13 @@ render a 320ms clip of a brand-500 bar sweeping across and add it as a
 | `F3` | Camera |
 | `F4` | Slide |
 | `F5` | Code |
-| `F9` | toggle the CTA sting (live only) |
-| `F10` | toggle the lower third |
+| `F6` | Screen + Comments |
+| `F7` | Comment wall |
+| `F8` | Q&A |
+| `F9` | toggle the CTA sting / chips (live only) |
+| `F10` | toggle the name plate |
+| `F11` | fire the queued toast |
+| `F12` | **mute overlays** — hides the plate, chips and toast group at once |
 
 Bind them to **Preview** in Studio Mode, not Program, and use one key for the
 actual cut. You get to line the next scene up while still talking over the
@@ -355,7 +445,11 @@ current one.
 - Notifications off (macOS Focus / Windows Focus Assist).
 - Camera locked, one corner, one size, for the whole session.
 - Kicker and lesson index say the right course and the right number.
-- Theme chosen — dark *or* light — and it does not change mid-lesson.
+- Theme chosen — dark *or* light — and it does not change mid-lesson. Every
+  Browser Source carries the same `?theme=`.
+- Camera crop chosen — one of the eight — and the same one in every scene.
+- `?safe=1` removed from every Browser Source.
+- The comment rail has something in it, and a plan for who pushes to it.
 - Audio: mic peaking around −12 dB, mono, no other app holding the device.
 - Disk space for `1080p30 ≈ 1 GB per 10 minutes`.
 - Record a 20-second throwaway and **watch it back** before recording the real
@@ -377,6 +471,10 @@ current one.
 | Text cut off on a phone | it crossed the title-safe box | move it inside `96, 54 → 1728 × 972` |
 | Recording has no audio | desktop audio not captured, or the mic is held by another app | check `Audio Mixer`; quit the other app |
 | Everything drifts a few pixels between scenes | sources were dragged, not transformed | `Edit Transform`, set the numbers from §4, then lock |
+| Toasts pile up on top of each other | the source was refreshed, or two toast sources exist | one `toast.html` only; untick "Refresh when scene becomes active" — a refresh empties the queue |
+| The comment rail overlaps the camera | the rail was placed at the standard 23.5% in scene 12 | scene 12 uses the **wide** rail (33%) and a 4:3 camera; the two are one decision |
+| The camera looks a different size scene to scene | more than one crop in use | pick one of the eight in §4 and set every scene's camera to it by number |
+| A face is stretched | the camera was scaled non-uniformly into a block it does not match | pick the crop first, then let the block follow it — `Reset Transform`, then set the size from §4 |
 
 ---
 

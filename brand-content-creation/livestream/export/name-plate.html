@@ -1,0 +1,47 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>NSDS live — name plate</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="overlay.css">
+</head><body>
+<!-- Icon, name, job title. Six variants; see the Name Plates card for when
+     each one is correct.
+
+     ?name=Priya%20Nair&role=Flow%20Architect%20%C2%B7%20guest&variant=guest
+     &handle=@priya_dev&hold=10&theme=dark
+
+     variant: host | guest | driving | credential | speaking
+     hold:    seconds before it leaves. 0 = stays until the source is hidden
+              (correct for `driving`, wrong for everything else).           -->
+<div id="slot"></div>
+<script>
+  const q = new URLSearchParams(location.search), p = (k, d) => q.get(k) ?? d;
+  document.documentElement.dataset.theme = p("theme", "dark");
+  if (p("safe")) document.body.insertAdjacentHTML("beforeend", '<div class="ov-guide"></div>');
+
+  const VARIANTS = {
+    host:       ["ph-user-circle",      "",                 ""],
+    guest:      ["ph-users-three",      "ov-plate--guest",  ""],
+    speaking:   ["ph-microphone",       "ov-plate--speaking", ""],
+    driving:    ["ph-projector-screen", "ov-plate--driving", "driving"],
+    credential: ["ph-seal-check",       "",                 ""],
+  };
+  const v = VARIANTS[p("variant", "host")] || VARIANTS.host;
+  const handle = p("handle", "");
+  slot.innerHTML = `<div class="ov-plate ${v[1]} ov-enter-left">
+      <i class="ph ${v[0]}"></i>
+      <div>
+        <b>${p("name", "Swarnil Singhai")}</b>
+        <span>${p("role", "Salesforce Architect · host")}</span>
+        ${handle ? `<u>${handle}</u>` : ""}
+      </div>
+      ${v[2] ? `<em>${v[2]}</em>` : ""}
+    </div>`;
+
+  /* Eight seconds for a host, ten for a guest, never for the screen driver.
+     After that it has stopped being information and started being a logo. */
+  const hold = Number(p("hold", p("variant") === "guest" ? 10 : p("variant") === "driving" ? 0 : 8));
+  if (hold > 0) setTimeout(() => {
+    const el = slot.firstElementChild;
+    el.className = el.className.replace("ov-enter-left", "ov-exit-left");
+  }, hold * 1000);
+</script>
+</body></html>

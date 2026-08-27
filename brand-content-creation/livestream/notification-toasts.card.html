@@ -1,0 +1,190 @@
+<!-- @dsCard group="Content Creation" viewport="760x2118" name="Live Stream — Notification Toasts" subtitle="The six events allowed to interrupt a live frame, what each one holds for, and the lane they all queue in" -->
+<!-- px-ok: this card draws BROADCAST GRAPHICS at roughly a third of 1920x1080,
+     so the type inside a tile is scaled artwork, not UI copy — a scale token
+     there would be the wrong size by definition. The card's own chrome does use
+     the scale. See improve.md IMPROVE-11. -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.sub{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--color-muted);margin:0 0 4px}
+.sub:not(:first-of-type){margin-top:26px}
+.lede{font-size:11.5px;line-height:1.5;color:var(--color-muted);margin:0 0 12px;max-width:64ch}
+.lede b{color:var(--color-ink);font-weight:600}
+
+.kit{display:grid;gap:14px 16px}
+.item{display:flex;flex-direction:column;gap:6px}
+/* Split tile: the same graphic, the two broadcast canvases, one object. If a
+   component needs different geometry in light, the geometry was wrong. */
+.tile{display:grid;grid-template-columns:1fr 1fr;min-height:72px;overflow:hidden}
+.half{position:relative;display:flex;align-items:center;justify-content:center;padding:12px 10px}
+.half::before{content:"";position:absolute;inset:0;
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:15px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
+.half>*{position:relative}
+.half::after{content:attr(data-t);position:absolute;inset-inline-start:4px;bottom:2px;font-family:var(--font-mono);
+  font-size:7px;letter-spacing:.08em;color:var(--dim);opacity:.65}
+.d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.62);--panel:rgb(255 255 255/.08);
+   --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07)}
+.l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+   --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+   --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06)}
+
+.meta{display:flex;gap:8px;align-items:flex-start}
+.meta code{font-family:var(--font-mono);font-size:9px;color:var(--color-brand-500);flex:none;padding-top:1px}
+.meta div{font-size:11px;line-height:1.42}
+.meta b{display:block;font-weight:600}
+.meta em{font-style:normal;font-family:var(--font-mono);font-size:9px;color:var(--color-ink);display:block;margin-top:2px}
+.meta span{color:var(--color-muted)}
+
+/* ---- action chip ------------------------------------------------------
+   One shape, five payloads. The filled variant is the ask; the outline
+   variants are reminders. Never more than one filled chip on a frame. */
+.act{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.act i{font-size:15px;color:var(--accent);flex:none}
+.act--fill{background:var(--color-brand-500);border-color:var(--color-brand-500);color:#fff}
+.act--fill i{color:#fff}
+.act small{font-family:var(--font-mono);font-size:9px;letter-spacing:.04em;text-transform:none;color:var(--dim);white-space:nowrap}
+.act--fill small{color:rgb(255 255 255/.75)}
+
+/* ---- CTA sting --------------------------------------------------------
+   The one place brand-500 fills a solid block mid-teaching. Two lines: the
+   ask, and where it goes. Six seconds, twice an hour, never mid-sentence. */
+.sting{display:flex;align-items:center;gap:11px;background:var(--color-brand-500);color:#fff;padding:10px 15px;max-width:330px}
+.sting>i{font-size:21px;flex:none}
+.sting b{display:block;font-family:var(--font-heading);font-size:14px;font-weight:600;line-height:1.15}
+.sting span{display:block;font-family:var(--font-mono);font-size:10px;color:rgb(255 255 255/.8);margin-top:2px}
+
+/* ---- notification toast -----------------------------------------------
+   An EVENT, not an ask: something a viewer did. Enters from the right edge,
+   holds, leaves the same way. One lane, one at a time, they queue. */
+.toast{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);
+  border-inline-start:3px solid var(--color-brand-500);padding:9px 13px;color:var(--ink);min-width:250px}
+.toast>i{font-size:19px;color:var(--accent);flex:none}
+.toast b{display:block;font-family:var(--font-heading);font-size:12.5px;font-weight:700;line-height:1.15}
+.toast span{display:block;font-family:var(--font-mono);font-size:9.5px;color:var(--dim);margin-top:2px;letter-spacing:.03em}
+.toast em{font-style:normal;margin-inline-start:auto;font-family:var(--font-mono);font-size:9px;
+  color:var(--accent);letter-spacing:.08em;text-transform:uppercase;flex:none;padding-inline-start:10px}
+.toast--member{border-inline-start-color:var(--color-warning)}
+.toast--member>i{color:var(--color-warning)}
+.toast--milestone{border-inline-start-color:var(--color-success)}
+.toast--milestone>i{color:var(--color-success)}
+.toast--alert{border-inline-start-color:var(--color-error)}
+.toast--alert>i{color:var(--color-error)}
+
+/* ---- rules table ------------------------------------------------------- */
+.tbl{width:100%;border-collapse:collapse;margin-top:8px}
+.tbl td{border-top:1px solid var(--color-border);padding:7px 0;font-size:11px;line-height:1.45;vertical-align:top}
+.tbl td:first-child{width:104px;font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-500);padding-inline-end:10px}
+.tbl td:nth-child(2){width:40%;padding-inline-end:14px}
+.tbl b{font-weight:600}
+.tbl span{color:var(--color-muted)}
+.two{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px;margin-top:6px}
+.two ul{margin:4px 0 0;padding-inline-start:15px}
+.two li{font-size:11px;line-height:1.5;color:var(--color-muted);margin-bottom:4px}
+.two li strong{color:var(--color-ink);font-weight:600}
+.k-do,.k-dont{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;margin:0}
+.k-do{color:var(--color-success)}
+.k-dont{color:var(--color-error)}
+</style></head><body>
+<p class="sub">Notification toasts — the six events</p>
+<p class="lede">A toast is an <b>event, not an ask</b>: something a viewer just did, acknowledged on screen so the room can see itself. One lane, bottom-right above the watermark, one toast at a time — they queue rather than stack. Enters from the right over 240ms, holds, leaves the same way. If more arrive than the lane can clear, drop them; a backlog of thank-yous is worse than none.</p>
+
+<div class="kit">
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="toast"><i class="ph ph-user-circle"></i><span><b>@sana_k subscribed</b><span>welcome in</span></span><em>new</em></span></div>
+      <div class="half l" data-t="light"><span class="toast"><i class="ph ph-user-circle"></i><span><b>@sana_k subscribed</b><span>welcome in</span></span><em>new</em></span></div>
+    </div>
+    <div class="meta"><code>T1</code><div><b>New subscriber</b><em>brand edge &middot; 4s &middot; queued</em><span>Name them out loud if you can — the toast is the prompt, your voice is the payoff. Suppress it entirely during code focus and during a guest's answer: it is the one interruption that can wait.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="toast toast--member"><i class="ph ph-crown-simple"></i><span><b>@meera_dt joined as a member</b><span>month 1</span></span><em>member</em></span></div>
+      <div class="half l" data-t="light"><span class="toast toast--member"><i class="ph ph-crown-simple"></i><span><b>@meera_dt joined as a member</b><span>month 1</span></span><em>member</em></span></div>
+    </div>
+    <div class="meta"><code>T2</code><div><b>New member</b><em>amber edge &middot; 5s &middot; always spoken</em><span>The amber edge is the only non-brand accent in the kit, and it earns it: paid support is a different event from a free follow. Always acknowledged aloud, even mid-demo — pause the sentence, say the name, carry on.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="toast toast--member"><i class="ph ph-credit-card"></i><span><b>@rk_dev sent &#8377;500</b><span>&ldquo;this saved my sprint&rdquo;</span></span><em>thanks</em></span></div>
+      <div class="half l" data-t="light"><span class="toast toast--member"><i class="ph ph-credit-card"></i><span><b>@rk_dev sent &#8377;500</b><span>&ldquo;this saved my sprint&rdquo;</span></span><em>thanks</em></span></div>
+    </div>
+    <div class="meta"><code>T3</code><div><b>Super chat / tip</b><em>amber edge &middot; 8s &middot; message shown verbatim</em><span>Longer hold than the rest because it carries a message somebody paid to have read. Verbatim or not at all — never paraphrased, never trimmed to fit. If the message will not fit in one line, read it aloud and show only the name.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="toast toast--milestone"><i class="ph ph-medal"></i><span><b>500 watching</b><span>biggest room yet</span></span><em>milestone</em></span></div>
+      <div class="half l" data-t="light"><span class="toast toast--milestone"><i class="ph ph-medal"></i><span><b>500 watching</b><span>biggest room yet</span></span><em>milestone</em></span></div>
+    </div>
+    <div class="meta"><code>T4</code><div><b>Milestone</b><em>green edge &middot; 5s &middot; at most twice a session</em><span>Round numbers only, and only ones that mean something to the room rather than to you. Concurrent viewers, yes; total channel subscribers, no — the audience did not come to watch a dashboard.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="toast"><i class="ph ph-link-simple"></i><span><b>Repo posted in chat</b><span>github.com/namaste-salesforce/bulk-flow</span></span><em>link</em></span></div>
+      <div class="half l" data-t="light"><span class="toast"><i class="ph ph-link-simple"></i><span><b>Repo posted in chat</b><span>github.com/namaste-salesforce/bulk-flow</span></span><em>link</em></span></div>
+    </div>
+    <div class="meta"><code>T5</code><div><b>Resource drop</b><em>brand edge &middot; 10s &middot; the longest hold in the kit</em><span>Ten seconds because a viewer has to read a URL, unlock a phone and type it. This is the only toast that may repeat: fire it again at the ending scene, since half the room arrived after the first one.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="toast toast--alert"><i class="ph ph-warning-circle"></i><span><b>Audio dropped &mdash; fixing</b><span>back in a moment</span></span><em>issue</em></span></div>
+      <div class="half l" data-t="light"><span class="toast toast--alert"><i class="ph ph-warning-circle"></i><span><b>Audio dropped &mdash; fixing</b><span>back in a moment</span></span><em>issue</em></span></div>
+    </div>
+    <div class="meta"><code>T6</code><div><b>Technical notice</b><em>red edge &middot; stays until cleared &middot; the only toast with no timer</em><span>The one graphic allowed to persist, because the problem persists. It uses the same error red as the LIVE badge for the same reason: red in this system means a state, never decoration. Clear it manually the second the problem is fixed.</span></div></div>
+  </div>
+
+</div>
+
+<p class="sub">Where they go, and for how long</p>
+<table class="tbl"><tbody>
+  <tr><td>CHIP LANE</td><td><b>Bottom-left, above the handle bug</b></td><td class="fill"><span>Left, because the bottom-right corner is the camera and the mark. Chips sit inside the 90% title-safe box and wrap to a second row never — two is the ceiling.</span></td></tr>
+  <tr><td>STING</td><td><b>Bottom-centre, 6s</b></td><td class="fill"><span>Centre is deliberate: it is the only graphic that interrupts, so it does not pretend to be furniture. Twice an hour, after a completed demo.</span></td></tr>
+  <tr><td>TOAST LANE</td><td><b>Bottom-right, above the watermark, 1 at a time</b></td><td class="fill"><span>Same corner as the camera in most scenes — so when the camera is on, the toast lane moves up above it rather than overlapping. It never covers the mark.</span></td></tr>
+  <tr><td>ENTER / EXIT</td><td><b>Slide from the nearest edge, 240ms, <code>--ease-out</code></b></td><td class="fill"><span>The same motion the product uses for a drawer. No bounce, no scale, no sound. Under <code>prefers-reduced-motion</code> in a browser source, they cut.</span></td></tr>
+  <tr><td>QUIET SCENES</td><td><b>Code focus, Q&amp;A and guest answers suppress everything</b></td><td class="fill"><span>Bind a single &ldquo;mute overlays&rdquo; hotkey rather than trusting yourself to remember. A toast over somebody else's answer is rude in a way the viewer will read as yours.</span></td></tr>
+</tbody></table>
+
+<div class="two">
+  <div><p class="k-do">Do</p><ul>
+    <li><strong>One ask on screen at a time.</strong> The filled chip is the ask; everything else is a reminder.</li>
+    <li><strong>Give every overlay an exit rule</strong> and honour it. An overlay with no timer becomes furniture, and furniture is what makes a frame look busy.</li>
+    <li><strong>Say the name.</strong> A toast the host never acknowledges teaches the room that the graphics are automated and nobody is watching.</li>
+  </ul></div>
+  <div><p class="k-dont">Never</p><ul>
+    <li><strong>A row of five social icons.</strong> One destination at a time, rotating; a viewer who has to choose goes nowhere.</li>
+    <li><strong>Stacked toasts.</strong> They queue. Three alerts sliding over each other is a notification centre, not a broadcast.</li>
+    <li><strong>Animated, looping or pulsing chips.</strong> Motion that repeats cannot be dismissed and cannot be ignored — it is the fastest way to make a stream unwatchable.</li>
+  </ul></div>
+</div>
+
+<p class="sub">The lane</p>
+<table class="tbl"><tbody>
+  <tr><td>POSITION</td><td><b>Bottom-right, above the watermark</b></td><td class="fill"><span>Same corner as the camera in most scenes — so when the camera is on, the lane moves up above it rather than overlapping. It never covers the mark.</span></td></tr>
+  <tr><td>ONE AT A TIME</td><td><b>They queue; they never stack</b></td><td class="fill"><span>Three alerts sliding over each other is a notification centre, not a broadcast. If more arrive than the lane can clear, drop them: a backlog of thank-yous is worse than none.</span></td></tr>
+  <tr><td>ENTER / EXIT</td><td><b>Slide from the right, 240ms, <code>--ease-out</code></b></td><td class="fill"><span>Hold, then leave the same way. No bounce, no scale, no sound effect — and the next toast waits out the exit before it enters.</span></td></tr>
+  <tr><td>QUIET SCENES</td><td><b>Code focus, Q&amp;A and guest answers suppress everything</b></td><td class="fill"><span>Bind a single &ldquo;mute overlays&rdquo; hotkey rather than trusting yourself to remember. A toast over somebody else's answer is rude in a way the viewer will read as yours.</span></td></tr>
+  <tr><td>ACKNOWLEDGE</td><td><b>Say the name</b></td><td class="fill"><span>The toast is the prompt; your voice is the payoff. A toast the host never acknowledges teaches the room that the graphics are automated and nobody is watching.</span></td></tr>
+</tbody></table>
+
+<div class="two">
+  <div><p class="k-do">Do</p><ul>
+    <li><strong>Use the edge colour as a category, not decoration.</strong> Brand for a free action, amber for paid support, green for a milestone, red for a problem.</li>
+    <li><strong>Show a paid message verbatim</strong> or not at all — never paraphrased, never trimmed to fit.</li>
+    <li><strong>Clear a technical notice by hand</strong> the second the problem is fixed. It is the only toast with no timer, because the problem does not have one either.</li>
+  </ul></div>
+  <div><p class="k-dont">Never</p><ul>
+    <li><strong>A toast during a demo's critical moment.</strong> Suppress the lane; the queue will still be there afterwards.</li>
+    <li><strong>Vanity milestones.</strong> Concurrent viewers mean something to the room; total channel subscribers mean something only to you.</li>
+    <li><strong>A toast on top of the watermark or the camera.</strong> The lane moves; the mark never does.</li>
+  </ul></div>
+</div>
+
+</body></html>

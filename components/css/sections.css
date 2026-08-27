@@ -14,7 +14,39 @@
        band's padding is doing. Two variants sit deliberately off it and say
        so at the call site;
      - dark bands use the navy console surface + the hairline grid motif,
-       never a gradient. */
+       never a gradient.
+
+   A BAND IS A READING SURFACE, AND TAKES THE READING SCALE.
+   -------------------------------------------------------------------------
+   tokens/typography.css forks the scale once, on the axis of SCANNED versus
+   READ: 14/13 for a rail, a table, a player's chrome and a dashboard, and
+   --size-prose* for what a person reads continuously.
+
+   This layer was on the wrong side of that fork. Every band's body copy —
+   the feature paragraph, the router's "when", the fit list, the FAQ answer,
+   the compare panels — was set at --size-small (13), one step BELOW the UI
+   base and level with a table caption. Nobody scans a homepage; they read
+   it, once, deciding. Marketing copy set smaller than a table row is the
+   same category error the fork exists to prevent, pointing the other way.
+
+   So the band layer takes the reading scale:
+
+     lede            --size-prose-lead   20
+     card heading    --size-prose        17
+     body copy       --size-prose-small  15
+     band kicker     --size-mono         13
+     mono labels     --size-label        11   (unchanged)
+
+   The mono VOICE does not move — an index, a duration and a stat label are
+   data, not prose, and the label scale is where they belong on either side
+   of the fork. The band kicker is the one exception and it earns it by being
+   a phrase rather than a datum: it is the sentence that frames the heading,
+   and at the 11px label floor nobody read it.
+
+   Cards composed INTO a band follow it too — see the rule at the foot of
+   this file. The same card in a catalogue grid keeps the UI scale, which is
+   not an exception to the fork but an application of it: the homepage's
+   three courses are read, a catalogue of forty is scanned. */
 @layer ns-components {
 
   /* --- Band + head --------------------------------------------------------- */
@@ -26,16 +58,41 @@
   .ns-band__inner { max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
   .ns-band--sunken { background: var(--color-surface-sunken); border-block: 1px solid var(--color-border); }
   /* The navy band: the brand's own dark console, identical in both themes. */
+  /* `overflow: clip`, NOT `hidden`, and the difference is not cosmetic. Both
+     crop the grid motif at the band's edge; only `hidden` makes the band a
+     SCROLL CONTAINER, and everything inside one that depends on the PAGE
+     scrolling then breaks in silence:
+
+       position: sticky   sticks to the band rather than the viewport, which
+                          means it never sticks — the band does not scroll.
+                          .ns-shero's entire layout rests on this.
+       view() timelines   resolve against the band, which never moves, and
+                          freeze at 50% progress. See .ns-parallax.
+
+     There was never a reason to prefer `hidden` for a box that was not going
+     to scroll, and this one had been quietly disabling two features that
+     were declared on top of it. */
   .ns-band--dark {
     background: var(--color-brand-900); color: var(--color-on-dark);
-    position: relative; overflow: hidden;
+    position: relative; overflow: clip;
   }
 
   .ns-band__head { max-inline-size: var(--container-narrow); margin-block-end: var(--space-8); }
   .ns-band__head--center { margin-inline: auto; text-align: center; }
+  /* THE KICKER IS READ, NOT SCANNED, AND IT WAS SET AT THE LABEL FLOOR.
+     --size-label (11) is where an index, a duration, a table caption and a
+     status chip belong: glanced at, never sentences. A band's kicker is the
+     first thing on the band and it is a phrase a person reads — at 11px,
+     tracked and uppercased, it was the smallest text on a marketing page and
+     the eye skipped it, which meant every band opened on its heading with
+     the framing sentence lost.
+
+     --size-mono (13) is the same voice one step up: it still sits with
+     --size-small, so it is still visibly data rather than prose, and it is
+     legible. The rest of the mono scale does not move with it. */
   .ns-kicker {
     display: block;
-    font-family: var(--font-mono); font-size: var(--size-label);
+    font-family: var(--font-mono); font-size: var(--size-mono);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
     margin-block-end: var(--space-2);
@@ -48,7 +105,7 @@
      the label, which is the whole read: they are punctuation, not content. */
   .ns-kicker--light { color: var(--color-on-dark); }
   .ns-band__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
-  .ns-band__lede { font-size: var(--size-body-lg); line-height: var(--leading-body); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
+  .ns-band__lede { font-size: var(--size-prose-lead); line-height: var(--leading-snug); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
 
   /* --- Assembly: the components rendering the product ---------------------
@@ -302,7 +359,53 @@
      nudge — there is no stack step between lg (64) and xl (96). */
   .ns-hero { padding-block: var(--space-20) var(--stack-lg); }
   .ns-hero__title { font-size: var(--size-display); line-height: var(--leading-heading); letter-spacing: var(--tracking-tight); text-wrap: balance; max-inline-size: 22ch; }
-  .ns-hero__lede { font-size: var(--size-body-lg); color: var(--color-muted); margin-block-start: var(--space-4); max-inline-size: var(--container-prose); text-wrap: pretty; }
+
+  /* --- Hero furniture, shared by both heroes -------------------------------
+     .ns-hero__eyebrow / __mark / __facts are used by .ns-hero and .ns-shero
+     alike. They live here rather than under either one because a hero's
+     eyebrow is a hero's eyebrow — two copies under two prefixes is how the
+     pill ends up a different height on the two pages that use it. */
+
+  /* The eyebrow. A pill rather than a mono kicker: at the top of a hero the
+     first line is read, and tracked uppercase 11px monospace is the one
+     setting guaranteed to be skipped. */
+  .ns-hero__eyebrow {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    align-self: flex-start; inline-size: fit-content;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-on-dark) 12%, transparent);
+    font-size: var(--size-prose-small); color: var(--color-on-dark);
+  }
+  .ns-hero__eyebrow i { color: var(--color-brand-300); }
+  /* Marks ONE word of the headline — the word that is the promise — with the
+     system's own hairline rather than a highlighter fill. It draws itself on
+     entrance, which is the only motion in the hero carrying meaning rather
+     than decoration. */
+  .ns-hero__mark { position: relative; white-space: nowrap; }
+  .ns-hero__mark::after {
+    content: ""; position: absolute;
+    inset-inline: 0; inset-block-end: -0.06em; /* lint-ok: optical, relative to font-size not the spacing scale */
+    block-size: 3px;
+    background: var(--color-brand-400);
+    animation: ns-anim-draw var(--duration-draw) var(--ease-draw) both;
+    animation-delay: var(--duration-slow);
+  }
+  /* Proof as separate facts on separate lines. .ns-hero__proof below is the
+     older single mono line, kept for the pages that only have one fact; the
+     moment there are three, they are three claims and must not share the
+     visual grammar of a serial number. */
+  .ns-hero__facts { display: grid; gap: var(--space-2); margin: var(--space-6) 0 0; padding: 0; list-style: none; }
+  .ns-hero__facts li {
+    display: flex; align-items: baseline; gap: var(--space-2-5);
+    font-size: var(--size-prose-small); color: var(--color-muted);
+  }
+  .ns-band--dark .ns-hero__facts li { color: var(--color-on-dark-border-hover); }
+  .ns-hero__facts b { font-variant-numeric: tabular-nums; font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-band--dark .ns-hero__facts b { color: var(--color-on-dark); }
+  .ns-hero__facts i { color: var(--color-brand-500); }
+  .ns-band--dark .ns-hero__facts i { color: var(--color-brand-300); }
+  .ns-hero__lede { font-size: var(--size-prose-lead); line-height: var(--leading-snug); color: var(--color-muted); margin-block-start: var(--space-4); max-inline-size: var(--container-prose); text-wrap: pretty; }
   .ns-band--dark .ns-hero__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: same on-dark dimming as the lede */ }
   .ns-hero__actions { display: flex; gap: var(--space-3); flex-wrap: wrap; margin-block-start: var(--space-6); }
   /* The proof line: one concrete mono fact under the actions, never a stat wall. */
@@ -337,6 +440,47 @@
   .ns-hero--split .ns-band__inner {
     display: grid; align-items: center; gap: var(--space-10);
     grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+  }
+  /* --tall: the marketing height. A hero on a product homepage is doing a
+     different job from a hero on a docs page — it is the first impression
+     rather than a heading with air around it — and at the default padding it
+     reads as a heading with air around it.
+
+     `min-block-size`, not a fixed height, and it is on the INNER rather than
+     the band: the band still owns its padding, so the hero cannot end up
+     shorter than its own content on a phone in landscape. 82svh rather than
+     100 on purpose — a hero that exactly fills the viewport gives a reader
+     no reason to believe there is anything under it, and the cut-off edge of
+     the next band is the cheapest scroll affordance there is. `svh` because
+     `vh` on a phone measures the viewport with the browser chrome retracted,
+     so a 100vh hero is taller than the screen for as long as the bar is
+     showing. */
+  /* The min-height is on the BAND, not on the inner, and that is not
+     fussiness — it is the difference between a number that means what it
+     says and one that does not. Put 82svh on the inner and the band's own
+     padding-block is added on top of it, so the hero renders at 82svh + 128px,
+     which on a 716px viewport is exactly 100vh: the one outcome the number
+     was chosen to avoid. On the band, with the padding inside the box, 86svh
+     is 86svh. */
+  .ns-hero--tall {
+    /* 68svh, not 86. The hero and the trust band that follows it are one
+       unit — the logos are the first evidence for the claim directly above
+       them — and at 86svh the marquee started below the fold, so the two
+       halves of that argument never appeared together. 68svh leaves the
+       whole logo band inside the first screen on a laptop while still
+       reading as a hero rather than as a heading with air around it. */
+    min-block-size: 68svh;
+    display: grid; align-content: center;
+    padding-block: var(--stack-lg);
+  }
+  /* A wider media column, because at --tall the words no longer set the
+     height and a 26rem picture beside a 60rem column of air looks stranded. */
+  .ns-hero--tall.ns-hero--split .ns-band__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 34rem); }
+  @media (max-width: 63.999rem) {
+    /* The height comes off entirely below --lg. A min-height written for a
+       desktop hero is, on a phone, a rule that adds blank space under content
+       that already fills the screen. */
+    .ns-hero--tall .ns-band__inner { min-block-size: 0; }
   }
   /* The media slot. Contains whatever the page gives it — a framed
      screenshot, an SVG, a video poster — and never grows the hero: the words
@@ -390,8 +534,8 @@
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     color: var(--color-label); font-variant-numeric: tabular-nums;
   }
-  .ns-feature__name { font-size: var(--size-body); font-weight: var(--weight-semibold); }
-  .ns-feature__text { font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body); margin-block-start: var(--space-1-5); }
+  .ns-feature__name { font-size: var(--size-prose); font-weight: var(--weight-semibold); }
+  .ns-feature__text { font-size: var(--size-prose-small); color: var(--color-muted); line-height: var(--leading-snug); margin-block-start: var(--space-1-5); }
 
   /* --- Stat band -----------------------------------------------------------
      A row of concrete numbers. Mono, tabular, hairline-separated — data, not
@@ -400,11 +544,10 @@
   .ns-statband__cell { padding: var(--pad-card-lg); text-align: center; }
   .ns-statband__cell + .ns-statband__cell { border-inline-start: 1px solid var(--color-border); }
   .ns-statband__value { font-family: var(--font-mono); font-size: var(--size-h2); font-weight: var(--weight-semibold); font-variant-numeric: tabular-nums; line-height: var(--leading-tight); }
+  /* A word, not a value — see the note beside .ns-quote figcaption. */
   .ns-statband__label {
     display: block; margin-block-start: var(--space-1-5);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
+    font-size: var(--size-prose-small); color: var(--color-muted);
   }
   @media (max-width: 39.999rem) {
     .ns-statband { grid-template-columns: 1fr 1fr; }
@@ -422,10 +565,21 @@
   .ns-quote blockquote { font-family: var(--font-serif); font-size: var(--size-h3); line-height: var(--leading-heading); text-wrap: balance; }
   .ns-quote blockquote::before { content: "\201C"; color: var(--color-label); }
   .ns-quote blockquote::after { content: "\201D"; color: var(--color-label); }
+  /* MONO IS FOR VALUES. SANS IS FOR WORDS.
+     ------------------------------------------------------------------------
+     The label voice earns its place on things read as DATA: an index, a
+     duration, a count, a price, a timestamp, a status. It had spread to
+     things read as LANGUAGE — a person's name, a stat's label, a call to
+     action, a line of fine print — and tracked uppercase monospace is a bad
+     way to set any of those. A name in the label voice reads as a serial
+     number.
+
+     The test: would you say it aloud as a word, or read it off as a figure?
+     "Priya S." is a word. "4h 05m" is a figure. Everything that moved to the
+     sans moved on that test, and nothing that is genuinely a figure moved. */
   .ns-quote figcaption {
     margin-block-start: var(--space-4);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    font-size: var(--size-prose-small);
     color: var(--color-muted);
   }
 
@@ -435,7 +589,9 @@
   .ns-cta { text-align: center; }
   .ns-cta .ns-band__title { margin-inline: auto; }
   .ns-cta__actions { display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap; margin-block-start: var(--space-6); }
-  .ns-cta__fine { display: block; margin-block-start: var(--space-4); font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-on-dark-border-hover); }
+  /* A sentence, and it was set in tracked uppercase mono — the one thing a
+     sentence must never be. */
+  .ns-cta__fine { display: block; margin-block-start: var(--space-4); font-size: var(--size-prose-small); color: var(--color-on-dark-border-hover); }
 
   /* --- FAQ -----------------------------------------------------------------
      Native <details> rows — find-in-page still reaches collapsed answers.
@@ -446,7 +602,7 @@
     display: flex; align-items: baseline; gap: var(--space-3);
     padding: var(--space-4) var(--space-1);
     cursor: pointer; list-style: none;
-    font-weight: var(--weight-semibold); font-size: var(--size-body);
+    font-weight: var(--weight-semibold); font-size: var(--size-prose);
     transition: color var(--duration-fast) var(--ease-out);
   }
   .ns-faq__item summary::-webkit-details-marker { display: none; }
@@ -458,7 +614,7 @@
   .ns-faq__item summary:hover { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-faq__item summary:hover, [data-theme="dark"] .ns-faq__item[open] summary::before { color: var(--color-brand-300); }
   .ns-faq__item summary:focus-visible { outline: var(--focus-ring-width) solid var(--color-brand-500); outline-offset: -2px; }
-  .ns-faq__body { padding: 0 var(--space-1) var(--space-4) var(--space-8); font-size: var(--size-small); color: var(--color-muted); line-height: var(--leading-body); }
+  .ns-faq__body { padding: 0 var(--space-1) var(--space-4) var(--space-8); font-size: var(--size-prose-small); color: var(--color-muted); line-height: var(--leading-prose); }
   .ns-faq__body p + p { margin-block-start: var(--space-3); }
 
   /* --- Logo / trust row ----------------------------------------------------
@@ -468,6 +624,63 @@
   .ns-logorow > * { color: var(--color-label); transition: color var(--duration-fast) var(--ease-out); }
   .ns-logorow > *:hover { color: var(--color-ink); }
   .ns-logorow__mark { font-family: var(--font-mono); font-size: var(--size-mono); letter-spacing: var(--tracking-label); text-transform: uppercase; }
+  /* The line above a logo wall. A TITLE, not a sentence and not a kicker.
+
+     It was a sentence once — "Teams learning here — 1,482 people, at their
+     own desks and on their employers' time" — and a sentence is the wrong
+     object here for the same reason a mono kicker was: a logo wall is
+     scanned in about a second, and a clause with a subordinate clause in it
+     asks for four. Six words that name what the row IS, then the row.
+
+     Not a .ns-kicker either: a kicker frames a heading, and a logo wall has
+     no heading, so tracked mono capitals over it are the label voice doing
+     an ordinary title's job. */
+  .ns-logorow__title {
+    display: block;
+    margin: 0 auto var(--space-6); text-align: center;
+    font-size: var(--size-prose); font-weight: var(--weight-semibold);
+    color: var(--color-muted); text-wrap: balance;
+  }
+
+  /* --- The brand mark ------------------------------------------------------
+     An actual logo lockup in a trust row or the marquee, as opposed to
+     .ns-logorow__mark, which is the company's NAME set in our mono voice
+     because no mark exists yet.
+
+     Sized by height and never by width. Logos are drawn at wildly different
+     aspect ratios — a square monogram, a long wordmark, a lockup with both —
+     and a row that sets a common WIDTH makes the wordmark tiny and the
+     monogram enormous. Optical evenness in a logo row comes from a shared
+     cap height, which is what a fixed block-size with `inline-size: auto`
+     buys.
+
+     Colour comes from currentColor, so the row's grayscale-at-rest →
+     ink-on-hover is a colour change rather than a filter. That matters for
+     more than elegance: `filter: grayscale(1)` on a dark logo over a dark
+     band leaves a black rectangle, so a filtered logo wall needs a second
+     set of assets for the dark theme and ours does not.
+
+     The trade is real and worth stating: this only works for MONOCHROME
+     marks. A partner who supplies a two-colour logo and requires it be used
+     in those colours gets an <img>, and that <img> needs a light and a dark
+     asset. The component takes either — see icons/brand-marks.svg for the
+     placeholder set and the warning attached to it. */
+  .ns-brandmark {
+    display: block; block-size: var(--space-6); inline-size: auto;
+    color: inherit;
+  }
+  /* `inline-size: auto` needs something to resolve against, and an <svg>
+     whose only child is a <use> pointing at ANOTHER document has no
+     intrinsic size — it falls back to the CSS default 300×150 and letterboxes
+     the mark inside it. So the host element repeats the symbol's viewBox:
+
+       <svg class="ns-brandmark" viewBox="0 0 111 24"><use href="…#ns-b-acme"/></svg>
+
+     which is also why this component does not pin an aspect-ratio. Pinning
+     one would put every mark in the same box, and then the widest wordmark
+     is clipped while the narrowest floats — the exact failure a shared cap
+     height exists to avoid. */
+  .ns-brandmark--lg { block-size: var(--space-8); }
 
   /* --- Footer -------------------------------------------------------------
      Link columns over a mono bottom bar. One hairline on top; column heads
@@ -579,7 +792,7 @@
   }
   .ns-compare__side--after .ns-compare__label { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-compare__side--after .ns-compare__label { color: var(--color-brand-300); }
-  .ns-compare__text { font-size: var(--size-small); line-height: var(--leading-snug); margin: 0; }
+  .ns-compare__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); margin: 0; }
   .ns-compare__side--after .ns-compare__text { color: var(--color-ink); }
   /* The seam. A column of its own rather than a pseudo-element on either
      panel, because it belongs to NEITHER — it is the transition, and giving
@@ -636,15 +849,17 @@
      themselves IN or OUT in one read; without it three role names are three
      job titles and the reader guesses. */
   .ns-router__when {
-    font-size: var(--size-small); line-height: var(--leading-snug);
+    font-size: var(--size-prose-small); line-height: var(--leading-snug);
     color: var(--color-muted); margin: 0;
     flex: 1;
   }
+  /* An ACTION, and actions are language. "START WITH GOVERNOR LIMITS" in
+     tracked capitals reads as a system status; "Start with governor limits"
+     reads as an invitation, which is what it is. */
   .ns-router__go {
     display: flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-brand-600);
+    font-size: var(--size-prose-small); font-weight: var(--weight-semibold);
+    color: var(--color-brand-600);
   }
   [data-theme="dark"] .ns-router__go { color: var(--color-brand-300); }
   .ns-router__go i { transition: translate var(--duration-fast) var(--ease-out); }
@@ -705,7 +920,7 @@
     padding: var(--pad-card);
     border-block-start: 1px solid var(--color-border);
   }
-  .ns-sample__note { font-size: var(--size-small); color: var(--color-muted); margin: 0; }
+  .ns-sample__note { font-size: var(--size-prose-small); color: var(--color-muted); margin: 0; }
 
   /* --- 4. Shipped ----------------------------------------------------------
      "IS THIS THING STILL ALIVE?" A dead curriculum and a living one look
@@ -742,7 +957,7 @@
     color: var(--color-brand-600);
   }
   [data-theme="dark"] .ns-shipped__kind { color: var(--color-brand-300); }
-  .ns-shipped__title { font-size: var(--size-small); line-height: var(--leading-snug); transition: color var(--duration-fast) var(--ease-out); }
+  .ns-shipped__title { font-size: var(--size-prose-small); line-height: var(--leading-snug); transition: color var(--duration-fast) var(--ease-out); }
   @media (max-width: 47.999rem) {
     /* The date and the kind share a row above the title rather than each
        taking a column: three columns in 360px gives the title ~9rem. */
@@ -780,7 +995,7 @@
   .ns-fit__list li {
     display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-2-5);
     align-items: start;
-    font-size: var(--size-small); line-height: var(--leading-snug);
+    font-size: var(--size-prose-small); line-height: var(--leading-snug);
   }
   .ns-fit__col--no .ns-fit__list li { color: var(--color-muted); }
   .ns-fit__list i { margin-block-start: var(--space-0-5); }
@@ -823,7 +1038,7 @@
   .ns-scope__items li {
     padding: var(--space-1) var(--space-2-5);
     border: 1px solid var(--color-border); border-radius: var(--radius-pill);
-    font-size: var(--size-label); color: var(--color-muted);
+    font-size: var(--size-small); color: var(--color-muted);
     white-space: nowrap;
   }
   /* A term the reader is most likely scanning for, marked. At most two or
@@ -833,4 +1048,975 @@
   }
   [data-theme="dark"] .ns-scope__items li[data-key] { color: var(--color-brand-300); }
 
+  /* ============================== CARDS INSIDE A BAND ====
+     A course card, a track card, a path stop and a post card all set their
+     copy at the UI scale, which is right where they live in bulk: a
+     catalogue of forty courses, a rail of lessons, a search result list. All
+     of those are SCANNED — the reader is looking for one row and discarding
+     the rest.
+
+     On a marketing band the same card is doing the opposite job. There are
+     three of them, they are the argument, and every word is read. So inside
+     a band they take the reading scale, exactly as the band's own copy does.
+
+     This is the scanned/read fork applied, not an exception carved out of
+     it. The tell that it is the right cut: the component does not change —
+     no modifier, no second card — only the register it is being read in.
+
+     Deliberately NOT applied to .ns-lesson. A lesson row looks the same in
+     the syllabus, the rail and the drawer, and that is a stated promise of
+     lms.css; a lesson row inside a band is still a list of lessons. */
+  .ns-band .ns-card__title,
+  .ns-band .ns-trackcard__title,
+  .ns-band .ns-path__title { font-size: var(--size-prose); }
+  .ns-band .ns-timeline__title { font-size: var(--size-prose); font-weight: var(--weight-semibold); }
+  .ns-band .ns-card__text,
+  .ns-band .ns-bcard__excerpt,
+  .ns-band .ns-trackcard__text,
+  .ns-band .ns-timeline__text,
+  .ns-band .ns-sponsor__text,
+  .ns-band .ns-path__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); }
+
+  /* A marquee item carrying a MARK rather than a name. The item's own mono
+     styling is what a text credential wants and exactly what a logo does not
+     — an inline-flex row with a font-size and tracking on it will size the
+     <svg> off its own em box. So the logo item drops the type entirely and
+     is a box holding one mark. */
+  .ns-marquee__item--logo {
+    font-size: 0; letter-spacing: normal;
+    color: var(--color-label);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+  .ns-marquee__item--logo:hover { color: var(--color-ink); }
+  /* On the navy band there is no "grayscale" to sit at — the marks are
+     already one colour on one ground, so they rest a little dimmed and come
+     up to full on hover. */
+  .ns-band--dark .ns-marquee__item--logo { color: var(--color-on-dark-border-hover); }
+  .ns-band--dark .ns-marquee__item--logo:hover { color: var(--color-on-dark); }
+
+  /* ======================================================== THE MAKERS ====
+     Who wrote the thing, as a card a person is actually in rather than a
+     row of credentials.
+
+     WHY THIS IS NOT .ns-instructor. That component is a catalogue block: an
+     avatar, a name, a role and two counts, sized to sit in a course page's
+     sidebar next to the buy button, where the reader has already decided and
+     just wants to know who is talking. Dropping it onto a homepage produced
+     exactly what it is built to be — a small photo beside a job title and
+     two numbers, which is a byline, and nobody has ever been persuaded by a
+     byline.
+
+     A homepage is asking a different question: not "who is this" but "why
+     would I listen". So the card leads with the person SPEAKING — one
+     first-person sentence at reading-lead size, the largest thing in the
+     card — and puts the identity underneath it as attribution. That is the
+     shape of a testimonial, and it works here for the same reason it works
+     there: a claim in someone's own voice, with a face and a checkable
+     number attached, is the only kind of authority a stranger can weigh.
+
+     TWO COLUMNS, NOT THREE, and the grid says so with a 24rem minimum rather
+     than a count. Three of these would drop each sentence to a phrase, and a
+     phrase in quotation marks is a pull-quote, not a voice. If a third
+     author appears, the band becomes a strip — it does not get narrower.
+
+     The stat chips stay in the mono voice at the label floor. They are the
+     one part of the card that IS data: "9 courses" is a number to check, not
+     a thing anybody reads aloud. */
+  .ns-makers {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
+  }
+  .ns-maker {
+    position: relative;
+    display: flex; flex-direction: column; gap: var(--space-5);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    /* The system's standing card device: an accent that lives on the leading
+       edge and is transparent until the card is engaged. A border-colour
+       change alone is too quiet for something this large. */
+    box-shadow: inset 2px 0 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-maker:hover, .ns-maker:focus-within {
+    border-color: var(--color-brand-500);
+    box-shadow: inset 2px 0 0 var(--color-brand-500);
+  }
+  /* The voice. Set at the reading LEAD size because it is the one sentence
+     on the card meant to be heard rather than filed — and in the sans, not
+     the serif quoting register, because the person is talking to the reader
+     directly rather than being cited by someone else. */
+  .ns-maker__says {
+    font-size: var(--size-prose-lead); line-height: var(--leading-snug);
+    color: var(--color-ink); text-wrap: pretty; margin: 0;
+  }
+  .ns-maker__says::before {
+    content: "“"; color: var(--color-brand-500);
+    /* Hung into the margin so the first real word still starts on the card's
+       text edge. A quote mark that pushes the line in by its own width makes
+       the paragraph look mis-indented next to everything above it. */
+    margin-inline-start: -0.42em; /* lint-ok: optical hang, relative to font-size not the spacing scale */
+  }
+  .ns-maker__says::after { content: "”"; color: var(--color-brand-500); }
+  [data-theme="dark"] .ns-maker__says::before,
+  [data-theme="dark"] .ns-maker__says::after { color: var(--color-brand-300); }
+
+  /* Attribution. margin-block-start:auto so two cards of unequal sentence
+     length still line their faces up along the bottom — the row reads as two
+     people, and a floating avatar reads as a bug. */
+  /* A GRID, not a flex row, and the reason is the role line. "Salesforce
+     Architect · 11× certified" wraps to two lines in a card of this width
+     while "Flows & automation" does not — so in a flex row the stat chips
+     end up at a different height in each of the two cards, and the pair
+     reads as a bug rather than as a pair. A grid parks the chips in their
+     own track under the identity, aligned to the name's text edge, where
+     the role's length cannot move them.
+
+     Container-width problems want container-relative answers; the old
+     viewport media query never fired here because each card is ~580px wide
+     inside a 1440px page, which is exactly the case it was meant to catch. */
+  .ns-maker__who {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-2) var(--space-3);
+    align-items: center;
+    margin-block-start: auto;
+    padding-block-start: var(--space-5);
+    border-block-start: 1px solid var(--color-border);
+  }
+  .ns-maker__avatar { grid-row: 1 / -1; align-self: start; }
+  .ns-maker__avatar {
+    inline-size: var(--space-12); block-size: var(--space-12); flex: none;
+    border-radius: var(--radius-pill); object-fit: cover;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-maker__ident { display: grid; gap: var(--space-0-5); min-inline-size: 0; }
+  .ns-maker__name { font-family: var(--font-heading); font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-maker__role { font-size: var(--size-prose-small); color: var(--color-muted); }
+  .ns-maker__stats { display: flex; flex-wrap: wrap; gap: var(--space-2); grid-column: 2; }
+  .ns-maker__stat {
+    display: inline-flex; align-items: center; gap: var(--space-1);
+    padding: var(--space-1) var(--space-2-5);
+    border: 1px solid var(--color-border); border-radius: var(--radius-pill);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-maker__stat i { color: var(--color-brand-500); }
+  [data-theme="dark"] .ns-maker__stat i { color: var(--color-brand-300); }
+  @media (max-width: 47.999rem) {
+    /* On a phone the avatar gives up its column too — at 320px an avatar
+       beside a wrapping name and a wrapping role is three things sharing
+       one line's worth of space. */
+    .ns-maker__who { grid-template-columns: minmax(0, 1fr); }
+    .ns-maker__avatar { grid-row: auto; }
+    .ns-maker__stats { grid-column: 1; }
+  }
+
+  /* ===================================================== THE SPONSOR ASK ====
+     The inbound half of the sponsors band: not a placement, a solicitation.
+
+     It is deliberately NOT .ns-adslot. That component is dashed and plainly
+     unfinished because it is scaffolding — "a sponsor goes here" — and its
+     own docs say never to ship it to a reader. This is the opposite object:
+     a finished, quiet row addressed to somebody who might buy, and it has to
+     look like something the site meant to publish.
+
+     It is also not .ns-cta. A page gets one closer, and spending it on
+     "sponsor us" instead of "start learning" would sell the wrong thing to
+     the 99% of readers who came to learn. So: a hairline row, one line of
+     copy with a real number in it, and an outline button. Quiet enough to
+     scroll past, specific enough to act on if you are the one person on the
+     page who buys ad space. */
+  .ns-sponsorask {
+    display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+    padding: var(--space-5) var(--pad-card);
+    border: 1px dashed var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+  }
+  .ns-sponsorask__icon {
+    display: grid; place-items: center; flex: none;
+    inline-size: var(--space-10); block-size: var(--space-10);
+    border-radius: var(--radius-pill);
+    background: var(--color-brand-50); color: var(--color-brand-600);
+    font-size: var(--size-h4);
+  }
+  [data-theme="dark"] .ns-sponsorask__icon { background: var(--color-surface-raised); color: var(--color-brand-300); }
+  .ns-sponsorask__body { display: grid; gap: var(--space-1); min-inline-size: 0; flex: 1; }
+  .ns-sponsorask__title { font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-sponsorask__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); margin: 0; }
+  .ns-sponsorask__text b { font-variant-numeric: tabular-nums; color: var(--color-ink); font-weight: var(--weight-semibold); }
+
+  /* ======================================================= THE SCROLL HERO ====
+     .ns-shero — a hero that is a SECTION rather than a screenful.
+
+     The pitch stays put on one side while the evidence for it scrolls past
+     on the other, and the band ends when the evidence runs out. The reason
+     to build a hero this way is not that it is fashionable: a normal hero
+     gets one picture to carry a claim that actually needs four, so it either
+     shows a screenshot that means nothing out of context or an abstraction
+     that means nothing at all. Here the claim is held still and argued four
+     times, which is what the claim needs.
+
+     THE MECHANISM IS `position: sticky` AND NOTHING ELSE. No scroll
+     listener, no observer, no timeline — sticky is layout, so it works in
+     every engine, survives a hidden tab, and cannot fall out of sync with
+     the thing it is pinned to. Two conditions make it work and both are easy
+     to break from a distance:
+
+       1. No ancestor may be a SCROLL CONTAINER. `overflow: hidden` anywhere
+          above pins the column to that box instead of the viewport, and
+          because the box does not scroll, the column simply never sticks.
+          .ns-band--dark uses `overflow: clip` for exactly this reason.
+       2. The sticky element's PARENT has to be the tall one. The column is
+          a grid item stretched to the row's height by the reel beside it;
+          the stage sticks inside that. Give the stage the height and it has
+          nothing to travel within.
+
+     Below --lg it stops being two columns and stops being sticky, because a
+     sticky pane on a phone is a pane covering the content it was supposed to
+     be arguing for. */
+  .ns-shero { padding-block: 0; }
+  .ns-shero__inner {
+    max-inline-size: var(--container-page); margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+  /* The pinned side. `align-self: start` is load-bearing: a stretched grid
+     item is as tall as the row, and a sticky box that is already the height
+     of its own container has nowhere to stick. */
+  .ns-shero__stage {
+    position: sticky; inset-block-start: 0;
+    align-self: start;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: var(--space-5);
+    min-block-size: 100svh;
+    padding-block: var(--stack-lg);
+  }
+  .ns-hero__eyebrow {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    align-self: flex-start;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-on-dark) 12%, transparent);
+    font-size: var(--size-prose-small); color: var(--color-on-dark);
+  }
+  .ns-hero__eyebrow i { color: var(--color-brand-300); }
+  .ns-shero__title {
+    font-size: var(--size-display); line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+    max-inline-size: 15ch;
+  }
+  /* The one word that is the promise, marked with the system's own hairline
+     rather than a highlighter. The rule DRAWS on entrance — the only place
+     in the hero where motion is carrying meaning rather than decoration. */
+  .ns-hero__mark { position: relative; white-space: nowrap; }
+  .ns-hero__mark::after {
+    content: ""; position: absolute;
+    inset-inline: 0; inset-block-end: -0.06em; /* lint-ok: optical, relative to font-size not the spacing scale */
+    block-size: 3px;
+    background: var(--color-brand-400);
+    animation: ns-anim-draw var(--duration-draw) var(--ease-draw) both;
+    animation-delay: var(--duration-slow);
+  }
+  .ns-shero__lede {
+    font-size: var(--size-prose-lead); line-height: var(--leading-snug);
+    color: var(--color-on-dark-border-hover); text-wrap: pretty;
+    max-inline-size: var(--container-prose);
+  }
+  .ns-shero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+  /* Proof as three facts on their own lines, not one mono string. The old
+     hero ran "12 COURSES · 150 TRAINING MODULES · MOST OF IT FREE" as a
+     single tracked uppercase line, which is three claims wearing the visual
+     grammar of a serial number. */
+  .ns-shero__proof { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+  .ns-shero__proof li {
+    display: flex; align-items: baseline; gap: var(--space-2-5);
+    font-size: var(--size-prose-small); color: var(--color-on-dark-border-hover);
+  }
+  .ns-shero__proof b { color: var(--color-on-dark); font-variant-numeric: tabular-nums; font-weight: var(--weight-semibold); }
+  .ns-shero__proof i { color: var(--color-brand-300); }
+
+  /* The scrolling side. */
+  .ns-shero__reel { display: grid; gap: var(--space-6); padding-block: var(--stack-lg); }
+  .ns-shero__panel {
+    margin: 0;
+    display: flex; flex-direction: column; gap: var(--space-4);
+    padding: var(--pad-card-lg);
+    border: 1px solid color-mix(in srgb, var(--color-on-dark) 16%, transparent);
+    border-radius: var(--radius-card);
+    background: color-mix(in srgb, var(--color-on-dark) 5%, transparent);
+    min-block-size: 60svh;
+    justify-content: center;
+  }
+  .ns-shero__panel figcaption { display: grid; gap: var(--space-1); }
+  .ns-shero__step {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); color: var(--color-brand-300);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-shero__what { font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-on-dark); }
+  .ns-shero__why { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-on-dark-border-hover); margin: 0; }
+
+  /* The vector stage: a scene drawn at illustration scale, on the band's
+     hairline grid so it sits in the same world as the rest of the page. */
+  .ns-vec {
+    display: block; inline-size: 100%; block-size: auto;
+    aspect-ratio: 4 / 3;
+    color: var(--color-on-dark);
+  }
+  .ns-vec__frame {
+    border-radius: var(--radius-sm);
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-on-dark) 8%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-on-dark) 8%, transparent) 1px, transparent 1px);
+    background-size: var(--space-6) var(--space-6);
+    padding: var(--space-4);
+    overflow: clip;
+  }
+  /* Strokes that draw themselves. pathLength="100" on the path is what lets
+     one dash length and one duration fit every path in the set regardless of
+     how long each actually is. */
+  .ns-vec__draw {
+    stroke-dasharray: 100;
+    animation: ns-vec-draw var(--duration-draw) var(--ease-draw) both;
+  }
+  @keyframes ns-vec-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+
+  @media (max-width: 63.999rem) {
+    .ns-shero__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    /* Sticky OFF. A pinned pane on a phone is a pane covering the content it
+       exists to argue for. */
+    .ns-shero__stage { position: static; min-block-size: 0; padding-block-end: 0; }
+    .ns-shero__panel { min-block-size: 0; }
+    .ns-shero__reel { padding-block-start: 0; }
+  }
+
+  /* ========================================================= THE SHOWCASE ====
+     Alternating rows: a vector on one side, a title, a paragraph and one
+     action on the other, flipping every row.
+
+     WHY THIS AND NOT ANOTHER FEATURE GRID. .ns-features answers "what are the
+     three things about this" with three cells that are true at once, and it
+     is right when the three things are a SENTENCE each. The moment a claim
+     needs a picture and a paragraph and somewhere to go next, three cells
+     stop working: the picture is a thumbnail, the paragraph is clipped, and
+     there is nowhere to put the link. This is that claim, given a full row.
+
+     The alternation is not decoration either. Two rows the same way round
+     read as a list; alternating gives each row its own entrance and stops
+     the eye running straight down a column of pictures ignoring the words
+     beside them.
+
+     THE ROW IS THE UNIT AND IT DOES NOT SUBDIVIDE. Three of these is the
+     most a page can carry — past that the reader is scrolling through a
+     brochure, and the things that did not fit belong on their own pages
+     with a link from here. */
+  .ns-showcase { display: grid; gap: var(--stack-lg); }
+  .ns-showcase__row {
+    display: grid; align-items: center; gap: var(--space-10);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  /* Flipped with `direction`-agnostic order rather than by swapping the
+     markup, so the DOM stays in reading order — the picture always follows
+     the words it illustrates for anything that does not do layout. */
+  .ns-showcase__row:nth-child(even) .ns-showcase__art { order: -1; }
+  .ns-showcase__body { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+  .ns-showcase__step {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-mono); font-size: var(--size-mono);
+    letter-spacing: var(--tracking-label); color: var(--color-brand-600);
+    font-variant-numeric: tabular-nums;
+  }
+  [data-theme="dark"] .ns-showcase__step { color: var(--color-brand-300); }
+  .ns-showcase__title {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-heading); line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-tight); text-wrap: balance;
+    color: var(--color-ink);
+  }
+  .ns-showcase__text {
+    font-size: var(--size-prose); line-height: var(--leading-snug);
+    color: var(--color-muted); text-wrap: pretty; margin: 0;
+    max-inline-size: var(--container-prose);
+  }
+  /* The row's own bullets — the two or three specifics that make the
+     paragraph checkable. Not a nested feature list: one line each. */
+  .ns-showcase__list { display: grid; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+  .ns-showcase__list li {
+    display: flex; align-items: baseline; gap: var(--space-2-5);
+    font-size: var(--size-prose-small); color: var(--color-muted);
+  }
+  .ns-showcase__list i { color: var(--color-success); }
+  /* The art. On a light band the scenes are drawn in ink, so the frame's
+     grid has to be the light one — .ns-vec__frame is written for the navy
+     band, and this is its counterpart. */
+  .ns-showcase__art {
+    min-inline-size: 0;
+    padding: var(--space-6);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: var(--space-6) var(--space-6);
+    overflow: clip;
+  }
+  .ns-showcase__art .ns-vec { color: var(--color-brand-700); }
+  [data-theme="dark"] .ns-showcase__art .ns-vec { color: var(--color-brand-200); }
+  @media (max-width: 63.999rem) {
+    .ns-showcase { gap: var(--stack-md); }
+    .ns-showcase__row { grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+    /* The flip comes off. Alternating in one column is not alternation, it
+       is two rows where the picture is sometimes above and sometimes below,
+       which reads as a mistake. */
+    .ns-showcase__row:nth-child(even) .ns-showcase__art { order: 0; }
+  }
+
+  /* ======================================================== THE PHOTO BAND ====
+     A photograph held still while the words move over it.
+
+     THE PARALLAX IS `position: sticky`, NOT A SCROLL TIMELINE. The media
+     pins for the height of the band and the copy scrolls past it, which
+     produces the depth cue a parallax band is after using nothing but
+     layout: no scroll listener, no observer, no `view()` timeline, correct
+     on iOS (where `background-attachment: fixed` is not), and impossible to
+     desynchronise from the thing it is pinned to.
+
+     It is also the reason this is not one full-bleed background image with
+     `background-attachment: fixed`. That technique costs a repaint on every scroll
+     frame, is silently ignored on iOS Safari, and cannot carry an <img> —
+     so it has no alt text, no srcset, and no lazy loading.
+
+     PHOTOGRAPHS, NOT ILLUSTRATIONS. This is the one band in the system that
+     genuinely wants a camera: faces, a room, a desk, the actual thing. If
+     there is no photograph, .ns-ph is the correct filler here precisely
+     because it is embarrassing — unlike a card cover, where an icon is a
+     finished answer, a photo band with nothing in it should look unfinished
+     until somebody supplies the picture. */
+  .ns-photoband { position: relative; padding-block: 0; }
+  .ns-photoband__inner {
+    max-inline-size: var(--container-page); margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-10);
+    align-items: start;
+  }
+  .ns-photoband__media {
+    position: sticky; inset-block-start: 0;
+    align-self: start;
+    block-size: 100svh;
+    display: grid; align-content: center;
+    padding-block: var(--stack-lg);
+  }
+  .ns-photoband__frame {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    /* Capped, and the cap is the point. A 3:4 portrait allowed to fill a
+       100svh sticky column is 900px tall on a laptop — larger than anything
+       else on the page by a factor of three, which makes the band a picture
+       with some text next to it rather than an argument with a picture
+       beside it. The cap keeps the photograph the size of a photograph. */
+    max-block-size: 68svh;
+    /* `justify-self`, NOT `margin-inline: auto`. On a grid item an auto inline
+       margin removes the stretch, so the frame shrinks to its CONTENT width —
+       and with an aspect-ratio deriving the height from that width, an empty
+       slot collapsed to 123px. justify-self centres without giving up the
+       track. */
+    justify-self: center;
+    max-inline-size: 26rem; inline-size: 100%;
+    border-radius: var(--radius-card);
+    overflow: clip;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-photoband__frame > img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  /* .ns-ph is NOT given `display: block` here. It sets `display: grid` with
+     `place-items: center` to put its own label in the middle of the slot, and
+     overriding the display strands that label in the top-left corner — which
+     is how an empty slot stops reading as "a picture goes here" and starts
+     reading as a broken image. */
+  .ns-photoband__frame > .ns-ph { inline-size: 100%; block-size: 100%; }
+  /* The caption rides on the picture, bottom-left, on a scrim rather than a
+     full-width bar — a bar would crop the photograph a second time. */
+  .ns-photoband__cap {
+    position: absolute; inset-inline: var(--space-4); inset-block-end: var(--space-4);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-brand-900) 78%, transparent);
+    color: var(--color-on-dark);
+    font-size: var(--size-prose-small);
+  }
+  .ns-photoband__copy { display: grid; gap: var(--stack-md); padding-block: var(--stack-lg); }
+  .ns-photoband__beat { display: flex; flex-direction: column; gap: var(--space-3); min-block-size: 62svh; justify-content: center; }
+  .ns-photoband__when {
+    font-family: var(--font-mono); font-size: var(--size-mono);
+    letter-spacing: var(--tracking-label); color: var(--color-label);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-photoband__what {
+    font-family: var(--font-heading); font-size: var(--size-h3);
+    font-weight: var(--weight-heading); line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-tight); color: var(--color-ink); text-wrap: balance;
+  }
+  .ns-photoband__says { font-size: var(--size-prose); line-height: var(--leading-snug); color: var(--color-muted); margin: 0; text-wrap: pretty; }
+  @media (max-width: 63.999rem) {
+    .ns-photoband__inner { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+    /* Sticky off, and the frame goes landscape: a 3:4 portrait pinned on a
+       phone is a picture with a paragraph peeking under it. */
+    .ns-photoband__media { position: static; block-size: auto; padding-block: var(--stack-md) 0; }
+    .ns-photoband__frame { aspect-ratio: 16 / 10; }
+    .ns-photoband__copy { padding-block-start: 0; }
+    .ns-photoband__beat { min-block-size: 0; }
+  }
+
+  /* ======================================================== THE VIDEO BAND ====
+     One lesson, playable, with its contents listed beside it.
+
+     The list is the point and it is why this is not just a video in a band.
+     A play button on a marketing page asks for eleven minutes on faith; the
+     chapter list spends ten seconds instead and lets the reader decide
+     whether the eleven minutes contain the thing they came for. It is real
+     text in the page, so it is searchable and readable with the video
+     unplayed, unplayable or blocked.
+
+     The stage takes whatever the product gives it — <video>, the system's
+     own .ns-vplayer, or the .ns-screencast specimen on a page that has no
+     footage to ship. */
+  .ns-videoband {
+    display: grid; gap: var(--space-8);
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    align-items: start;
+  }
+  .ns-videoband__stage { min-inline-size: 0; border-radius: var(--radius-card); overflow: clip; }
+  .ns-videoband__stage > video,
+  .ns-videoband__stage > img { inline-size: 100%; block-size: auto; display: block; aspect-ratio: 16 / 9; object-fit: cover; background: var(--color-brand-900); }
+  .ns-videoband__side { display: flex; flex-direction: column; gap: var(--space-4); }
+  .ns-videoband__title { font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-videoband__chapters { display: grid; margin: 0; padding: 0; list-style: none; }
+  .ns-videoband__chapter {
+    display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--space-3);
+    align-items: baseline;
+    padding-block: var(--space-3);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-prose-small);
+  }
+  .ns-videoband__chapter:last-child { border-block-end: 1px solid var(--color-border); }
+  /* A timestamp IS a value — this is where the mono voice belongs. */
+  .ns-videoband__at {
+    font-family: var(--font-mono); font-size: var(--size-mono);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-videoband__chapter a { color: var(--color-ink); text-decoration: none; }
+  .ns-videoband__chapter a:hover { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-videoband__chapter a:hover { color: var(--color-brand-300); }
+  @media (max-width: 63.999rem) {
+    .ns-videoband { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ============================================================ THE STORY ====
+     About the author, told as the thing this audience reads every day: an
+     execution log.
+
+     WHY THIS SHAPE AND NOT A BIO. A founder bio on a learning site is the
+     most skipped block on the page, because everybody already knows what it
+     says — years of experience, a list of certifications, a sentence about
+     passion. The facts are fine; the FORM is what nobody reads. So the same
+     facts are set in the one format this audience cannot help reading: a
+     debug log, in order, with a timestamp, a level and a message.
+
+     It is not a joke at the reader's expense and it does not stay clever.
+     The log runs, it hits a FATAL_ERROR — the governor limit that is the
+     actual turning point of the story — and then it stops, and the section
+     resolves into plain prose and a signature. The device gets the reader
+     into the block; the sincerity is what they leave with. A section that
+     was only the gag would be decoration, and this system does not ship
+     decoration.
+
+     THE MONO IS CORRECT HERE and it is worth being explicit, because the
+     rest of this file has just spent a week moving words OUT of the label
+     voice. A timestamp is a value. A log level is a value. The message
+     beside them is prose, and it is set in the sans exactly as it would be
+     in a real log viewer. The rule did not bend; the content genuinely is
+     data this time. */
+  .ns-story { display: grid; gap: var(--stack-md); }
+
+  /* --- The log ------------------------------------------------------------ */
+  /* THE COLUMNS HAVE TO LINE UP OR IT IS NOT A LOG. Each line was its own
+     grid, so `auto` sized the timestamp and level per ROW — USER_DEBUG and
+     CODE_UNIT_FINISHED pushed their messages to different x positions and
+     the block read as six sentences in a box rather than as output.
+
+     Subgrid puts every line on the log's tracks while leaving each line a
+     real box, which it has to be: the fatal line's leading edge and the row
+     rules cannot be drawn by a `display: contents` element. The fallback
+     below covers engines without subgrid by giving the two value columns a
+     floor wide enough for the longest token — worse, but still aligned. */
+  .ns-story__log {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    padding: var(--space-5) 0;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface-sunken);
+    overflow: clip;
+  }
+  .ns-story__line {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    gap: var(--space-4);
+    align-items: baseline;
+    padding: var(--space-2) var(--pad-card);
+    /* Streams in, one line after another. --_i is the line's index; a real
+       log does not arrive all at once, and the cascade is the only thing
+       that makes this read as OUTPUT rather than as a table. Capped in the
+       markup at ten lines, because a stagger with no ceiling is the mistake
+       every stagger implementation makes exactly once. */
+    animation: ns-anim-enter-start var(--duration-base) var(--ease-out) both;
+    animation-delay: calc(var(--_i, 0) * 90ms); /* lint-ok: the cadence of streaming output, not interaction feedback */
+  }
+  .ns-story__line + .ns-story__line { border-block-start: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent); }
+  .ns-story__at {
+    font-family: var(--font-mono); font-size: var(--size-mono);
+    color: var(--color-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-story__level {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    color: var(--color-muted);
+    min-inline-size: 19ch; /* the fallback floor: CODE_UNIT_FINISHED is the longest level */
+  }
+  @supports (grid-template-columns: subgrid) {
+    .ns-story__line { grid-template-columns: subgrid; }
+    /* With subgrid the tracks are shared, so the floors are not needed and
+       would only pad the columns out past their content. */
+    .ns-story__level { min-inline-size: 0; }
+  }
+  /* The message is PROSE and is set as prose. In a real log viewer it is the
+     one column that is not a value, and it is the one column anybody reads. */
+  .ns-story__says { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-ink); text-wrap: pretty; }
+  .ns-story__says b { font-weight: var(--weight-semibold); }
+
+  /* The turn. One line in the log is the reason the rest of this site
+     exists, and it is marked the way the platform marks it — not with a
+     colour the design system invented for the occasion. */
+  /* A LEADING EDGE, NOT A BACKGROUND WASH. Principle 3 is explicit that
+     status never gets a fill, and it is right for a reason that shows up
+     here: a tinted row is unreadable in forced colours, it fights the
+     sunken panel it sits on, and it makes one line of a log look like a
+     selected row rather than a failed one. The 2px edge is the system's
+     standing "this one" device — the same mark .ns-compare__side--after and
+     .ns-card use — and --color-error-ink rather than --color-error because
+     the message beside it is small text on a sunken ground, which is where
+     the plain error red runs out of contrast headroom. */
+  .ns-story__line--fatal { box-shadow: inset 2px 0 0 var(--color-error-ink); }
+  .ns-story__line--fatal .ns-story__level { color: var(--color-error-ink); }
+  .ns-story__line--ok { box-shadow: inset 2px 0 0 var(--color-success); }
+  .ns-story__line--ok .ns-story__level { color: var(--color-success-ink); }
+
+  /* --- The resolve -------------------------------------------------------- */
+  .ns-story__resolve {
+    display: grid; grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-6);
+    align-items: start;
+  }
+  .ns-story__portrait {
+    inline-size: var(--space-20); block-size: var(--space-20);
+    border-radius: var(--radius-pill); object-fit: cover; flex: none;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-story__prose { display: grid; gap: var(--space-4); justify-items: start; }
+  .ns-story__prose p {
+    margin: 0;
+    font-size: var(--size-prose); line-height: var(--leading-prose);
+    color: var(--color-muted); text-wrap: pretty;
+    max-inline-size: var(--container-prose);
+  }
+  .ns-story__prose p b { color: var(--color-ink); font-weight: var(--weight-semibold); }
+
+  /* The signature. It draws itself once, slowly enough to read as a hand
+     moving — --duration-draw exists for exactly this and is the system's
+     standing answer to "a mark that draws is a gesture". A signature that
+     fades in is a picture of a signature; one that draws is somebody
+     signing. */
+  .ns-story__sign { display: grid; gap: var(--space-2); justify-items: start; }
+  .ns-sig { display: block; block-size: var(--space-12); inline-size: auto; color: var(--color-ink); }
+  .ns-sig path {
+    fill: none; stroke: currentColor; stroke-width: 2.2;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 100;
+    animation: ns-vec-draw var(--duration-draw) var(--ease-draw) both;
+    animation-delay: var(--duration-slow);
+  }
+  .ns-story__who { font-size: var(--size-prose-small); color: var(--color-muted); }
+
+  @media (max-width: 47.999rem) {
+    .ns-story__line { grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
+    /* The timestamp and level go on one row above the message rather than
+       disappearing: they are what makes it a log, and a log with the level
+       hidden is a list of sentences in a box. */
+    .ns-story__at, .ns-story__level { display: inline; }
+    .ns-story__resolve { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  /* ========================================================== PROFILE CARD ====
+     A person as a RECORD, in the shape the audience already reads people in:
+     a cover strip, a round avatar breaking the boundary between cover and
+     body, the name and title under it, then the fields.
+
+     This replaced .ns-maker on the homepage. The maker card led with a
+     first-person sentence, which is a good testimonial shape and a poor
+     PROFILE shape — the reader wanting to know who is teaching them has to
+     read a paragraph before reaching the name. A profile answers the
+     identity question in the first glance and puts the voice underneath.
+
+     The avatar overlapping the cover is doing real work rather than copying
+     a convention: it ties the two zones into one object, and it is the only
+     thing in the card allowed to break a boundary, which is what makes it
+     the first thing the eye lands on. */
+  .ns-profiles { display: grid; gap: var(--gap-grid); grid-template-columns: repeat(auto-fit, minmax(min(21rem, 100%), 1fr)); }
+  .ns-profile {
+    display: flex; flex-direction: column;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    overflow: clip;
+    box-shadow: inset 0 2px 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-profile:hover, .ns-profile:focus-within {
+    border-color: var(--color-brand-500);
+    box-shadow: inset 0 2px 0 var(--color-brand-500);
+  }
+  /* The cover. The brand's own console ground and hairline grid rather than
+     a photograph: a cover image on a card this size is 40px of an
+     unrecognisable picture, and every profile ends up wearing the same
+     stock gradient. */
+  /* NOT `position: relative`. A positioned element paints above non-positioned
+     in-flow content, so a relatively-positioned cover renders on top of the
+     avatar that is pulled up into it with a negative margin — the top half of
+     every face disappeared behind the navy. The cover needs no positioning:
+     an <img> inside it fills it on its own. */
+  .ns-profile__cover {
+    block-size: var(--space-16);
+    background: var(--color-brand-900);
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-on-dark) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-on-dark) 10%, transparent) 1px, transparent 1px);
+    background-size: var(--space-6) var(--space-6);
+  }
+  .ns-profile__cover > img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
+  .ns-profile__body { display: flex; flex-direction: column; gap: var(--space-3); padding: 0 var(--pad-card) var(--pad-card); }
+  .ns-profile__avatar {
+    inline-size: var(--space-16); block-size: var(--space-16);
+    border-radius: var(--radius-pill); object-fit: cover;
+    background: var(--color-surface);
+    /* The ring is the surface colour, not white: on the dark theme a white
+       ring is a bright line around every face on the page. */
+    box-shadow: 0 0 0 4px var(--color-surface), inset 0 0 0 1px var(--color-border);
+    margin-block-start: calc(-1 * var(--space-8));
+  }
+  .ns-profile__ident { display: grid; gap: var(--space-0-5); }
+  .ns-profile__name { font-family: var(--font-heading); font-size: var(--size-h4); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-profile__role { font-size: var(--size-prose-small); color: var(--color-muted); }
+  /* The fields row. Values, so the numbers stay in the mono voice and the
+     words beside them do not. */
+  .ns-profile__fields {
+    display: flex; flex-wrap: wrap; gap: var(--space-5);
+    padding-block: var(--space-3);
+    border-block: 1px solid var(--color-border);
+  }
+  .ns-profile__field { display: grid; gap: var(--space-0-5); }
+  .ns-profile__value { font-family: var(--font-mono); font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-ink); font-variant-numeric: tabular-nums; }
+  .ns-profile__label { font-size: var(--size-prose-small); color: var(--color-muted); }
+  .ns-profile__says { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); margin: 0; text-wrap: pretty; }
+  .ns-profile__foot { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-start: auto; padding-block-start: var(--space-2); }
+
+  /* ============================================================ THE BUBBLE ====
+     A testimonial as a speech bubble with the speaker under it — the shape
+     a quotation takes when it is one of many rather than the one voice a
+     page is built around (.ns-quote, which is set large and centred and is
+     deliberately singular).
+
+     The tail is a rotated square rather than a border triangle: a triangle
+     drawn with borders cannot inherit the bubble's own border, so it needs a
+     second hand-matched triangle behind it and the two drift apart the
+     moment a radius or a hairline changes. */
+  .ns-bubble { display: grid; gap: var(--space-3); inline-size: 19rem; }
+  .ns-bubble__say {
+    position: relative;
+    padding: var(--pad-card);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+    font-size: var(--size-prose-small); line-height: var(--leading-snug);
+    color: var(--color-ink); text-wrap: pretty;
+  }
+  .ns-bubble__say::after {
+    content: ""; position: absolute;
+    inset-block-end: -6px; inset-inline-start: var(--space-6);
+    inline-size: 10px; block-size: 10px;
+    background: var(--color-surface);
+    border-inline-end: 1px solid var(--color-border);
+    border-block-end: 1px solid var(--color-border);
+    rotate: 45deg; /* lint-ok: the bubble tail is a rotated corner, not a spacing value */
+  }
+  .ns-bubble__who { display: flex; align-items: center; gap: var(--space-2-5); padding-inline-start: var(--space-4); }
+  .ns-bubble__avatar {
+    inline-size: var(--space-8); block-size: var(--space-8); flex: none;
+    border-radius: var(--radius-pill); object-fit: cover;
+    background: var(--color-surface-sunken);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  .ns-bubble__name { font-size: var(--size-prose-small); font-weight: var(--weight-semibold); color: var(--color-ink); display: block; }
+  .ns-bubble__meta { font-size: var(--size-prose-small); color: var(--color-muted); }
+
+  /* ========================================================== THE YT STRIP ====
+     A shelf of lessons that scrolls sideways, WITH ITS SCROLLBAR SHOWING.
+
+     The scrollbar is the whole accessibility argument. A horizontal shelf
+     with a hidden scrollbar is a piece of content most people never find:
+     there is no affordance on a trackpad, no target for a mouse, and nothing
+     for a keyboard until something inside it takes focus. Every "elegant"
+     hidden-scrollbar carousel is a decision to hide content from the people
+     least able to discover it. So: a real scrollbar, styled but present, and
+     scroll-snap so a partial card at the edge still lands square.
+
+     FACADES, NOT IFRAMES. Each card is a link to the video, not an embedded
+     player. Three reasons and only the first is about speed: an embed loads
+     ~1MB and sets third-party cookies before anybody presses play; a page of
+     six embeds does that six times; and a design system template that ships
+     a tracker inside it hands that decision to every product that pastes the
+     markup. Swapping a facade for a real iframe on click is a dozen lines in
+     the consuming app, which is where the choice belongs. */
+  .ns-ytstrip {
+    display: grid; grid-auto-flow: column;
+    grid-auto-columns: minmax(min(20rem, 82vw), 1fr);
+    gap: var(--space-8);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Top padding is the numeral's room. `overflow-x: auto` forces the block
+       axis to clip too, so a numeral rising above its thumb would be cut off
+       at the strip's edge — but padding is INSIDE the scroll container, so it
+       is the one way to give overflow room to something in a scroller.
+       Bottom padding is the scrollbar's room. */
+    padding-block: var(--space-14) var(--space-4);
+    overscroll-behavior-x: contain;
+  }
+  /* THE GLOBAL RESET HAS TO BE UNDONE HERE, and this is the only place in the
+     system that wants it. tokens/base.css sets `* { scrollbar-width: thin;
+     scrollbar-color: … }`, which is right everywhere else — a quiet thin bar
+     on a rail or a code block. But Chrome ignores every `::-webkit-scrollbar`
+     rule on an element whose `scrollbar-width` or `scrollbar-color` is
+     anything other than `auto`, and the standard properties cannot ask for a
+     bar that takes up layout space rather than floating over the content and
+     fading out when idle.
+
+     On this component that fade is the bug: a shelf whose only affordance
+     disappears after a second is a shelf most people never scroll. So the two
+     properties are returned to `auto` — restoring the pseudo-elements — and
+     the bar is drawn there. */
+  .ns-ytstrip { scrollbar-width: auto; scrollbar-color: auto; }
+
+  /* THE TWO SCROLLBAR APIS ARE MUTUALLY EXCLUSIVE AND THAT IS THE WHOLE TRAP.
+     Chrome ignores every `::-webkit-scrollbar` rule the moment `scrollbar-width`
+     or `scrollbar-color` is set on the same element — so declaring both, which
+     looks like belt-and-braces, silently drops the styled bar and hands back
+     the macOS overlay scrollbar that fades out when idle. Which is to say: the
+     one thing this component exists to avoid.
+
+     So they are split by support, not stacked. Chrome and Safari get the
+     pseudo-elements, which is the only way to get a bar that is always
+     present rather than an overlay that appears while scrolling; Firefox,
+     which has no pseudo-elements, gets the standard properties. */
+  .ns-ytstrip::-webkit-scrollbar { block-size: var(--space-2-5); }
+  .ns-ytstrip::-webkit-scrollbar-track { background: var(--color-surface-sunken); border-radius: var(--radius-pill); }
+  .ns-ytstrip::-webkit-scrollbar-thumb { background: var(--color-label); border-radius: var(--radius-pill); }
+  .ns-ytstrip::-webkit-scrollbar-thumb:hover { background: var(--color-muted); }
+  @supports not selector(::-webkit-scrollbar) {
+    .ns-ytstrip { scrollbar-width: auto; scrollbar-color: var(--color-label) var(--color-surface-sunken); }
+  }
+  .ns-ytcard { scroll-snap-align: start; display: grid; gap: var(--space-4); color: inherit; text-decoration: none; min-inline-size: 0; }
+  /* Title and meta are ONE block, not two rows of the card. They belong to
+     each other — the meta is a subtitle, not a separate field — so they get
+     their own small gap and the card's larger gap applies between the frame
+     and the pair. A single flat gap made the meta look as far from its title
+     as the title was from the picture. */
+  .ns-ytcard__body { display: grid; gap: var(--space-0-5); }
+  /* THE NUMERAL. Half behind the picture, half below it.
+
+     The frame is what makes the overlap possible: the number and the thumb
+     are both positioned inside it, and the thumb comes LATER in the DOM, so
+     it paints over the number's top half with no z-index needed. (Reaching
+     for z-index here would be reaching for a token to solve a problem that
+     paint order already solves.)
+
+     It is set in the heading face at display size and washed back to a tint
+     of the ink, so it reads as a graphic mark rather than as a number
+     somebody has to take in. aria-hidden, because the position in a shelf is
+     not information a screen reader needs read out before every title. */
+  .ns-ytcard__frame { position: relative; }
+  .ns-ytcard__num {
+    position: absolute; inset-block-start: 0; inset-inline-start: var(--space-3);
+    /* ABOVE the picture, not below it. Below, the visible half of a numeral
+       set at --size-mega lands exactly where the title goes, and no amount of
+       tinting makes a 5rem digit behind a 17px title anything other than a
+       readability problem. Above, it has the band's own air to sit in and it
+       cannot touch a word. */
+    translate: 0 -46%; /* lint-ok: an optical overlap, relative to the numeral's own size */
+    font-family: var(--font-heading); font-size: var(--size-mega);
+    font-weight: var(--weight-heading); line-height: var(--leading-mega);
+    letter-spacing: var(--tracking-tight);
+    color: color-mix(in srgb, var(--color-ink) 14%, transparent);
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+  }
+  [data-theme="dark"] .ns-ytcard__num { color: color-mix(in srgb, var(--color-ink) 22%, transparent); }
+  /* The thumb draws its OWN glyph ground rather than composing
+     .ns-card__media--glyph. That class carries `background:
+     var(--color-surface-sunken)` from .ns-card__media, which painted a light
+     panel straight over the navy this needs — and a white play badge on a
+     light panel is a play badge nobody can see. Same motif, one layer. */
+  .ns-ytcard__thumb {
+    position: relative; /* paints above .ns-ytcard__num, which precedes it */
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-card);
+    overflow: clip;
+    background-color: var(--color-brand-900);
+    background-image:
+      linear-gradient(color-mix(in srgb, var(--color-on-dark) 10%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--color-on-dark) 10%, transparent) 1px, transparent 1px);
+    background-size: var(--space-6) var(--space-6);
+    display: grid; place-items: center;
+    color: var(--color-brand-300);
+    font-size: var(--size-display);
+  }
+  .ns-ytcard__thumb > img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; grid-area: 1 / 1; }
+  .ns-ytcard__glyph { grid-area: 1 / 1; display: grid; place-items: center; }
+  /* The play badge. Present at rest rather than revealed on hover, because
+     on a touch screen there is no hover and a card whose only affordance is
+     hidden is a card nobody presses. */
+  .ns-ytcard__play {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    color: var(--color-on-dark); font-size: var(--size-h1);
+    background: color-mix(in srgb, var(--color-brand-900) 18%, transparent);
+    transition: background var(--duration-fast) var(--ease-out);
+  }
+  .ns-ytcard:hover .ns-ytcard__play, .ns-ytcard:focus-visible .ns-ytcard__play { background: color-mix(in srgb, var(--color-brand-900) 42%, transparent); }
+  .ns-ytcard__dur {
+    position: absolute; inset-block-end: var(--space-2); inset-inline-end: var(--space-2);
+    padding: 0 var(--space-1-5);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-brand-900) 82%, transparent);
+    color: var(--color-on-dark);
+    font-family: var(--font-mono); font-size: var(--size-label); font-variant-numeric: tabular-nums;
+  }
+  .ns-ytcard__title { font-size: var(--size-prose); font-weight: var(--weight-semibold); color: var(--color-ink); line-height: var(--leading-snug); text-wrap: pretty; }
+  .ns-ytcard:hover .ns-ytcard__title { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-ytcard:hover .ns-ytcard__title { color: var(--color-brand-300); }
+  .ns-ytcard__meta { font-size: var(--size-prose-small); color: var(--color-muted); }
 }

@@ -2920,6 +2920,232 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
+    id: "showcase", title: "Showcase rows", family: "Sections",
+    summary: "Alternating full rows: a vector on one side, a step, a title, a paragraph, two specifics and one action on the other. What a <a href=\"./c-feature-grid.html\">Feature grid</a> becomes when each claim needs more than a sentence.",
+    use: [
+      "A claim that needs a picture AND a paragraph AND somewhere to go next",
+      "Two or three rows. Past three the reader is scrolling a brochure, and what did not fit belongs on its own page with a link from here",
+      "Illustrations that carry information &mdash; a diagram of the thing, not a mood",
+    ],
+    not: [
+      "Three short claims. That is a Feature grid, and it says them in a third of the height",
+      "A row with no action. The action is the reason the row is this big",
+      "Stock art. A row gives the picture half the width; half a screen of decoration is an expensive way to say nothing",
+    ],
+    a11y: [
+      "The alternation is done with <code>order</code> on the art, so the DOM keeps reading order: the picture always follows the words it illustrates",
+      "The flip is removed below --lg &mdash; alternating in one column is just a picture that is sometimes above and sometimes below, which reads as a mistake",
+      "Each vector carries a real <code>aria-label</code> describing what it draws, because the drawing is part of the claim",
+      "The step marker is decorative ordering, not a heading &mdash; the <code>h3</code> is the title",
+    ],
+    variants: [
+      { name: "Two rows", stack: true, html: `<div class="ns-showcase" style="inline-size:100%">
+  <div class="ns-showcase__row">
+    <div class="ns-showcase__body">
+      <span class="ns-showcase__step"><i class="ph ph-cube" aria-hidden="true"></i>01 &middot; Foundations</span>
+      <h3 class="ns-showcase__title">The data model, before the buttons</h3>
+      <p class="ns-showcase__text">Objects, fields and relationships first, because every automation problem anybody has asked us to fix was a schema problem wearing a costume.</p>
+      <ul class="ns-showcase__list">
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Lookup vs master-detail, and what each does on delete</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Rollup summaries, and where they quietly recalculate</span></li>
+      </ul>
+      <a class="ns-btn ns-btn--outline" href="#0">Start with objects <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="ns-showcase__art">
+      <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Account and Contact above, Opportunity below on a master-detail relationship"><use href="../icons/hero-scenes.svg#ns-s-schema"/></svg>
+    </div>
+  </div>
+  <div class="ns-showcase__row">
+    <div class="ns-showcase__body">
+      <span class="ns-showcase__step"><i class="ph ph-flow-arrow" aria-hidden="true"></i>02 &middot; Automation</span>
+      <h3 class="ns-showcase__title">Order of execution, drawn once and never guessed again</h3>
+      <p class="ns-showcase__text">What runs when a record is saved, in what order, and which step is the one that is not synchronous.</p>
+      <ul class="ns-showcase__list">
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Triggers, flows and validation in platform order</span></li>
+      </ul>
+      <a class="ns-btn ns-btn--outline" href="#0">See the sequence <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    <div class="ns-showcase__art">
+      <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Four steps down a spine, one queued and asynchronous"><use href="../icons/hero-scenes.svg#ns-s-order"/></svg>
+    </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "photoband", title: "Photo band", family: "Sections",
+    summary: "A photograph held still while the words move over it. The parallax is <code>position: sticky</code> and nothing else &mdash; the media pins for the height of the band and the beats scroll past it.",
+    use: [
+      "A journey with stages: weeks, milestones, a before and a during and an after",
+      "A real photograph &mdash; a face, a room, a desk, the actual thing",
+      "Three or four beats. Each one holds the screen for roughly a viewport",
+    ],
+    not: [
+      "<code>background-attachment: fixed</code>. It repaints on every scroll frame, is silently ignored on iOS Safari, and cannot carry an <code>&lt;img&gt;</code> &mdash; so no alt text, no srcset, no lazy loading",
+      "Stock photography of strangers at laptops. A learning site&rsquo;s photo band is a claim about who is actually here, and stock makes that claim falsely",
+      "An illustration. Every other empty slot in this system takes a glyph cover; this is the one that genuinely wants a camera",
+    ],
+    a11y: [
+      "Sticky is LAYOUT: no scroll listener, no observer, no timeline. It works in every engine, survives a backgrounded tab, and cannot desynchronise from what it is pinned to",
+      "It needs one thing to be true &mdash; no ancestor may be a scroll container. An <code>overflow: hidden</code> above it pins the media to that box instead of the viewport, and since the box does not scroll, it never sticks",
+      "Sticky comes off below --lg and the frame turns landscape: a pinned portrait on a phone is a picture with a paragraph peeking under it",
+      "Nothing is revealed by scrolling &mdash; every beat is in the DOM and readable with no script and no motion",
+    ],
+    variants: [
+      { name: "Three beats", stack: true, note: "The slots carry <code>.ns-ph</code> on purpose, and it is the one place in this system where a placeholder is the RIGHT answer rather than a lazy one: a card cover gets a glyph because an icon is a finished answer for a course, but there is no honest illustration of a person who has not been photographed. It should look unfinished until somebody supplies the picture. Replace with <code>&lt;img src alt loading=\"lazy\" width height&gt;</code>.", html: `<div class="ns-band ns-photoband ns-band--sunken" style="inline-size:100%">
+  <div class="ns-photoband__inner">
+    <div class="ns-photoband__media">
+      <figure class="ns-photoband__frame">
+        <span class="ns-ph" data-ph="Photograph" aria-hidden="true"></span>
+        <figcaption class="ns-photoband__cap">Nikhil, six weeks in &mdash; the org he broke on purpose</figcaption>
+      </figure>
+    </div>
+    <div class="ns-photoband__copy">
+      <div class="ns-photoband__beat">
+        <span class="ns-photoband__when">Week 1</span>
+        <h3 class="ns-photoband__what">You create the org before you read anything</h3>
+        <p class="ns-photoband__says">Lesson one is a signup form, an org that is yours forever, and an object you build in the first nine minutes.</p>
+      </div>
+      <div class="ns-photoband__beat">
+        <span class="ns-photoband__when">Week 6</span>
+        <h3 class="ns-photoband__what">You break it on purpose, then fix it</h3>
+        <p class="ns-photoband__says">Every section ends in a lab that fails first. The trigger blows the query limit at 201 records and you watch it happen.</p>
+      </div>
+    </div>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "videoband", title: "Video band", family: "Sections",
+    summary: "One lesson, playable, with its contents listed beside it. The list is the point: a play button asks for eleven minutes on faith, and the chapter list spends ten seconds instead.",
+    use: [
+      "One lesson, chosen because it is the one people arrive looking for",
+      "Real chapter text with timestamps &mdash; searchable, translatable, readable with the video unplayed",
+      "<code>preload=\"none\"</code> and a poster: a marketing page must not download a video nobody pressed play on",
+    ],
+    not: [
+      "Autoplay with sound. Ever",
+      "A carousel of videos. If there are six worth watching, this band links to the six and plays one",
+      "A video with no list. That is a thumbnail asking for a leap of faith",
+    ],
+    a11y: [
+      "The chapter list is real text in the page, not burned into the video, so it survives the video being blocked, unsupported, or simply not played",
+      "Timestamps stay in the mono voice because a timestamp is a VALUE &mdash; this is what the label voice is for, unlike the names and actions that moved to the sans",
+      "The stage takes a real <code>&lt;video&gt;</code> with controls; the specimen below stands in only where there is no footage to ship",
+    ],
+    variants: [
+      { name: "Lesson and chapters", stack: true, note: "The stage holds <code>.ns-screencast</code> rather than a file, because a design system cannot ship a recording: a binary nobody can diff, wrong in one of the two themes, stale the first time the UI changes. In a product it is one swap &mdash; <code>&lt;video src poster controls preload=\"none\" playsinline&gt;</code> &mdash; and nothing around it changes.", html: `<div class="ns-videoband" style="inline-size:100%">
+  <div class="ns-videoband__stage">
+    <div class="ns-screencast" role="img" aria-label="A lesson in progress: an Apex trigger being written line by line">
+      <div class="ns-screencast__bar" aria-hidden="true">
+        <span class="ns-screencast__tab" data-state="active">AccountTrigger.trigger</span>
+        <span class="ns-screencast__tab">AccountService.cls</span>
+      </div>
+      <div class="ns-screencast__body" aria-hidden="true">
+        <span class="ns-screencast__line" style="--_i:0;--_w:72%"></span>
+        <span class="ns-screencast__line" style="--_i:1;--_w:54%"></span>
+        <span class="ns-screencast__line ns-screencast__line--hot" style="--_i:2;--_w:88%"></span>
+        <span class="ns-screencast__line" style="--_i:3;--_w:41%"></span>
+        <span class="ns-screencast__caret"></span>
+      </div>
+      <span class="ns-screencast__progress" aria-hidden="true"></span>
+    </div>
+  </div>
+  <div class="ns-videoband__side">
+    <span class="ns-videoband__title">Recalculation is asynchronous</span>
+    <p class="ns-showcase__text">Security &amp; access &middot; lesson 4 of 12. Free, no account.</p>
+    <ol class="ns-videoband__chapters">
+      <li class="ns-videoband__chapter"><span class="ns-videoband__at">0:00</span><a href="#0">What a share row actually is</a></li>
+      <li class="ns-videoband__chapter"><span class="ns-videoband__at">1:48</span><a href="#0">Why access is checked against rows, not rules</a></li>
+      <li class="ns-videoband__chapter"><span class="ns-videoband__at">4:12</span><a href="#0">The reparent, and what it enqueues</a></li>
+    </ol>
+    <a class="ns-btn ns-btn--primary" href="#0">Watch the lesson <i class="ph ph-play" aria-hidden="true"></i></a>
+  </div>
+</div>` },
+    ],
+  },
+  {
+    id: "shero", title: "Scroll hero", family: "Sections",
+    summary: "A hero that is a <em>section</em> rather than a screenful: the pitch stays pinned on one side while the evidence for it scrolls past on the other, and the band ends when the evidence runs out. Distinct from <a href=\"./c-hero-section.html\">Hero</a>, which is one screen and one picture.",
+    use: [
+      "The one page where the claim needs more than one piece of evidence &mdash; a curriculum, a platform, anything with four things worth showing",
+      "Three or four panels. Two does not earn the mechanism; five is a page nobody reaches the bottom of",
+      "Panels that each answer a different question, in the order a stranger asks them",
+    ],
+    not: [
+      "Every landing page. A hero that costs two and a half screens of scrolling has to be paying for them",
+      "Decorative panels. If a panel is a stock image, the standard Hero says the same thing in a fifth of the height",
+      "A carousel. The reader controls the pace here and can go back; that is the entire difference",
+      "Anything below --lg &mdash; it drops to one column and stops being sticky, because a pinned pane on a phone covers the content it exists to argue for",
+    ],
+    a11y: [
+      "The mechanism is <code>position: sticky</code> and nothing else &mdash; no scroll listener, no observer, no timeline. It is layout, so it works in every engine and survives a backgrounded tab",
+      "Nothing is revealed BY scrolling: every panel is in the DOM, in order, readable with no script and with motion off. Scrolling changes what is on screen, not what exists",
+      "Each panel's illustration carries a real <code>aria-label</code> describing what it draws, because the drawing is the evidence and a decorative label would drop the argument",
+      "The heading order is unaffected: one <code>h1</code> in the stage, and the panels are <code>&lt;figure&gt;</code> with <code>&lt;figcaption&gt;</code>",
+    ],
+    variants: [
+      { name: "Two panels", stack: true, note: "Cut down from the homepage's four to fit this page. TWO REQUIREMENTS BREAK IT FROM A DISTANCE. First, no ancestor may be a scroll container: <code>overflow: hidden</code> anywhere above pins the column to that box instead of the viewport, and since the box does not scroll, the column never sticks &mdash; which is why <code>.ns-band--dark</code> now clips with <code>overflow: clip</code>. Second, the sticky element's PARENT must be the tall one; the stage sticks inside a column stretched by the reel beside it, and <code>align-self: start</code> is what stops the stage itself absorbing that height.", html: `<div class="ns-band ns-band--dark ns-band--grid ns-shero" style="inline-size:100%">
+  <div class="ns-shero__inner">
+    <div class="ns-shero__stage">
+      <span class="ns-hero__eyebrow"><i class="ph ph-compass" aria-hidden="true"></i>Learn Salesforce, properly</span>
+      <h2 class="ns-shero__title">From your first org to Apex you can <span class="ns-hero__mark">defend</span></h2>
+      <p class="ns-shero__lede">Courses, a training roadmap and working code &mdash; in the order the platform actually makes sense.</p>
+      <div class="ns-shero__actions"><a class="ns-btn ns-btn--white ns-btn--xl" href="#0">Start learning free</a></div>
+      <ul class="ns-shero__proof">
+        <li><i class="ph ph-check" aria-hidden="true"></i><span><b>12</b> courses, each mapped to a certification outline</span></li>
+        <li><i class="ph ph-check" aria-hidden="true"></i><span>Every lab runs in a free Developer Edition org</span></li>
+      </ul>
+    </div>
+    <div class="ns-shero__reel">
+      <figure class="ns-shero__panel">
+        <div class="ns-vec__frame">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Account and Contact above, Opportunity below on a master-detail relationship"><use href="../icons/hero-scenes.svg#ns-s-schema"/></svg>
+        </div>
+        <figcaption>
+          <span class="ns-shero__step">01 / 02</span>
+          <span class="ns-shero__what">The data model, before the buttons</span>
+          <p class="ns-shero__why">Every automation problem anybody has asked us to fix was a schema problem wearing a costume.</p>
+        </figcaption>
+      </figure>
+      <figure class="ns-shero__panel">
+        <div class="ns-vec__frame">
+          <svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Four governor limits drawn as meters against a shared ceiling, one nearly full"><use href="../icons/hero-scenes.svg#ns-s-limits"/></svg>
+        </div>
+        <figcaption>
+          <span class="ns-shero__step">02 / 02</span>
+          <span class="ns-shero__what">Limits as a budget, not a rulebook</span>
+          <p class="ns-shero__why">A hundred SOQL queries is an allowance you spend, and bulkification is how you spend it.</p>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</div>` },
+      { name: "The screencast", stack: true, note: "The panel that shows the product moving, WITHOUT a video file. A real recording is a binary nobody can diff, it is wrong in one of the two themes, it goes stale the first time the UI changes, and it costs megabytes to make a point about a layout; a stock clip of somebody at a laptop shows a person, not the product. So the footage is built from the same primitives as the thing it is showing &mdash; weightless, correct in both themes because it is drawn in tokens, and impossible to go stale. A product page swaps it for <code>&lt;video src poster muted loop playsinline&gt;</code> in the same frame and nothing around it changes.", html: `<div class="ns-screencast" role="img" aria-label="A lesson in progress: an Apex trigger being written line by line" style="inline-size:100%;max-inline-size:34rem">
+  <div class="ns-screencast__bar" aria-hidden="true">
+    <span class="ns-screencast__tab" data-state="active">AccountTrigger.trigger</span>
+    <span class="ns-screencast__tab">AccountService.cls</span>
+  </div>
+  <div class="ns-screencast__body" aria-hidden="true">
+    <span class="ns-screencast__line" style="--_i:0;--_w:72%"></span>
+    <span class="ns-screencast__line" style="--_i:1;--_w:54%"></span>
+    <span class="ns-screencast__line ns-screencast__line--hot" style="--_i:2;--_w:88%"></span>
+    <span class="ns-screencast__line" style="--_i:3;--_w:41%"></span>
+    <span class="ns-screencast__line" style="--_i:4;--_w:66%"></span>
+    <span class="ns-screencast__caret"></span>
+  </div>
+  <span class="ns-screencast__progress" aria-hidden="true"></span>
+</div>` },
+      { name: "The scene vectors", stack: true, note: "Illustration scale, not icon scale &mdash; four 400&times;300 scenes in <code>icons/hero-scenes.svg</code>, against the icon set's twenty 24px glyphs. They use <code>currentColor</code> and two opacity levels only, so they are correct in both themes with no second asset and no filter; and every one is a diagram of something the curriculum actually teaches, because an illustration a reader can learn from is the only kind that survives being looked at twice. Strokes marked <code>.ns-vec__draw</code> draw themselves in, which needs <code>pathLength=\"100\"</code> so one duration fits every path length.", html: `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:var(--space-4);inline-size:100%;background:var(--color-brand-900);padding:var(--space-4);border-radius:var(--radius-card)">
+  <div class="ns-vec__frame"><svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Schema: two parent objects and a child on a master-detail relationship"><use href="../icons/hero-scenes.svg#ns-s-schema"/></svg></div>
+  <div class="ns-vec__frame"><svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Order of execution: four steps down a spine, one of them queued and asynchronous"><use href="../icons/hero-scenes.svg#ns-s-order"/></svg></div>
+  <div class="ns-vec__frame"><svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Governor limits as four meters against a shared ceiling"><use href="../icons/hero-scenes.svg#ns-s-limits"/></svg></div>
+  <div class="ns-vec__frame"><svg class="ns-vec" viewBox="0 0 400 300" role="img" aria-label="Sharing recalculation: rows rebuilt behind a queue"><use href="../icons/hero-scenes.svg#ns-s-sharing"/></svg></div>
+</div>` },
+    ],
+  },
+  {
     id: "quote", title: "Testimonial", family: "Sections",
     summary: "One voice, set large, centered; the attribution is a mono record line. Deliberately singular — never a three-up wall of star ratings.",
     use: ["One earned quote per page, in a sunken band"],
@@ -2929,6 +3155,74 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <blockquote>I passed Platform Developer I after the Apex course — but the real win is that my triggers stopped scaring me.</blockquote>
   <figcaption>Priya S. · Salesforce Developer · batch 2025</figcaption>
 </figure>` },
+    ],
+  },
+  {
+    id: "maker", title: "Author card", family: "Sections",
+    summary: "Who wrote the thing, as a card a person is actually <em>in</em>. The card leads with them SPEAKING &mdash; one first-person sentence at reading-lead size, the largest thing in it &mdash; and puts the name, role and counts underneath as attribution.",
+    use: [
+      "A homepage or an about page, where the reader is deciding whether to listen",
+      "Two authors. Three is a strip, not a wider grid",
+      "One sentence each, in their own words, about something they actually did",
+    ],
+    not: [
+      "A course page sidebar &mdash; that is <a href=\"./c-instructor.html\">Instructor</a>, which is the right block once the reader has already decided and just wants to know who is talking",
+      "A quotation from someone else about the author. That is a <a href=\"./c-quote.html\">Testimonial</a>; this is the author speaking for themselves",
+      "A faculty grid. Twelve of these is a directory, and a directory is a list",
+      "Credentials with no sentence &mdash; a photo, a job title and two numbers is a byline, and nobody has ever been persuaded by a byline",
+    ],
+    a11y: [
+      "The avatar is decorative (<code>alt=&quot;&quot;</code>): the name is real text right beside it, and announcing it twice is noise",
+      "The quote marks are <code>::before</code>/<code>::after</code>, so they are not read out &mdash; the sentence is a statement in the DOM, not a <code>&lt;blockquote&gt;</code> citing an external source",
+      "The stat chips stay in the mono label voice: &ldquo;9 courses&rdquo; is a number to check, not a thing anybody reads aloud",
+      "Hover and focus-within share one style, so the card responds to a keyboard the same way it responds to a mouse",
+    ],
+    variants: [
+      { name: "Two authors", stack: true, note: "<code>.ns-maker__who</code> is a GRID, not a flex row, and the role line is why: one role wraps to two lines in a card this wide and the other does not, so in a flex row the chips land at different heights in the two cards and the pair reads as a bug. Note that this is a CARD-width problem &mdash; a viewport media query never fires for it.", html: `<div class="ns-makers" style="inline-size:100%">
+  <article class="ns-maker">
+    <p class="ns-maker__says">I spent eleven years cleaning up other people&rsquo;s triggers, and every one of them failed for a reason the platform documents and nobody reads. That list became the Apex course.</p>
+    <div class="ns-maker__who">
+      <img class="ns-maker__avatar" src="../assets/logo/favicon.svg" alt="">
+      <div class="ns-maker__ident">
+        <span class="ns-maker__name">Swarnil Singhai</span>
+        <span class="ns-maker__role">Salesforce Architect &middot; 11&times; certified</span>
+      </div>
+      <div class="ns-maker__stats">
+        <span class="ns-maker__stat"><i class="ph ph-books" aria-hidden="true"></i>9 courses</span>
+        <span class="ns-maker__stat"><i class="ph ph-users-three" aria-hidden="true"></i>24,100</span>
+      </div>
+    </div>
+  </article>
+  <article class="ns-maker">
+    <p class="ns-maker__says">I ran platform ops for a 4,000-seat org. The order-of-execution lesson exists because I once spent a weekend proving to an auditor that our own automation had overwritten the audit trail.</p>
+    <div class="ns-maker__who">
+      <img class="ns-maker__avatar" src="../assets/logo/favicon.svg" alt="">
+      <div class="ns-maker__ident">
+        <span class="ns-maker__name">Priya Raman</span>
+        <span class="ns-maker__role">Flows &amp; automation</span>
+      </div>
+      <div class="ns-maker__stats">
+        <span class="ns-maker__stat"><i class="ph ph-books" aria-hidden="true"></i>4 courses</span>
+        <span class="ns-maker__stat"><i class="ph ph-users-three" aria-hidden="true"></i>9,300</span>
+      </div>
+    </div>
+  </article>
+</div>` },
+      { name: "One author", note: "Still the full width of its column rather than a half-width card floating beside nothing. A single author is not a narrower version of two.", html: `<div class="ns-makers" style="inline-size:100%">
+  <article class="ns-maker">
+    <p class="ns-maker__says">Every automation problem I have been called in to fix was a schema problem wearing a costume. The course is really about telling the difference before you write a line of Apex.</p>
+    <div class="ns-maker__who">
+      <img class="ns-maker__avatar" src="../assets/logo/favicon.svg" alt="">
+      <div class="ns-maker__ident">
+        <span class="ns-maker__name">Swarnil Singhai</span>
+        <span class="ns-maker__role">Salesforce Architect</span>
+      </div>
+      <div class="ns-maker__stats">
+        <span class="ns-maker__stat"><i class="ph ph-books" aria-hidden="true"></i>9 courses</span>
+      </div>
+    </div>
+  </article>
+</div>` },
     ],
   },
   {
@@ -3131,11 +3425,35 @@ Map<Id, Account> byId = new Map<Id, Account>(
   },
   {
     id: "logo-row", title: "Logo row", family: "Components",
-    summary: "The quiet trust band: partner or “as used by” marks, label-gray at rest, ink on hover. Mono text placeholders until real marks exist.",
-    use: ["Employers/partners under the hero, in a tight sunken band"],
-    not: ["Badges, award seals, app-store buttons"],
+    summary: "The quiet trust band: partner or &ldquo;as used by&rdquo; marks, label-gray at rest, ink on hover. Takes real lockups via <code>.ns-brandmark</code>, or the company name in our mono voice where no cleared mark exists yet.",
+    use: ["Employers/partners under the hero, in a tight sunken band", "<code>.ns-brandmark</code> where a real, permission-cleared mark exists", "<code>.ns-logorow__mark</code> &mdash; the name in mono &mdash; where one does not"],
+    not: [
+      "A mark whose owner has not granted it. That is a fabricated endorsement, and it is worse than the quiet text row it replaced &mdash; every name in <code>icons/brand-marks.svg</code> is fictional for exactly this reason",
+      "Badges, award seals, app-store buttons",
+      "A shared WIDTH. Logos come at every aspect ratio; a common width shrinks the wordmark and inflates the monogram",
+    ],
+    a11y: [
+      "A mark carries <code>role=&quot;img&quot;</code> and the company name as <code>aria-label</code> &mdash; a logo is the company&rsquo;s name written down, and a decorative logo row announces nothing at all",
+      "Colour comes from <code>currentColor</code>, not a grayscale filter: a filtered wall of dark logos goes black-on-black in the dark theme and needs a second set of assets",
+      "The row is not a list of links unless the partners are actually linked &mdash; a hover colour on something unclickable is a promise the row does not keep",
+    ],
     variants: [
-      { name: "Text marks", html: `<div class="ns-logorow">
+      { name: "Real marks", note: "Sized by HEIGHT, never width &mdash; optical evenness in a logo row comes from a shared cap height. Each symbol carries its own viewBox width and the host <code>&lt;svg&gt;</code> repeats it, because an externally-referenced <code>&lt;use&gt;</code> gives the host no intrinsic size to resolve <code>inline-size: auto</code> against.", html: `<div class="ns-logorow">
+  <svg class="ns-brandmark" viewBox="0 0 111 24" role="img" aria-label="Acme Cloud"><use href="../icons/brand-marks.svg#ns-b-acme"/></svg>
+  <svg class="ns-brandmark" viewBox="0 0 106 24" role="img" aria-label="Northwind"><use href="../icons/brand-marks.svg#ns-b-northwind"/></svg>
+  <svg class="ns-brandmark" viewBox="0 0 85 24" role="img" aria-label="Globex"><use href="../icons/brand-marks.svg#ns-b-globex"/></svg>
+  <svg class="ns-brandmark" viewBox="0 0 91 24" role="img" aria-label="Initech"><use href="../icons/brand-marks.svg#ns-b-initech"/></svg>
+  <svg class="ns-brandmark" viewBox="0 0 147 24" role="img" aria-label="Umbrella Ops"><use href="../icons/brand-marks.svg#ns-b-umbrella"/></svg>
+</div>` },
+      { name: "Larger, with a caption", stack: true, note: "<code>--lg</code> for a row that is the point of its band rather than a footnote under a hero. The title is deliberately NOT a <code>.ns-kicker</code> and deliberately not a sentence: a logo wall is scanned in about a second, so it gets a few words naming what the row is. A clause with a subordinate clause in it asks for four seconds nobody spends.", html: `<div style="inline-size:100%">
+  <p class="ns-logorow__title">GTM Engineers at Salesforce companies</p>
+  <div class="ns-logorow">
+    <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 86 24" role="img" aria-label="Orgforce"><use href="../icons/brand-marks.svg#ns-b-orgforce"/></svg>
+    <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 111 24" role="img" aria-label="Contoso Data"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg>
+    <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 97 24" role="img" aria-label="Initrode"><use href="../icons/brand-marks.svg#ns-b-initrode"/></svg>
+  </div>
+</div>` },
+      { name: "Text marks", note: "The fallback, and not an embarrassing one: a name in the mono voice is honest about having no cleared logo, where a mark you do not have permission for is not.", html: `<div class="ns-logorow">
   <span class="ns-logorow__mark">Acme Cloud</span>
   <span class="ns-logorow__mark">Northwind</span>
   <span class="ns-logorow__mark">Globex</span>
@@ -4068,6 +4386,14 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <p class="ns-card__text">Objects, triggers and your first deploy — the platform's own language from zero.</p>
   </div>
   <div class="ns-card__foot">12 lessons · 3h 40m</div>
+</div>` },
+      { name: "Glyph cover", note: "For a card whose subject has no photograph and never will &mdash; a course, a track, a topic. Its own glyph at cover size on the hairline grid. Deliberately NOT <code>.ns-ph</code>, and the difference is what each one says: a placeholder says <em>a picture is missing here</em> and should embarrass somebody into supplying one; a glyph cover says <em>an icon is the artwork</em>, and is finished. Shipping placeholders as permanent card art is how a catalogue ends up looking unbuilt &mdash; and how three cards end up looking like three copies of one card, because the identical slash is the largest thing on all of them.", html: `<div class="ns-card" style="max-inline-size:20rem">
+  <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ph ph-flow-arrow"></i></span>
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Course</span>
+    <span class="ns-card__title">Flows, end to end</span>
+    <p class="ns-card__text">Declarative automation from a blank canvas to approvals in production.</p>
+  </div>
 </div>` },
       { name: "With media", note: "16:9 media on top; the frame crops, the caption never overlays.", html: `<div class="ns-card" style="max-inline-size:20rem">
   <span class="ns-card__media ns-ph" aria-hidden="true"></span>
@@ -5154,6 +5480,13 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <li class="ns-list__row"><span class="ns-list__index">02</span><span class="ns-list__title">Relationships</span><span class="ns-list__text">Lookup, master-detail, and the cascade</span></li>
   <li class="ns-list__row"><span class="ns-list__index">03</span><span class="ns-list__title">Sharing</span><span class="ns-list__text">Who sees what, and when it recalculates</span></li>
 </ul>` },
+      { name: "Parallax needs a frame", stack: true, note: "The one motion here that is not an entrance: scrubbed by the reader&rsquo;s own scroll, so it never plays AT anybody. It comes in TWO parts and that is not an API mistake. <code>animation-timeline: view()</code> resolves against the subject&rsquo;s nearest <em>scroll container</em>, and <code>overflow: hidden</code> makes an element one even though nothing in it will ever scroll &mdash; so a layer parallaxing inside a clipped box (which is every real use of the technique) binds to a box that never moves and freezes at 50% progress. It looks like it works: the element sits exactly where an un-animated element would. <code>.ns-parallax-frame</code> gives it a subject whose own nearest scroll container is the page. <code>check-markup.mjs</code> fails the build on a <code>.ns-parallax</code> with no frame, because the failure is otherwise invisible.", html: `<div class="ns-card ns-parallax-frame" style="max-inline-size:20rem">
+  <span class="ns-card__media ns-card__media--glyph" aria-hidden="true"><i class="ns-parallax ns-parallax--slow ph ph-cube"></i></span>
+  <div class="ns-card__body">
+    <span class="ns-card__kicker">// Scroll the page</span>
+    <p class="ns-card__text">The frame is the card; the glyph is the layer. Decoration only &mdash; it never moves content and never changes layout.</p>
+  </div>
+</div>` },
       { name: "Scroll-triggered", stack: true, note: "--onview uses native animation-timeline: view() — no observer, no JS. Where unsupported the declaration is dropped and it runs on load, which is visible either way.", html: `<div class="ns-anim ns-anim--rise ns-anim--onview ns-card"><div class="ns-card__body"><span class="ns-card__kicker">onview</span><span class="ns-card__text">Completes before the block is centred, so a fast scroll never shows content assembling.</span></div></div>` },
     ],
   },
@@ -7656,6 +7989,14 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
 </a>
 <div class="ns-prose" style="inline-size:100%">
   <p>A <code>GROUP BY</code> on a field with high cardinality will hit that ceiling on a real org.</p>
+</div>` },
+      { name: "The ask", stack: true, note: "The INBOUND half: not a placement, a solicitation. Deliberately not the empty slot below &mdash; that one is dashed because it is scaffolding, and it must never reach a reader. This is something the site meant to publish, addressed to the one person on the page who buys ad space. It is also not a <a href=\"./c-cta-band.html\">CTA band</a>: a page gets one closer, and spending it on &ldquo;sponsor us&rdquo; sells the wrong thing to the 99% who came to learn. Quiet enough to scroll past, with real numbers for the reader who does not.", html: `<div class="ns-sponsorask" style="inline-size:100%">
+  <span class="ns-sponsorask__icon" aria-hidden="true"><i class="ph ph-megaphone"></i></span>
+  <div class="ns-sponsorask__body">
+    <span class="ns-sponsorask__title">Put your tool in front of people who will actually install it</span>
+    <p class="ns-sponsorask__text"><b>1,482</b> Salesforce admins, developers and architects, <b>18,400</b> reads a month, and one placement per page. Sponsors get the slot and no say in the writing &mdash; that is the whole deal, in writing.</p>
+  </div>
+  <a class="ns-btn ns-btn--outline" href="#0">Sponsor a month <i class="ph ph-arrow-right" aria-hidden="true"></i></a>
 </div>` },
       { name: "The empty slot", note: "Before a sponsor is sold. Dashed and plainly unfinished on purpose: it is the one surface in the system allowed to look like a placeholder, because that is exactly what it is. Never ship it to a reader — it is for the layout stage and for the sales page.", html: `<div class="ns-adslot" style="inline-size:100%;max-inline-size:26rem">
   <span class="ns-adslot__label"><i class="ph ph-megaphone" aria-hidden="true"></i>Advertise with us</span>

@@ -17,6 +17,665 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — `.claude/skills/namaste-ui/`, the portable skill bundle
+
+A self-contained knowledge pack that lets an agent build in this design
+language from a **different repository**, with this one nowhere in sight.
+`docs/PORTABLE-SKILL.md` is the full explanation; the short version:
+
+- `SKILL.md` plus five reference files — rules, tokens, classes, components,
+  patterns. The agent loads the entry point and pulls a reference only when
+  it needs that specific thing, which matters at ~2,900 lines: loading the
+  whole pack to style a button would crowd out the actual work.
+- It is **separate from the `SKILL.md` at the repo root**, and that is the
+  point. The root skill is for working *inside* here and says so in its first
+  line — "read `readme.md` first, then explore the other files". Every
+  pointer in it dangles the moment it is copied somewhere else. This one
+  assumes nothing is present but itself.
+
+**Generated, for the same reason the styleguide is.** A hand-written
+knowledge pack is a snapshot, and a snapshot of a design system is wrong
+within a week — quietly, in the direction of whatever the author remembered.
+`tokens.md` comes from `tokens/tokens.json`, `classes.md` from parsing
+`components/css/`, `components.md` from the same `COMPONENTS` array the
+styleguide renders from. A renamed class reaches the pack in the commit that
+renamed it.
+
+`rules.md` and `patterns.md` are written by hand and live as string constants
+in the generator. They are judgement — the five principles, the
+scanned-versus-read fork, "mono is for values", and the list of traps this
+month produced — and judgement does not come out of a parser.
+
+`build-skill.mjs` runs in `gulp build`; `--check` is now one of the gates.
+Verified by appending a line to a generated file: exit 1, naming the file.
+The failure it prevents is the nastiest kind — an agent confidently teaching
+a version of this system that no longer exists, in somebody else's repo,
+where nobody here would ever see it.
+
+One detail worth recording: the component reference derives each entry's root
+class from its own demo markup rather than from its id, because the two
+diverge often enough that guessing is worse than useless. The Button entry
+has id `button` and renders `.ns-btn`; a reference telling an agent to write
+`.ns-button` sends it to a class that does not exist.
+
+### Changed — the hero and the logo band are one screen
+
+`.ns-hero--tall` is 68svh, not 86. The hero and the trust band under it are
+one argument — the logos are the first evidence for the claim directly above
+them — and at 86svh the marquee started below the fold, so the two halves
+never appeared together. Measured at 557px hero + logo band ending at 763px
+in a 772px viewport.
+
+The line over the logo wall is gone. "Teams learning here — 1,482 people, at
+their own desks and on their employers' time" is a sentence with a
+subordinate clause in it, over a row that is scanned in about a second.
+`.ns-logorow__title` replaces `.ns-logorow__caption`: a few words naming what
+the row is.
+
+### Added — `.ns-profile`, and the author cards become records
+
+`.ns-maker` led with a first-person sentence, which is a good testimonial
+shape and a poor **profile** shape: a reader asking who is teaching them had
+to read a paragraph before reaching a name. `.ns-profile` answers the
+identity question in the first glance — cover, face, name, title, fields —
+and puts the voice underneath.
+
+The avatar overlapping the cover is the only element in the card allowed to
+break a boundary, which is what makes it the first thing the eye lands on.
+The cover is the brand's console ground rather than a photograph: a cover
+image at this size is forty pixels of an unrecognisable picture.
+
+One bug worth recording: the cover was `position: relative`, and a positioned
+element paints above non-positioned in-flow content — so the cover rendered
+**on top of** the avatar pulled into it by a negative margin, and the top
+half of every face disappeared behind the navy. The cover needs no
+positioning at all.
+
+### Added — `.ns-bubble` and the testimonial deck
+
+Three rows, alternating direction, at three speeds (40s, 52s reversed, 88s).
+The alternation is what turns a strip into a crowd: three rows travelling the
+same way at the same rate is one sheet sliding, and the eye locks onto it and
+stops reading. Different speeds mean the rows never return to the same
+relative position, so there is no repeating frame to latch onto.
+
+`.ns-marquee-deck` supplies the depth — perspective on the container, the
+rotation on a **wrapper** and never on the animating track. A rotation on the
+track composes with the translate the loop is driving, so the card nearest
+the camera changes as it moves and the whole strip appears to swing.
+
+Two things this shook out:
+
+- **`.ns-marquee__item--card`.** The item is the mono credential voice —
+  uppercase, tracked, nowrap — which is right for a passing mark in a strip
+  and catastrophic for anything with a paragraph in it. Bubbles inherited it
+  and rendered as uppercase monospace prose, the single worst setting in the
+  system. The modifier hands the typography back to the card inside.
+- **Deck padding.** `rotateX` pushes the near edge of the plane below the box
+  it was measured in, so a deck sized to its untilted content clipped the
+  bottom row's names off. The clip has to stay — `rotateZ` throws the corners
+  out sideways and would give the page a horizontal scrollbar — so the room
+  goes inside it as padding.
+
+### Added — `.ns-ytstrip`, a sideways lesson shelf with a real scrollbar
+
+**The visible scrollbar is the whole point and it took undoing a global to
+get it.** `tokens/base.css` sets `* { scrollbar-width: thin; scrollbar-color:
+… }`, which is right everywhere else — but Chrome ignores every
+`::-webkit-scrollbar` rule on an element whose `scrollbar-width` or
+`scrollbar-color` is anything other than `auto`, and the standard properties
+cannot ask for a bar that occupies layout space instead of floating over the
+content and fading when idle. On a horizontal shelf that fade *is* the bug: no
+affordance on a trackpad, no target for a mouse, nothing for a keyboard until
+something inside takes focus. So the two properties are returned to `auto` on
+this component and the bar is drawn with the pseudo-elements. It now measures
+10px of real layout height.
+
+**Facades, not iframes.** Each card links to YouTube. An embed pulls about a
+megabyte and sets third-party cookies before anybody presses play; six embeds
+do it six times; and a design-system template that ships a tracker inside it
+makes that choice for every product that pastes the markup.
+
+The numeral behind each thumbnail sits **above** the picture, not below.
+Below, the visible half of a digit set at `--size-mega` lands exactly where
+the title goes, and no amount of tinting makes a 5rem numeral behind a 17px
+title anything other than a readability problem. Above, it has the band's own
+air to sit in. It works by paint order — the numeral precedes the thumb in
+the DOM, both positioned — so no z-index is involved. `overflow-x: auto`
+forces the block axis to clip too, so the room for it is padding *inside* the
+scroll container, which is the only way to give overflow room to something in
+a scroller.
+
+### Changed — the about-the-author section, cut to the bone
+
+Six log lines of forty words each is a bio wearing a costume: the reader
+still had to read three hundred words to find out who this is. Four lines of
+one clause, four numbers set large, a portrait, a signature.
+
+### Changed — the hero is a fixed two-column again, at marketing height
+
+The sticky scroll hero was the wrong shape for a homepage opener, which has
+to say one thing on one screen. It is back to `.ns-hero--split` with the
+assembly on the right, plus `--tall`.
+
+`.ns-shero` is not deleted — it keeps its component page. It is the right
+shape when a claim genuinely needs four pieces of evidence; it was simply
+never the right shape for band 01.
+
+**The min-height is on the band, not on the inner**, and that is the
+difference between a number that means what it says and one that does not.
+On the inner, the band's own `padding-block` is added on top: 82svh + 128px
+is, on a 716px viewport, exactly 100vh — the one outcome the number was
+chosen to avoid. On the band it is 86svh, measured at 616px against a 716px
+viewport with 51px of the next band visible underneath, which is the
+cheapest scroll affordance there is.
+
+`.ns-hero__eyebrow`, `__mark` and `__facts` were promoted out of `.ns-shero`
+so both heroes share one vocabulary. `check-markup.mjs` caught the rename
+where the styleguide still used the old names, which is what it is for.
+
+### Added — three marketing sections
+
+- **`.ns-showcase`** — alternating full rows: a vector, a step, a title, a
+  paragraph, two specifics and one action. It replaced the `.ns-features`
+  3-up grid answering the same question. A feature grid is right when each
+  claim is a *sentence*; the moment a claim needs a picture and a paragraph
+  and somewhere to go next, three cells stop working — the picture is a
+  thumbnail, the paragraph is clipped, and there is nowhere for the link.
+  The alternation is done with `order` on the art so the DOM keeps reading
+  order, and it comes off below `--lg`, where alternating in one column is
+  just a picture that is sometimes above and sometimes below.
+
+- **`.ns-videoband`** — one lesson, playable, with its chapters beside it.
+  The list is the point: a play button asks for eleven minutes on faith, and
+  the chapter list spends ten seconds instead. Timestamps stay in the mono
+  voice, because a timestamp is a value — that is what the label voice is
+  for, unlike the names and actions that left it this week.
+
+- **`.ns-photoband`** — a photograph held still while the words move over it.
+  **The parallax is `position: sticky` and nothing else**, which is the whole
+  reason it is verifiable: the media pins at 0 from 200px through 700px of
+  scroll and releases at 1200px, measured. Not
+  `background-attachment: fixed` — that repaints every frame, is silently
+  ignored on iOS Safari, and cannot carry an `<img>`, so no alt text, no
+  srcset, no lazy loading.
+
+  **The photographs are missing and the band says so.** Every other empty
+  slot in this system takes a glyph cover, because an icon is a finished
+  answer for a course or a post. This is the one place that is wrong: there
+  is no honest illustration of a person who has not been photographed, so
+  the slot carries `.ns-ph` and should look unfinished until somebody
+  supplies the picture. Do not substitute stock photography of strangers at
+  laptops — a learning site's photo band is a claim about who is actually
+  here, and stock makes that claim falsely.
+
+Two layout bugs found and fixed while building the photo band: `margin-inline:
+auto` on a grid item removes the stretch, so the frame shrank to its content
+width and — with an aspect-ratio deriving height from width — collapsed to
+123px (`justify-self: center` instead); and giving `.ns-ph` `display: block`
+overrode the `display: grid` it uses to centre its own label, stranding it in
+the top-left corner where an empty slot stops reading as "a picture goes
+here" and starts reading as a broken image.
+
+The homepage is 23 bands. Doc pages for all three: 174 components.
+
+### Added — `.ns-shero`, and the homepage hero becomes a section
+
+The old hero was one screen with one picture carrying a claim that needs
+four, so it showed an abstraction that meant nothing to a stranger. The new
+one pins the pitch on the left and scrolls the evidence past on the right,
+and the band ends when the evidence runs out — four panels: a lesson
+playing, the data model, governor limits as a budget, and the system
+assembling itself.
+
+**The mechanism is `position: sticky` and nothing else** — no scroll
+listener, no observer, no timeline. That is a deliberate choice after last
+week: sticky is *layout*, so it works in every engine, survives a
+backgrounded tab, and cannot fall out of sync with what it is pinned to. It
+was verified here by measurement (the stage holds at `top: 0` from 400px
+through 1500px of scroll, then releases as the band ends), which is exactly
+what could not be done for the scroll-driven motion.
+
+Two conditions break it from a distance and both are now written down:
+no ancestor may be a scroll container, and the sticky element's *parent*
+must be the tall one (`align-self: start` on the stage, or it absorbs the
+row height it was supposed to travel through).
+
+### Fixed — `.ns-band--dark` clipped with `overflow: hidden`
+
+`overflow: clip` now. Both crop the grid motif; only `hidden` makes the band
+a **scroll container**, and everything inside one that depends on the page
+scrolling then breaks in silence — `position: sticky` pins to a box that
+never scrolls, and `view()` timelines freeze at 50% progress. The dark band
+had been quietly disabling both for anything placed on it. There was never a
+reason to prefer `hidden` for a box that was not going to scroll.
+
+### Changed — mono is for values, sans is for words
+
+The label voice had spread from data to language. A person's name, a stat's
+label, a call to action and a line of fine print were all set in tracked
+uppercase monospace, which is a bad way to set any of them — a name in the
+label voice reads as a serial number.
+
+The test is whether you would say it aloud as a word or read it off as a
+figure. "Priya S." is a word; "4h 05m" is a figure. Moved to the sans:
+
+| | was | now |
+| --- | --- | --- |
+| `.ns-quote figcaption` — a person | 11px tracked mono caps | 15px sans |
+| `.ns-cta__fine` — a sentence | 11px tracked mono caps | 15px sans |
+| `.ns-statband__label` — a word labelling a number | 11px tracked mono caps | 15px sans |
+| `.ns-router__go` — an action | 11px tracked mono caps | 15px sans, semibold |
+| `.ns-plan__name` / `.ns-tier__label` — names | 11px tracked mono caps | 17px heading |
+
+Nothing that is genuinely a figure moved: durations, counts, indexes,
+prices, timestamps and the `01 / 04` panel step all keep the mono voice.
+The hero's proof line was the worst case and is now three facts on three
+lines rather than one tracked string — `12 COURSES · 150 TRAINING MODULES ·
+MOST OF IT FREE` is three separate claims wearing the grammar of a serial
+number.
+
+### Added — `.ns-screencast`, a lesson playing with no video file
+
+A marketing page has to show the product moving. The honest options for a
+design system are a real recording or nothing: a recording is a binary
+nobody can diff, it is wrong in one of the two themes, it goes stale the
+first time the UI changes, and it costs megabytes to make a point about a
+layout. A stock clip of somebody at a laptop is worse — it shows a person,
+not the product.
+
+So the footage is built from the same primitives as the thing it is showing:
+an editor tab strip, code lines that type themselves in on a loop with a
+caret that follows the last one, and a runtime bar that fills. It weighs
+nothing, it is correct in both themes because it is drawn in tokens, and it
+cannot go stale. A product page swaps it for `<video src poster muted loop
+playsinline>` in the same frame and nothing around it changes.
+
+The take length is a local custom property, not a duration token, for the
+same reason `.ns-marquee`'s speed is: it is the length of a piece of
+footage, not the response time of a control.
+
+### Added — `icons/hero-scenes.svg`, illustration-scale vectors
+
+Four 400×300 scenes, against the icon set's twenty 24px glyphs. `currentColor`
+and two opacity levels only, so they are right in both themes with no second
+asset and no filter; 1.7px strokes matching the icon set's optical weight so
+the two never read as two libraries.
+
+Every one is a diagram of something the curriculum teaches — a schema, order
+of execution, governor limits as a budget, sharing recalculation — because an
+illustration a reader can learn something from is the only kind that survives
+being looked at twice. `.ns-vec__draw` strokes draw themselves in, which needs
+`pathLength="100"` so one duration fits every path length.
+
+### Added — a styleguide page for the scroll hero
+
+`c-shero`, with the sticky mechanism's two breakable conditions, the
+screencast, and all four scene vectors. 171 components, 201 pages.
+
+### Added — `check-markup.mjs` fails on an inert class pairing
+
+Some components are a **pair**: one class does nothing unless another is
+present above it, and when the partner is missing there is no error, no
+warning, and no visual difference from not using the effect at all. That is
+the worst failure mode this system has, because it survives review — the
+page looks exactly like a page where somebody chose not to use it.
+
+`.ns-parallax` without `.ns-parallax-frame` is the motivating case, and it
+cost real time this week before it was understood. The check is per file
+rather than per DOM ancestry: a true ancestor test needs a parser, and in
+practice the frame and its layers are authored together, so a file that uses
+one and not the other is the bug. Verified by deleting every
+`ns-parallax-frame` from the homepage — exit 1 with the reason — and
+restoring it.
+
+`PAIRS` at the top of the check is the place to add the next one.
+
+### Added — styleguide pages for everything added this week
+
+Five components existed in CSS and in one template and nowhere in the
+styleguide, which by this repo's own standard means five components nobody
+can see. `component-docs.mjs` is the source for every per-component page, so
+they are entries there now:
+
+- **Author card** (`c-maker`) — new page. Cross-links to Instructor and
+  Testimonial in its *not for* list, because the whole point of the
+  component is the distinction between the three.
+- **Logo row** — rewritten. `.ns-brandmark` real marks, the `--lg` row with
+  `.ns-logorow__caption`, and the text-mark fallback, with the fabricated-
+  endorsement rule stated in *not for* rather than buried in an SVG comment.
+- **Card** — the glyph cover, with the `.ns-ph`-versus-`--glyph` argument.
+- **Page motion** — parallax, and why it needs a frame.
+- **Sponsor card** — the ask, and why it is neither the empty slot nor a CTA.
+
+200 pages now (was 199); `check-links` passes across all 348.
+
+### Changed — the band kicker was set at the mono label floor
+
+`--size-label` (11px) is where an index, a duration, a table caption and a
+status chip belong: glanced at, never sentences. `.ns-kicker` is not one of
+those. It is the first thing on every band and it is a phrase a person
+reads — and at 11px, uppercased and tracked, it was the smallest text on the
+page. Every band effectively opened on its heading with the framing line
+lost. It is now `--size-mono` (13): the same voice one step up, still
+visibly data rather than prose. Nothing else on the mono scale moved.
+
+The line over the logo marquee is no longer a kicker at all. A kicker frames
+a heading; a logo wall has no heading, so it was a row of tracked capitals
+doing an ordinary sentence's job. It is now `.ns-logorow__caption` — a plain
+muted sentence at the band's own body size.
+
+### Added — `.ns-maker`, and the homepage's authors stop being a byline
+
+The "who wrote it" band was `.ns-instructor`, which is a catalogue block: an
+avatar, a name, a role and two counts, built to sit in a course page's
+sidebar next to the buy button, where the reader has already decided. On a
+homepage it produced a byline, and nobody has ever been persuaded by one.
+
+A homepage asks a different question — not "who is this" but "why would I
+listen" — so `.ns-maker` leads with the person **speaking**: one first-person
+sentence at `--size-prose-lead`, the largest thing in the card, with the
+identity underneath as attribution. That is the shape of a testimonial, and
+it works here for the same reason it works there.
+
+Two columns, never three: three would cut each sentence to a phrase, and a
+phrase in quotation marks is a pull-quote, not a voice.
+
+`.ns-maker__who` is a grid rather than a flex row, and that is load-bearing.
+"Salesforce Architect · 11× certified" wraps in a card this wide while
+"Flows & automation" does not, so in a flex row the stat chips landed at
+different heights in the two cards and the pair read as a bug. The old
+`max-width: 47.999rem` guard never fired, because the problem is the
+**card's** width (~580px) inside a 1440px page — a container-width problem
+with a viewport-width answer.
+
+### Added — `.ns-sponsorask`, and the sponsors band asks
+
+The band now has an inbound half: one hairline row, a sentence with two real
+numbers in it, and an outline button. It is deliberately not `.ns-adslot`
+(dashed scaffolding whose own docs say never to ship it to a reader) and not
+`.ns-cta` (the page gets one closer, and spending it on "sponsor us" sells
+the wrong thing to the 99% who came to learn).
+
+The sponsor card's logo is now the **mark-only** symbol. `.ns-sponsor__name`
+sets the company name as real text beside it and the docs are explicit that
+it is not optional — so a full lockup rendered "Orgforce / Orgforce".
+
+### Changed — "Shipped recently" is a timeline
+
+`.ns-shipped` is a list of changes: four independent facts that happen to be
+sorted, and it read as one. The whole argument of the band is that they are
+**consecutive** — the work did not stop between July and August — and a
+timeline says that with its spine and its dots, in the geometry the training
+rail and the account activity feed already use. `--icons`, because the kind
+of change is what is being scanned; the newest entry takes
+`data-state="current"`, so the coloured dot marks the live end of the spine.
+
+### Fixed — the marquee dragged a hole across the trust band
+
+`.ns-marquee__track` is translated by exactly half its own width, which only
+lands on an identical frame if the track already tiles its content. Six logo
+marks do not fill a desktop row, so once per lap a gap the width of the
+shortfall crossed the band. Each track now carries the set twice, with the
+repeat `aria-hidden` so the row still announces six companies rather than
+twelve.
+
+### Added — `.ns-parallax`, and the frame it needs
+
+Scroll-scrubbed depth for **decoration only** — a cover glyph, a band's
+illustration. It never moves content and never changes layout.
+
+It comes in two parts, and that is not an API mistake:
+`animation-timeline: view()` resolves against the subject's nearest **scroll
+container**, and `overflow: hidden` makes an element one even though nothing
+in it will ever scroll. So a layer parallaxing inside a clipped box — which
+is every sane use of the technique, since it depends on the overflow being
+hidden — resolves its timeline against a box that never moves and sits
+frozen at 50% progress. It looks like it works: the element is exactly where
+an un-animated element would be.
+
+Hence `.ns-parallax-frame`, which declares a named view timeline and must be
+an element whose *own* nearest scroll container is the page (the card, the
+band — not the clipped media slot inside it). `.ns-parallax` layers anywhere
+below it consume that timeline by name.
+
+### Added — scroll-driven entrances wired into the homepage
+
+Every band head takes `.ns-anim--rise.ns-anim--onview`; every grid,
+timeline, price table and FAQ takes `.ns-anim-stagger--onview`. All of it is
+the motion layer the system already shipped and the homepage had never used
+— native scroll-driven animation, no observer, no script.
+
+**Not verified in a browser.** The automation window reports
+`document.visibilityState === "hidden"`, and a hidden document deactivates
+scroll timelines (and stops IntersectionObserver delivering), so every
+`view()` timeline on the page reads as inactive there regardless of whether
+the CSS is right. The declarations are correct and the degradation is safe —
+an inactive timeline leaves content at its natural, visible state, which is
+what the screenshots show — but the motion itself needs a look in a real
+window.
+
+### Changed — the marketing bands were set one step below the UI base
+
+`components/css/sections.css` set its body copy at `--size-small` (13px):
+the feature paragraph, the router's "when", the compare panels, the fit
+list, the FAQ answer, the sample note, the shipped row. The scope chips were
+at `--size-label` (11px) — the mono label floor — while carrying running
+words rather than labels.
+
+That is one step **below** `--size-body`, which makes a homepage paragraph
+smaller than a table row. The fork in `tokens/typography.css` is not
+article-versus-not, it is **scanned versus read**, and nobody scans a
+homepage; they read it once, deciding. The band layer had reasoned itself
+onto the wrong side of a fork it was supposed to be an example of.
+
+The band layer now takes the reading scale:
+
+| | was | now |
+| --- | --- | --- |
+| `.ns-band__lede`, `.ns-hero__lede` | 17 | **20** `--size-prose-lead` |
+| `.ns-feature__name`, `.ns-faq summary` | 14 | **17** `--size-prose` |
+| feature / router / compare / fit / FAQ / sample / shipped copy | 13 | **15** `--size-prose-small` |
+| `.ns-scope__items` | 11 | **13** `--size-small` |
+| every mono label, kicker, index, stat label | 11 | **11** — unchanged |
+
+The mono voice does not move. A kicker, an index, a duration and a stat
+label are data, not prose, and the label scale is where they belong on
+either side of the fork.
+
+**Cards composed into a band follow the band.** A new rule at the foot of
+`sections.css` lifts `.ns-card__title` / `.ns-trackcard__title` /
+`.ns-path__title` to 17 and their body copy plus `.ns-bcard__excerpt` to 15
+— but only inside `.ns-band`. The same course card in a catalogue grid or a
+rail keeps the UI scale, because a catalogue of forty is scanned and three
+on a homepage are read. The component does not change; only the register it
+is read in does, which is the tell that this is the fork applied rather than
+an exception carved out of it.
+
+`.ns-lesson` is deliberately excluded. "A lesson row looks the same in the
+syllabus, the rail and the drawer" is a promise `lms.css` makes, and a
+lesson row inside a band is still a list of lessons.
+
+### Added — `.ns-brandmark` and `icons/brand-marks.svg`
+
+A real logo lockup in a trust row or a marquee, as opposed to
+`.ns-logorow__mark`, which is a company's *name* set in our mono face
+because no mark exists.
+
+Sized by **height**, never by width. Logos come at wildly different aspect
+ratios, and a row that sets a common width shrinks the wordmark and inflates
+the monogram; optical evenness comes from a shared cap height. Every symbol
+in the sprite therefore carries its own viewBox width, and the host `<svg>`
+has to repeat it — an externally-referenced `<use>` gives the host no
+intrinsic size, so `inline-size: auto` has nothing to resolve against and
+the element collapses to the CSS default 300×150 with the mark letterboxed
+inside it. (Found the hard way: at a shared 132-wide box, "UMBRELLA OPS"
+measured 144 and lost its S.)
+
+Colour is `currentColor`, so the row's grayscale-at-rest → ink-on-hover is a
+colour change rather than a filter. That is not only tidier: `filter:
+grayscale(1)` on a dark logo over a dark band leaves a black rectangle, so a
+filtered logo wall needs a second set of assets for the dark theme and this
+one does not. The trade, stated plainly in the CSS: it only works for
+monochrome marks, and a partner who requires their two colours gets an
+`<img>` and a second asset.
+
+**Every company in the sprite is fictional** — Acme, Northwind, Globex,
+Initech, Umbrella, Orgforce, Contoso, Initrode — and the file says so at the
+top in the strongest terms available. They exist so the row can be built,
+reviewed and screenshotted against real *marks* instead of five words in our
+own mono. A logo wall showing a mark its owner never granted is a fabricated
+endorsement, and it is worse than the quiet text row it replaced.
+
+### Changed — the homepage: membership, sponsors, and marks instead of names
+
+Now 21 bands. Three changes on top of the nine added above:
+
+- **02, the trust marquee**, carries logo lockups rather than names set in
+  mono. The band reads as a logo wall for the first time, which is what it
+  was always describing itself as.
+- **12 is a membership band** (`.ns-plans`) — three columns, real prices, the
+  advantages listed per column, the yearly saving stated as a number. It
+  *replaced* the two-column `.ns-tiers` free-vs-Pro band rather than joining
+  it: both answered "what does it cost", and two price bands on one page is
+  one price band and a rehearsal of it.
+  **No billing switch.** `.ns-plans` ships a monthly/yearly control and it
+  belongs on the pricing page where flipping it recomputes the prices.
+  Nothing on this page recomputes anything, and a control that moves a dot
+  and changes no number is the dead affordance the pace band was cut for one
+  commit ago.
+- **18 is the sponsors band** — the full row of marks, plus exactly one
+  `--leaderboard` card for the headline sponsor, because `.ns-sponsor`'s own
+  argument is that two sponsors on a surface is a surface nobody looks at.
+  It sits at the bottom and not beside the trust marquee on purpose: band 02
+  is other people's logos vouching for us, band 18 is us disclosing who pays
+  us, and putting a paid placement in the credibility slot spends trust that
+  was not ours to spend. The card's logo is the sprite mark rather than our
+  own favicon, so it is no longer labelled Orgforce while showing somebody
+  else's icon.
+
+### Changed — the learning-site homepage, from eleven bands to twenty
+
+`templates/homepage.html` showed the merchandise and then stopped. Eleven
+bands is enough to describe a product and not enough to answer a visitor:
+nothing on the page let a reader check the writing, find out whether their
+own subject was covered, see the price, learn who wrote it, or tell whether
+the curriculum was still alive. Nine bands were added, each admitted on the
+same test the section catalogue uses — **it answers a question no other band
+on the page answers**:
+
+| # | Band | The question |
+| --- | --- | --- |
+| 03 | `.ns-router` | which of these am I (admin / developer / architect) |
+| 09 | `.ns-sample` | is the writing any good — a real lesson, mid-flow |
+| 10 | `.ns-scope` | is the thing MY job needs in here |
+| 11 | `.ns-compare` | what changes about me, eight weeks apart |
+| 12 | `.ns-tiers` | what does it cost |
+| 13 | `.ns-instructors` | who is actually teaching me |
+| 15 | `.ns-bcard` | what does a normal week here look like |
+| 16 | `.ns-shipped` | is this thing still being written |
+| 17 | `.ns-fit` | should I **not** buy this |
+| 18 | `.ns-field` | the exit for a reader who is not starting today |
+
+No new markup was invented for any of them — every band composes classes the
+system already ships, which is what the section catalogue was for.
+
+The FAQ's "What is free and what is Pro?" row was replaced with a question
+about elapsed time. An FAQ row is where a question goes when it does **not**
+deserve a section; free-vs-Pro now has band 12, so it had to leave rather
+than be answered twice on one page.
+
+### Removed — the pace band from the homepage
+
+The finish-date band (`.ns-pace`) is gone from `templates/homepage.html`. On
+the training index it is wired: the segmented control recomputes the date, so
+picking "15 min" does something. On the homepage it was static — three radio
+buttons that moved a dot and changed nothing, above a date they did not
+compute. A control that does not control is worse than the sentence it
+replaced. `.ns-pace` itself is unchanged and still ships on
+`templates/training-index.html` and on its own component page.
+
+### Added — `.ns-card__media--glyph`, the big-icon cover
+
+A card whose subject has no photograph and never will — a course, a track, a
+post, a topic — now takes its own glyph at cover size on the hairline grid,
+instead of `.ns-ph`.
+
+The distinction is what each one *says*. `.ns-ph` says "a picture is missing
+here" and should embarrass somebody into supplying one. A glyph cover says
+"an icon is the artwork", and is finished. Using placeholders as permanent
+card art is how a catalogue ends up looking unbuilt — and how three course
+cards end up looking like three copies of the same card, because three
+identical placeholder slashes are the largest thing on all of them.
+
+The glyph tracks the card's hover state (colour only — nothing scales,
+nothing lifts) because the cover is the biggest part of the target, and it
+takes `--color-brand-300` in dark. The homepage's course cards and blog cards
+use it; `.ns-tthumb--glyph` remains the same idea at track and path-stop size.
+
+### Added — the live stream system, from eight scenes to eighteen
+
+The eight scenes shipped earlier covered a person teaching at a screen. They
+did not cover the two things a live session actually is and a recording is
+not: **an audience that talks back**, and **a moment somebody has to be asked
+to subscribe to.** Both were missing, so both were being improvised on air —
+which is the one thing the rest of this system exists to prevent.
+
+Eighteen scenes now, in three groups, each drawn in **both themes**:
+
+| Group | Scenes |
+| --- | --- |
+| Open & close | countdown, welcome slide, intermission, ending |
+| Teaching | camera, screen, screen + title, screen + camera, slide, slide + camera, code |
+| Comments & guests | camera + comments, screen + comments, screen + camera + comments, comment wall, Q&A, guest two-up, guest + screen |
+
+Four new specimen cards carry the components those scenes needed:
+
+- **Camera shapes** — the camera is no longer assumed to be 16:9. Eight
+  sanctioned crops (16:9 corner, full bleed, two-up, column, stacked pair,
+  4:3 block, 1:1 bust, 9:16 rail), each tied to the layout whose block it
+  fills. The rule that replaces "always 16:9" is *fill the block the layout
+  gives you without dead space* — which is why a camera beside a wide comment
+  rail is 4:3 and a standing shot is 9:16. One crop per session, still.
+- **Name plates** — icon, name and job title as one object, with six
+  variants: host, guest (which gets a handle line the host does not), compact,
+  speaking state, screen driver, and credential. The screen-driver plate is
+  the only overlay in the system with no exit rule, because the question it
+  answers stays true for the whole demo.
+- **Action chips** — subscribe, like, bell, newsletter, visit, share, plus the
+  CTA sting. Two on screen at most, one of them filled, and never on a
+  teaching scene.
+- **Notification toasts** — six events (subscriber, member, tip, milestone,
+  resource drop, technical notice) in one lane that queues rather than stacks.
+  The edge colour is a category, not decoration: brand for a free action,
+  amber for paid support, green for a milestone, red for a problem.
+
+The scene grid grew from seven zones to ten — comment rail, chip lane and
+toast lane — and the overlay kit from twelve graphics to fifteen. The eight
+old scene tiles were a single card; they are now three, because a card you
+have to scroll for a minute is a list, not a specimen.
+
+### Added — `brand-content-creation/livestream/export/`
+
+Seven OBS-ready Browser Sources over one shared `overlay.css`, at true
+1920×1080: furniture, starting-soon/intermission, name plate, action chips,
+toast lane and comment rail. Everything is configured through the query string
+(`?theme=light`, `?variant=guest`, `?kind=member`, `?safe=1`), so one file
+serves every session and nobody edits HTML at 19:04. `toast.html` and
+`comments.html` also accept `postMessage`.
+
+They are deliberately **not** in `components/css/`: that layer is the contract
+between the Ghost theme and the LMS, and a lower third is neither. This is a
+third consumer of the same tokens.
+
+Two things the files encode that prose could not: `actions.html` caps the chip
+lane at two and refuses a second filled chip, and the comment rail reads a
+`.js` file rather than fetching JSON — a page opened from `file://` cannot
+fetch a sibling, and OBS fails that silently.
+
+`OBS.md` follows: the 18-scene build list, geometry for every new zone and
+crop, a "mute overlays" hotkey, and the four new troubleshooting rows.
+
 ### Added — six page sections, each answering a question no other band does
 
 The admission test for a new section is not "is this a different layout" but

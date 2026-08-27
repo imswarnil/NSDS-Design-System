@@ -1,0 +1,73 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>NSDS live — notification toasts</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="overlay.css">
+</head><body>
+<!-- One lane, bottom-right, one toast at a time — they QUEUE, they never
+     stack. Three ways to drive it:
+
+     1. One-shot from the URL, refreshed by a hotkey:
+        ?kind=subscriber&who=@sana_k&msg=welcome%20in
+     2. A rehearsal loop through all six:      ?demo=1
+     3. From another page or a script:
+        window.postMessage({ nsdsToast: { kind: "member", who: "@meera_dt" } }, "*")
+
+     kind: subscriber | member | tip | milestone | link | notice           -->
+<div class="ov-toasts" id="lane"></div>
+<script>
+  const q = new URLSearchParams(location.search), p = (k, d) => q.get(k) ?? d;
+  document.documentElement.dataset.theme = p("theme", "dark");
+  if (p("safe")) document.body.insertAdjacentHTML("beforeend", '<div class="ov-guide"></div>');
+
+  /* icon, modifier, tag, hold in seconds. The holds are not arbitrary: a tip
+     carries a message somebody paid to have read, and a link has to survive
+     a viewer unlocking a phone and typing it. A technical notice has no
+     timer at all, because the problem does not have one either. */
+  const KINDS = {
+    subscriber: ["ph-user-circle",   "",                   "new",       4],
+    member:     ["ph-crown-simple",  "ov-toast--member",   "member",    5],
+    tip:        ["ph-credit-card",   "ov-toast--member",   "thanks",    8],
+    milestone:  ["ph-medal",         "ov-toast--milestone","milestone", 5],
+    link:       ["ph-link-simple",   "",                   "link",     10],
+    notice:     ["ph-warning-circle","ov-toast--notice",   "issue",     0],
+  };
+
+  const queue = [];
+  let busy = false;
+
+  function push(t) { queue.push(t); if (!busy) next(); }
+
+  function next() {
+    const t = queue.shift();
+    if (!t) { busy = false; return; }
+    busy = true;
+    const [icon, mod, tag, hold] = KINDS[t.kind] || KINDS.subscriber;
+    lane.innerHTML = `<div class="ov-toast ${mod} ov-enter-right">
+        <i class="ph ${icon}"></i>
+        <div><b>${t.who || ""}</b>${t.msg ? `<span>${t.msg}</span>` : ""}</div>
+        <em>${t.tag || tag}</em>
+      </div>`;
+    const secs = t.hold !== undefined ? Number(t.hold) : hold;
+    if (secs <= 0) return;                     // notice: stays until cleared
+    setTimeout(() => {
+      const el = lane.firstElementChild;
+      if (el) el.className = el.className.replace("ov-enter-right", "ov-exit-right");
+      /* Wait out the exit before the next one enters — overlapping is what
+         turns a lane into a notification centre. */
+      setTimeout(() => { lane.innerHTML = ""; next(); }, 240);
+    }, secs * 1000);
+  }
+
+  addEventListener("message", (e) => { if (e.data && e.data.nsdsToast) push(e.data.nsdsToast); });
+
+  if (p("demo")) {
+    [{ kind: "subscriber", who: "@sana_k", msg: "welcome in" },
+     { kind: "member", who: "@meera_dt joined as a member", msg: "month 1" },
+     { kind: "tip", who: "@rk_dev sent ₹500", msg: "“this saved my sprint”" },
+     { kind: "milestone", who: "500 watching", msg: "biggest room yet" },
+     { kind: "link", who: "Repo posted in chat", msg: "github.com/namaste-salesforce/bulk-flow" },
+     { kind: "notice", who: "Audio dropped — fixing", msg: "back in a moment", hold: 6 }].forEach(push);
+  } else if (q.get("kind")) {
+    push({ kind: p("kind"), who: p("who", ""), msg: p("msg", ""), hold: q.get("hold") ?? undefined });
+  }
+</script>
+</body></html>

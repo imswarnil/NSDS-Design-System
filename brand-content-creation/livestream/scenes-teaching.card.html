@@ -1,0 +1,232 @@
+<!-- @dsCard group="Content Creation" viewport="760x2136" name="Live Stream — Teaching Scenes" subtitle="The seven scenes you actually teach in — camera, bare screen, screen with a title, screen with you in it, slides and code — in both themes" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames, so the type inside a
+     tile is scaled artwork, not UI copy — a scale token there would be the wrong
+     size by definition. The card's own chrome (labels, captions) does use the
+     scale. See improve.md IMPROVE-11. -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--camfill:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--camfill:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
+.kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);z-index:5}
+.live{position:absolute;inset-inline-end:5%;top:7.5%;display:flex;align-items:center;gap:3px;z-index:5;
+  font-family:var(--font-mono);font-size:5.5px;font-weight:700;letter-spacing:.08em;
+  background:var(--color-error);color:#fff;padding:2px 4px}
+.live::before{content:"";width:3px;height:3px;border-radius:50%;background:#fff}
+.mark{position:absolute;inset-inline-end:5%;bottom:6.5%;display:flex;align-items:center;gap:3px;opacity:.62;z-index:5;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.handle{position:absolute;inset-inline-start:5%;bottom:6.5%;display:flex;align-items:center;gap:3px;z-index:5;
+  font-family:var(--font-mono);font-size:5.5px;color:var(--dim)}
+.handle i{font-size:7px;color:var(--accent)}
+/* The stage stand-in. In the encoder this is a full-bleed capture; the inset
+   here is so you can see the frame's furniture around it. */
+.stage{position:absolute;background:var(--panel);border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  font-family:var(--font-mono);font-size:5.5px;color:var(--dim);text-align:center;padding:0 5px}
+.stage i{font-size:13px;color:var(--accent)}
+.stage em{font-style:normal;font-size:5px;opacity:.8}
+.cam{position:absolute;background:var(--camfill);border:1px solid var(--accent);display:flex;
+  align-items:center;justify-content:center;color:var(--accent);font-family:var(--font-mono);font-size:5.5px;gap:3px;z-index:4}
+.cam i{font-size:11px}
+.name{position:absolute;display:flex;align-items:center;gap:4px;background:var(--panel);z-index:5;
+  border-inline-start:2px solid var(--color-brand-500);padding:4px 7px;color:var(--ink)}
+.name>i{font-size:11px;color:var(--accent);flex:none}
+.name b{display:block;font-family:var(--font-heading);font-size:7px;font-weight:700;line-height:1.15}
+.name span{display:block;font-family:var(--font-mono);font-size:5px;color:var(--accent);margin-top:1px;letter-spacing:.05em}
+/* Topic bar — persistent while teaching, carries the step index. */
+.topic{position:absolute;inset-inline:5%;top:18%;display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:1px solid var(--line);padding-bottom:3px;color:var(--ink);z-index:5}
+.topic b{font-family:var(--font-heading);font-size:7.5px;font-weight:600}
+.topic span{font-family:var(--font-mono);font-size:5.5px;color:var(--accent);letter-spacing:.06em}
+/* Title strip — the "screen only, but say what this is" scene. A single
+   line, in the band the shared window never uses. */
+.strip{position:absolute;inset-inline:0;bottom:0;background:var(--color-brand-900);color:#fff;z-index:5;
+  display:flex;align-items:center;gap:6px;padding:4px 5%;border-top:1px solid var(--color-brand-500)}
+.f--l .strip{background:var(--color-brand-800)}
+.strip b{font-family:var(--font-heading);font-size:7.5px;font-weight:600}
+.strip code{font-family:var(--font-mono);font-size:5.5px;color:var(--color-brand-300);letter-spacing:.08em;flex:none}
+.strip span{margin-inline-start:auto;font-family:var(--font-mono);font-size:5.5px;color:rgb(255 255 255/.6)}
+.strip .mark{position:static;opacity:.72;color:#fff;font-size:6px}
+.strip .mark i{color:var(--color-brand-300)}
+.big{position:absolute;color:var(--ink)}
+.big b{display:block;font-family:var(--font-heading);font-size:11px;font-weight:700;line-height:1.08;letter-spacing:-.01em}
+.big span{display:block;font-family:var(--font-mono);font-size:5.5px;color:var(--accent);margin-top:4px;letter-spacing:.1em;text-transform:uppercase}
+/* Slide stand-in: a real slide is a title, a rule and at most three lines. */
+.slide{position:absolute;background:var(--panel);border:1px solid var(--line);padding:7px 8px;color:var(--ink);display:flex;flex-direction:column}
+.slide code{font-family:var(--font-mono);font-size:5px;letter-spacing:.1em;color:var(--accent);text-transform:uppercase}
+.slide b{font-family:var(--font-heading);font-size:9px;font-weight:700;line-height:1.15;margin-top:3px}
+.slide u{display:block;height:1px;background:var(--color-brand-500);width:22%;margin:4px 0 5px;text-decoration:none}
+.slide p{margin:0 0 3px;font-family:var(--font-mono);font-size:5.5px;line-height:1.5;color:var(--dim)}
+/* Code stand-in — a prepared snippet at 18–20pt, not your working editor. */
+.code{position:absolute;background:var(--panel);border:1px solid var(--line);padding:6px 7px;display:flex;flex-direction:column;gap:3px}
+.code i{display:block;height:2px;background:var(--line);border-radius:1px}
+.code i:nth-child(1){width:62%}.code i:nth-child(2){width:82%}.code i:nth-child(3){width:44%;background:var(--color-brand-500);opacity:.6}
+.code i:nth-child(4){width:74%}.code i:nth-child(5){width:36%}.code i:nth-child(6){width:66%}
+</style></head><body>
+
+<!-- 05 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>05</code><b>Camera only</b><em>10&ndash;40s at a time &middot; punctuation, not a default</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="cam" style="inset:16% 5%"><i class="ph ph-video-camera"></i>CAMERA &middot; full bleed</div>
+      <div class="name" style="inset-inline-start:5%;bottom:18%;max-width:44%"><i class="ph ph-user-circle"></i><div><b>Swarnil Singhai</b><span>Salesforce Architect &middot; host</span></div></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="cam" style="inset:16% 5%"><i class="ph ph-video-camera"></i>CAMERA &middot; full bleed</div>
+      <div class="name" style="inset-inline-start:5%;bottom:18%;max-width:44%"><i class="ph ph-user-circle"></i><div><b>Swarnil Singhai</b><span>Salesforce Architect &middot; host</span></div></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>The open, the recap, and every moment you are arguing rather than demonstrating.</b>The name plate carries an icon, the name in heading weight and the job title in mono — it shows for the first eight seconds of each appearance and then retires. Past about forty seconds this stops reading as emphasis and starts reading as a webcam recording: cut to the screen or to a slide.</div>
+</div>
+
+<!-- 06 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>06</code><b>Screen only</b><em>the bare share &middot; nothing but the work</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="stage" style="inset:9% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; full bleed<em>cam off &middot; kicker off &middot; safe area widened to 90%</em></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="stage" style="inset:9% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; full bleed<em>cam off &middot; kicker off &middot; safe area widened to 90%</em></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Everything off except the LIVE badge and the mark.</b>For the minutes where a stack trace, a debug log or a dense setup page matters more than your face — and for anything you want a viewer to read rather than watch. Say &ldquo;I'm going full screen&rdquo; before you switch, or a phone viewer thinks the stream dropped. The mark stays because a clip of this scene has nothing else on it that says who taught it.</div>
+</div>
+
+<!-- 07 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>07</code><b>Screen + title</b><em>the bare share, named</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="stage" style="inset:9% 5% 20% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; 16:9<em>title strip owns the bottom band</em></div>
+      <div class="strip"><code>03 / 05</code><b>Bulkifying the Flow</b><span>namastesalesforce.com</span><div class="mark"><i class="ph ph-sparkle"></i>NSDS</div></div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="stage" style="inset:9% 5% 20% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; 16:9<em>title strip owns the bottom band</em></div>
+      <div class="strip"><code>03 / 05</code><b>Bulkifying the Flow</b><span>namastesalesforce.com</span><div class="mark"><i class="ph ph-sparkle"></i>NSDS</div></div>
+    </div>
+  </div>
+  <div class="cap"><b>Scene 06 plus one sentence, in the one band a shared window never uses.</b>The strip is full-bleed and dark in both themes, so it reads as broadcast furniture rather than part of your desktop. It carries the step index, the step name, the handle and the mark — everything a clipped screenshot needs to be attributable, which makes this the best scene to be caught on in a clip, and the right default for anything you expect to be screenshotted. Never two lines; if it needs two, it is a slide.</div>
+</div>
+
+<!-- 08 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>08</code><b>Screen + camera</b><em>the workhorse &middot; most of the hour</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; full bleed</div>
+      <div class="cam" style="inset-inline-end:6%;bottom:19%;width:20%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; full bleed</div>
+      <div class="cam" style="inset-inline-end:6%;bottom:19%;width:20%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Screen fills the stage; the camera parks bottom-right at 20% of canvas width and never moves again.</b>The cam sits <em>above</em> the watermark's corner, which is why the bottom-right 22% of your shared window has to stay empty — do not put the record detail panel, the console or the thing you are about to click there. Re-park the content, never the camera.</div>
+</div>
+
+<!-- 09 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>09</code><b>Slide</b><em>full frame &middot; concepts, diagrams, the one big number</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="slide" style="inset:16% 5%"><code>// step 03</code><b>One query, outside the loop</b><u></u>
+        <p>200 records &rarr; 1 SOQL call</p><p>200 records &rarr; 200 SOQL calls</p><p>the limit is 100</p></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="slide" style="inset:16% 5%"><code>// step 03</code><b>One query, outside the loop</b><u></u>
+        <p>200 records &rarr; 1 SOQL call</p><p>200 records &rarr; 200 SOQL calls</p><p>the limit is 100</p></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>A kicker, a title, a rule and at most three lines.</b>Exported at 1920&times;1080 so it needs no scaling at all — never 4:3, never A4 landscape. Use this scene when the screen is <em>not</em> changing: a still application window with narration over it is already a slide, so cut to a real one and get the type size back.</div>
+</div>
+
+<!-- 10 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>10</code><b>Slide + camera</b><em>deck teaching &middot; you stay in frame</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="topic"><b>03 &middot; Bulkification</b><span>step 3 of 5</span></div>
+      <div class="slide" style="inset:27% 27% 14% 5%"><code>// step 03</code><b>One query, outside the loop</b><u></u>
+        <p>200 records &rarr; 1 SOQL call</p><p>the limit is 100</p></div>
+      <div class="cam" style="inset-inline-end:5%;top:27%;width:20%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="topic"><b>03 &middot; Bulkification</b><span>step 3 of 5</span></div>
+      <div class="slide" style="inset:27% 27% 14% 5%"><code>// step 03</code><b>One query, outside the loop</b><u></u>
+        <p>200 records &rarr; 1 SOQL call</p><p>the limit is 100</p></div>
+      <div class="cam" style="inset-inline-end:5%;top:27%;width:20%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>The topic bar carries the mono step index</b> — the same <code>01/02/03</code> numbering the welcome slide, the lessons and the thumbnails use, so a viewer who joined at minute forty knows where they are in under a second. The camera moves to the top of the right column here rather than the bottom corner, because the slide's content column ends at 73% and the corner belongs to the mark.</div>
+</div>
+
+<!-- 11 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>11</code><b>Code focus</b><em>prepared snippet at 18&ndash;20pt</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="code" style="inset:12% 5% 20% 5%"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="strip"><code>03 / 05</code><b>BulkFlowHandler.cls &middot; 18&ndash;31</b><span>namastesalesforce.com</span><div class="mark"><i class="ph ph-sparkle"></i>NSDS</div></div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="code" style="inset:12% 5% 20% 5%"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="strip"><code>03 / 05</code><b>BulkFlowHandler.cls &middot; 18&ndash;31</b><span>namastesalesforce.com</span><div class="mark"><i class="ph ph-sparkle"></i>NSDS</div></div>
+    </div>
+  </div>
+  <div class="cap"><b>Cam off, kicker off, title strip naming the file and the lines.</b>A window capture of a prepared snippet, not your working editor — no tab bar full of client names, no unsaved-changes dot. Wrap long lines instead of scrolling sideways, and if it needs more than about fourteen visible lines it belongs on a slide. Do the zoom before you switch scenes: changing editor zoom on air reflows the file and the viewer loses their place.</div>
+</div>
+
+</body></html>

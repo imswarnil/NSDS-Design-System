@@ -94,12 +94,24 @@
      other component keeps --size-body. Two tokens, one rule, and no
      component has to decide.
 
+     "Surfaces built on it" includes the MARKETING BANDS in
+     components/css/sections.css, and that is worth spelling out because it
+     was got wrong once. A homepage is not an article, so the band layer
+     originally reasoned itself onto the UI scale and set its body copy at
+     13 — one step below the base, level with a table caption. But the fork
+     is not article-versus-not, it is scanned-versus-read, and nobody scans
+     a homepage. They read it once, deciding. Bands take --size-prose-lead
+     for the lede, --size-prose for a card heading and --size-prose-small
+     for body copy; the mono label voice does not move on either side.
+
      15 is the step the UI scale never needed and prose does — it is what
      sets a table or a code block INSIDE an article, where dropping to 13
      would put the code two full steps below the paragraph it explains. */
   --size-prose: 1.0625rem;      /* 17 — THE READING SIZE */
   --size-prose-lead: 1.25rem;   /* 20 — standfirsts and ledes on a reading page */
-  --size-prose-small: 0.9375rem;/* 15 — tables, code and captions inside prose */
+  --size-prose-small: 0.9375rem;/* 15 — tables, code and captions inside prose;
+                                   also the body copy of a marketing band, which
+                                   is read once rather than scanned */
 
   /* Mono/label scale — the structural material. Every index, timestamp,
      duration, kicker and status runs through this, uppercase + tracked,

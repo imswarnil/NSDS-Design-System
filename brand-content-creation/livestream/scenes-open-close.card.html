@@ -1,0 +1,182 @@
+<!-- @dsCard group="Content Creation" viewport="760x1230" name="Live Stream — Open &amp; Close Scenes" subtitle="The four scenes nobody teaches in: countdown, welcome, intermission and ending — each in both themes" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames, so the type inside a
+     tile is scaled artwork, not UI copy — a scale token there would be the wrong
+     size by definition. The card's own chrome (labels, captions) does use the
+     scale. See improve.md IMPROVE-11. -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+/* ---- the two broadcast themes -----------------------------------------
+   Identical geometry, seven swapped variables. If the light version needs a
+   different arrangement, the arrangement was wrong. */
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--camfill:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--camfill:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
+.kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.live{position:absolute;inset-inline-end:5%;top:7.5%;display:flex;align-items:center;gap:3px;
+  font-family:var(--font-mono);font-size:5.5px;font-weight:700;letter-spacing:.08em;
+  background:var(--color-error);color:#fff;padding:2px 4px}
+.live::before{content:"";width:3px;height:3px;border-radius:50%;background:#fff}
+.mark{position:absolute;inset-inline-end:5%;bottom:6.5%;display:flex;align-items:center;gap:3px;opacity:.62;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.handle{position:absolute;inset-inline-start:5%;bottom:6.5%;display:flex;align-items:center;gap:3px;
+  font-family:var(--font-mono);font-size:5.5px;color:var(--dim)}
+.handle i{font-size:7px;color:var(--accent)}
+.cam{position:absolute;background:var(--camfill);border:1px solid var(--accent);display:flex;
+  align-items:center;justify-content:center;color:var(--accent);font-family:var(--font-mono);font-size:5.5px;gap:3px}
+.cam i{font-size:11px}
+.big{position:absolute;color:var(--ink)}
+.big b{display:block;font-family:var(--font-heading);font-size:13px;font-weight:700;line-height:1.05;letter-spacing:-.01em}
+.big span{display:block;font-family:var(--font-mono);font-size:5.5px;color:var(--accent);margin-top:4px;letter-spacing:.1em;text-transform:uppercase}
+.count{position:absolute;font-family:var(--font-mono);font-size:19px;font-weight:700;color:var(--accent);letter-spacing:-.02em;line-height:1}
+/* Name plate — icon, name, job title. The icon is what makes it read as a
+   person rather than a caption at 20% of a phone screen. */
+.name{position:absolute;display:flex;align-items:center;gap:4px;background:var(--panel);
+  border-inline-start:2px solid var(--color-brand-500);padding:4px 7px;color:var(--ink)}
+.name>i{font-size:11px;color:var(--accent);flex:none}
+.name b{display:block;font-family:var(--font-heading);font-size:7px;font-weight:700;line-height:1.15}
+.name span{display:block;font-family:var(--font-mono);font-size:5px;color:var(--accent);margin-top:1px;letter-spacing:.05em}
+/* Action strip — the reusable chips, laid in a row. Open and close scenes
+   only: this is the one moment a viewer is not being taught at. */
+.acts{position:absolute;display:flex;gap:4px;align-items:center}
+.act{display:flex;align-items:center;gap:3px;font-family:var(--font-mono);font-size:5px;letter-spacing:.06em;
+  text-transform:uppercase;padding:2.5px 5px;border:1px solid var(--line);color:var(--ink);background:var(--panel)}
+.act i{font-size:7px;color:var(--accent)}
+.act--fill{background:var(--color-brand-500);border-color:var(--color-brand-500);color:#fff}
+.act--fill i{color:#fff}
+/* Agenda — the welcome slide's whole job. Three to five lines, mono indices,
+   the same numbering the topic bar and the lessons use. */
+.agenda{position:absolute;display:flex;flex-direction:column;gap:4px}
+.agenda div{display:flex;gap:5px;align-items:baseline;font-size:6.5px;color:var(--ink)}
+.agenda code{font-family:var(--font-mono);font-size:5.5px;color:var(--accent);flex:none}
+.agenda em{font-style:normal;color:var(--dim);font-family:var(--font-mono);font-size:5px;margin-inline-start:auto}
+.slot{position:absolute;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;font-family:var(--font-mono);font-size:5px;color:var(--dim);text-align:center}
+.slot i{font-size:12px;color:var(--accent)}
+</style></head><body>
+
+<!-- 01 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>01</code><b>Starting soon</b><em>T&minus;10 min &middot; no live badge</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div>
+      <div class="big" style="inset-inline-start:5%;top:30%;max-width:56%"><b>Flows that don't<br>break in bulk</b><span>starting in</span></div>
+      <div class="count" style="inset-inline-end:6%;top:31%">04:12</div>
+      <div class="acts" style="inset-inline-start:5%;bottom:19%"><span class="act act--fill"><i class="ph ph-play-circle"></i>Subscribe</span><span class="act"><i class="ph ph-bell-ringing"></i>All notifications</span></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div>
+      <div class="big" style="inset-inline-start:5%;top:30%;max-width:56%"><b>Flows that don't<br>break in bulk</b><span>starting in</span></div>
+      <div class="count" style="inset-inline-end:6%;top:31%">04:12</div>
+      <div class="acts" style="inset-inline-start:5%;bottom:19%"><span class="act act--fill"><i class="ph ph-play-circle"></i>Subscribe</span><span class="act"><i class="ph ph-bell-ringing"></i>All notifications</span></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>A countdown, a title, and the only two asks of the whole hour.</b>Runs 5&ndash;10 minutes before the top of the hour so late joiners land on something branded rather than a black frame. The clock counts <em>down</em> and holds at <code>00:00</code> — a stream that starts four minutes late is fine, a frame that lies is not. No LIVE badge yet: the badge means you are talking.</div>
+</div>
+
+<!-- 02 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>02</code><b>Welcome slide</b><em>0:00&ndash;0:02 &middot; the promise and the map</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="big" style="inset-inline-start:5%;top:19%;max-width:58%"><b>Welcome</b><span>what you'll leave with</span></div>
+      <div class="agenda" style="inset-inline-start:5%;top:44%;width:56%">
+        <div><code>01</code>Why a Flow dies at 200 records<em>~10 min</em></div>
+        <div><code>02</code>Rebuilding it for bulk<em>~20 min</em></div>
+        <div><code>03</code>Proving it with a test<em>~15 min</em></div>
+      </div>
+      <div class="name" style="inset-inline-start:5%;bottom:6%;max-width:44%"><i class="ph ph-user-circle"></i><div><b>Swarnil Singhai</b><span>Salesforce Architect &middot; host</span></div></div>
+      <div class="cam" style="inset-inline-end:5%;bottom:20%;width:22%;aspect-ratio:16/9"><i class="ph ph-video-camera"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="big" style="inset-inline-start:5%;top:19%;max-width:58%"><b>Welcome</b><span>what you'll leave with</span></div>
+      <div class="agenda" style="inset-inline-start:5%;top:44%;width:56%">
+        <div><code>01</code>Why a Flow dies at 200 records<em>~10 min</em></div>
+        <div><code>02</code>Rebuilding it for bulk<em>~20 min</em></div>
+        <div><code>03</code>Proving it with a test<em>~15 min</em></div>
+      </div>
+      <div class="name" style="inset-inline-start:5%;bottom:6%;max-width:44%"><i class="ph ph-user-circle"></i><div><b>Swarnil Singhai</b><span>Salesforce Architect &middot; host</span></div></div>
+      <div class="cam" style="inset-inline-end:5%;bottom:20%;width:22%;aspect-ratio:16/9"><i class="ph ph-video-camera"></i></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Three to five steps, numbered, with honest durations.</b>The one slide the whole session is measured against — every topic bar index later in the hour refers back to a line on this list. You talk over it from the corner camera, so it is a scene rather than a card: it stays up for two minutes, not two seconds. Five lines is the ceiling; a sixth means the session is two sessions.</div>
+</div>
+
+<!-- 03 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>03</code><b>Intermission</b><em>mid-stream break &middot; cam and mic off</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="big" style="inset-inline-start:5%;top:33%;max-width:52%"><b>Back in</b><span>next: bulkification</span></div>
+      <div class="count" style="inset-inline-start:5%;top:53%">02:00</div>
+      <div class="acts" style="inset-inline-end:5%;top:33%;flex-direction:column;align-items:flex-end"><span class="act"><i class="ph ph-envelope-simple"></i>Newsletter</span><span class="act"><i class="ph ph-globe"></i>namastesalesforce.com</span></div>
+      <div class="handle"><i class="ph ph-chat-circle-text"></i>questions in chat &mdash; I read them on return</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="big" style="inset-inline-start:5%;top:33%;max-width:52%"><b>Back in</b><span>next: bulkification</span></div>
+      <div class="count" style="inset-inline-start:5%;top:53%">02:00</div>
+      <div class="acts" style="inset-inline-end:5%;top:33%;flex-direction:column;align-items:flex-end"><span class="act"><i class="ph ph-envelope-simple"></i>Newsletter</span><span class="act"><i class="ph ph-globe"></i>namastesalesforce.com</span></div>
+      <div class="handle"><i class="ph ph-chat-circle-text"></i>questions in chat &mdash; I read them on return</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>The scene that stops a two-minute break costing you the room.</b>Same countdown component as scene 01, named for what comes back rather than what stopped. The LIVE badge stays on — the stream did not end. Mute the mic <em>at the switcher</em>, not by remembering to; this is the scene where an open mic ends careers.</div>
+</div>
+
+<!-- 04 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>04</code><b>Ending</b><em>last 2 min &middot; hold 60s after you stop talking</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div>
+      <div class="big" style="inset-inline-start:5%;top:26%;max-width:50%"><b>Next: Governor<br>limits, live</b><span>thursday &middot; 19:00 IST</span></div>
+      <div class="slot" style="inset-inline-end:5%;top:26%;width:27%;aspect-ratio:16/9"><i class="ph ph-play-circle"></i>watch the course</div>
+      <div class="acts" style="inset-inline-start:5%;bottom:19%"><span class="act act--fill"><i class="ph ph-play-circle"></i>Subscribe</span><span class="act"><i class="ph ph-heart"></i>Like</span><span class="act"><i class="ph ph-envelope-simple"></i>Newsletter</span></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div>
+      <div class="big" style="inset-inline-start:5%;top:26%;max-width:50%"><b>Next: Governor<br>limits, live</b><span>thursday &middot; 19:00 IST</span></div>
+      <div class="slot" style="inset-inline-end:5%;top:26%;width:27%;aspect-ratio:16/9"><i class="ph ph-play-circle"></i>watch the course</div>
+      <div class="acts" style="inset-inline-start:5%;bottom:19%"><span class="act act--fill"><i class="ph ph-play-circle"></i>Subscribe</span><span class="act"><i class="ph ph-heart"></i>Like</span><span class="act"><i class="ph ph-envelope-simple"></i>Newsletter</span></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Geometrically the same asset as the YouTube end screen</b>, so the VOD's last frame and the stream's last frame are one design. The dashed slot is where the platform draws its own subscribe/video element — leave it empty, do not put your own graphic under theirs. Three chips is the ceiling and this is the only scene that gets three: everywhere else it is one ask at a time.</div>
+</div>
+
+</body></html>

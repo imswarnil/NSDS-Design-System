@@ -147,6 +147,14 @@
     from { translate: 0 0; }
     to { translate: -50% 0; }
   }
+  /* The block-axis loop, for .ns-marquee--vertical. A separate keyframe
+     rather than a logical one, because `translate: -50%` on a single axis
+     cannot be written axis-agnostically — and a caller that has chosen a
+     vertical marquee already knows which axis it is on. */
+  @keyframes ns-marquee-scroll-y {
+    from { translate: 0 0; }
+    to { translate: 0 -50%; }
+  }
 
   /* --- Scroll-triggered ---------------------------------------------------
      --onview runs the animation as the block scrolls into view rather than on
@@ -164,6 +172,85 @@
     /* A scroll-driven animation is scrubbed by position, so a delay would
        shift it out of its own range and strand it part-drawn. */
     .ns-anim-stagger--onview > * { animation-delay: 0s; }
+
+    /* --- Parallax --------------------------------------------------------
+       The one motion here that is not an entrance. It runs the whole time a
+       block is on screen, scrubbed by the reader's own scroll, so it never
+       plays AT somebody — it only ever reports how far they have come.
+
+       IT COMES IN TWO PARTS, AND THAT IS NOT AN API MISTAKE.
+       `animation-timeline: view()` resolves against the subject's nearest
+       SCROLL CONTAINER, and `overflow: hidden` makes an element a scroll
+       container even though nothing in it will ever scroll. So a layer
+       parallaxing inside a clipped box — which is every sane use of it,
+       since the whole technique depends on the overflow being hidden —
+       resolves its timeline against a box that never moves, and sits frozen
+       at 50% progress forever. It looks like it works: the element is
+       exactly where an un-animated element would be.
+
+       Hence the pair. The FRAME declares a named view timeline, and it must
+       be an element whose own nearest scroll container is the page (the
+       card, the band — not the clipped media slot inside it). The moving
+       layer, anywhere below it, consumes that timeline by name:
+
+         <div class="ns-card ns-parallax-frame">
+           <span class="ns-card__media ns-card__media--glyph">
+             <i class="ph ph-gear ns-parallax"></i>
+
+       Two more rules keep it from becoming the thing everyone hates:
+
+       1. IT NEVER MOVES CONTENT. Only decoration takes it: a cover glyph, a
+          band's illustration, an image inside its own frame. A heading that
+          drifts relative to its own paragraph is a heading somebody has to
+          chase, and it is the fastest way to make a page unreadable.
+       2. IT NEVER CHANGES LAYOUT. `translate` on a composited layer inside
+          the frame's clip, so the shift cannot lengthen the page, cannot
+          reflow, and cannot open a gap at either end of the range. The
+          travel is capped by the spacing scale rather than by a number. */
+    .ns-parallax-frame { view-timeline: --ns-parallax block; }
+    .ns-parallax {
+      --ns-parallax-shift: var(--space-6);
+      animation: ns-parallax var(--duration-base) linear both; /* lint-ok: a scroll-driven animation ignores duration; it is here so the shorthand parses */
+      animation-timeline: --ns-parallax;
+      /* The full pass, not an entry range: the layer should be mid-travel
+         when the frame is mid-screen, which is what makes it read as depth
+         rather than as an entrance that happens to be slow. */
+      animation-range: cover 0% cover 100%;
+    }
+    .ns-parallax--slow { --ns-parallax-shift: var(--space-4); }
+    .ns-parallax--deep { --ns-parallax-shift: var(--space-10); }
+    /* Reversed: for the layer that should read as being IN FRONT of the page
+       rather than behind it. One per frame at the very most — two layers
+       moving in opposite directions is a diorama, not a page. */
+    .ns-parallax--near { animation-name: ns-parallax-near; }
+  }
+  @keyframes ns-parallax {
+    from { translate: 0 var(--ns-parallax-shift); }
+    to { translate: 0 calc(-1 * var(--ns-parallax-shift)); }
+  }
+  @keyframes ns-parallax-near {
+    from { translate: 0 calc(-1 * var(--ns-parallax-shift)); }
+    to { translate: 0 var(--ns-parallax-shift); }
+  }
+
+  /* THE GUARD THAT THE GLOBAL ONE DOES NOT COVER.
+     ------------------------------------------------------------------------
+     tokens/effects.css collapses every animation to 0.001ms under
+     prefers-reduced-motion, and for a time-driven animation that is the whole
+     job. A SCROLL-DRIVEN one is not time-driven: when animation-timeline is a
+     progress-based timeline the declared duration is ignored entirely, so the
+     global guard slides straight past every rule in this block and the motion
+     survives a reader who asked for none.
+
+     So they are switched off here, at the timeline, which is the only lever
+     that works. Dropping the timeline leaves a 0.001ms time-driven animation
+     that lands on its `to` frame immediately — the finished state, which is
+     the correct place for it to be. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-anim--onview, .ns-anim-stagger--onview > *, .ns-parallax {
+      animation-timeline: auto;
+    }
+    .ns-parallax { animation-name: none; translate: none; }
   }
 }
 

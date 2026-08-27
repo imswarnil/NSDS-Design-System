@@ -1,0 +1,54 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>NSDS live — comment rail</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="overlay.css">
+</head><body>
+<!-- The comment rail: a COLUMN, not a floating panel. It takes width from the
+     stage rather than covering it, so the scene that uses it must already
+     have narrowed the screen capture to 67–74%.
+
+     Four rows maximum, newest at the bottom, one promoted at a time. This is
+     deliberately NOT a live chat mirror: a scrolling feed is unreadable at
+     broadcast size and competes with the thing you are teaching. Comments are
+     pushed here by a moderator, or typed into comments.js.
+
+       ?rows=4&count=412&theme=dark
+       window.postMessage({ nsdsComment: { who: "@priya_dev", text: "…",
+                                           promoted: true, member: false } }, "*")
+
+     comments.js sets window.NSDS_COMMENTS to an array of
+     { who, text, promoted, member }. It is a script rather than JSON because a
+     page opened from file:// cannot fetch() a sibling file — OBS's embedded
+     browser blocks it as a cross-origin read, and the rail would come up empty
+     with no error anywhere you would think to look.                        -->
+<script src="comments.js"></script>
+<div class="ov-rail" id="rail">
+  <div class="ov-rail__head"><i class="ph ph-chat-circle-text"></i>LIVE<em id="count"></em></div>
+  <ul id="list"></ul>
+</div>
+<script>
+  const q = new URLSearchParams(location.search), p = (k, d) => q.get(k) ?? d;
+  document.documentElement.dataset.theme = p("theme", "dark");
+  if (p("safe")) document.body.insertAdjacentHTML("beforeend", '<div class="ov-guide"></div>');
+  count.textContent = p("count", "");
+
+  const MAX = Math.min(4, Number(p("rows", 4)));
+  const rows = [];
+  const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c]);
+
+  function render() {
+    /* Newest at the BOTTOM — the way every chat client on earth reads. Only
+       the most recent promoted comment keeps its fill; a rail with two
+       highlights has highlighted nothing. */
+    let promoted = rows.map((r) => !!r.promoted).lastIndexOf(true);
+    list.innerHTML = rows.map((r, i) => `<li class="${i === promoted ? "is-promoted " : ""}${r.member ? "is-member " : ""}ov-enter-right">
+        <i></i><div><b>${esc(r.who)}${r.member ? " · member" : ""}</b><p>${esc(r.text)}</p></div>
+      </li>`).join("");
+  }
+
+  function push(c) { rows.push(c); while (rows.length > MAX) rows.shift(); render(); }
+
+  addEventListener("message", (e) => { if (e.data && e.data.nsdsComment) push(e.data.nsdsComment); });
+
+  (window.NSDS_COMMENTS || []).slice(-MAX).forEach(push);
+</script>
+</body></html>

@@ -1,0 +1,40 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>NSDS live — furniture</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="overlay.css">
+</head><body>
+<!-- The persistent frame: accent bar, kicker, live badge, rotating handle bug
+     and the watermark. Nest this in every live scene rather than copying the
+     pieces — one Browser Source, edited in one place.
+
+     ?kicker=live%20session%2004&live=1&theme=dark&mark=Namaste%20Salesforce
+     &handles=namastesalesforce.com|@namastesalesforce|/in/imswarnil&every=600 -->
+<div class="ov-bar"></div>
+<div class="ov-kicker" id="kicker"></div>
+<div class="ov-live" id="live">LIVE</div>
+<div class="ov-bug" id="bug"><i class="ph ph-globe"></i><span></span></div>
+<div class="ov-mark"><img src="../../../assets/logo/favicon.svg" alt=""><span id="mark"></span></div>
+<script>
+  const q = new URLSearchParams(location.search), p = (k, d) => q.get(k) ?? d;
+  document.documentElement.dataset.theme = p("theme", "dark");
+  kicker.textContent = "// " + p("kicker", "live session 04");
+  mark.textContent = p("mark", "Namaste Salesforce");
+  if (p("live", "1") !== "1") live.remove();
+  if (p("safe")) document.body.insertAdjacentHTML("beforeend", '<div class="ov-guide"></div>');
+
+  /* One destination at a time. A row of five icons is a choice, and a viewer
+     who has to choose goes nowhere — so the bug rotates instead. */
+  const ICONS = { "@": "ph-play-circle", "/": "ph-linkedin-logo" };
+  const handles = p("handles", "namastesalesforce.com|@namastesalesforce|/in/imswarnil").split("|").filter(Boolean);
+  const every = Math.max(60, Number(p("every", 600))) * 1000;
+  let i = 0;
+  const show = () => {
+    const h = handles[i % handles.length];
+    bug.querySelector("i").className = "ph " + (ICONS[h[0]] || "ph-globe");
+    bug.querySelector("span").textContent = h;
+    bug.className = "ov-bug ov-enter-left";
+    i++;
+  };
+  show();
+  if (handles.length > 1) setInterval(show, every);
+</script>
+</body></html>

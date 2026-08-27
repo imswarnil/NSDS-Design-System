@@ -1,0 +1,270 @@
+/* NSDS live overlay kit — the broadcast components at true 1920×1080 scale.
+   =========================================================================
+   This is the reusable layer behind every file in this directory. It is NOT
+   part of components/css/: those classes are the contract between the Ghost
+   theme and the LMS, and a lower third is neither. This is a third consumer
+   of the same tokens — which is why every value below that could be a token
+   is one, and the pixel values that remain are canvas geometry, not styling.
+
+   Scale: authored for a 1920×1080 browser source. Nothing here uses rem, so
+   OBS's own zoom cannot shift a graphic off its documented pixel position.
+
+   Theme: <html data-theme="dark"> or "light". The tokens flip underneath;
+   these rules only pick surfaces out of them.
+
+   Geometry, resolved from the scene grid (see OBS.md §4):
+     title-safe   96, 54 → 1728 × 972
+     kicker       96, 78
+     live badge   right edge 1824, top 78
+     name plate   96, 878
+     chip lane    96, 806
+     toast lane   right edge 1824, bottom edge 966
+     watermark    right edge 1824, bottom edge 1026, height 38          */
+
+/* ---- the canvas -------------------------------------------------------- */
+html, body {
+  margin: 0;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  /* Transparent, always. OBS composites this page over the camera and the
+     screen capture; an opaque body hides both, and it is the single most
+     common reason a browser source "shows a white box". */
+  background: transparent;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Local surface variables, so every component below reads one set of names
+   whichever theme is on the <html> element. */
+:root {
+  --ov-ink: var(--color-on-dark);
+  --ov-dim: rgb(255 255 255 / 0.62);
+  --ov-panel: rgb(0 26 62 / 0.86);
+  --ov-line: rgb(255 255 255 / 0.2);
+  --ov-accent: var(--color-brand-300);
+}
+[data-theme="light"] {
+  --ov-ink: var(--color-brand-900);
+  --ov-dim: var(--color-brand-800);
+  --ov-panel: rgb(255 255 255 / 0.92);
+  --ov-line: rgb(3 45 96 / 0.16);
+  --ov-accent: var(--color-brand-500);
+}
+
+/* Only ever set on a full-frame scene (starting-soon, welcome, ending). A
+   furniture overlay must stay transparent. */
+.ov-backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-brand-900);
+}
+[data-theme="light"] .ov-backdrop { background: var(--color-on-dark); }
+.ov-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  --ns-gridlines-ink: rgb(255 255 255 / 0.06);
+  --ns-gridlines-cell: 64px;
+  background-image: var(--ns-gridlines-image);
+  background-size: var(--ns-gridlines-cell) var(--ns-gridlines-cell);
+}
+[data-theme="light"] .ov-backdrop::after { --ns-gridlines-ink: rgb(0 26 62 / 0.05); }
+
+/* ---- 01 top accent bar ------------------------------------------------- */
+.ov-bar { position: absolute; inset-inline: 0; top: 0; height: 4px; background: var(--color-brand-500); }
+
+/* ---- 02 kicker --------------------------------------------------------- */
+.ov-kicker {
+  position: absolute; left: 96px; top: 78px;
+  font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ov-accent);
+}
+
+/* ---- 03 live badge ----------------------------------------------------- */
+.ov-live {
+  position: absolute; right: 96px; top: 74px;
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--color-error); color: var(--color-on-brand);
+  font-family: var(--font-mono); font-size: 19px; font-weight: 700;
+  letter-spacing: 0.1em; padding: 6px 14px;
+}
+/* The dot does not blink. A live badge is a state, and a state that flashes
+   reads as an alert. */
+.ov-live::before { content: ""; width: 10px; height: 10px; border-radius: var(--radius-pill); background: currentColor; }
+
+/* ---- 04 index (recorded lessons / step counter) ------------------------ */
+.ov-index {
+  position: absolute; right: 96px; top: 78px;
+  font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.06em; color: var(--ov-dim);
+}
+
+/* ---- 05 name plate ----------------------------------------------------- */
+.ov-plate {
+  position: absolute; left: 96px; bottom: 116px;
+  display: inline-flex; align-items: center; gap: 18px;
+  background: var(--ov-panel);
+  /* The hairline is the structure: on a light stream the panel is 92% white,
+     which has no edge at all against a bright camera or a white org. */
+  border: 1px solid var(--ov-line); border-inline-start: 3px solid var(--color-brand-500);
+  padding: 16px 26px; color: var(--ov-ink);
+}
+.ov-plate > i { font-size: 42px; color: var(--ov-accent); flex: none; }
+.ov-plate b { display: block; font-family: var(--font-heading); font-size: 30px; font-weight: 700; line-height: 1.12; }
+.ov-plate span { display: block; font-family: var(--font-mono); font-size: 18px; color: var(--ov-accent); margin-top: 5px; letter-spacing: 0.045em; }
+.ov-plate u { display: block; text-decoration: none; font-family: var(--font-mono); font-size: 16px; color: var(--ov-dim); margin-top: 3px; }
+.ov-plate em {
+  font-style: normal; margin-inline-start: auto; padding-inline-start: 24px; flex: none;
+  font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--color-warning);
+}
+.ov-plate--guest { border-inline-start-color: var(--color-brand-300); }
+.ov-plate--driving { border-inline-start-color: var(--color-warning); }
+.ov-plate--speaking { box-shadow: inset 3px 0 0 0 var(--color-success), -4px 0 0 0 var(--color-success); }
+
+/* ---- 06 handle bug ----------------------------------------------------- */
+.ov-bug {
+  position: absolute; left: 96px; bottom: 54px;
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 18px; color: var(--ov-dim);
+}
+.ov-bug i { font-size: 22px; color: var(--ov-accent); }
+
+/* ---- 07 watermark ------------------------------------------------------ */
+.ov-mark {
+  position: absolute; right: 96px; bottom: 54px;
+  display: inline-flex; align-items: center; gap: 12px;
+  opacity: 0.62; color: var(--ov-ink);
+  font-family: var(--font-heading); font-size: 24px; font-weight: 700;
+}
+.ov-mark img { width: 38px; height: 38px; }
+
+/* ---- 08 topic / title strip -------------------------------------------- */
+.ov-topic {
+  position: absolute; left: 96px; right: 96px; top: 196px;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 40px;
+  border-bottom: 1px solid var(--ov-line); padding-bottom: 10px; color: var(--ov-ink);
+}
+.ov-topic b { font-family: var(--font-heading); font-size: 26px; font-weight: 600; }
+.ov-topic span { font-family: var(--font-mono); font-size: 18px; color: var(--ov-accent); letter-spacing: 0.06em; }
+
+.ov-strip {
+  position: absolute; inset-inline: 0; bottom: 0;
+  display: flex; align-items: center; gap: 18px; padding: 14px 96px;
+  background: var(--color-brand-900); color: var(--color-on-dark);
+  border-top: 2px solid var(--color-brand-500);
+}
+.ov-strip code { font-family: var(--font-mono); font-size: 17px; letter-spacing: 0.08em; color: var(--color-brand-300); flex: none; }
+.ov-strip b { font-family: var(--font-heading); font-size: 24px; font-weight: 600; }
+.ov-strip span { margin-inline-start: auto; font-family: var(--font-mono); font-size: 17px; color: rgb(255 255 255 / 0.6); }
+
+/* ---- 09 countdown ------------------------------------------------------ */
+.ov-count {
+  font-family: var(--font-mono); font-size: 96px; font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1; color: var(--ov-accent);
+  /* Tabular figures, or the whole block twitches once a second. */
+  font-variant-numeric: tabular-nums;
+}
+.ov-headline { color: var(--ov-ink); }
+.ov-headline b { display: block; font-family: var(--font-heading); font-size: 78px; font-weight: 700; line-height: 1.03; letter-spacing: -0.015em; }
+.ov-headline span { display: block; font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ov-accent); margin-top: 18px; }
+
+/* ---- 10 action chips --------------------------------------------------- */
+.ov-chips { position: absolute; left: 96px; bottom: 116px; display: flex; gap: 12px; align-items: center; }
+.ov-chip {
+  display: inline-flex; align-items: center; gap: 12px; padding: 12px 22px;
+  border: 1px solid var(--ov-line); background: var(--ov-panel); color: var(--ov-ink);
+  font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.06em;
+  text-transform: uppercase; white-space: nowrap;
+}
+.ov-chip i { font-size: 28px; color: var(--ov-accent); flex: none; }
+.ov-chip--fill { background: var(--color-brand-500); border-color: var(--color-brand-500); color: var(--color-on-brand); }
+.ov-chip--fill i { color: var(--color-on-brand); }
+
+/* ---- 11 CTA sting ------------------------------------------------------ */
+.ov-sting {
+  position: absolute; left: 50%; transform: translateX(-50%); bottom: 96px;
+  display: inline-flex; align-items: center; gap: 20px;
+  background: var(--color-brand-500); color: var(--color-on-brand); padding: 20px 32px;
+}
+.ov-sting > i { font-size: 40px; flex: none; }
+.ov-sting b { display: block; font-family: var(--font-heading); font-size: 28px; font-weight: 600; line-height: 1.15; }
+.ov-sting span { display: block; font-family: var(--font-mono); font-size: 19px; color: rgb(255 255 255 / 0.8); margin-top: 4px; }
+
+/* ---- 12 notification toast --------------------------------------------- */
+/* One lane. Toasts queue; they never stack. */
+.ov-toasts { position: absolute; right: 96px; bottom: 114px; display: flex; flex-direction: column; align-items: flex-end; }
+.ov-toast {
+  display: inline-flex; align-items: center; gap: 18px;
+  background: var(--ov-panel); border: 1px solid var(--ov-line);
+  border-inline-start: 4px solid var(--color-brand-500);
+  padding: 18px 26px; color: var(--ov-ink); min-width: 460px;
+}
+.ov-toast > i { font-size: 36px; color: var(--ov-accent); flex: none; }
+.ov-toast b { display: block; font-family: var(--font-heading); font-size: 25px; font-weight: 700; line-height: 1.15; }
+.ov-toast span { display: block; font-family: var(--font-mono); font-size: 17px; color: var(--ov-dim); margin-top: 4px; }
+.ov-toast em {
+  font-style: normal; margin-inline-start: auto; padding-inline-start: 22px; flex: none;
+  font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ov-accent);
+}
+.ov-toast--member { border-inline-start-color: var(--color-warning); }
+.ov-toast--member > i, .ov-toast--member em { color: var(--color-warning); }
+.ov-toast--milestone { border-inline-start-color: var(--color-success); }
+.ov-toast--milestone > i, .ov-toast--milestone em { color: var(--color-success); }
+.ov-toast--notice { border-inline-start-color: var(--color-error); }
+.ov-toast--notice > i, .ov-toast--notice em { color: var(--color-error); }
+
+/* ---- 13 comment rail --------------------------------------------------- */
+.ov-rail {
+  position: absolute; right: 96px; top: 238px; width: 451px;
+  display: flex; flex-direction: column;
+  background: var(--ov-panel); border: 1px solid var(--ov-line);
+  border-inline-start: 4px solid var(--color-brand-500); color: var(--ov-ink);
+}
+.ov-rail__head {
+  display: flex; align-items: center; gap: 10px; padding: 12px 18px;
+  border-bottom: 1px solid var(--ov-line);
+  font-family: var(--font-mono); font-size: 16px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ov-accent);
+}
+.ov-rail__head i { font-size: 20px; }
+.ov-rail__head em { font-style: normal; margin-inline-start: auto; color: var(--ov-dim); }
+.ov-rail ul { margin: 0; padding: 16px 18px; list-style: none; display: flex; flex-direction: column; gap: 14px; }
+.ov-rail li { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; }
+.ov-rail li > i { width: 22px; height: 22px; border-radius: var(--radius-pill); background: var(--color-brand-500); opacity: 0.55; margin-top: 3px; }
+.ov-rail b { display: block; font-family: var(--font-mono); font-size: 16px; color: var(--ov-accent); }
+.ov-rail p { margin: 3px 0 0; font-size: 19px; line-height: 1.4; }
+.ov-rail li.is-promoted {
+  background: color-mix(in srgb, var(--color-brand-500) 18%, transparent);
+  border-inline-start: 3px solid var(--color-brand-500);
+  /* Bleeds to both inner edges, so the fill is a band across the rail rather
+     than a box that overhangs one side. */
+  padding: 8px 18px; margin-inline: -18px;
+}
+.ov-rail li.is-promoted > i { opacity: 1; }
+.ov-rail li.is-member > i { background: var(--color-warning); opacity: 1; }
+.ov-rail li.is-member b { color: var(--color-warning); }
+
+/* ---- motion ------------------------------------------------------------
+   One vocabulary: slide in from the nearest edge, hold, slide back out. No
+   fades, no scale, no bounce. Everything uses the product's own easing. */
+@keyframes ov-in-left  { from { opacity: 0; transform: translateX(-24px); } to { opacity: 1; transform: none; } }
+@keyframes ov-in-right { from { opacity: 0; transform: translateX(24px); }  to { opacity: 1; transform: none; } }
+@keyframes ov-out-left  { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-24px); } }
+@keyframes ov-out-right { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(24px); } }
+
+.ov-enter-left  { animation: ov-in-left  var(--duration-base) var(--ease-out) both; }
+.ov-enter-right { animation: ov-in-right var(--duration-base) var(--ease-out) both; }
+.ov-exit-left   { animation: ov-out-left  var(--duration-base) var(--ease-out) both; }
+.ov-exit-right  { animation: ov-out-right var(--duration-base) var(--ease-out) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ov-enter-left, .ov-enter-right, .ov-exit-left, .ov-exit-right { animation-duration: 1ms; }
+}
+
+/* ---- alignment guide ---------------------------------------------------
+   Add ?safe=1 to any overlay to draw the safe areas while you position it in
+   OBS, then take it off. Never leave it on during a stream. */
+.ov-guide { position: absolute; inset: 0; pointer-events: none; }
+.ov-guide::before, .ov-guide::after { content: ""; position: absolute; }
+.ov-guide::before { inset: 3.5%; border: 1px dashed var(--color-warning); }
+.ov-guide::after  { inset: 5%;   border: 1px solid var(--color-brand-500); }

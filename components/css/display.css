@@ -24,6 +24,32 @@
     box-shadow: inset 0 2px 0 var(--color-brand-500);
   }
   .ns-card__media { display: block; aspect-ratio: 16 / 9; inline-size: 100%; object-fit: cover; background: var(--color-surface-sunken); }
+  /* --glyph: the BIG-ICON COVER. For a card whose subject has no photograph
+     and never will — a course, a track, a tool, a topic. The subject's own
+     glyph is set at cover size on the hairline grid, so a grid of six cards
+     is six distinguishable marks rather than six copies of one stock image.
+
+     Deliberately NOT .ns-ph, and the difference is what each one says: a
+     placeholder says "a picture is MISSING here" and should embarrass
+     somebody into supplying one; a glyph cover says "an icon is the artwork",
+     and is finished. Using .ns-ph as permanent card art is how a catalogue
+     ends up looking unbuilt. */
+  .ns-card__media--glyph {
+    display: grid; place-items: center;
+    color: var(--color-brand-500);
+    font-size: var(--size-display);
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: var(--space-6) var(--space-6);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  [data-theme="dark"] .ns-card__media--glyph { color: var(--color-brand-300); }
+  /* The glyph tracks the card: the cover is the largest thing on it, so a
+     cover that ignores hover reads as a static image rather than part of the
+     target. Colour only — nothing scales, nothing lifts. */
+  .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-200); }
   .ns-card__body { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--pad-card); flex: 1; }
   .ns-card__kicker { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
                      letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
@@ -365,6 +391,64 @@
   .ns-marquee--window { mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent); } /* lint-ok: a mask's black is an alpha stop, not a colour */
   .ns-marquee--reverse .ns-marquee__track { animation-direction: reverse; }
   .ns-marquee--slow { --ns-marquee-speed: 70s; }
+
+  /* --- Vertical ------------------------------------------------------------
+     The same loop on the block axis, for a column beside a horizontal strip.
+     The keyframe is a different one because -50% on the block axis has to
+     move the track UP, and a single keyframe cannot serve both axes without
+     the caller knowing which one it is in.
+
+     It needs an explicit height on the marquee — a vertical track has no
+     intrinsic one to loop within, and without it the column grows to its
+     content and never scrolls. */
+  .ns-marquee--vertical { flex-direction: column; block-size: 100%; }
+  .ns-marquee--vertical .ns-marquee__track {
+    flex-direction: column; min-inline-size: 0; min-block-size: 100%;
+    padding-inline-end: 0; padding-block-end: var(--ns-marquee-gap);
+    animation-name: ns-marquee-scroll-y;
+  }
+  .ns-marquee--vertical.ns-marquee--window {
+    mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent); /* lint-ok: a mask's black is an alpha stop, not a colour */
+  }
+
+  /* --- Depth ---------------------------------------------------------------
+     A strip set back in space, so a wall of testimonials reads as a crowd
+     rather than as a table of quotations.
+
+     THE PERSPECTIVE IS ON THE CONTAINER AND THE ROTATION IS ON A WRAPPER,
+     never on the animating track. A rotation on the track itself composes
+     with the translate the loop is driving, and the two fight: the card
+     nearest the camera changes as the track moves, so the whole strip
+     appears to swing. Rotating a parent leaves the loop translating in a
+     plane that is already tilted, which is what "set back" actually means.
+
+     Deliberately shallow — 14 degrees and 600px of perspective. Past that
+     the far edge of the strip is unreadable, and a testimonial nobody can
+     read is decoration with somebody's name on it. */
+  /* The padding is inside the clip, and it is what stops the tilt eating the
+     bottom row. rotateX pushes the near edge of the plane DOWN past the box
+     it was measured in, so a deck sized to its untilted content clips the
+     last row's names off. The clip still has to be there — rotateZ throws
+     the corners out sideways, and without it a tilted deck gives the whole
+     page a horizontal scrollbar. */
+  .ns-marquee-deck { perspective: 600px; overflow: clip; align-self: center; padding-block: var(--space-6); }
+  /* A card in a VERTICAL loop takes the column's width rather than its own.
+     .ns-bubble ships a fixed 19rem because a bubble in a horizontal strip
+     needs a width to wrap against; in a column that same fixed width plus
+     the deck's rotateZ pushes the card past the clip and shears the last
+     word off every line. */
+  .ns-marquee--vertical .ns-bubble { inline-size: auto; }
+  .ns-marquee-deck__tilt {
+    transform: rotateX(9deg) rotateZ(-2deg); /* lint-ok: a depth angle, not a spacing value */
+    transform-origin: center top;
+  }
+  .ns-marquee-deck--right .ns-marquee-deck__tilt { transform: rotateX(9deg) rotateZ(2deg); } /* lint-ok: mirrored depth angle */
+  /* Flat again under reduced motion. The tilt is not motion, but it is
+     vestibular decoration in the same family, and a reader who has asked for
+     less of that has asked for less of this too. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-marquee-deck__tilt, .ns-marquee-deck--right .ns-marquee-deck__tilt { transform: none; }
+  }
   .ns-marquee--fast { --ns-marquee-speed: 22s; }
   .ns-marquee--tight { --ns-marquee-gap: var(--space-6); }
   /* Items: the mono credential voice by default, because that is what a strip
@@ -380,6 +464,24 @@
   /* Display scale, for a poster band. This is what .ns-kinetic in type-fx.css
      does; that one stays because it is a TYPOGRAPHIC effect with its own
      outline treatment — this is the general-purpose strip. */
+  /* --card: an item carrying a CARD rather than a credential.
+
+     .ns-marquee__item is the mono credential voice — uppercase, tracked,
+     nowrap — which is right for "PASSED PD1 IN NINE WEEKS" as a passing
+     mark in a strip, and catastrophic for anything with a paragraph in it.
+     A testimonial bubble inherited it and came out as uppercase monospace
+     prose, which is the single worst setting in the system.
+
+     So the modifier hands the typography back: the card inside decides its
+     own voice, and the item goes back to being a box that holds something.
+     `white-space: normal` is the load-bearing half — without it the bubble
+     never wraps and the strip becomes one very long line. */
+  .ns-marquee__item--card {
+    display: block; white-space: normal;
+    font-family: var(--font-sans); font-size: var(--size-body);
+    letter-spacing: normal; text-transform: none;
+    color: var(--color-ink);
+  }
   .ns-marquee--display .ns-marquee__item {
     font-family: var(--font-heading); font-size: var(--size-h2);
     font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);

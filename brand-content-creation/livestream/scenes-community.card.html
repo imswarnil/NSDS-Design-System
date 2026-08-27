@@ -1,0 +1,299 @@
+<!-- @dsCard group="Content Creation" viewport="760x2151" name="Live Stream — Comment &amp; Guest Scenes" subtitle="The seven scenes where the audience or a second person is on screen — live comments, the comment wall, Q&amp;A and two-camera guests — in both themes" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames, so the type inside a
+     tile is scaled artwork, not UI copy — a scale token there would be the wrong
+     size by definition. The card's own chrome (labels, captions) does use the
+     scale. See improve.md IMPROVE-11. -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.scene{margin-block-end:20px}
+.scene:last-child{margin-block-end:0}
+.hd{display:flex;gap:8px;align-items:baseline;margin-bottom:6px}
+.hd code{font-family:var(--font-mono);font-size:10px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12.5px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8.5px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted);margin-top:7px}
+.cap b{color:var(--color-ink);font-weight:600}
+
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--camfill:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--camfill:rgb(1 118 211/.1)}
+
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+.pat{position:absolute;inset:0;
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
+.kick{position:absolute;inset-inline-start:5%;top:8%;font-family:var(--font-mono);font-size:6px;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--accent);z-index:5}
+.live{position:absolute;inset-inline-end:5%;top:7.5%;display:flex;align-items:center;gap:3px;z-index:5;
+  font-family:var(--font-mono);font-size:5.5px;font-weight:700;letter-spacing:.08em;
+  background:var(--color-error);color:#fff;padding:2px 4px}
+.live::before{content:"";width:3px;height:3px;border-radius:50%;background:#fff}
+.mark{position:absolute;inset-inline-end:5%;bottom:6.5%;display:flex;align-items:center;gap:3px;opacity:.62;z-index:5;
+  color:var(--ink);font-family:var(--font-heading);font-size:6.5px;font-weight:700}
+.mark i{font-size:8px;color:var(--accent)}
+.handle{position:absolute;inset-inline-start:5%;bottom:6.5%;display:flex;align-items:center;gap:3px;z-index:5;
+  font-family:var(--font-mono);font-size:5.5px;color:var(--dim)}
+.handle i{font-size:7px;color:var(--accent)}
+.stage{position:absolute;background:var(--panel);border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:3px;
+  font-family:var(--font-mono);font-size:5.5px;color:var(--dim);text-align:center;padding:0 5px}
+.stage i{font-size:13px;color:var(--accent)}
+.cam{position:absolute;background:var(--camfill);border:1px solid var(--accent);display:flex;
+  align-items:center;justify-content:center;color:var(--accent);font-family:var(--font-mono);font-size:5.5px;gap:3px;z-index:4}
+.cam i{font-size:11px}
+.name{position:absolute;display:flex;align-items:center;gap:4px;background:var(--panel);z-index:5;
+  border-inline-start:2px solid var(--color-brand-500);padding:4px 7px;color:var(--ink)}
+.name>i{font-size:11px;color:var(--accent);flex:none}
+.name b{display:block;font-family:var(--font-heading);font-size:7px;font-weight:700;line-height:1.15}
+.name span{display:block;font-family:var(--font-mono);font-size:5px;color:var(--accent);margin-top:1px;letter-spacing:.05em}
+
+/* ---- the live comment rail --------------------------------------------
+   A column, never a floating overlay: it takes width away from the stage
+   instead of covering it, so nothing you are teaching is ever hidden by a
+   comment. Newest at the BOTTOM, the way every chat client on earth reads. */
+.rail{position:absolute;display:flex;flex-direction:column;background:var(--panel);
+  border:1px solid var(--line);border-inline-start:2px solid var(--color-brand-500);z-index:5}
+.rail>h6{margin:0;display:flex;align-items:center;gap:3px;padding:3px 5px;border-bottom:1px solid var(--line);
+  font-family:var(--font-mono);font-size:5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:400}
+.rail>h6 i{font-size:7px}
+.rail>h6 em{font-style:normal;margin-inline-start:auto;color:var(--dim)}
+.rail ul{margin:0;padding:4px 5px;list-style:none;display:flex;flex-direction:column;gap:4px;flex:1;justify-content:flex-end}
+.rail li{display:grid;grid-template-columns:auto 1fr;gap:4px;align-items:start}
+.rail li>i{width:7px;height:7px;border-radius:50%;background:var(--color-brand-500);opacity:.55;margin-top:1px}
+.rail b{display:block;font-family:var(--font-mono);font-size:5px;color:var(--accent);letter-spacing:.04em}
+.rail p{margin:1px 0 0;font-size:5.5px;line-height:1.4;color:var(--ink)}
+/* One comment is promoted at a time. It is the only row with a fill. */
+.rail li.hi{background:color-mix(in srgb, var(--color-brand-500) 16%, transparent);
+  border-inline-start:2px solid var(--color-brand-500);padding:3px 5px;margin-inline:-5px}
+.rail li.hi>i{background:var(--color-brand-500);opacity:1}
+.rail li.sup>i{background:var(--color-warning);opacity:1}
+.rail li.sup b{color:var(--color-warning-ink)}
+.f--d .rail li.sup b{color:var(--color-warning)}
+
+/* The comment wall — the same rows, at reading size, filling the stage. */
+.wall{position:absolute;display:grid;grid-template-columns:1fr 1fr;gap:5px 8px;align-content:start}
+.wall div{display:grid;grid-template-columns:auto 1fr;gap:4px;align-items:start;
+  border-inline-start:1px solid var(--line);padding-inline-start:4px}
+.wall div.hi{border-inline-start:2px solid var(--color-brand-500)}
+.wall i{width:8px;height:8px;border-radius:50%;background:var(--color-brand-500);opacity:.5;margin-top:1px}
+.wall b{display:block;font-family:var(--font-mono);font-size:5px;color:var(--accent)}
+.wall p{margin:1px 0 0;font-size:6px;line-height:1.4;color:var(--ink)}
+
+/* Question card — a question is content, so it gets the callout shape. */
+.q{position:absolute;background:var(--panel);border:1px solid var(--line);
+  border-inline-start:2px solid var(--color-brand-500);padding:6px 7px;color:var(--ink)}
+.q b{display:block;font-family:var(--font-mono);font-size:5px;letter-spacing:.1em;color:var(--accent)}
+.q p{margin:3px 0 0;font-size:7px;line-height:1.38}
+.q em{font-style:normal;display:block;margin-top:4px;font-family:var(--font-mono);font-size:4.5px;color:var(--dim);letter-spacing:.06em}
+</style></head><body>
+
+<!-- 12 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>12</code><b>Camera + comments</b><em>reacting live &middot; you and the room</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="cam" style="inset:16% 38% 9% 5%"><i class="ph ph-video-camera"></i>CAMERA &middot; 4:3</div>
+      <div class="rail" style="inset:16% 5% 9% 62%"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+        <ul>
+          <li><i></i><div><b>@dev_arun</b><p>wait, so the loop is the problem?</p></div></li>
+          <li class="sup"><i></i><div><b>@meera_dt &middot; member</b><p>this is the clearest explanation yet</p></div></li>
+          <li class="hi"><i></i><div><b>@priya_dev</b><p>does this apply to scheduled Flows too?</p></div></li>
+        </ul></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="cam" style="inset:16% 38% 9% 5%"><i class="ph ph-video-camera"></i>CAMERA &middot; 4:3</div>
+      <div class="rail" style="inset:16% 5% 9% 62%"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+        <ul>
+          <li><i></i><div><b>@dev_arun</b><p>wait, so the loop is the problem?</p></div></li>
+          <li class="sup"><i></i><div><b>@meera_dt &middot; member</b><p>this is the clearest explanation yet</p></div></li>
+          <li class="hi"><i></i><div><b>@priya_dev</b><p>does this apply to scheduled Flows too?</p></div></li>
+        </ul></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>The rail takes width from the stage rather than covering it.</b>The rail widens to 33% here — comments are co-equal with you in this scene, not a sidebar — and that is exactly what makes the camera block 4:3. The one place the cam is not 16:9, and it works because nothing is behind it. Newest comment at the bottom, four rows maximum, one row promoted at a time. Read every promoted comment aloud: chat is not in the VOD, so an unread comment is a silence the replay cannot explain.</div>
+</div>
+
+<!-- 13 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>13</code><b>Screen + comments</b><em>cam off &middot; the room follows along</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 31% 9% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; 74% width</div>
+      <div class="rail" style="inset:16% 5% 9% 71.5%"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+        <ul>
+          <li><i></i><div><b>@dev_arun</b><p>which org is that?</p></div></li>
+          <li><i></i><div><b>@sana_k</b><p>following along in a scratch org</p></div></li>
+          <li class="hi"><i></i><div><b>@priya_dev</b><p>can you scroll up to the trigger?</p></div></li>
+        </ul></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 31% 9% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; 74% width</div>
+      <div class="rail" style="inset:16% 5% 9% 71.5%"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+        <ul>
+          <li><i></i><div><b>@dev_arun</b><p>which org is that?</p></div></li>
+          <li><i></i><div><b>@sana_k</b><p>following along in a scratch org</p></div></li>
+          <li class="hi"><i></i><div><b>@priya_dev</b><p>can you scroll up to the trigger?</p></div></li>
+        </ul></div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>For hands-on stretches where the audience is doing it with you.</b>The screen scales to 74% uniformly — 1421&times;799 at 1080p — and is never stretched to reclaim the rail's width. Use this while people are typing along and you need to see who is stuck; switch back to scene 06 or 08 the moment the work needs the full frame again.</div>
+</div>
+
+<!-- 14 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>14</code><b>Screen + camera + comments</b><em>the full house &middot; use sparingly</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 31% 16% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; 67%</div>
+      <div class="rail" style="inset:16% 5% 30% 71.5%"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+        <ul>
+          <li><i></i><div><b>@dev_arun</b><p>which org is that?</p></div></li>
+          <li class="hi"><i></i><div><b>@priya_dev</b><p>scheduled Flows too?</p></div></li>
+        </ul></div>
+      <div class="cam" style="inset-inline-end:5%;bottom:16%;width:23.5%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark" style="bottom:2.5%"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 31% 16% 5%"><i class="ph ph-projector-screen"></i>SHARED SCREEN &middot; 67%</div>
+      <div class="rail" style="inset:16% 5% 30% 71.5%"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+        <ul>
+          <li><i></i><div><b>@dev_arun</b><p>which org is that?</p></div></li>
+          <li class="hi"><i></i><div><b>@priya_dev</b><p>scheduled Flows too?</p></div></li>
+        </ul></div>
+      <div class="cam" style="inset-inline-end:5%;bottom:16%;width:23.5%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark" style="bottom:2.5%"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Screen, you and the room in one frame — the busiest layout the system allows, and the only one with three live sources.</b>The right column stacks rail over camera so both sit in the same 23.5% gutter and the stage keeps a clean rectangle. Two comment rows, not four. If you find yourself living here, the session wanted scene 08 with a Q&amp;A break rather than a permanent chat panel.</div>
+</div>
+
+<!-- 15 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>15</code><b>Comment wall</b><em>60&ndash;90s &middot; the catch-up moment</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="q" style="inset-inline-start:5%;top:17%;width:44%;padding:4px 6px"><b>// FROM THE CHAT</b><p style="font-size:6px">six questions, answered in order</p></div>
+      <div class="wall" style="inset:34% 5% 15% 5%">
+        <div><i></i><div><b>@dev_arun</b><p>Does a Flow element count against SOQL limits?</p></div></div>
+        <div class="hi"><i></i><div><b>@priya_dev</b><p>Scheduled Flows too, or only record-triggered?</p></div></div>
+        <div><i></i><div><b>@sana_k</b><p>What happens at exactly 200 records?</p></div></div>
+        <div><i></i><div><b>@meera_dt</b><p>Is a subflow its own transaction?</p></div></div>
+        <div><i></i><div><b>@rk_dev</b><p>Can I see the debug log for that run?</p></div></div>
+        <div><i></i><div><b>@anon_admin</b><p>Apex or Flow for this in 2026?</p></div></div>
+      </div>
+      <div class="handle"><i class="ph ph-chat-circle-text"></i>answering in order</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="q" style="inset-inline-start:5%;top:17%;width:44%;padding:4px 6px"><b>// FROM THE CHAT</b><p style="font-size:6px">six questions, answered in order</p></div>
+      <div class="wall" style="inset:34% 5% 15% 5%">
+        <div><i></i><div><b>@dev_arun</b><p>Does a Flow element count against SOQL limits?</p></div></div>
+        <div class="hi"><i></i><div><b>@priya_dev</b><p>Scheduled Flows too, or only record-triggered?</p></div></div>
+        <div><i></i><div><b>@sana_k</b><p>What happens at exactly 200 records?</p></div></div>
+        <div><i></i><div><b>@meera_dt</b><p>Is a subflow its own transaction?</p></div></div>
+        <div><i></i><div><b>@rk_dev</b><p>Can I see the debug log for that run?</p></div></div>
+        <div><i></i><div><b>@anon_admin</b><p>Apex or Flow for this in 2026?</p></div></div>
+      </div>
+      <div class="handle"><i class="ph ph-chat-circle-text"></i>answering in order</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Comments only, at reading size, curated — never a live-scrolling panel.</b>Six hand-picked questions, frozen, answered in order, with the current one carrying the accent edge. This is the scene that makes a stream feel like a room rather than a broadcast, and it is also the only honest way to show chat: a scrolling feed at 6px is not readable by anyone and competes with the thing you are teaching.</div>
+</div>
+
+<!-- 16 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>16</code><b>Q&amp;A</b><em>one question on screen at a time</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="q" style="inset-inline-start:5%;top:26%;width:52%"><b>// QUESTION &middot; @dev_arun</b>
+        <p>Does a Flow element count against SOQL limits the same way an Apex query does?</p><em>question 3 of 6</em></div>
+      <div class="cam" style="inset-inline-end:5%;top:26%;width:33%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="q" style="inset-inline-start:5%;top:26%;width:52%"><b>// QUESTION &middot; @dev_arun</b>
+        <p>Does a Flow element count against SOQL limits the same way an Apex query does?</p><em>question 3 of 6</em></div>
+      <div class="cam" style="inset-inline-end:5%;top:26%;width:33%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Attributed by handle, verbatim, two lines maximum</b> — trim it before it goes up, never shrink the type. Same callout shape as a lesson's, because a question is content, not chat noise. The counter tells the room how long Q&amp;A has left, which is what stops the last ten minutes feeling open-ended. The card leaves the moment you finish answering.</div>
+</div>
+
+<!-- 17 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>17</code><b>Guest &mdash; two cameras</b><em>equal frames, always</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="cam" style="inset-inline-start:5%;top:24%;width:43%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="cam" style="inset-inline-end:5%;top:24%;width:43%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="name" style="inset-inline-start:5%;bottom:14%;max-width:41%"><i class="ph ph-user-circle"></i><div><b>Swarnil Singhai</b><span>Salesforce Architect &middot; host</span></div></div>
+      <div class="name" style="inset-inline-end:5%;bottom:14%;max-width:41%"><i class="ph ph-users-three"></i><div><b>Priya Nair</b><span>Flow Architect &middot; guest</span></div></div>
+      <div class="mark" style="bottom:3%"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="cam" style="inset-inline-start:5%;top:24%;width:43%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="cam" style="inset-inline-end:5%;top:24%;width:43%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="name" style="inset-inline-start:5%;bottom:14%;max-width:41%"><i class="ph ph-user-circle"></i><div><b>Swarnil Singhai</b><span>Salesforce Architect &middot; host</span></div></div>
+      <div class="name" style="inset-inline-end:5%;bottom:14%;max-width:41%"><i class="ph ph-users-three"></i><div><b>Priya Nair</b><span>Flow Architect &middot; guest</span></div></div>
+      <div class="mark" style="bottom:3%"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Two equal 16:9 cameras, never one big and one small.</b>The layout is the statement: both people are peers. Both name plates carry an icon, a name and a job title, and both appear together on the guest's first answer — not on join, and never one without the other. If the guest's connection cannot hold 1080p, drop <em>both</em> cameras to 720 rather than letting one look better than the other.</div>
+</div>
+
+<!-- 18 ------------------------------------------------------------------ -->
+<div class="scene">
+  <div class="hd"><code>18</code><b>Guest + screen</b><em>the guest demonstrates</em></div>
+  <div class="pair">
+    <div class="f f--d"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 26% 16% 5%"><i class="ph ph-projector-screen"></i>GUEST'S SCREEN &middot; 69%</div>
+      <div class="cam" style="inset-inline-end:5%;top:16%;width:19%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="cam" style="inset-inline-end:5%;top:35%;width:19%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="name" style="inset-inline-end:5%;top:54%;max-width:19%;padding:3px 5px"><i class="ph ph-users-three" style="font-size:9px"></i><div><b style="font-size:5.5px">Priya Nair</b><span style="font-size:4.5px">Flow Architect</span></div></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+    <div class="f f--l"><div class="bar"></div><div class="pat"></div>
+      <div class="kick">// live session 04</div><div class="live">LIVE</div>
+      <div class="stage" style="inset:16% 26% 16% 5%"><i class="ph ph-projector-screen"></i>GUEST'S SCREEN &middot; 69%</div>
+      <div class="cam" style="inset-inline-end:5%;top:16%;width:19%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="cam" style="inset-inline-end:5%;top:35%;width:19%;aspect-ratio:16/9"><i class="ph ph-user"></i></div>
+      <div class="name" style="inset-inline-end:5%;top:54%;max-width:19%;padding:3px 5px"><i class="ph ph-users-three" style="font-size:9px"></i><div><b style="font-size:5.5px">Priya Nair</b><span style="font-size:4.5px">Flow Architect</span></div></div>
+      <div class="handle"><i class="ph ph-globe"></i>namastesalesforce.com</div>
+      <div class="mark"><i class="ph ph-sparkle"></i>NSDS</div>
+    </div>
+  </div>
+  <div class="cap"><b>Both cameras stack in the right gutter at the same size — equality survives the layout change.</b>The name plate belongs to whoever is <em>driving</em> the screen, and it stays up for the whole demo rather than eight seconds: a viewer arriving mid-demo needs to know it is not you. When you take the screen back, the plate changes with it.</div>
+</div>
+
+</body></html>

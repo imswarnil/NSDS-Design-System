@@ -1,0 +1,72 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><title>NSDS live — starting soon</title>
+<link rel="stylesheet" href="../../../dist/namaste-ui.tailwind.css">
+<link rel="stylesheet" href="overlay.css">
+<style>
+  /* Scene 01 and scene 03 are the same object with a different label, so this
+     file serves both: ?mode=start counts down to the hour, ?mode=break counts
+     a fixed number of minutes from load. */
+  .stage { position: absolute; left: 96px; top: 300px; right: 96px; display: flex; align-items: flex-start; gap: 64px; }
+  .stage .ov-headline { flex: 1; }
+  .clock { text-align: end; flex: none; padding-top: 8px; }
+  .clock small { display: block; font-family: var(--font-mono); font-size: 18px; letter-spacing: 0.12em;
+                 text-transform: uppercase; color: var(--ov-dim); margin-top: 14px; }
+</style>
+</head><body>
+<!-- ?title=Flows%20that%20don't%20break%20in%20bulk&mode=start&at=19:00
+     &kicker=live%20session%2004&theme=dark&chips=subscribe,bell -->
+<div class="ov-backdrop"></div>
+<div class="ov-bar"></div>
+<div class="ov-kicker" id="kicker"></div>
+<div class="stage">
+  <div class="ov-headline"><b id="title"></b><span id="lede"></span></div>
+  <div class="clock"><div class="ov-count" id="count">--:--</div><small id="note"></small></div>
+</div>
+<div class="ov-chips" id="chips"></div>
+<div class="ov-bug"><i class="ph ph-globe"></i><span id="handle"></span></div>
+<div class="ov-mark"><img src="../../../assets/logo/favicon.svg" alt=""><span>Namaste Salesforce</span></div>
+<script>
+  const q = new URLSearchParams(location.search), p = (k, d) => q.get(k) ?? d;
+  document.documentElement.dataset.theme = p("theme", "dark");
+  const mode = p("mode", "start");
+  kicker.textContent = "// " + p("kicker", "live session 04");
+  title.innerHTML = p("title", "Flows that don't<br>break in bulk");
+  lede.textContent = p("lede", mode === "break" ? "back in" : "starting in");
+  note.textContent = p("note", mode === "break" ? "next: bulkification" : "grab a coffee");
+  handle.textContent = p("handle", "namastesalesforce.com");
+  if (p("safe")) document.body.insertAdjacentHTML("beforeend", '<div class="ov-guide"></div>');
+
+  const CHIPS = {
+    subscribe:  ["ph-play-circle",   "Subscribe",            true],
+    bell:       ["ph-bell-ringing",  "All notifications",    false],
+    like:       ["ph-heart",         "Like",                 false],
+    newsletter: ["ph-envelope-simple","Newsletter",          false],
+    site:       ["ph-globe",         "namastesalesforce.com", false],
+    share:      ["ph-share-network", "Share this",           false],
+  };
+  /* Two is the ceiling, and only one of them may be filled. */
+  chips.innerHTML = p("chips", "subscribe,bell").split(",").filter((k) => CHIPS[k]).slice(0, 2)
+    .map((k) => { const [ic, label, fill] = CHIPS[k];
+      return `<span class="ov-chip${fill ? " ov-chip--fill" : ""}"><i class="ph ${ic}"></i>${label}</span>`; }).join("");
+
+  /* Counts DOWN and holds at 00:00 — a stream that starts four minutes late
+     is fine; a frame that lies is not. */
+  const target = (() => {
+    if (mode === "break") return Date.now() + Number(p("minutes", 5)) * 60000;
+    const [h, m] = p("at", "19:00").split(":").map(Number);
+    const t = new Date(); t.setHours(h, m, 0, 0);
+    if (t < new Date()) t.setDate(t.getDate() + 1);
+    return t.getTime();
+  })();
+  const pad = (n) => String(n).padStart(2, "0");
+  const tick = () => {
+    const left = Math.max(0, Math.round((target - Date.now()) / 1000));
+    /* MM:SS is the format anyone reads at a glance, and the scene only runs in
+       the last few minutes. Past an hour it grows an hours field rather than
+       printing a four-digit minute count. */
+    count.textContent = left >= 3600
+      ? Math.floor(left / 3600) + ":" + pad(Math.floor(left / 60) % 60) + ":" + pad(left % 60)
+      : pad(Math.floor(left / 60)) + ":" + pad(left % 60);
+  };
+  tick(); setInterval(tick, 1000);
+</script>
+</body></html>

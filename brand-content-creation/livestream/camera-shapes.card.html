@@ -1,0 +1,191 @@
+<!-- @dsCard group="Content Creation" viewport="760x2184" name="Live Stream — Camera Shapes" subtitle="The camera is not always 16:9 — eight sanctioned crops, which scene each belongs to, and the four things that never change" -->
+<!-- px-ok: this card draws MINIATURES of 1920x1080 frames, so the type inside a
+     tile is scaled artwork, not UI copy — a scale token there would be the wrong
+     size by definition. The card's own chrome (labels, captions) does use the
+     scale. See improve.md IMPROVE-11. -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.lede{font-size:11.5px;line-height:1.5;color:var(--color-muted);margin:0 0 14px;max-width:70ch}
+.lede b{color:var(--color-ink);font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 16px}
+.shape{display:flex;flex-direction:column;gap:6px}
+.hd{display:flex;gap:7px;align-items:baseline}
+.hd code{font-family:var(--font-mono);font-size:9.5px;font-weight:600;color:var(--color-brand-500)}
+.hd b{font-size:12px;font-weight:600}
+.hd em{font-style:normal;font-family:var(--font-mono);font-size:8px;color:var(--color-muted);
+  margin-inline-start:auto;text-transform:uppercase;letter-spacing:.06em}
+.cap{font-size:11px;line-height:1.45;color:var(--color-muted)}
+.cap b{color:var(--color-ink);font-weight:600}
+.cap code{font-family:var(--font-mono);font-size:10px;color:var(--color-brand-500)}
+
+.f{aspect-ratio:16/9;position:relative;overflow:hidden}
+.f--d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.6);--panel:rgb(255 255 255/.07);
+      --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07);--camfill:rgb(124 190 255/.16)}
+.f--l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+      --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+      --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06);--camfill:rgb(1 118 211/.1)}
+.f::after{content:attr(data-t);position:absolute;inset-inline-end:3px;top:3px;font-family:var(--font-mono);
+  font-size:6px;letter-spacing:.08em;color:var(--dim);z-index:7}
+.pat{position:absolute;inset:0;
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:16px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
+.bar{position:absolute;inset-inline:0;top:0;height:2px;background:var(--color-brand-500);z-index:6}
+/* Whatever the ratio, the frame itself never changes: hard corners, a 1px
+   accent edge, and it sits ON the grid rather than floating over it. */
+.cam{position:absolute;background:var(--camfill);border:1px solid var(--accent);display:flex;
+  align-items:center;justify-content:center;flex-direction:column;gap:2px;
+  color:var(--accent);font-family:var(--font-mono);font-size:5.5px;text-align:center}
+.cam i{font-size:12px}
+.cam em{font-style:normal;font-size:4.5px;opacity:.85}
+.stage{position:absolute;background:var(--panel);border:1px solid var(--line);display:flex;
+  align-items:center;justify-content:center;font-family:var(--font-mono);font-size:5px;color:var(--dim);text-align:center}
+.rail{position:absolute;background:var(--panel);border:1px solid var(--line);
+  border-inline-start:2px solid var(--color-brand-500);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:4.5px;color:var(--dim);writing-mode:vertical-rl;letter-spacing:.1em}
+.no{position:absolute;inset-inline-end:5%;bottom:2.5%;font-family:var(--font-mono);font-size:5.5px;
+  color:var(--color-error);letter-spacing:.06em;display:flex;align-items:center;gap:3px}
+.no i{font-size:8px}
+.round{border-radius:50%}
+
+.sub{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--color-muted);margin:26px 0 6px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl td{border-top:1px solid var(--color-border);padding:7px 0;font-size:11px;line-height:1.45;vertical-align:top}
+.tbl td:first-child{width:104px;font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-500);padding-inline-end:10px}
+.tbl td:nth-child(2){width:120px;font-family:var(--font-mono);font-size:9.5px;color:var(--color-ink);padding-inline-end:12px}
+.tbl span{color:var(--color-muted)}
+.two{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px;margin-top:6px}
+.two ul{margin:4px 0 0;padding-inline-start:15px}
+.two li{font-size:11px;line-height:1.5;color:var(--color-muted);margin-bottom:4px}
+.two li strong{color:var(--color-ink);font-weight:600}
+.k-do,.k-dont{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;margin:0}
+.k-do{color:var(--color-success)}
+.k-dont{color:var(--color-error)}
+</style></head><body>
+
+<p class="lede">A 16:9 camera in a 16:9 corner is the default, not the law. What a camera crop has to do is <b>fill the block the layout gives it without leaving dead space and without covering the work</b> — and a comment rail, a stacked guest gutter or a vertical-clip segment each give it a different block. Eight crops are sanctioned; the tiles below alternate the two broadcast canvases, because the shape is identical in both.</p>
+
+<div class="grid">
+
+  <div class="shape">
+    <div class="hd"><code>C1</code><b>Corner 16:9</b><em>384 &times; 216</em></div>
+    <div class="f f--d" data-t="dark"><div class="bar"></div><div class="pat"></div>
+      <div class="stage" style="inset:9% 5%">SHARED SCREEN &middot; full bleed</div>
+      <div class="cam" style="inset-inline-end:6%;bottom:12%;width:20%;aspect-ratio:16/9"><i class="ph ph-user"></i>20% &middot; 16:9</div>
+    </div>
+    <div class="cap"><b>The default, and the one you will be in for most of the hour.</b> 20% of canvas width at <code>1440, 748</code>. Big enough to read a face on a phone, small enough that it never argues with the screen.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C2</code><b>Full bleed 16:9</b><em>1920 &times; 1080</em></div>
+    <div class="f f--l" data-t="light"><div class="bar"></div><div class="pat"></div>
+      <div class="cam" style="inset:6% 4%"><i class="ph ph-video-camera"></i>CAMERA &middot; the whole canvas</div>
+    </div>
+    <div class="cap"><b>Camera-only scenes.</b> The capture <em>is</em> the canvas — no inset, no border, nothing behind it. If your camera cannot deliver a clean 1080p 16:9, fix that before you fix anything else on this page.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C3</code><b>Two-up 16:9</b><em>845 &times; 475, twice</em></div>
+    <div class="f f--d" data-t="dark"><div class="bar"></div><div class="pat"></div>
+      <div class="cam" style="inset-inline-start:5%;top:22%;width:43%;aspect-ratio:16/9"><i class="ph ph-user"></i>host</div>
+      <div class="cam" style="inset-inline-end:5%;top:22%;width:43%;aspect-ratio:16/9"><i class="ph ph-user"></i>guest</div>
+    </div>
+    <div class="cap"><b>Interview scenes.</b> Two equal frames on the same baseline, never one large and one small. The equality is the message; the moment they differ, the layout has ranked the two people.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C4</code><b>Column 16:9</b><em>384 &times; 216, top of gutter</em></div>
+    <div class="f f--l" data-t="light"><div class="bar"></div><div class="pat"></div>
+      <div class="stage" style="inset:22% 27% 12% 5%">SLIDE &middot; 67%</div>
+      <div class="cam" style="inset-inline-end:5%;top:22%;width:20%;aspect-ratio:16/9"><i class="ph ph-user"></i>column</div>
+    </div>
+    <div class="cap"><b>Slide and rail layouts.</b> Same crop as C1, moved to the <em>top</em> of the right gutter so the bottom corner stays clear for the mark. The only sanctioned reason the camera ever changes position.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C5</code><b>Stacked pair 16:9</b><em>365 &times; 205, twice</em></div>
+    <div class="f f--d" data-t="dark"><div class="bar"></div><div class="pat"></div>
+      <div class="stage" style="inset:16% 26% 16% 5%">GUEST'S SCREEN &middot; 69%</div>
+      <div class="cam" style="inset-inline-end:5%;top:16%;width:19%;aspect-ratio:16/9"><i class="ph ph-user"></i>host</div>
+      <div class="cam" style="inset-inline-end:5%;top:36%;width:19%;aspect-ratio:16/9"><i class="ph ph-user"></i>guest</div>
+    </div>
+    <div class="cap"><b>Guest plus a shared screen.</b> Both people keep the same crop and the same width, stacked in one gutter — so the layout change from C3 costs the guest nothing.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C6</code><b>Block 4:3</b><em>1070 &times; 802</em></div>
+    <div class="f f--l" data-t="light"><div class="bar"></div><div class="pat"></div>
+      <div class="cam" style="inset:16% 38% 9% 5%"><i class="ph ph-video-camera"></i>CAMERA &middot; 4:3<em>fills the block, no dead space</em></div>
+      <div class="rail" style="inset:16% 5% 9% 62%">LIVE COMMENTS</div>
+    </div>
+    <div class="cap"><b>Camera beside a wide comment rail.</b> With the rail at 33% — its width on scene 12, where comments are co-equal with you — a 16:9 crop would leave a band of empty canvas above and below the face. 4:3 fills the block exactly — this is what &ldquo;use what works&rdquo; means in practice.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C7</code><b>Bust 1:1</b><em>300 &times; 300</em></div>
+    <div class="f f--d" data-t="dark"><div class="bar"></div><div class="pat"></div>
+      <div class="stage" style="inset:16% 24% 16% 5%">SHARED SCREEN &middot; 71%</div>
+      <div class="cam" style="inset-inline-end:5%;bottom:12%;width:15.6%;aspect-ratio:1"><i class="ph ph-user"></i>1:1</div>
+      <div class="rail" style="inset:16% 5% 44% 79.5%">CHAT</div>
+    </div>
+    <div class="cap"><b>Narrow gutters.</b> When something else already owns the right column, a square keeps the face at a readable height in half the width. Square — never a circle.</div>
+  </div>
+
+  <div class="shape">
+    <div class="hd"><code>C8</code><b>Rail 9:16</b><em>304 &times; 540</em></div>
+    <div class="f f--l" data-t="light"><div class="bar"></div><div class="pat"></div>
+      <div class="cam" style="inset:9% 5% 9% 78.5%"><i class="ph ph-video-camera"></i>9:16<em>full height</em></div>
+      <div class="stage" style="inset:9% 23% 9% 5%">SHARED SCREEN &middot; 71%</div>
+    </div>
+    <div class="cap"><b>Full-height standing shot, and the crop that makes vertical clips work.</b> A 9:16 camera already framed for a phone means a Short cut from this stream needs no re-crop of your face at all.</div>
+  </div>
+
+</div>
+
+<p class="sub">Never</p>
+<div class="grid" style="grid-template-columns:repeat(2,1fr)">
+  <div class="shape">
+    <div class="f f--d" data-t="dark"><div class="bar"></div><div class="pat"></div>
+      <div class="stage" style="inset:9% 5%">SHARED SCREEN</div>
+      <div class="cam round" style="inset-inline-end:6%;bottom:12%;width:14%;aspect-ratio:1"><i class="ph ph-user"></i></div>
+      <div class="no"><i class="ph ph-x-circle"></i>circle cam</div>
+    </div>
+    <div class="cap"><b>A round or pill-shaped camera.</b> Sharp geometry is Principle 4, and a circular cam is the single graphic that instantly reads as somebody else's stock template. Square if you need a compact crop; never rounded.</div>
+  </div>
+  <div class="shape">
+    <div class="f f--l" data-t="light"><div class="bar"></div><div class="pat"></div>
+      <div class="stage" style="inset:9% 5%">SHARED SCREEN</div>
+      <div class="cam" style="inset-inline-end:6%;bottom:12%;width:26%;aspect-ratio:2.6"><i class="ph ph-user"></i>stretched</div>
+      <div class="no"><i class="ph ph-x-circle"></i>non-uniform scale</div>
+    </div>
+    <div class="cap"><b>A camera scaled to fit a box it does not match.</b> Pick the crop from the eight above, then let the block follow the crop — never squeeze the crop into the block. Faces are the one thing every viewer can measure by eye.</div>
+  </div>
+</div>
+
+<p class="sub">Which crop, which scene</p>
+<table class="tbl"><tbody>
+  <tr><td>C1 &middot; 16:9</td><td>384 &times; 216</td><td><span>Screen + camera (08), screen + camera + comments (14), welcome (02). The default corner crop.</span></td></tr>
+  <tr><td>C2 &middot; 16:9</td><td>1920 &times; 1080</td><td><span>Camera only (05). Full bleed, no border, no inset.</span></td></tr>
+  <tr><td>C3 &middot; 16:9</td><td>845 &times; 475 &times;2</td><td><span>Guest, two cameras (17).</span></td></tr>
+  <tr><td>C4 &middot; 16:9</td><td>384 &times; 216</td><td><span>Slide + camera (10), Q&amp;A (16) at 634 &times; 357. Top of the right gutter.</span></td></tr>
+  <tr><td>C5 &middot; 16:9</td><td>365 &times; 205 &times;2</td><td><span>Guest + screen (18).</span></td></tr>
+  <tr><td>C6 &middot; 4:3</td><td>1070 &times; 802</td><td><span>Camera + comments (12), where the rail widens to 33%. The rail takes the width, so the camera takes the height.</span></td></tr>
+  <tr><td>C7 &middot; 1:1</td><td>300 &times; 300</td><td><span>Any layout where a third element already owns the right column.</span></td></tr>
+  <tr><td>C8 &middot; 9:16</td><td>304 &times; 540</td><td><span>Standing segments, whiteboard work, and any session you intend to cut Shorts from.</span></td></tr>
+</tbody></table>
+
+<p class="sub">What never changes, whatever the ratio</p>
+<div class="two">
+  <div><p class="k-do">Constant</p><ul>
+    <li><strong>Hard corners and a 1px accent edge.</strong> The border is what separates the camera from the stage behind it — without it, a dark shirt on the navy canvas has no boundary at all.</li>
+    <li><strong>Eyes on the upper-third line</strong>, a hand's width of headroom. Same crop as the course thumbnails, so a face is recognisable across every surface.</li>
+    <li><strong>One crop per session.</strong> Pick it in the starting-soon scene and keep it: a camera that changes shape between scenes costs the viewer a re-scan every time.</li>
+  </ul></div>
+  <div><p class="k-dont">Never</p><ul>
+    <li><strong>A blurred or virtual background.</strong> It eats fingers when you gesture, and gestures are half of teaching.</li>
+    <li><strong>Mirroring mid-session.</strong> Your handedness changing between scenes is the kind of wrong nobody names and everybody feels.</li>
+    <li><strong>The camera over the shared screen's left navigation</strong>, or over the record you are editing. Move the content, not the camera.</li>
+  </ul></div>
+</div>
+
+</body></html>

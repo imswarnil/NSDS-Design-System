@@ -95,6 +95,7 @@ const walk = (dir) => {
 walk(".");
 
 const used = new Map();
+const perFile = new Map();
 const dynamicPrefixes = new Set();
 for (const rel of sources) {
   /* This file's own header spells out the attribute shapes it looks for, so
@@ -135,11 +136,55 @@ for (const rel of sources) {
         continue;
       }
       if (!used.has(c)) used.set(c, rel);
+      if (!perFile.has(rel)) perFile.set(rel, new Set());
+      perFile.get(rel).add(c);
     }
   }
 }
 
 const coveredByDynamic = (c) => [...dynamicPrefixes].some((p) => c.startsWith(p) && c !== p);
+
+/* ---- classes that are inert without a partner --------------------------
+   A handful of components are a PAIR: one class does nothing at all unless
+   another is present above it, and when the partner is missing there is no
+   error, no warning and no visual difference from the un-styled case. That
+   is the worst failure mode a design system has, because it survives review
+   — the page looks exactly like a page where somebody chose not to use the
+   effect.
+
+   .ns-parallax is the motivating case and it is worth spelling out.
+   `animation-timeline: view()` resolves against the subject's nearest SCROLL
+   CONTAINER, and `overflow: hidden` makes an element one even though nothing
+   in it will ever scroll. So a parallax layer inside a clipped box — which
+   is every real use of the technique — binds to a container that never
+   moves and freezes at 50% progress, which is precisely where an element
+   with no animation sits. .ns-parallax-frame exists to give it a subject
+   whose own nearest scroll container is the page.
+
+   The check is per FILE, not per DOM ancestry: a real ancestor test would
+   need a parser, and in practice the frame and its layers are authored
+   together. A file that uses one and not the other is the bug. */
+const PAIRS = [
+  {
+    child: "ns-parallax",
+    ancestor: "ns-parallax-frame",
+    why: "a parallax layer with no .ns-parallax-frame above it binds to the nearest clipped box, freezes at 50% progress, and renders identically to no animation",
+  },
+];
+const unpaired = [];
+for (const [rel, classes] of perFile) {
+  for (const { child, ancestor, why } of PAIRS) {
+    if (classes.has(child) && !classes.has(ancestor)) unpaired.push({ rel, child, ancestor, why });
+  }
+}
+if (unpaired.length) {
+  console.error(`${unpaired.length} inert class pairing(s):\n`);
+  for (const u of unpaired) {
+    console.error(`  .${u.child} in ${u.rel} has no .${u.ancestor}`);
+    console.error(`     ${u.why}\n`);
+  }
+  process.exit(1);
+}
 
 const missing = [...used].filter(([c]) => !definedIn.has(c) && !derivedRoots.has(c));
 /* Utility/state classes that are applied by JS or documented in prose rather

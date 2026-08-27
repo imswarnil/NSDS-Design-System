@@ -1,0 +1,180 @@
+<!-- @dsCard group="Content Creation" viewport="760x1712" name="Live Stream — Action Chips" subtitle="The five asks — subscribe, like, bell, newsletter, visit — plus the CTA sting, in both themes" -->
+<!-- px-ok: this card draws BROADCAST GRAPHICS at roughly a third of 1920x1080,
+     so the type inside a tile is scaled artwork, not UI copy — a scale token
+     there would be the wrong size by definition. The card's own chrome does use
+     the scale. See improve.md IMPROVE-11. -->
+<!DOCTYPE html><html><head><link rel="stylesheet" href="../../dist/namaste-ui.tailwind.css">
+<style>
+body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--font-sans)}
+.sub{font-family:var(--font-mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--color-muted);margin:0 0 4px}
+.sub:not(:first-of-type){margin-top:26px}
+.lede{font-size:11.5px;line-height:1.5;color:var(--color-muted);margin:0 0 12px;max-width:64ch}
+.lede b{color:var(--color-ink);font-weight:600}
+
+.kit{display:grid;gap:14px 16px}
+.item{display:flex;flex-direction:column;gap:6px}
+/* Split tile: the same graphic, the two broadcast canvases, one object. If a
+   component needs different geometry in light, the geometry was wrong. */
+.tile{display:grid;grid-template-columns:1fr 1fr;min-height:72px;overflow:hidden}
+.half{position:relative;display:flex;align-items:center;justify-content:center;padding:12px 10px}
+.half::before{content:"";position:absolute;inset:0;
+  --ns-gridlines-ink:var(--grid);--ns-gridlines-cell:15px;background-image:var(--ns-gridlines-image);background-size:var(--ns-gridlines-cell) var(--ns-gridlines-cell)}
+.half>*{position:relative}
+.half::after{content:attr(data-t);position:absolute;inset-inline-start:4px;bottom:2px;font-family:var(--font-mono);
+  font-size:7px;letter-spacing:.08em;color:var(--dim);opacity:.65}
+.d{background:var(--color-brand-900);--ink:#fff;--dim:rgb(255 255 255/.62);--panel:rgb(255 255 255/.08);
+   --line:rgb(255 255 255/.2);--accent:var(--color-brand-300);--grid:rgb(255 255 255/.07)}
+.l{background:#fff;box-shadow:inset 0 0 0 1px var(--color-border);--ink:var(--color-brand-900);
+   --dim:var(--color-muted);--panel:var(--color-surface-sunken);--line:var(--color-border);
+   --accent:var(--color-brand-500);--grid:rgb(0 26 62/.06)}
+
+.meta{display:flex;gap:8px;align-items:flex-start}
+.meta code{font-family:var(--font-mono);font-size:9px;color:var(--color-brand-500);flex:none;padding-top:1px}
+.meta div{font-size:11px;line-height:1.42}
+.meta b{display:block;font-weight:600}
+.meta em{font-style:normal;font-family:var(--font-mono);font-size:9px;color:var(--color-ink);display:block;margin-top:2px}
+.meta span{color:var(--color-muted)}
+
+/* ---- action chip ------------------------------------------------------
+   One shape, five payloads. The filled variant is the ask; the outline
+   variants are reminders. Never more than one filled chip on a frame. */
+.act{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--line);
+  background:var(--panel);color:var(--ink);font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.act i{font-size:15px;color:var(--accent);flex:none}
+.act--fill{background:var(--color-brand-500);border-color:var(--color-brand-500);color:#fff}
+.act--fill i{color:#fff}
+.act small{font-family:var(--font-mono);font-size:9px;letter-spacing:.04em;text-transform:none;color:var(--dim);white-space:nowrap}
+.act--fill small{color:rgb(255 255 255/.75)}
+
+/* ---- CTA sting --------------------------------------------------------
+   The one place brand-500 fills a solid block mid-teaching. Two lines: the
+   ask, and where it goes. Six seconds, twice an hour, never mid-sentence. */
+.sting{display:flex;align-items:center;gap:11px;background:var(--color-brand-500);color:#fff;padding:10px 15px;max-width:330px}
+.sting>i{font-size:21px;flex:none}
+.sting b{display:block;font-family:var(--font-heading);font-size:14px;font-weight:600;line-height:1.15}
+.sting span{display:block;font-family:var(--font-mono);font-size:10px;color:rgb(255 255 255/.8);margin-top:2px}
+
+/* ---- notification toast -----------------------------------------------
+   An EVENT, not an ask: something a viewer did. Enters from the right edge,
+   holds, leaves the same way. One lane, one at a time, they queue. */
+.toast{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);
+  border-inline-start:3px solid var(--color-brand-500);padding:9px 13px;color:var(--ink);min-width:250px}
+.toast>i{font-size:19px;color:var(--accent);flex:none}
+.toast b{display:block;font-family:var(--font-heading);font-size:12.5px;font-weight:700;line-height:1.15}
+.toast span{display:block;font-family:var(--font-mono);font-size:9.5px;color:var(--dim);margin-top:2px;letter-spacing:.03em}
+.toast em{font-style:normal;margin-inline-start:auto;font-family:var(--font-mono);font-size:9px;
+  color:var(--accent);letter-spacing:.08em;text-transform:uppercase;flex:none;padding-inline-start:10px}
+.toast--member{border-inline-start-color:var(--color-warning)}
+.toast--member>i{color:var(--color-warning)}
+.toast--milestone{border-inline-start-color:var(--color-success)}
+.toast--milestone>i{color:var(--color-success)}
+.toast--alert{border-inline-start-color:var(--color-error)}
+.toast--alert>i{color:var(--color-error)}
+
+/* ---- rules table ------------------------------------------------------- */
+.tbl{width:100%;border-collapse:collapse;margin-top:8px}
+.tbl td{border-top:1px solid var(--color-border);padding:7px 0;font-size:11px;line-height:1.45;vertical-align:top}
+.tbl td:first-child{width:104px;font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-500);padding-inline-end:10px}
+.tbl td:nth-child(2){width:40%;padding-inline-end:14px}
+.tbl b{font-weight:600}
+.tbl span{color:var(--color-muted)}
+.two{display:grid;grid-template-columns:repeat(2,1fr);gap:0 22px;margin-top:6px}
+.two ul{margin:4px 0 0;padding-inline-start:15px}
+.two li{font-size:11px;line-height:1.5;color:var(--color-muted);margin-bottom:4px}
+.two li strong{color:var(--color-ink);font-weight:600}
+.k-do,.k-dont{font-family:var(--font-mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;margin:0}
+.k-do{color:var(--color-success)}
+.k-dont{color:var(--color-error)}
+</style></head><body>
+
+<p class="sub">Action chips — the five asks</p>
+<p class="lede">One shape, five payloads, and a hard rule that carries the whole set: <b>one filled chip per frame, and never more than two chips at once.</b> A viewer who has to choose between five destinations goes to none of them. The filled chip is the ask of that moment; outline chips are reminders that something exists.</p>
+
+<div class="kit">
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="act act--fill"><i class="ph ph-play-circle"></i>Subscribe</span></div>
+      <div class="half l" data-t="light"><span class="act act--fill"><i class="ph ph-play-circle"></i>Subscribe</span></div>
+    </div>
+    <div class="meta"><code>A1</code><div><b>Subscribe</b><em>filled &middot; open, intermission and ending scenes only</em><span>The one ask that gets the solid brand fill. It never appears while you are teaching — a subscribe prompt over a live demo is a interruption the viewer cannot dismiss, and it is the single most common reason a stream feels like an advert.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="act"><i class="ph ph-heart"></i>Like<small>&nbsp;if this helped</small></span></div>
+      <div class="half l" data-t="light"><span class="act"><i class="ph ph-heart"></i>Like<small>&nbsp;if this helped</small></span></div>
+    </div>
+    <div class="meta"><code>A2</code><div><b>Like</b><em>outline &middot; after a completed demo &middot; 8s</em><span>Conditional by design — &ldquo;if this helped&rdquo; is doing the work. Fires once, after something visibly worked, which is the only moment the ask is honest. Never on the countdown: nobody likes a stream that has not started.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="act"><i class="ph ph-bell-ringing"></i>All notifications</span></div>
+      <div class="half l" data-t="light"><span class="act"><i class="ph ph-bell-ringing"></i>All notifications</span></div>
+    </div>
+    <div class="meta"><code>A3</code><div><b>Bell</b><em>outline &middot; pairs with Subscribe, never alone</em><span>Only ever the second chip beside a subscribe ask — a bell on its own means nothing to somebody who has not subscribed. The ringing glyph, not the plain one: it names the state you are asking for rather than the object.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="act"><i class="ph ph-envelope-simple"></i>Newsletter</span></div>
+      <div class="half l" data-t="light"><span class="act"><i class="ph ph-envelope-simple"></i>Newsletter</span></div>
+    </div>
+    <div class="meta"><code>A4</code><div><b>Newsletter</b><em>outline &middot; intermission and ending &middot; with the URL beneath</em><span>The ask that survives the platform. Always shown with <code>namastesalesforce.com</code> somewhere on the same frame, because an email list is worth nothing if the viewer cannot find where to type their address.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="act"><i class="ph ph-globe"></i>namastesalesforce.com</span></div>
+      <div class="half l" data-t="light"><span class="act"><i class="ph ph-globe"></i>namastesalesforce.com</span></div>
+    </div>
+    <div class="meta"><code>A5</code><div><b>Visit the site</b><em>outline &middot; the handle bug's chip form</em><span>The destination spelled out, never &ldquo;link in description&rdquo; — a phone viewer cannot open a description without leaving the stream. Lowercase, no <code>https://</code>, no trailing slash: it is a spoken address that happens to be written down.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="act"><i class="ph ph-share-network"></i>Share this</span></div>
+      <div class="half l" data-t="light"><span class="act"><i class="ph ph-share-network"></i>Share this</span></div>
+    </div>
+    <div class="meta"><code>A6</code><div><b>Share</b><em>outline &middot; once, mid-session, when the room is biggest</em><span>The only ask that grows the audience during the stream rather than after it. Use it once, at the moment something has just worked — and then take it off. A permanent share chip is wallpaper.</span></div></div>
+  </div>
+
+</div>
+
+<p class="sub">The CTA sting</p>
+<p class="lede">The chips are reminders; this is a <b>statement</b>, and the one place brand-500 fills a solid block while you are still teaching. Two lines: the ask, and where it goes. It fires after a completed demo, never mid-explanation, and it leaves on its own.</p>
+<div class="kit">
+  <div class="item">
+    <div class="tile">
+      <div class="half d" data-t="dark"><span class="sting"><i class="ph ph-bell-ringing"></i><span><b>Full course + notes</b><span>namastesalesforce.com/apex</span></span></span></div>
+      <div class="half l" data-t="light"><span class="sting"><i class="ph ph-bell-ringing"></i><span><b>Full course + notes</b><span>namastesalesforce.com/apex</span></span></span></div>
+    </div>
+    <div class="meta"><code>A7</code><div><b>CTA sting</b><em>bottom-centre &middot; 6s &middot; maximum twice an hour</em><span>Identical in both themes because it is a fill, not a surface — the one graphic that does not re-solve for the canvas. One ask per appearance: if you find yourself wanting two, the second one belongs on the ending scene.</span></div></div>
+  </div>
+</div>
+
+<p class="sub">Where they go, and for how long</p>
+<table class="tbl"><tbody>
+  <tr><td>CHIP LANE</td><td><b>Bottom-left, above the handle bug</b></td><td class="fill"><span>Left, because the bottom-right corner is the camera and the mark. Chips sit inside the 90% title-safe box and wrap to a second row never — two is the ceiling.</span></td></tr>
+  <tr><td>STING</td><td><b>Bottom-centre, 6s</b></td><td class="fill"><span>Centre is deliberate: it is the only graphic that interrupts, so it does not pretend to be furniture. Twice an hour, after a completed demo.</span></td></tr>
+  <tr><td>SCENES</td><td><b>Open, intermission and ending only</b></td><td class="fill"><span>Scenes 01, 03 and 04. A chip never appears on a teaching scene: a subscribe prompt over a live demo is an interruption the viewer cannot dismiss.</span></td></tr>
+  <tr><td>ENTER / EXIT</td><td><b>Slide from the left, 240ms, <code>--ease-out</code></b></td><td class="fill"><span>The same motion the product uses for a drawer. No bounce, no scale, no sound.</span></td></tr>
+</tbody></table>
+
+<div class="two">
+  <div><p class="k-do">Do</p><ul>
+    <li><strong>One ask on screen at a time.</strong> The filled chip is the ask; everything else is a reminder.</li>
+    <li><strong>Spell the destination out.</strong> &ldquo;Link in the description&rdquo; asks a phone viewer to leave the stream to find it.</li>
+    <li><strong>Give every chip an exit rule</strong> and honour it. A chip with no timer becomes furniture, and furniture is what makes a frame look busy.</li>
+  </ul></div>
+  <div><p class="k-dont">Never</p><ul>
+    <li><strong>A row of five social icons.</strong> One destination at a time, rotating; a viewer who has to choose goes nowhere.</li>
+    <li><strong>Two filled chips.</strong> Two asks with equal weight is no ask at all.</li>
+    <li><strong>Animated, looping or pulsing chips.</strong> Motion that repeats cannot be dismissed and cannot be ignored — it is the fastest way to make a stream unwatchable.</li>
+  </ul></div>
+</div>
+
+</body></html>

@@ -1,4 +1,4 @@
-<!-- @dsCard group="Content Creation" viewport="760x1155" name="Live Stream — Overlay Kit" subtitle="Every graphic allowed on a live frame, with its position, size and how long it stays" -->
+<!-- @dsCard group="Content Creation" viewport="760x1579" name="Live Stream — Overlay Kit" subtitle="Every graphic allowed on a live frame — fifteen of them — with its position, size and how long it stays" -->
 <!-- px-ok: this card draws MINIATURES of 1920x1080 frames and thumbnails, so the
      type inside a tile is scaled artwork, not UI copy — a scale token there would
      be the wrong size by definition. The card's own chrome (labels, captions) does
@@ -26,7 +26,8 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 
 .o-kick{font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--color-brand-300)}
 
-.o-lower{background:rgb(0 26 62/.9);border-inline-start:3px solid var(--color-brand-500);padding:8px 12px;color:#fff;min-width:210px}
+.o-lower{display:flex;align-items:center;gap:10px;background:rgb(0 26 62/.9);border-inline-start:3px solid var(--color-brand-500);padding:8px 12px;color:#fff;min-width:210px}
+.o-lower>i{font-size:26px;color:var(--color-brand-300);flex:none}
 .o-lower b{display:block;font-family:var(--font-heading);font-size:15px;font-weight:700;line-height:1.1}
 .o-lower span{display:block;font-family:var(--font-mono);font-size:9.5px;color:var(--color-brand-300);margin-top:3px;letter-spacing:.04em}
 
@@ -62,6 +63,30 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 .o-wipe i:nth-child(2){background:var(--color-brand-600)}
 .o-wipe i:nth-child(3){background:var(--color-brand-900);box-shadow:inset 0 0 0 1px rgb(255 255 255/.16)}
 
+.o-rail{width:150px;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.2);
+  border-inline-start:3px solid var(--color-brand-500);color:#fff}
+.o-rail h6{margin:0;display:flex;align-items:center;gap:4px;padding:4px 7px;border-bottom:1px solid rgb(255 255 255/.2);
+  font-family:var(--font-mono);font-size:7px;letter-spacing:.1em;text-transform:uppercase;color:var(--color-brand-300);font-weight:400}
+.o-rail h6 em{font-style:normal;margin-inline-start:auto;color:rgb(255 255 255/.6)}
+.o-rail ul{margin:0;padding:5px 7px;list-style:none;display:flex;flex-direction:column;gap:5px}
+.o-rail li{display:grid;grid-template-columns:auto 1fr;gap:5px;align-items:start}
+.o-rail li>i{width:8px;height:8px;border-radius:50%;background:var(--color-brand-500);opacity:.55;margin-top:1px}
+.o-rail b{display:block;font-family:var(--font-mono);font-size:7px;color:var(--color-brand-300)}
+.o-rail p{margin:1px 0 0;font-size:7.5px;line-height:1.35;color:rgb(255 255 255/.88)}
+
+.o-act{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid rgb(255 255 255/.2);
+  background:rgb(255 255 255/.08);color:#fff;font-family:var(--font-mono);font-size:10px;
+  letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.o-act i{font-size:14px;color:var(--color-brand-300)}
+.o-act--fill{background:var(--color-brand-500);border-color:var(--color-brand-500)}
+.o-act--fill i{color:#fff}
+
+.o-toast{display:flex;align-items:center;gap:9px;background:rgb(255 255 255/.08);border:1px solid rgb(255 255 255/.2);
+  border-inline-start:3px solid var(--color-brand-500);padding:8px 12px;color:#fff;min-width:210px}
+.o-toast>i{font-size:17px;color:var(--color-brand-300);flex:none}
+.o-toast b{display:block;font-family:var(--font-heading);font-size:11.5px;font-weight:700;line-height:1.15}
+.o-toast span{display:block;font-family:var(--font-mono);font-size:8.5px;color:rgb(255 255 255/.62);margin-top:2px}
+
 .o-cam{width:150px;aspect-ratio:16/9;background:rgb(124 190 255/.16);border:1px solid var(--color-brand-400);
   display:flex;align-items:center;justify-content:center;color:var(--color-brand-300);font-family:var(--font-mono);font-size:9px;gap:5px}
 .o-cam i{font-size:16px}
@@ -80,7 +105,7 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 
   <div class="item">
     <div class="tile"><div class="o-lower"><b>Swarnil Singhai</b><span>Salesforce Architect · host</span></div></div>
-    <div class="meta"><code>03</code><div><b>Lower third</b><em>bottom-left · 8s on entry, then off</em><span>Name in heading weight, role in mono. Slides in from the left edge over 240ms and leaves the same way. One per person, per appearance — never a permanent name plate.</span></div></div>
+    <div class="meta"><code>03</code><div><b>Name plate</b><em>bottom-left · 8s on entry, then off</em><span>Icon, name in heading weight, job title in mono — three levels of one object. Slides in from the left over 240ms and leaves the same way. Six variants, including the guest and screen-driver forms, on the Name Plates card.</span></div></div>
   </div>
 
   <div class="item">
@@ -125,7 +150,26 @@ body{margin:0;padding:16px;background:var(--color-surface);font-family:var(--fon
 
   <div class="item">
     <div class="tile"><div class="o-bug"><i class="ph ph-chat-circle-text"></i>@priya_dev · &ldquo;this finally clicked&rdquo;</div></div>
-    <div class="meta"><code>12</code><div><b>Chat highlight</b><em>bottom-left · 5s · replaces the handle bug</em><span>One comment at a time, hand-picked. Chat belongs on screen only when it teaches something or thanks somebody — never as a live-scrolling panel competing with the stage.</span></div></div>
+    <div class="meta"><code>12</code><div><b>Chat highlight</b><em>bottom-left · 5s · replaces the handle bug</em><span>One hand-picked comment, on any scene that has no rail. The inline form of overlay 13 — use it when a single comment is worth showing and a whole column is not.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile" style="align-items:stretch"><div class="o-rail"><h6><i class="ph ph-chat-circle-text"></i>LIVE<em>412</em></h6>
+      <ul>
+        <li><i></i><div><b>@dev_arun</b><p>wait, the loop is the problem?</p></div></li>
+        <li><i></i><div><b>@priya_dev</b><p>scheduled Flows too?</p></div></li>
+      </ul></div></div>
+    <div class="meta"><code>13</code><div><b>Comment rail</b><em>right column · 23.5% · comment scenes only</em><span>A column, never a floating panel: it takes width away from the stage instead of covering it. Four rows maximum, newest at the bottom, one promoted at a time. Read every promoted comment aloud — chat is not in the VOD.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div style="display:flex;gap:6px"><span class="o-act o-act--fill"><i class="ph ph-play-circle"></i>Subscribe</span><span class="o-act"><i class="ph ph-bell-ringing"></i>Bell</span></div></div>
+    <div class="meta"><code>14</code><div><b>Action chips</b><em>bottom-left · open, intermission and ending only</em><span>Subscribe, like, bell, newsletter, visit. One shape, five payloads, two on screen at most and only one of them filled. Never during a demo: a subscribe prompt over live teaching is an interruption the viewer cannot dismiss.</span></div></div>
+  </div>
+
+  <div class="item">
+    <div class="tile"><div class="o-toast"><i class="ph ph-user-circle"></i><div><b>@sana_k subscribed</b><span>welcome in</span></div></div></div>
+    <div class="meta"><code>15</code><div><b>Notification toast</b><em>bottom-right · 4–10s · one lane, they queue</em><span>An event, not an ask — something a viewer just did. Six kinds: subscriber, member, tip, milestone, resource drop and technical notice. Suppressed entirely during code focus, Q&amp;A and a guest's answer.</span></div></div>
   </div>
 
 </div>

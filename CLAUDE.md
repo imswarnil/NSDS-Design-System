@@ -62,6 +62,9 @@ Consequence: specificity inside `components/css/` only decides DS-vs-DS conflict
 
 - `scripts/component-docs.mjs` — a single `COMPONENTS` array is the **source** for every per-component page. One entry → `preview/c-<id>.html`. The `html` string in a variant both renders the demo and prints as the code sample, so they cannot disagree.
 - `scripts/build-preview.mjs` — renders those into pages, plus the foundation sections, chart docs and content-creation docs, plus the full-page demos (a `DEMOS` array maps a `templates/*.html` to `preview/demo-*.html`).
+- `.ns-band--dark` clips with **`overflow: clip`, not `hidden`** — and that is load-bearing. `hidden` makes the band a scroll container, which silently kills `position: sticky` (it pins to a box that never scrolls) and freezes `view()` timelines at 50%. Any new clipping container on a band should use `clip` for the same reason.
+- `components/css/motion.css` — nine entrances plus `.ns-parallax`. Scroll-driven motion needs **two** classes: `.ns-parallax-frame` declares the named view timeline and must be an element whose own nearest scroll container is the page; `.ns-parallax` layers inside it consume it. A bare `view()` inside an `overflow: hidden` box resolves against a container that never scrolls and freezes at 50% — which looks exactly like no animation at all. Debugging note: a hidden document (a background tab, an automation window) deactivates every scroll timeline and stops IntersectionObserver, so "the motion is dead" is worth checking against `document.visibilityState` before it is worth debugging.
+- `icons/brand-marks.svg` — placeholder logo lockups for `.ns-brandmark`. **Every company in it is fictional on purpose** (Acme, Globex, Initech, Initrode, Umbrella, Northwind, Contoso). Do not add a real company: a logo wall showing a mark its owner never granted is a fabricated endorsement. Each symbol carries its own viewBox width and the host `<svg>` must repeat it — an external `<use>` gives the host no intrinsic size.
 - `**/*.card.html` — standalone specimens, discovered by walking the tree. Config lives in an HTML comment on **line 1**: `<!-- @dsCard group="…" viewport="760x1200" name="…" subtitle="…" -->`. The `viewport` height must match what the card actually renders to, or the styleguide frames it with a scrollbar or dead space — measure it in a browser rather than guessing.
 - `preview/pages.json` — a manifest `build-preview.mjs` writes; `build-site.mjs` reads it to generate the homepage's link index and `sitemap.xml`. A new page appears in both automatically or in neither.
 
@@ -70,6 +73,12 @@ Consequence: specificity inside `components/css/` only decides DS-vs-DS conflict
 ### The type scale forks
 
 `--size-body` (14px) is the **UI** base — rails, tables, admin, player chrome. `--size-prose` (17px) / `--size-prose-lead` (20px) / `--size-prose-small` (15px) are the **reading** scale, used by `.ns-prose` and the surfaces built on it. The axis is scanned-versus-read. Do not set an article at `--size-body` or a table row at `--size-prose`.
+
+**Marketing bands are on the reading side of that fork.** `components/css/sections.css` takes `--size-prose-lead` for a lede, `--size-prose` for a card heading and `--size-prose-small` for body copy — it was on the UI scale once, which put homepage paragraphs at 13px, one step *below* the base and level with a table caption. Nobody scans a homepage; they read it once, deciding. The mono label voice (`--size-label`) does not move on either side of the fork: a kicker, an index, a duration and a stat label are data, not prose.
+
+A card composed **into** a band follows the band (rule at the foot of `sections.css`); the same card in a catalogue grid or a rail keeps the UI scale. That is the fork applied, not an exception to it — three courses on a homepage are read, forty in a catalogue are scanned. `.ns-lesson` is deliberately excluded, because "a lesson row looks the same everywhere" is a promise `lms.css` makes.
+
+**Mono is for values; sans is for words.** The label voice (`--font-mono`, uppercase, tracked, `--size-label`) belongs on things read as data — an index, a duration, a count, a price, a timestamp, a status. It does not belong on a person's name, a stat's label, a call to action or a sentence of fine print. The test: would you say it aloud as a word, or read it off as a figure? A name in the label voice reads as a serial number. The band kicker is the one phrase that keeps the mono voice, at `--size-mono` (13) rather than the 11px label floor.
 
 Leading forks with it: `--leading-prose` (1.7) is for prose paragraphs only, `--leading-body` (1.6) is the UI standard, `--leading-snug` (1.45) is for multi-line scanned text (card excerpts, TOC entries, 20px ledes/blockquotes). Leading grows with the measure and shrinks with the size — never put 1.7 on a table row or 1.3 on a wrapping sentence.
 
@@ -90,5 +99,7 @@ Do not hand-tune chart hues. The palette was solved against six computable check
 ## Deploy
 
 `main` → GitHub Actions → GitHub Pages at <https://nsds.imswarnil.com/>. `gulp site` stages `_site/`, and `build-site.mjs` writes the homepage, `robots.txt`, `sitemap.xml` and **`CNAME`** — on an Actions deploy Pages reads the custom domain out of the artifact, so a build that ships no CNAME drops the domain on the next publish. `SITE_URL` overrides the host for canonicals, sitemap and CNAME.
+
+`.claude/skills/namaste-ui/` is the **portable skill bundle** — a self-contained pack for building in this design language from *other* repositories. It is generated by `scripts/build-skill.mjs` from the tokens, the component layer and the `COMPONENTS` array, runs inside `npm run build`, and its `--check` is one of the gates. Never hand-edit it. `docs/PORTABLE-SKILL.md` explains what it is, how to install it elsewhere and why it is separate from the root `SKILL.md` (which is for working *inside* this repo).
 
 `LIVE.md` covers the URLs, the DNS records and troubleshooting. `OBS.md` covers building the documented lesson and live-stream scenes in OBS Studio.

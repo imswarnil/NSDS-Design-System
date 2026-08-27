@@ -1161,11 +1161,12 @@
   /* The Pro column is marked by its leading edge, the system's standing device
      for "this one" — not by a fill, a shadow or a scale-up. */
   .ns-tier--pro { border-inline-start: 3px solid var(--color-featured-ink); }
+  /* "Free", "Pro", "Team" are NAMES. Mono is for values — see the note beside
+     .ns-quote figcaption in sections.css. */
   .ns-tier__label {
     display: inline-flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
+    font-family: var(--font-heading); font-size: var(--size-prose);
+    font-weight: var(--weight-semibold); color: var(--color-muted);
   }
   .ns-tier--pro .ns-tier__label { color: var(--color-featured-ink); }
   .ns-tier__title { font-size: var(--size-h4); font-weight: var(--weight-heading); color: var(--color-ink); }

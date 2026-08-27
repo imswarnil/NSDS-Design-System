@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <!-- Namaste UI — hero scene vectors.
+       ==================================================================
+       Illustration scale, not icon scale. icons/namaste-icons.svg is 20
+       glyphs on a 24px grid meant to sit inline with a word; these are
+       four 400×300 SCENES meant to fill a hero panel on their own.
+
+       Drawn to the same rules as everything else in the system, which is
+       what keeps them from looking like stock art bolted onto a careful
+       page:
+
+         - currentColor and two opacity levels ONLY. No fills of their own,
+           no gradients, no third colour. They inherit the panel's ink, so
+           they are correct in both themes with no second asset and no
+           filter — the same argument .ns-brandmark makes.
+         - 1.7px strokes, round caps and joins, matching the icon set's
+           optical weight so the two never read as two libraries.
+         - Structure over decoration. Every one of these is a diagram of a
+           thing the curriculum actually teaches — a schema, a trigger's
+           order of execution, a sharing recalculation — because an
+           illustration a reader can LEARN something from is the only kind
+           that survives being looked at twice.
+
+       The `.ns-vec__draw` class on a path is the animation hook: the
+       stroke draws itself in on entrance. Paths that carry it need
+       pathLength="100" so one duration fits every length. -->
+
+  <!-- 1 · The schema. Three objects and the relationships between them —
+       the first thing anybody has to hold in their head. -->
+  <symbol id="ns-s-schema" viewBox="0 0 400 300" fill="none" stroke="currentColor"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <g opacity="0.35">
+      <path class="ns-vec__draw" pathLength="100" d="M120 96h72"/>
+      <path class="ns-vec__draw" pathLength="100" d="M84 130v54"/>
+      <path class="ns-vec__draw" pathLength="100" d="M228 130v20h-84v34"/>
+    </g>
+    <!-- Account -->
+    <g>
+      <rect x="16" y="60" width="104" height="70" rx="4"/>
+      <path d="M16 82h104"/>
+      <path opacity="0.45" d="M30 98h58M30 112h44"/>
+      <circle cx="104" cy="71" r="3.4"/>
+    </g>
+    <!-- Contact -->
+    <g>
+      <rect x="192" y="60" width="104" height="70" rx="4"/>
+      <path d="M192 82h104"/>
+      <path opacity="0.45" d="M206 98h58M206 112h36"/>
+      <circle cx="280" cy="71" r="3.4"/>
+    </g>
+    <!-- Opportunity, the child -->
+    <g>
+      <rect x="92" y="184" width="120" height="76" rx="4"/>
+      <path d="M92 206h120"/>
+      <path opacity="0.45" d="M106 222h72M106 238h48"/>
+      <circle cx="196" cy="195" r="3.4"/>
+    </g>
+    <!-- the master-detail diamond, the one relationship that is not a lookup -->
+    <g opacity="0.75">
+      <path d="M152 164l10 10-10 10-10-10z"/>
+    </g>
+    <g opacity="0.35">
+      <path class="ns-vec__draw" pathLength="100" d="M152 130v34"/>
+    </g>
+  </symbol>
+
+  <!-- 2 · Order of execution. The lesson everybody arrives looking for:
+       what runs, in what order, when a record is saved. -->
+  <symbol id="ns-s-order" viewBox="0 0 400 300" fill="none" stroke="currentColor"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <g opacity="0.35">
+      <path class="ns-vec__draw" pathLength="100" d="M60 60v192"/>
+    </g>
+    <g>
+      <circle cx="60" cy="60" r="7"/>
+      <path opacity="0.85" d="M84 56h150"/>
+      <path opacity="0.4" d="M84 70h96"/>
+    </g>
+    <g>
+      <circle cx="60" cy="124" r="7"/>
+      <path opacity="0.85" d="M84 120h124"/>
+      <path opacity="0.4" d="M84 134h172"/>
+    </g>
+    <!-- the one step that is not synchronous, drawn dashed -->
+    <g>
+      <circle cx="60" cy="188" r="7" stroke-dasharray="3 3"/>
+      <path opacity="0.85" d="M84 184h164"/>
+      <path opacity="0.4" d="M84 198h108"/>
+      <g opacity="0.6">
+        <rect x="266" y="170" width="112" height="34" rx="17" stroke-dasharray="4 4"/>
+        <path d="M288 187h22M320 181l7 6-7 6"/>
+      </g>
+    </g>
+    <g>
+      <circle cx="60" cy="252" r="7"/>
+      <path opacity="0.85" d="M84 248h142"/>
+    </g>
+  </symbol>
+
+  <!-- 3 · Governor limits as a budget. A meter per limit, one of them
+       nearly spent — the framing the Apex course is built on. -->
+  <symbol id="ns-s-limits" viewBox="0 0 400 300" fill="none" stroke="currentColor"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <g opacity="0.4">
+      <path d="M24 48h352M24 108h352M24 168h352M24 228h352"/>
+    </g>
+    <g opacity="0.5">
+      <path d="M24 36v240"/>
+    </g>
+    <g stroke-width="10" stroke-linecap="round">
+      <path opacity="0.28" d="M40 78h320"/>
+      <path class="ns-vec__draw" pathLength="100" d="M40 78h96"/>
+      <path opacity="0.28" d="M40 138h320"/>
+      <path class="ns-vec__draw" pathLength="100" d="M40 138h188"/>
+      <path opacity="0.28" d="M40 198h320"/>
+      <path class="ns-vec__draw" pathLength="100" d="M40 198h300"/>
+      <path opacity="0.28" d="M40 258h320"/>
+      <path class="ns-vec__draw" pathLength="100" d="M40 258h58"/>
+    </g>
+    <!-- the ceiling: the thing a budget has and a "best practice" does not -->
+    <g opacity="0.7">
+      <path stroke-dasharray="5 4" d="M348 30v252"/>
+    </g>
+  </symbol>
+
+  <!-- 4 · Sharing recalculation. Rows rebuilt behind a queue — why access
+       is right eventually and wrong for a minute. -->
+  <symbol id="ns-s-sharing" viewBox="0 0 400 300" fill="none" stroke="currentColor"
+          stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+    <g>
+      <ellipse cx="86" cy="72" rx="56" ry="20"/>
+      <path d="M30 72v92c0 11 25 20 56 20s56-9 56-20V72"/>
+      <path opacity="0.45" d="M30 118c0 11 25 20 56 20s56-9 56-20"/>
+    </g>
+    <g opacity="0.35">
+      <path class="ns-vec__draw" pathLength="100" d="M146 128h74"/>
+    </g>
+    <path opacity="0.8" d="M212 122l9 6-9 6"/>
+    <!-- the queue -->
+    <g opacity="0.6">
+      <rect x="228" y="92" width="34" height="72" rx="3"/>
+      <rect x="272" y="92" width="34" height="72" rx="3"/>
+      <rect x="316" y="92" width="34" height="72" rx="3" stroke-dasharray="4 4"/>
+    </g>
+    <g opacity="0.35">
+      <path class="ns-vec__draw" pathLength="100" d="M240 186v34h108"/>
+    </g>
+    <!-- the share rows being rewritten -->
+    <g>
+      <rect x="150" y="220" width="200" height="56" rx="4"/>
+      <path opacity="0.45" d="M166 238h72M166 256h116"/>
+      <path opacity="0.8" d="M300 232l8 8 16-16"/>
+    </g>
+  </symbol>
+</svg>

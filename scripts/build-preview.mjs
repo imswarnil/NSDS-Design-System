@@ -835,23 +835,73 @@ const LIVESTREAM_BODY = `
   <table class="tbl"><tbody>
     <tr><td><code>CANVAS</code></td><td style="inline-size:45%">1920 &times; 1080, <strong>16:9, always</strong></td><td class="fill">Base canvas AND output resolution. 1280&times;720 is the only permitted fallback, and only when upload bandwidth forces it — the ratio never changes.</td></tr>
     <tr><td><code>SAFE AREA</code></td><td style="inline-size:45%">Title-safe 90%, action-safe 93%</td><td class="fill">All readable text inside 90%. The platform's own chrome, the chat panel and a phone's rounded corners all eat the outer band.</td></tr>
-    <tr><td><code>GRID</code></td><td style="inline-size:45%">12 columns &times; 8 rows</td><td class="fill">Every zone snaps to it, in every scene. This is what makes eight different scenes feel like one broadcast.</td></tr>
+    <tr><td><code>GRID</code></td><td style="inline-size:45%">12 columns &times; 8 rows, ten named zones</td><td class="fill">Every zone snaps to it, in every scene. This is what makes eighteen different scenes feel like one broadcast.</td></tr>
+    <tr><td><code>THEME</code></td><td style="inline-size:45%">Dark or light, chosen before the stream</td><td class="fill">Identical geometry either way — seven swapped variables, no rearrangement. Chosen once and never changed mid-session.</td></tr>
     <tr><td><code>FRAME RATE</code></td><td style="inline-size:45%">30 fps for teaching, 60 only for motion</td><td class="fill">A screen share at 30 fps looks identical and leaves the bitrate for detail instead of duplicate frames.</td></tr>
     <tr><td><code>BITRATE</code></td><td style="inline-size:45%">4500–6000 kbps video, 128 kbps audio</td><td class="fill">Text-heavy screen shares need the top of that range: hairlines and 1px borders are the first thing compression eats.</td></tr>
     <tr><td><code>AUDIO</code></td><td style="inline-size:45%">Mono, &minus;16 LUFS, one mic</td><td class="fill">Mono, because half the audience has one earbud in. Audio is the only part of a stream a viewer will not forgive.</td></tr>
-    <tr><td><code>SCENES</code></td><td style="inline-size:45%">Eight, built before the stream</td><td class="fill">If a moment needs a ninth scene, it needs an edited video instead.</td></tr>
+    <tr><td><code>SCENES</code></td><td style="inline-size:45%">Eighteen, built and named before the stream</td><td class="fill">If a moment needs a nineteenth, it needs an edited video instead.</td></tr>
   </tbody></table>
 
-  <p class="sub">One canvas, seven zones</p>
-  <p class="variant-note">The frame is built once and then held still. Of the seven zones, exactly one — the stage — is allowed to change during a session. The kicker, live badge, watermark and handle stay nailed to the same pixels from the first second to the last, which is what lets a viewer who joins at minute 40 orient in under a second.</p>
+  <p class="sub">One canvas, ten zones</p>
+  <p class="variant-note">The frame is built once and then held still. Of the ten zones, exactly one — the stage — is allowed to change during a session. The kicker, live badge, watermark and handle stay nailed to the same pixels from the first second to the last, which is what lets a viewer who joins at minute 40 orient in under a second. Three of the ten only appear when the audience is on screen: the comment rail, the chip lane and the toast lane.</p>
   ${spec(["brand-content-creation/livestream/scene-grid.card.html"])}
 
-  <p class="sub">The eight scenes</p>
-  <p class="variant-note">Built and named in the encoder before you go live, in this order, so the hotkeys are muscle memory. A stream that improvises a layout is a stream that spends its first ten seconds looking broken.</p>
-  ${spec(["brand-content-creation/livestream/scene-layouts.card.html"])}
+  <p class="sub">Dark or light</p>
+  <p class="variant-note">Every scene below is drawn in both. The choice is made once, before the stream, and it is a property of what you are sharing rather than a mood.</p>
+  <div class="use-grid"><div><p class="sub k-do">Stream dark when</p><ul>
+    <li>You are in a dark editor or a dark-mode org — the frame and the stage agree instead of fighting.</li>
+    <li>The session is code-heavy: a bright frame around a dark code panel is a glare box on a phone at night.</li>
+    <li>You want the default. Dark is this brand's home, and every thumbnail the session is promoted with is navy.</li>
+  </ul></div><div><p class="sub k-do">Stream light when</p><ul>
+    <li>The shared screen is a light org, a document or a whiteboard — chasing it with a dark frame just outlines it.</li>
+    <li>You are on camera in a bright room and cannot control the background.</li>
+    <li>The session is conceptual and diagram-led; hairlines read better on white at low bitrates.</li>
+  </ul></div></div>
+  <p class="variant-note">Whichever you pick, the geometry is identical: every scene is one layout with a swapped palette, driven by seven variables. If the light version needs a different arrangement, the arrangement was wrong. The one exception is the title strip, which stays dark in both themes because it is broadcast furniture rather than part of your desktop.</p>
+
+  <p class="sub">The eighteen scenes</p>
+  <p class="variant-note">Built and named in the encoder before you go live, in this order, so the hotkeys are muscle memory. A stream that improvises a layout is a stream that spends its first ten seconds looking broken. They fall into three groups, and the grouping is also the build order.</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>01–04</code></td><td style="inline-size:45%"><strong>Open &amp; close.</strong> Countdown, welcome slide, intermission, ending.</td><td class="fill">The four scenes nobody is being taught in — and the only ones allowed to carry an ask.</td></tr>
+    <tr><td><code>05–11</code></td><td style="inline-size:45%"><strong>Teaching.</strong> Camera, screen, screen + title, screen + camera, slide, slide + camera, code.</td><td class="fill">Where the hour actually goes. Scene 08 is the workhorse; 06 and 11 are for the minutes a face would be in the way.</td></tr>
+    <tr><td><code>12–18</code></td><td style="inline-size:45%"><strong>Comments &amp; guests.</strong> Camera + comments, screen + comments, screen + camera + comments, comment wall, Q&amp;A, guest two-up, guest + screen.</td><td class="fill">The scenes where somebody other than you is on the frame. Every one of them narrows the stage rather than covering it.</td></tr>
+  </tbody></table>
+  ${spec([
+    "brand-content-creation/livestream/scenes-open-close.card.html",
+    "brand-content-creation/livestream/scenes-teaching.card.html",
+    "brand-content-creation/livestream/scenes-community.card.html",
+  ])}
+
+  <p class="sub">The camera is not always 16:9</p>
+  <p class="variant-note">A 16:9 camera in a 16:9 corner is the default, not the law. What a camera crop has to do is fill the block the layout gives it without leaving dead space and without covering the work — and a comment rail, a stacked guest gutter or a vertical-clip segment each give it a different block. Eight crops are sanctioned; one crop per session, chosen in the starting-soon scene and never changed.</p>
+  ${spec(["brand-content-creation/livestream/camera-shapes.card.html"])}
+
+  <p class="sub">Name plates</p>
+  <p class="variant-note">A stream is watched in the middle. Somebody arriving at minute 40 sees a face and hears an opinion, and the name plate is the only thing on the frame that tells them whose opinion it is and why it is worth anything — icon, name, job title, in that order of size.</p>
+  ${spec(["brand-content-creation/livestream/name-plates.card.html"])}
+
+  <p class="sub">Live comments on screen</p>
+  <p class="variant-note">Chat is the reason a live session is worth doing live, and a scrolling chat panel is the fastest way to make one unwatchable. The rule that resolves it: comments appear as a <strong>column that narrows the stage</strong>, never as a panel over it, and never faster than a viewer can read.</p>
+  <table class="tbl"><tbody>
+    <tr><td><code>RAIL</code></td><td style="inline-size:45%">Right column, 23.5% of canvas — 451px at 1080p</td><td class="fill">The stage scales uniformly to 67–74% to make room. Never stretch the screen capture back out to reclaim the width.</td></tr>
+    <tr><td><code>ROWS</code></td><td style="inline-size:45%">Four maximum, newest at the bottom</td><td class="fill">Bottom, because that is how every chat client on earth reads. A fifth row means the type has to shrink, and 19px is already the floor at broadcast size.</td></tr>
+    <tr><td><code>PROMOTION</code></td><td style="inline-size:45%">One comment filled at a time</td><td class="fill">A rail with two highlights has highlighted nothing. The promoted row is the one you are answering right now.</td></tr>
+    <tr><td><code>SPEED</code></td><td style="inline-size:45%">Moderated in, never mirrored live</td><td class="fill">A raw feed at 400 concurrent viewers is unreadable and unmoderatable. Somebody pushes comments to the rail — you, between demos, or a moderator.</td></tr>
+    <tr><td><code>READ ALOUD</code></td><td style="inline-size:45%">Every promoted comment, verbatim</td><td class="fill">Chat is not in the VOD. An unread comment is a silence the replay cannot explain, and the reply makes no sense without it.</td></tr>
+    <tr><td><code>THE WALL</code></td><td style="inline-size:45%">Scene 15 — six curated questions, frozen, 60–90s</td><td class="fill">The honest way to give chat the whole frame: hand-picked, at reading size, answered in order.</td></tr>
+    <tr><td><code>NEVER</code></td><td style="inline-size:45%">A live-scrolling panel over the stage</td><td class="fill">It competes with the thing you are teaching, it is illegible on a phone, and it puts an unmoderated stranger's words on your recording forever.</td></tr>
+  </tbody></table>
+
+  <p class="sub">Asks and notifications</p>
+  <p class="variant-note">Two families that look similar and behave oppositely. A <strong>chip</strong> is an ask — you want something from the viewer, so it belongs only where nobody is being taught. A <strong>toast</strong> is an event — a viewer did something, and the frame acknowledges it. Both are reusable components with fixed positions, fixed sizes and, the part that is always forgotten, fixed durations.</p>
+  ${spec([
+    "brand-content-creation/livestream/action-chips.card.html",
+    "brand-content-creation/livestream/notification-toasts.card.html",
+  ])}
 
   <p class="sub">The overlay kit</p>
-  <p class="variant-note">Twelve graphics, and nothing else may go on a live frame. Each one has a fixed position, a fixed size and — the part that is always forgotten — a fixed duration. An overlay with no exit rule becomes furniture, and furniture is what makes a frame look busy.</p>
+  <p class="variant-note">Fifteen graphics, and nothing else may go on a live frame. Each one has a fixed position, a fixed size and a fixed duration. An overlay with no exit rule becomes furniture, and furniture is what makes a frame look busy.</p>
   ${spec(["brand-content-creation/livestream/overlay-kit.card.html"])}
 
   <p class="sub">Screen share, slides and the 16:9 discipline</p>
@@ -861,12 +911,12 @@ const LIVESTREAM_BODY = `
   <p class="sub">Camera &amp; framing</p>
   <div class="use-grid"><div><p class="sub k-do">Do</p><ul>
     <li>Eyes on the upper third line, a hand's width of headroom — the same crop the course thumbnails use.</li>
-    <li>16:9 cam, hard corners, one fixed size for the whole session (17–22% of canvas width).</li>
+    <li>Hard corners and a 1px accent edge, whatever the ratio. The border is what separates a dark shirt from a navy canvas.</li>
     <li>Key light slightly off-axis, background two stops darker so the cam separates from the stage behind it.</li>
     <li>Look at the lens for the open, the promise and the close. Look at the screen while demonstrating — pretending otherwise reads as shifty.</li>
   </ul></div><div><p class="sub k-dont">Never</p><ul>
     <li>A circular or pill-shaped cam. Sharp geometry is Principle 4, and a round cam is the tell of a stock template.</li>
-    <li>Moving the cam between scenes to &ldquo;make room&rdquo; — re-park the content instead.</li>
+    <li>Two ratios in one session, or moving the cam between scenes to &ldquo;make room&rdquo; — re-park the content instead.</li>
     <li>A blurred or virtual background: it eats fingers when you gesture, and gestures are half of teaching.</li>
     <li>Cam over the shared screen's left navigation or over the record you are editing.</li>
   </ul></div></div>
@@ -884,23 +934,24 @@ const LIVESTREAM_BODY = `
 
   <p class="sub">Run of show</p>
   <table class="tbl"><tbody>
-    <tr><td><code>T&minus;10 min</code></td><td style="inline-size:45%"><strong>Starting soon.</strong> Countdown, session title, handles. Music optional and quiet; no talking over it.</td><td class="fill">scene 01</td></tr>
-    <tr><td><code>0:00</code></td><td style="inline-size:45%"><strong>Open on camera.</strong> The payoff first — what will exist by the end of the hour. No &ldquo;can everyone hear me.&rdquo;</td><td class="fill">scene 02 + lower third, 8s</td></tr>
-    <tr><td><code>0:02</code></td><td style="inline-size:45%"><strong>The promise and the map.</strong> The 3–5 steps, stated aloud and put on the topic bar as step 1 of 5.</td><td class="fill">scene 04 + topic bar</td></tr>
-    <tr><td><code>0:05</code></td><td style="inline-size:45%"><strong>Teaching blocks.</strong> One step per block, each closed by doing the thing. Update the topic bar at every boundary.</td><td class="fill">scenes 03 / 04 / 05</td></tr>
-    <tr><td><code>every ~15 min</code></td><td style="inline-size:45%"><strong>Re-orient.</strong> Name where you are for the people who just joined, and take one question.</td><td class="fill">scene 07 + question card</td></tr>
-    <tr><td><code>last 10 min</code></td><td style="inline-size:45%"><strong>Q&amp;A proper.</strong> One question on screen at a time, attributed. Unanswered ones become next week's cold open.</td><td class="fill">scene 07</td></tr>
-    <tr><td><code>last 2 min</code></td><td style="inline-size:45%"><strong>Close.</strong> Recap the promise in three lines, name and date the next session, one CTA.</td><td class="fill">scene 08</td></tr>
-    <tr><td><code>after</code></td><td style="inline-size:45%"><strong>Hold the end card 60s</strong> before you stop the stream — the platform's replay opens on it and clip-grabbers land on it.</td><td class="fill">scene 08</td></tr>
+    <tr><td><code>T&minus;10 min</code></td><td style="inline-size:45%"><strong>Starting soon.</strong> Countdown, session title, subscribe and bell. Music optional and quiet; no talking over it.</td><td class="fill">scene 01</td></tr>
+    <tr><td><code>0:00</code></td><td style="inline-size:45%"><strong>Open on camera.</strong> The payoff first — what will exist by the end of the hour. No &ldquo;can everyone hear me.&rdquo;</td><td class="fill">scene 05 + name plate, 8s</td></tr>
+    <tr><td><code>0:01</code></td><td style="inline-size:45%"><strong>The promise and the map.</strong> Three to five steps, numbered, with honest durations, stated aloud and left on screen.</td><td class="fill">scene 02</td></tr>
+    <tr><td><code>0:05</code></td><td style="inline-size:45%"><strong>Teaching blocks.</strong> One step per block, each closed by doing the thing. Update the topic bar at every boundary.</td><td class="fill">scenes 06–11</td></tr>
+    <tr><td><code>every ~15 min</code></td><td style="inline-size:45%"><strong>Re-orient.</strong> Name where you are for the people who just joined, take one question, fire the CTA sting if a demo just landed.</td><td class="fill">scene 16 + question card</td></tr>
+    <tr><td><code>mid-session</code></td><td style="inline-size:45%"><strong>Bring the room in.</strong> Switch to a comment scene while people are following along, or take a two-minute break on the intermission.</td><td class="fill">scenes 12–14 &middot; scene 03</td></tr>
+    <tr><td><code>last 10 min</code></td><td style="inline-size:45%"><strong>Q&amp;A proper.</strong> The wall first, so the room sees what is coming; then one question at a time. Unanswered ones become next week's cold open.</td><td class="fill">scenes 15 then 16</td></tr>
+    <tr><td><code>last 2 min</code></td><td style="inline-size:45%"><strong>Close.</strong> Recap the promise in three lines, name and date the next session, one CTA.</td><td class="fill">scene 04</td></tr>
+    <tr><td><code>after</code></td><td style="inline-size:45%"><strong>Hold the end card 60s</strong> before you stop the stream — the platform's replay opens on it and clip-grabbers land on it.</td><td class="fill">scene 04</td></tr>
   </tbody></table>
 
   <p class="sub">Social — before, during, after</p>
   <table class="tbl"><tbody>
     <tr><td><code>BEFORE</code></td><td style="inline-size:45%">One announcement asset, 24h out, reusing the <strong>course thumbnail</strong> frame with a <code>// LIVE &middot; THU 19:00 IST</code> kicker.</td><td class="fill">thumbnails page &middot; story template</td></tr>
     <tr><td><code>DURING</code></td><td style="inline-size:45%">The handle bug rotates one destination at a time — site, YouTube, LinkedIn — roughly every 10 minutes. Never a row of five icons.</td><td class="fill">overlay 06</td></tr>
-    <tr><td><code>DURING</code></td><td style="inline-size:45%">The CTA sting fires at most twice an hour, after a completed demo, never mid-explanation.</td><td class="fill">overlay 08</td></tr>
+    <tr><td><code>DURING</code></td><td style="inline-size:45%">The CTA sting fires at most twice an hour, after a completed demo, never mid-explanation. Chips only on the open, the break and the close.</td><td class="fill">overlays 11 &amp; 14</td></tr>
     <tr><td><code>END</code></td><td style="inline-size:45%">The ending scene is geometrically the same asset as the YouTube end screen, so the VOD and the stream close identically.</td><td class="fill">promo page &middot; end screen</td></tr>
-    <tr><td><code>AFTER</code></td><td style="inline-size:45%">Two or three vertical clips cut from the recording — the watermark and the 90% safe area are what make a 9:16 crop survive.</td><td class="fill">video page &middot; instagram page</td></tr>
+    <tr><td><code>AFTER</code></td><td style="inline-size:45%">Two or three vertical clips cut from the recording — the watermark and the 90% safe area are what make a 9:16 crop survive. Stream with the 9:16 camera crop and your face needs no re-crop at all.</td><td class="fill">video page &middot; instagram page</td></tr>
     <tr><td><code>AFTER</code></td><td style="inline-size:45%">The session becomes the week's Monday lesson: same title, same thumbnail family, tighter edit.</td><td class="fill">video series &amp; schedule</td></tr>
   </tbody></table>
 
@@ -909,22 +960,24 @@ const LIVESTREAM_BODY = `
     <li>Platform auto-captions on, always. They are imperfect and still better than nothing for the third of viewers watching muted.</li>
     <li>Say what you are doing as you do it — &ldquo;I'm clicking Setup, then Object Manager.&rdquo; The narration is the audio description.</li>
     <li>Never point with color alone: &ldquo;the red one&rdquo; excludes; &ldquo;the Delete button, top right&rdquo; does not.</li>
+    <li>Read every promoted comment and every question aloud. The rail is not in the VOD, and a reply to an unread question is nonsense on replay.</li>
   </ul></div><div><ul>
-    <li>Question cards and the topic bar carry the same contrast floor as the product — 4.5:1 for body-size text on the navy canvas.</li>
-    <li>No flashing transitions. The scene wipe is 320ms linear, once, and that is the whole motion vocabulary.</li>
-    <li>Read every on-screen question aloud before answering it — chat is not visible in the VOD.</li>
+    <li>Question cards, name plates and the topic bar carry the same contrast floor as the product — 4.5:1 for body-size text on the navy canvas.</li>
+    <li>No flashing transitions and no blinking LIVE dot. The scene wipe is 320ms linear, once, and that is the whole motion vocabulary.</li>
+    <li>Toasts enter and leave, they never pulse or loop — motion that repeats cannot be dismissed and cannot be ignored.</li>
   </ul></div></div>
 
   <p class="sub">The failure modes</p>
   <div class="use-grid"><div><p class="sub k-dont">What makes a stream look improvised</p><ul>
     <li>A scene built live, on air, because the moment needed one.</li>
-    <li>The camera in a different corner in every scene.</li>
+    <li>The camera in a different corner, or a different shape, in every scene.</li>
     <li>A stretched or letterboxed shared source.</li>
     <li>Three overlays on screen at once, none of them expiring.</li>
   </ul></div><div><p class="sub k-dont">What loses the viewer outright</p><ul>
     <li>Type below 16px on a shared screen — most of the audience is on a phone.</li>
     <li>Silence during a long operation. Narrate the wait or cut to camera.</li>
     <li>Chat scrolling live in a panel, competing with the thing you are teaching.</li>
+    <li>A subscribe prompt over a live demo, or a toast over somebody else's answer.</li>
     <li>Stopping the stream the instant you stop talking, with no end card.</li>
   </ul></div></div>`;
 
@@ -1436,7 +1489,7 @@ const CONTENT_DOCS = [
   { id: "cc-schedule", title: "Video series & schedule", lede: "The publishing plan: what ships on which day, and the second-by-second template every video follows — hook, promise, sting, teaching, bridge.", body: SCHEDULE_BODY, cards: ["brand-content-creation/video-structure/first-60-seconds.card.html"] },
   { id: "cc-video", title: "Video structure & motion", lede: "Hooks, closures and the motion rules for moving brand assets — how the intro sting and scene transitions behave.", cards: ["brand-content-creation/video-structure/hooks-and-closures.card.html", "brand-content-creation/motion-guidelines.card.html", "brand-content-creation/motion-demo-intro.card.html", "brand-content-creation/motion-demo-transition.card.html"] },
   { id: "cc-lesson-scenes", title: "Lesson video scenes", lede: "Seventeen recording layouts on one 16:9 frame, each drawn in light and dark: sharing your screen, on camera, slides and code, and the four cards a lesson cuts to. No live badge, no ticker, no chat — a lesson is a file, not a moment.", body: LESSON_VIDEO_BODY, cards: [] },
-  { id: "cc-livestream", title: "Live stream scenes", lede: "The 16:9 broadcast frame: one canvas, eight prebuilt scenes, and twelve overlays. Where the camera, the shared screen, the title, the watermark and the handles sit — and how long each one stays on screen.", body: LIVESTREAM_BODY, cards: [] },
+  { id: "cc-livestream", title: "Live stream scenes", lede: "The 16:9 broadcast frame, in dark and light: one canvas, ten zones, eighteen prebuilt scenes and fifteen overlays. Where the camera, the shared screen, the live comments, the name plate, the asks and the notification toasts sit — and how long each one stays on screen.", body: LIVESTREAM_BODY, cards: [] },
   { id: "cc-thumbnails", title: "Thumbnails", lede: "Every thumbnail surface — course, lesson, blog, YouTube — from one style family, so a row of them reads as a series.", cards: ["brand-content-creation/thumbnails/15-thumbnail-styles.card.html", "brand-content-creation/course-thumbnail.card.html", "brand-content-creation/lesson-thumbnail.card.html", "brand-content-creation/blog/10-blog-thumbnail-styles.card.html", "brand-content-creation/youtube-thumbnail.card.html"] },
   { id: "cc-instagram", title: "Instagram", lede: "Post and story templates. Same tokens, same mono indices — the feed is the product's voice at 1080px.", cards: ["brand-content-creation/instagram-post.card.html", "brand-content-creation/instagram-story.card.html", "brand-content-creation/instagram/instagram-post-styles.card.html"] },
   { id: "cc-linkedin", title: "LinkedIn", lede: "The professional-feed variant: hook-first text posts and carousel PDFs cut from the same weekly asset as the Instagram carousel.", body: LINKEDIN_BODY, cards: [] },
@@ -1942,7 +1995,7 @@ const DEMOS = [
      these are the product's own front doors, and the difference is the
      middle — both show the actual merchandise (path, courses, tracks, tiers)
      where the catalogue shows abstract feature copy. */
-  { out: "demo-homepage.html", tpl: "homepage.html", title: "Learning-site homepage — full page demo", back: "homepage.html", note: "the canonical composition: split hero → trust → method → path → courses → training → stats → pace → voices → FAQ → CTA" },
+  { out: "demo-homepage.html", tpl: "homepage.html", title: "Learning-site homepage — full page demo", back: "homepage.html", note: "24 bands, each answering a question none of the others do — tall split hero → logos → router → showcase → path → courses → video → training → stats → sample → scope → compare → membership → the story → authors → voices → photo band → writing → shipped → fit → sponsors → newsletter → FAQ → CTA" },
   { out: "demo-training-index.html", tpl: "training-index.html", title: "Training index — full page demo", back: "homepage.html", note: "the curriculum's front door: hero + search → path → tracks → free vs Pro → pace → contributors → CTA" },
   /* The single-post reading page — the third training surface, after the
      index (orient) and the module page (list). `lock` because --fixed pins
