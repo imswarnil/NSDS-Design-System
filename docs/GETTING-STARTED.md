@@ -203,3 +203,7 @@ theme.
 **Do not style a React component inline.** The CSS layer is the portable
 part. A component that styles itself is a component every other renderer has
 to reimplement.
+
+---
+
+Maintaining this package? See [RELEASING.md](./RELEASING.md).
