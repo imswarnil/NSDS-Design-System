@@ -24,7 +24,7 @@
     "LICENSE",
     "mcp",
     "SKILL.md",
-    ".claude"
+    ".claude/skills"
   ],
   "exports": {
     ".": {
@@ -122,6 +122,6 @@
     "tailwindcss": "^4.3.3"
   },
   "bin": {
-    "nsds-mcp": "./mcp/server.mjs"
+    "nsds-mcp": "mcp/server.mjs"
   }
 }
