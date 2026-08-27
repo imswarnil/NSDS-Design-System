@@ -67,7 +67,9 @@
     "check:markup": "node scripts/check-markup.mjs",
     "mcp": "node mcp/server.mjs",
     "build:skill": "node scripts/build-skill.mjs",
-    "check:skill": "node scripts/build-skill.mjs --check"
+    "check:skill": "node scripts/build-skill.mjs --check",
+    "build:icons": "node scripts/build-icons.mjs",
+    "check:icons-sprite": "node scripts/build-icons.mjs --check"
   },
   "author": {
     "name": "Swarnil Singhai",

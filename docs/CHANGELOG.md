@@ -17,6 +17,63 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — an icon pipeline: `src/icons/<style>/<name>.svg`
+
+**Adding an icon is dropping a file in a folder.** That is the entire point.
+Before this, the twenty bespoke glyphs lived inside one hand-maintained
+sprite, so adding one meant editing a 300-line XML document by hand and
+hoping the viewBox and stroke width matched its neighbours — which is why
+nobody did, and the last person who needed a glyph drew it somewhere else.
+
+`scripts/build-icons.mjs` reads the tree and writes `icons/nsds-icons.svg`
+plus `icons/icons.json`. It runs in `gulp build` and `--check` is a gate, so
+editing a drawing without rebuilding fails rather than silently rendering the
+old one.
+
+**Three styles, one name.** A style is a directory — `regular` (1.7px
+stroke), `fill` (the active state of the same icon), `duotone` (a solid shape
+at low opacity under a stroke pass). The same file name in two directories is
+the same icon, and **every icon must exist in `regular`**: a `fill/corse.svg`
+is a typo, not a new icon, and the build refuses it rather than shipping a
+glyph nothing can fall back to. Verified by planting one.
+
+Five `fill` and five `duotone` variants are drawn, so the multi-style claim is
+exercised rather than asserted by empty folders.
+
+**Duotone uses `currentColor` for both passes**, with the tint in the drawing
+rather than the CSS — the right ratio differs per icon, because a large solid
+area needs less tint than a thin one to read at the same weight.
+`.ns-icon--duotone-strong` lifts the lot where 0.22 disappears.
+
+### Added — icon search that matches what people type
+
+The grid at `/preview/icons.html` now searches descriptions and synonyms, not
+just names.
+
+This started as a bug in my own copy: the lede claimed "award finds the
+certificate", and it did not — the drawing's description is "the completion
+rosette", written by whoever drew it, and the person searching types the word
+they arrived with. So the source header takes a `keywords:` line, all twenty
+icons have one, and `award`, `automation`, `teacher`, `percent` and `deploy`
+now each land on the right glyph. Verified in the browser.
+
+### Note — no icon font, and why
+
+An `<svg><use>` is a real image: it takes `currentColor`, carries two colours
+for duotone, never renders as a missing-glyph box while a webfont loads, and
+is ignored by a screen reader unless labelled. An icon font is glyphs in a
+text stream — convenient, and it inherits every font-loading failure mode and
+reads as a private-use character to anything that does not know better.
+
+The system still ships one font: a Phosphor subset, because cutting somebody
+else's 700KB face down to the ~300 glyphs used here is worth a build step. For
+our twenty, a 6KB sprite is smaller than any font we could build.
+
+If that trade changes, `src/icons/<style>/` is already the shape every font
+builder wants — `fantasticon` and `svgtofont` both take a directory of SVGs.
+It would be a devDependency and a script, and none of the drawings would move.
+`docs/ICONS.md` records that.
+
 ### Fixed — the templates were unfindable
 
 31 full-page templates existed and were reachable only from a **Demos

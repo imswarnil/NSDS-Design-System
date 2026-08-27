@@ -1,0 +1,6 @@
+<!-- flow — three connected nodes, solid 
+     keywords: automation builder process nodes -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <circle cx="6" cy="6" r="2.8"/><circle cx="18" cy="12" r="2.8"/><circle cx="6" cy="18" r="2.8"/>
+  <path d="M8.4 7.4 15.3 11M8.4 16.6 15.3 13" stroke="currentColor" stroke-width="1.7" fill="none" opacity=".55"/>
+</svg>

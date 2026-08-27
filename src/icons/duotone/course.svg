@@ -1,0 +1,7 @@
+<!-- course — an open book — the page block tinted, the binding drawn 
+     keywords: book learn class syllabus curriculum -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g fill="currentColor" stroke="none" opacity=".22"><path d="M12 6.9C10.4 5.2 7.9 4.5 4 4.5v13.6c3.9 0 6.4.7 8 2.3ZM12 6.9c1.6-1.7 4.1-2.4 8-2.4v13.6c-3.9 0-6.4.7-8 2.3Z"/></g>
+  <path d="M12 6.5C10.5 4.9 8 4.2 4 4.2v13.6c4 0 6.5.7 8 2.3 1.5-1.6 4-2.3 8-2.3V4.2c-4 0-6.5.7-8 2.3Z"/>
+  <path d="M12 6.5v13.6"/>
+</svg>

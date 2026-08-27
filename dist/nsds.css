@@ -16743,6 +16743,22 @@
   .ns-icon--sm { font-size: var(--size-small); }
   .ns-icon--lg { font-size: var(--size-h3); }
   .ns-icon--xl { font-size: var(--size-h2); }
+
+  /* --- Duotone -------------------------------------------------------------
+     A duotone glyph is ONE symbol carrying two passes: a solid shape at low
+     opacity under a normal stroke. Both use currentColor, so the pair stays
+     in the same hue at any colour and needs no second variable — which is
+     what stops a duotone icon from being the one thing on a page that does
+     not follow the ink.
+
+     The tint lives in the sprite's own markup (an opacity on the filled
+     group) rather than here, because the RATIO differs per drawing: a large
+     solid area needs less than a thin one to read as the same weight. This
+     class exists only to let a caller lift or drop the whole tint at once —
+     on a dark band, for instance, where 0.22 disappears. */
+  .ns-icon--duotone [fill="currentColor"] { opacity: var(--ns-icon-tint, 0.22); }
+  .ns-icon--duotone-strong { --ns-icon-tint: 0.34; }
+
 }
 /* NS Design System — sections: the reusable page bands.
    =========================================================================

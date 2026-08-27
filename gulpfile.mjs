@@ -51,7 +51,11 @@ export const home = run("build-home.mjs");
    fails CI. */
 export const skill = run("build-skill.mjs");
 
-export const build = gulp.series(tokens, css, preview, home, skill);
+/* The icon sprite is generated from src/icons/, so it runs BEFORE the CSS
+   and the preview — both read the built sprite and its manifest. */
+export const icons = run("build-icons.mjs");
+
+export const build = gulp.series(tokens, icons, css, preview, home, skill);
 
 export const check = gulp.series(
   run("build-tokens.mjs", "--check"),
@@ -70,6 +74,9 @@ export const check = gulp.series(
   /* A stale bundle teaches an agent a version of this system that no longer
      exists, and it does it silently in somebody else's repository. */
   run("build-skill.mjs", "--check"),
+  /* A stale sprite means src/icons/ was edited without rebuilding, and the
+     page renders the OLD drawing with no error anywhere. */
+  run("build-icons.mjs", "--check"),
 );
 
 /* The deployable static site — what CI publishes to Pages, and what you

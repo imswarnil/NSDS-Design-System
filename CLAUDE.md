@@ -2,6 +2,46 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Layout
+
+```
+src/            AUTHORED source — the only place to edit
+  tokens/         token CSS (+ tailwind.css, generated into the source graph)
+  css/            the .ns-* layer: foundation, primitives, navigation,
+                  content, product, integrations
+  react/          thin React wrappers — behaviour only, never styling
+  icons/          icon source: <style>/<name>.svg
+  patterns/       background patterns
+  styles.css      entry: tokens + base + the layer
+  tailwind.css    Tailwind v4 entry
+dist/           GENERATED — nsds.css, nsds.min.css, the Tailwind pair,
+                tokens.json / tokens.js / tokens.d.ts. Committed on purpose.
+icons/          GENERATED sprite + manifest, plus the Phosphor subset
+```
+
+`src` is authored, `dist` is built. One deliberate exception:
+`src/tokens/tailwind.css` is generated but lives in `src` because it is a link
+in the *source* graph — `src/tailwind.css` imports it so Tailwind's `@theme`
+can see the token names. Writing it to `dist` would make a source file import
+a build output.
+
+Bundles are `nsds.*` to match the package name. Consumers use the subpath
+exports — `nsds-design-system/css`, `/css/min`, `/tailwind`, `/tokens.json` —
+never deep `dist/` paths, so the internal layout can move again without
+breaking anyone.
+
+**Icons.** `src/icons/<style>/<name>.svg` is the source — one SVG per icon per
+style (`regular`, `fill`, `duotone`), built to `icons/nsds-icons.svg` +
+`icons/icons.json` by `scripts/build-icons.mjs` and gated by `--check`. Adding
+an icon is dropping a file in a folder. Write the `keywords:` line in its
+header comment or nobody finds it by the word they actually type. Every icon
+needs a `regular`; the build fails on a variant with no default.
+`docs/ICONS.md` is the guide.
+
+**Overriding.** `docs/CUSTOMISING.md`: retheme with `--ns-*` tokens first, use
+the `components` layer to beat a rule without `!important`, fork under a new
+name only when the structure changes.
+
 ## Commands
 
 ```bash

@@ -437,9 +437,11 @@ ${PROSE}
     <p class="sub">Interaction — focus ring, press/disabled/loading dim, hairline</p>
     ${plainRows(pick(/^--(focus-ring|opacity)-|^--border-hairline/))}
     ${spec(["guidelines/radii-shadows.card.html", "guidelines/motion.card.html", "guidelines/states.card.html"])}` },
-  { id: "icons", title: "Icons", lede: "Two sets, one optical weight. <strong>Phosphor</strong> (subsetted icon font) covers the generic vocabulary; the <strong>bespoke sprite</strong> covers the LMS-specific glyphs Phosphor has no word for — drawn on the same 24px grid at the same stroke weight, so the sets mix in one row. Every Phosphor glyph also ships a filled variant (<code>ph-fill</code>). Grouped by what the glyph is for; the search filters every group at once. Click a name to copy it.", body: () => {
-    const svg = readFileSync(join(ROOT, "icons/namaste-icons.svg"), "utf8");
-    const spriteIds = [...svg.matchAll(/<symbol id="ns-i-([a-z0-9-]+)"/g)].map((m) => m[1]).sort();
+  { id: "icons", title: "Icons", lede: "Two sets, one optical weight. The <strong>NSDS set</strong> is ours — drawn in <code>src/icons/&lt;style&gt;/</code>, one SVG per icon per style, built into a sprite by <code>npm run build</code>; adding one is dropping a file in a folder. <strong>Phosphor</strong> (a subsetted icon font) covers the generic vocabulary Phosphor already has a word for, on the same 24px grid at the same stroke weight so the two sets mix in one row. Search filters every group at once, and matches descriptions as well as names — &ldquo;award&rdquo; finds the certificate. Click a name to copy it.", body: () => {
+    /* The bespoke set comes from the generated manifest rather than by
+       scraping the sprite: the manifest knows which STYLES each icon has and
+       what it is a picture of, and both are things the grid should show. */
+    const nsIcons = JSON.parse(readFileSync(join(ROOT, "icons/icons.json"), "utf8"));
     const phCss = readFileSync(join(ROOT, "icons/phosphor.css"), "utf8");
     const phNames = [...new Set([...phCss.matchAll(/\.ph\.ph-([a-z0-9-]+):before/g)].map((m) => m[1]))].sort();
     /* First matching rule wins; anything unmatched lands in the last group. */
@@ -463,18 +465,29 @@ ${PROSE}
       <div class="sw icon-cell" data-icon="${name}" style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3)">
         ${glyph}<code class="sw__name" style="padding:0">${name}</code>
       </div>`;
-    const spriteCells = spriteIds.map((id) => cell(`ns-i-${id}`,
-      `<svg class="ns-icon ns-icon--lg" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-${id}"/></svg>`)).join("");
+    /* One cell per icon, showing every style it has. The search matches the
+       manifest's own terms — the name, its parts, and the description — so
+       "quiz" finds lesson-quiz and "award" finds certificate by its prose
+       rather than only by an exact name match. */
+    const spriteCells = nsIcons.map((ic) => `
+      <div class="sw icon-cell" data-icon="nsds-${ic.name}" data-terms="${esc(ic.terms)}"
+           style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3)">
+        ${ic.styles.map((st) => `<svg class="ns-icon ns-icon--lg${st === "duotone" ? " ns-icon--duotone" : ""}" aria-hidden="true"><use href="../icons/nsds-icons.svg#nsds-${ic.name}${st === "regular" ? "" : `-${st}`}"/></svg>`).join("")}
+        <span style="display:grid;gap:2px;min-inline-size:0">
+          <code class="sw__name" style="padding:0">nsds-${ic.name}</code>
+          <span style="font-size:var(--size-label);color:var(--color-label)">${ic.styles.join(" · ")}</span>
+        </span>
+      </div>`).join("");
     const phGroups = [...grouped].filter(([, list]) => list.length).map(([g, list]) => `
     <p class="sub icon-group-head">${esc(g)} · ${list.length}</p>
     <div class="sw-grid icon-group">${list.map((n) => cell(`ph-${n}`, `<i class="ph ph-${n}" aria-hidden="true" style="font-size:var(--size-h3)"></i>`)).join("")}</div>`).join("");
     return `
     <div class="row" style="margin-block-start:var(--space-4)">
-      <input class="ns-input" type="search" id="icon-q" placeholder="Search ${spriteIds.length + phNames.length} icons…" aria-label="Search icons" style="max-inline-size:20rem">
+      <input class="ns-input" type="search" id="icon-q" placeholder="Search ${nsIcons.length + phNames.length} icons…" aria-label="Search icons" style="max-inline-size:20rem">
       <button type="button" class="ns-btn ns-btn--outline ns-btn--sm" id="icon-fill" aria-pressed="false">Fill style</button>
       <span id="icon-count" style="font-family:var(--font-mono);font-size:var(--size-label);color:var(--color-muted)"></span>
     </div>
-    <p class="sub icon-group-head">Bespoke sprite — LMS vocabulary · ${spriteIds.length} · icons/namaste-icons.svg</p>
+    <p class="sub icon-group-head">NSDS set — ours, drawn in <code>src/icons/</code> · ${nsIcons.length} icons, ${nsIcons.reduce((n, i) => n + i.styles.length, 0)} styles · built to <code>icons/nsds-icons.svg</code></p>
     <div class="sw-grid icon-group">${spriteCells}</div>
     ${phGroups}
     <p class="sub">Sprite size steps — the type scale, not an icon scale</p>
@@ -505,7 +518,11 @@ ${PROSE}
         var t = q.value.trim().toLowerCase();
         var shown = 0;
         cells.forEach(function (c) {
-          var hit = !t || c.getAttribute('data-icon').indexOf(t) !== -1;
+          /* Match the name AND the description terms, so "award" finds the
+             certificate and "quiz" finds lesson-quiz. Phosphor cells carry
+             no data-terms and fall back to the name, as before. */
+          var hay = c.getAttribute('data-icon') + ' ' + (c.getAttribute('data-terms') || '');
+          var hit = !t || hay.toLowerCase().indexOf(t) !== -1;
           c.style.display = hit ? '' : 'none';
           if (hit) shown++;
         });

@@ -1,0 +1,172 @@
+[
+  {
+    "name": "analytics",
+    "styles": [
+      "regular",
+      "duotone"
+    ],
+    "desc": "three bars on a baseline, tallest last",
+    "terms": "analytics three bars on baseline tallest last chart metrics stats reporting insights"
+  },
+  {
+    "name": "apex",
+    "styles": [
+      "regular",
+      "duotone"
+    ],
+    "desc": "code braces around a dot — the language",
+    "terms": "apex code braces around dot the language class developer programming"
+  },
+  {
+    "name": "certificate",
+    "styles": [
+      "regular",
+      "fill",
+      "duotone"
+    ],
+    "desc": "the completion rosette",
+    "terms": "certificate the completion rosette award badge diploma achievement prize"
+  },
+  {
+    "name": "course",
+    "styles": [
+      "regular",
+      "fill",
+      "duotone"
+    ],
+    "desc": "an open book with a bookmark — the catalog unit",
+    "terms": "course an open book with bookmark the catalog unit learn class syllabus curriculum"
+  },
+  {
+    "name": "dashboard",
+    "styles": [
+      "regular",
+      "fill",
+      "duotone"
+    ],
+    "desc": "the console grid, one tile live",
+    "terms": "dashboard the console grid one tile live overview home panels admin"
+  },
+  {
+    "name": "data",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the record store",
+    "terms": "data the record store database records schema storage"
+  },
+  {
+    "name": "draft",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the pencil over the row",
+    "terms": "draft the pencil over row unpublished wip edit"
+  },
+  {
+    "name": "flow",
+    "styles": [
+      "regular",
+      "fill"
+    ],
+    "desc": "three nodes, one decision",
+    "terms": "flow three nodes one decision automation builder process"
+  },
+  {
+    "name": "instructor",
+    "styles": [
+      "regular"
+    ],
+    "desc": "a head before the board",
+    "terms": "instructor head before the board teacher author mentor educator"
+  },
+  {
+    "name": "lesson-lab",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the hands-on flask",
+    "terms": "lesson-lab lesson lab the hands on flask practice exercise sandbox"
+  },
+  {
+    "name": "lesson-quiz",
+    "styles": [
+      "regular"
+    ],
+    "desc": "a check inside a question card",
+    "terms": "lesson-quiz lesson quiz check inside question card test exam assessment"
+  },
+  {
+    "name": "lesson-reading",
+    "styles": [
+      "regular"
+    ],
+    "desc": "an article — headline bar and body lines",
+    "terms": "lesson-reading lesson reading an article headline bar and body lines text read document"
+  },
+  {
+    "name": "lesson-video",
+    "styles": [
+      "regular"
+    ],
+    "desc": "play glyph inside the 16:9 stage",
+    "terms": "lesson-video lesson video play glyph inside the 16 stage watch film media"
+  },
+  {
+    "name": "module",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the stacked section",
+    "terms": "module the stacked section unit chapter package"
+  },
+  {
+    "name": "org",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the Salesforce org — a cloud with a hairline id row",
+    "terms": "org the salesforce cloud with hairline id row instance tenant environment"
+  },
+  {
+    "name": "progress-ring",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the meter, three-quarters done",
+    "terms": "progress-ring progress ring the meter three quarters done completion percent donut gauge"
+  },
+  {
+    "name": "publish",
+    "styles": [
+      "regular"
+    ],
+    "desc": "up and out of the tray",
+    "terms": "publish up and out of the tray ship release live deploy"
+  },
+  {
+    "name": "roadmap",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the numbered path, waypoint to waypoint",
+    "terms": "roadmap the numbered path waypoint to journey route plan track"
+  },
+  {
+    "name": "students",
+    "styles": [
+      "regular",
+      "fill"
+    ],
+    "desc": "two heads, the cohort",
+    "terms": "students two heads the cohort learners people users audience"
+  },
+  {
+    "name": "trailhead",
+    "styles": [
+      "regular"
+    ],
+    "desc": "the trail marker — where a path starts",
+    "terms": "trailhead the trail marker where path starts salesforce badge learning"
+  }
+]

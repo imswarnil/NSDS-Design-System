@@ -1,0 +1,7 @@
+<!-- analytics — the bars tinted, the baseline drawn 
+     keywords: chart metrics stats reporting insights -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <g fill="currentColor" stroke="none" opacity=".22"><path d="M6 12h2.6v6H6zM10.7 8.5h2.6V18h-2.6zM15.4 5h2.6v13h-2.6z"/></g>
+  <path d="M6 18v-6M11.9 18V8.5M17.8 18V5"/>
+  <path d="M3.5 20.5h17"/>
+</svg>

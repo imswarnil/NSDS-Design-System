@@ -3,7 +3,7 @@
 # Class inventory
 
 Every `.ns-*` class in the component layer, grouped by the file that defines
-it. 2089 classes across 33 stylesheets.
+it. 2091 classes across 33 stylesheets.
 
 A class here is available the moment `dist/nsds.css` is linked. If you
 find yourself about to invent a class name, search this list first — the
@@ -31,7 +31,7 @@ odds are the thing already exists under a name you did not guess.
 
 ## foundation/icon.css
 
-`.ns-icon` · `.ns-icon--lg` · `.ns-icon--sm` · `.ns-icon--xl`
+`.ns-icon` · `.ns-icon--duotone` · `.ns-icon--duotone-strong` · `.ns-icon--lg` · `.ns-icon--sm` · `.ns-icon--xl`
 
 ## foundation/motion.css
 

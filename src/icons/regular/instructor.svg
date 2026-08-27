@@ -1,0 +1,9 @@
+<!-- instructor — a head before the board 
+     keywords: teacher author mentor educator -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="3.5" y="4" width="17" height="10" rx="1.2"/>
+  <path d="M7 7.5h6M7 10.5h3.5"/>
+  <circle cx="16.5" cy="17" r="2.2"/>
+  <path d="M12.6 21.5a4.2 4.2 0 0 1 7.8 0"/>
+</svg>

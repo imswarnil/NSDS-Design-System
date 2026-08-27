@@ -1,0 +1,8 @@
+<!-- students — two heads, the cohort 
+     keywords: learners people users cohort audience -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+     stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="9" cy="8.5" r="3.2"/>
+  <path d="M3.5 19.5a5.5 5.5 0 0 1 11 0"/>
+  <path d="M15.5 5.8a3.2 3.2 0 0 1 0 5.9M17.2 14.4a5.5 5.5 0 0 1 3.3 5.1"/>
+</svg>

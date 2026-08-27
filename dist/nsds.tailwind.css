@@ -22219,6 +22219,12 @@
   .ns-icon--xl {
     font-size: var(--size-h2);
   }
+  .ns-icon--duotone [fill="currentColor"] {
+    opacity: var(--ns-icon-tint, 0.22);
+  }
+  .ns-icon--duotone-strong {
+    --ns-icon-tint: 0.34;
+  }
   .ns-band {
     padding-block: var(--stack-lg);
   }
