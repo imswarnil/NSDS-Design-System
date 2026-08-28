@@ -1,0 +1,67 @@
+/* NS Design System — card.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Card ---------------------------------------------------------------
+     The generic surface. Hairline border, 6px radius, no shadow at rest;
+     hover = brand border + a 2px top accent line (the system's card device).
+     Compose with __media / __body / __foot; --link makes the whole card one
+     target via a stretched link. */
+  .ns-card {
+    position: relative; display: flex; flex-direction: column;
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface); overflow: hidden;
+    box-shadow: inset 0 2px 0 transparent;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
+  }
+  .ns-card:has(.ns-card__link):hover, .ns-card--hover:hover {
+    border-color: var(--color-brand-500);
+    box-shadow: inset 0 2px 0 var(--color-brand-500);
+  }
+  .ns-card__media { display: block; aspect-ratio: 16 / 9; inline-size: 100%; object-fit: cover; background: var(--color-surface-sunken); }
+  /* --glyph: the BIG-ICON COVER. For a card whose subject has no photograph
+     and never will — a course, a track, a tool, a topic. The subject's own
+     glyph is set at cover size on the hairline grid, so a grid of six cards
+     is six distinguishable marks rather than six copies of one stock image.
+
+     Deliberately NOT .ns-ph, and the difference is what each one says: a
+     placeholder says "a picture is MISSING here" and should embarrass
+     somebody into supplying one; a glyph cover says "an icon is the artwork",
+     and is finished. Using .ns-ph as permanent card art is how a catalogue
+     ends up looking unbuilt. */
+  .ns-card__media--glyph {
+    display: grid; place-items: center;
+    color: var(--color-brand-500);
+    font-size: var(--size-display);
+    background-image:
+      linear-gradient(var(--color-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-grid) 1px, transparent 1px);
+    background-size: var(--space-6) var(--space-6);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+  }
+  [data-theme="dark"] .ns-card__media--glyph { color: var(--color-brand-300); }
+  /* The glyph tracks the card: the cover is the largest thing on it, so a
+     cover that ignores hover reads as a static image rather than part of the
+     target. Colour only — nothing scales, nothing lifts. */
+  .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-200); }
+  .ns-card__body { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--pad-card); flex: 1; }
+  /* A body whose children are centred rather than left-aligned — a badge
+     card, a stat card, an empty state inside a card. The card owns the
+     arrangement of its own body; the badge inside does not centre itself. */
+  .ns-card__body--center { align-items: center; text-align: center; gap: var(--space-3); }
+  .ns-card__kicker { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+                     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
+  .ns-card__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
+  .ns-card__text { font-size: var(--size-small); color: var(--color-muted); }
+  .ns-card__foot { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--pad-card);
+                   border-block-start: 1px solid var(--color-border);
+                   font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-muted); }
+  .ns-card__link { color: inherit; text-decoration: none; }
+  .ns-card__link::after { content: ""; position: absolute; inset: 0; }
+  .ns-card--sunken { background: var(--color-surface-sunken); }
+  /* Horizontal: media beside body, for list-like collections. */
+  .ns-card--row { flex-direction: row; align-items: stretch; }
+  .ns-card--row .ns-card__media { inline-size: 9rem; aspect-ratio: 4 / 3; flex: none; }
+}

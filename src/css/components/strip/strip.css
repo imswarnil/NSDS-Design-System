@@ -1,0 +1,26 @@
+/* NS Design System — strip.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Strip ---------------------------------------------------------------
+     A horizontal shelf of cards — "related", "continue learning", "more from
+     this author". Scroll-snap so a partial card at the edge still lands
+     square, and grid-auto-columns so the cards keep a real width instead of
+     squashing to fit. Any card composes into it. */
+  .ns-strip {
+    display: grid; grid-auto-flow: column;
+    /* min(14rem, 100%), not 14rem. A bare 14rem is a DEFINITE track minimum,
+       so four cards give the strip a 944px min-content that propagates up and
+       silently widens whatever column it was dropped into — a related-posts
+       shelf inside a 42rem reading column drags the author box and the
+       prev/next row out with it. Wrapping the minimum in min() lets it
+       resolve against the container instead, which is the same idiom the
+       card grids use. */
+    grid-auto-columns: minmax(min(14rem, 100%), 1fr);
+    gap: var(--gap-card); overflow-x: auto; scroll-snap-type: x mandatory;
+    padding-block-end: var(--space-2); scrollbar-width: thin;
+    min-inline-size: 0;
+  }
+  .ns-strip > * { scroll-snap-align: start; }
+  .ns-strip--wide { grid-auto-columns: minmax(min(20rem, 100%), 1fr); }
+}

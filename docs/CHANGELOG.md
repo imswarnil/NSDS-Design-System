@@ -17,6 +17,33 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — the source tree says where a rule lives
+
+`src/css/` regrouped so the folder answers the question the layout contract
+poses. `foundation/` keeps the invisible groundwork (a11y, typography —
+renamed from type-fx, motion, icon, print). New **`layout/`** holds one file
+per layout level: `section.css` (the `.ns-band` core, extracted from the
+marketing bands that build ON it), `container.css` (`.ns-page`,
+`.ns-center`, the docs shell), `grid.css`, `stack.css`. `primitives/`
+became **`components/` — one folder per component**: the old grab-bag
+`display.css` split into thirteen (card/, strip/, tag/, badge/, chip/,
+avatar/, list/, logo/, divider/, kbd/, copy/, deflist/, marquee/), and
+button/, form/, overlay/, feedback/, progress/, table/, code/, media/ each
+moved into their own folder.
+
+**The cascade did not move.** `index.css` order is the cascade order and it
+is independent of the folder layout, so every chunk was re-imported at the
+exact position its file held — verified by extracting the full ordered
+selector sequence from `dist/nsds.css` before and after: the set is
+identical, and the only order changes are the last 38 positions, where the
+layout primitives regrouped among themselves (all property-disjoint — a
+grid sets tracks, a centre sets margins; no pair can conflict).
+
+New `docs/BUILD.md` walks the whole pipeline — tokens → icons → CSS →
+styleguide → homepage → skill, the ten gates, and the "where does a rule
+live" decision list.
+
+
 ### Added — a print contract, because two motion systems printed blank pages
 
 `foundation/print.css`, imported last so it wins every in-layer tie. The

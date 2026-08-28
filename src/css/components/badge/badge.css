@@ -1,0 +1,35 @@
+/* NS Design System — badge.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Badge --------------------------------------------------------------
+     Status, told the way a build log tells it: a hairline box, mono text, and
+     a coloured DOT. Principle 3 — the colour is the dot, never a pastel fill
+     behind the words, so a row of badges stays one signal colour apart from
+     five competing washes. The text ink does not change with the variant
+     either; only the dot does.
+
+     Deliberately not .ns-tag: a tag is a noun the reader can click (a topic, a
+     filter), a badge is a state they cannot. Same shape, different contract. */
+  .ns-badge {
+    --_dot: var(--color-brand-500);
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5) var(--space-2);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-ink);
+  }
+  .ns-badge--accent  { --_dot: var(--color-accent-500); }
+  .ns-badge--success { --_dot: var(--color-success); }
+  .ns-badge--warning { --_dot: var(--color-warning); }
+  .ns-badge--error   { --_dot: var(--color-error); }
+  .ns-badge__dot {
+    inline-size: 6px; block-size: 6px; flex: none;
+    border-radius: var(--radius-pill); background: var(--_dot);
+  }
+  /* An icon replaces the dot rather than joining it — two status marks on one
+     badge is two claims about the same state. */
+  .ns-badge__icon { color: var(--_dot); font-size: 0.9rem; }
+}

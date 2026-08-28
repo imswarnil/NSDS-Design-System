@@ -1,0 +1,26 @@
+/* NS Design System — tag.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Tag & pill ---------------------------------------------------------
+     A tag names a taxonomy (topic, level, type) — mono, uppercase, hairline.
+     The pill SHAPE is reserved for true pills (Principle 4): counts and
+     filters, never the default tag. Interactive tags are real buttons/links;
+     aria-pressed marks a selected filter. */
+  .ns-tag {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-muted); text-decoration: none;
+  }
+  a.ns-tag, button.ns-tag { cursor: pointer; transition: border-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+  a.ns-tag:hover, button.ns-tag:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  .ns-tag[aria-pressed="true"] { border-color: var(--color-brand-500); color: var(--color-brand-600); background: var(--color-surface-raised); }
+  .ns-tag--pill { border-radius: var(--radius-pill); }
+  .ns-tag__count { color: var(--color-label); }
+  .ns-tag__x { display: inline-flex; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; color: var(--color-label); }
+  .ns-tag__x:hover { color: var(--color-error-ink); }
+}

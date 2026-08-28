@@ -1,0 +1,75 @@
+/* NS Design System — containers.
+   The CONTAINER level of the layout contract: a measure, centred, with
+   gutters. .ns-page is the shell both products write on every template;
+   .ns-center is the same level for anything not inside a band; the docs
+   shell is a container with a sticky rail. See docs/LAYOUT.md. */
+@layer ns-components {
+  /* --- Layout primitives --------------------------------------------------
+     The page shell, spelled once. Both products write this on every template;
+     without it they each invent their own max-width and the two drift. */
+  .ns-page { inline-size: 100%; max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
+  .ns-page--prose { max-inline-size: var(--container-prose); } /* used-by: ghost-theme, lms */
+  .ns-page--narrow { max-inline-size: var(--container-narrow); }
+  .ns-page--wide { max-inline-size: var(--container-wide); } /* used-by: ghost-theme, lms */
+  /* A page shell that is ALSO the section — an error page, a bare form, a
+     confirmation. Same step a band spends, so a page with a band and a
+     page without one open at the same height. */
+  .ns-page--pad { padding-block: var(--stack-lg); }
+  /* The submit at the foot of a stacked field group. It is the only child
+     of .ns-field that is not part of the label/control/help run, so it is
+     the only one that needs air above it — four templates wrote that same
+     inline margin before this rule existed. */
+  .ns-field .ns-btn--block { margin-block-start: var(--space-2); }
+  /* The gutter is inline only, because a page's vertical rhythm belongs to the
+     sections inside it. --demo adds the block padding for a standalone page
+     that has no band wrapping it. */
+  .ns-page--demo { padding-block: var(--space-8); } /* used-by: ghost-theme, lms */
+
+
+  /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
+     column below lg, where the sidebar becomes a drawer. */
+  .ns-docs-layout { display: flex; gap: var(--space-10); align-items: flex-start; } /* used-by: ghost-theme, lms */
+  .ns-docs-layout__main { flex: 1; min-inline-size: 0; } /* used-by: ghost-theme, lms */
+  .ns-docs-layout__toc { /* used-by: ghost-theme, lms */
+    position: sticky; inset-block-start: var(--navbar-h);
+    inline-size: var(--toc-w); flex: none;
+    max-block-size: calc(100dvh - var(--navbar-h));
+    overflow-y: auto; padding-block: var(--space-6);
+  }
+  @media (max-width: 63.999rem) {
+    .ns-docs-layout { display: block; }
+    .ns-docs-layout__toc { display: none; }
+  }
+
+  /* --- Centre: a measure, centred ------------------------------------------
+     A column with a maximum width and automatic side margins. The container
+     level for things that are NOT inside a band — a bare page, a demo, an
+     email body. Takes the width from a token so the three measures stay the
+     three measures. */
+  .ns-center { margin-inline: auto; max-inline-size: var(--container-page); }
+  .ns-center--narrow { max-inline-size: var(--container-narrow); }
+  .ns-center--prose { max-inline-size: var(--container-prose); }
+  /* Narrower than every container token: a ONE-FIELD form — a signup, a
+     search, an unsubscribe. --container-narrow (56rem) is the width of a
+     settings form with labelled rows; a single input stretched that far
+     reads as a site-wide search bar rather than as a thing to fill in. */
+  .ns-center--compact { max-inline-size: 32rem; }
+  /* A centre that is NOT centred — takes the measure, keeps the left edge.
+     A search box at the head of a listing lines up with the listing; the
+     same box centred looks like a hero that lost its heading. */
+  .ns-center--flush { margin-inline: 0; margin-block-end: var(--stack-md); }
+  /* With the gutters, for a centre that is doing a container's whole job. */
+  .ns-center--gutter { padding-inline: var(--gutter); }
+  /* Block padding, for a page wrapper that is a section in everything but
+     name — a listing grid or a detail layout on a page with no band around
+     it. It gets the band's own step, so a wrapper and a band space the page
+     identically instead of the wrapper inventing a ninth value.
+
+     ONE ELEMENT, deliberately. A band is two (ground + measure) because its
+     ground is full-bleed; a wrapper has no ground, so splitting it in two
+     would add a div for nothing. --pad-b is the common case: a page whose
+     top spacing already came from the header above it. */
+  .ns-center--pad { padding-block: var(--stack-lg); }
+  .ns-center--pad-b { padding-block-end: var(--stack-lg); }
+  .ns-center--pad-t { padding-block-start: var(--stack-md); }
+}

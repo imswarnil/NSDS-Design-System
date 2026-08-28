@@ -1,0 +1,19 @@
+/* NS Design System — the grid.
+   Auto-fitting card grids. A track list is a LAYOUT decision, so it lives
+   at the layout level — a card never sets its own column. */
+@layer ns-components {
+
+  /* Auto-fitting card grid. `min()` keeps the track from overflowing the
+     viewport at 320px, which a bare minmax(18rem, 1fr) does. */
+  .ns-grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  }
+  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
+  .ns-grid--xs { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr)); }
+  /* auto-FIT, not auto-fill: the last row stretches to fill the width instead
+     of leaving empty tracks. Right when the count is small and known (three
+     states of an ad slot, four plan cards); wrong for a feed, where a
+     one-result page would show one card three columns wide. */
+  .ns-grid--fit { grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
+}

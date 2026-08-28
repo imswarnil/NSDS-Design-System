@@ -121,9 +121,12 @@ to reimplement.
 src/
   tokens/      authored token CSS — the theming surface
   css/         the .ns-* layer, grouped
-    foundation/    a11y, layout, icon, motion, type-fx, print
-    primitives/    button, form, display, media, feedback, progress,
-                   overlay, table, code
+    foundation/    a11y, typography, motion, icon, print
+    layout/        section, container, grid, stack — one file per level
+    components/    one folder per component (button/, card/, form/,
+                   tag/, badge/, chip/, avatar/, list/, table/, code/,
+                   overlay/, feedback/, progress/, media/, strip/,
+                   marquee/, divider/, kbd/, copy/, deflist/, logo/)
     navigation/    navigation, navbar, toc
     content/       prose, content, sections, blog
     product/       lms, training, catalog, player, deck, ai, admin,
@@ -140,5 +143,5 @@ dist/          build output — nsds.css, nsds.min.css, the Tailwind pair,
 
 A component owns its own file; a **container** owns how a component looks
 inside it. `.ns-topnav__actions .ns-btn` belongs in `navigation/navbar.css`,
-not in `primitives/button.css` — otherwise the button has to know about the
+not in `components/button/button.css` — otherwise the button has to know about the
 navbar, the player and the deck.

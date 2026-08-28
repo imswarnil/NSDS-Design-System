@@ -1,0 +1,31 @@
+/* NS Design System — kbd.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Kbd ----------------------------------------------------------------
+     A key, and sequences of keys. The editor and the admin both have
+     shortcuts and had no way to print one.
+
+     The key affordance is a 2px bottom border, not a shadow — the same
+     "borders, not depth" rule as everything else, and it reads as a keycap
+     because keycaps are lit from above. Real <kbd> elements, so the meaning
+     survives with CSS off. */
+  .ns-kbd {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-inline-size: 1.5rem; padding: 0 var(--space-1-5);
+    border: 1px solid var(--color-border);
+    border-block-end-width: 2px;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-raised);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-label); line-height: var(--leading-body);
+    color: var(--color-ink); white-space: nowrap;
+  }
+  /* A chord (Cmd+K) versus a sequence (G then D) — the separator says which,
+     so it is content rather than a ::before nobody can change. */
+  .ns-kbd-seq { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .ns-kbd-seq__sep {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-label);
+  }
+}

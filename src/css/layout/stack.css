@@ -75,36 +75,4 @@
      to read. The `16rem` is a MEASURE floor, not a chosen width: below it a
      column of text stops being a column. */
   .ns-cluster__fill { flex: 1; min-inline-size: 16rem; }
-
-  /* --- Centre: a measure, centred ------------------------------------------
-     A column with a maximum width and automatic side margins. The container
-     level for things that are NOT inside a band — a bare page, a demo, an
-     email body. Takes the width from a token so the three measures stay the
-     three measures. */
-  .ns-center { margin-inline: auto; max-inline-size: var(--container-page); }
-  .ns-center--narrow { max-inline-size: var(--container-narrow); }
-  .ns-center--prose { max-inline-size: var(--container-prose); }
-  /* Narrower than every container token: a ONE-FIELD form — a signup, a
-     search, an unsubscribe. --container-narrow (56rem) is the width of a
-     settings form with labelled rows; a single input stretched that far
-     reads as a site-wide search bar rather than as a thing to fill in. */
-  .ns-center--compact { max-inline-size: 32rem; }
-  /* A centre that is NOT centred — takes the measure, keeps the left edge.
-     A search box at the head of a listing lines up with the listing; the
-     same box centred looks like a hero that lost its heading. */
-  .ns-center--flush { margin-inline: 0; margin-block-end: var(--stack-md); }
-  /* With the gutters, for a centre that is doing a container's whole job. */
-  .ns-center--gutter { padding-inline: var(--gutter); }
-  /* Block padding, for a page wrapper that is a section in everything but
-     name — a listing grid or a detail layout on a page with no band around
-     it. It gets the band's own step, so a wrapper and a band space the page
-     identically instead of the wrapper inventing a ninth value.
-
-     ONE ELEMENT, deliberately. A band is two (ground + measure) because its
-     ground is full-bleed; a wrapper has no ground, so splitting it in two
-     would add a div for nothing. --pad-b is the common case: a page whose
-     top spacing already came from the header above it. */
-  .ns-center--pad { padding-block: var(--stack-lg); }
-  .ns-center--pad-b { padding-block-end: var(--stack-lg); }
-  .ns-center--pad-t { padding-block-start: var(--stack-md); }
 }

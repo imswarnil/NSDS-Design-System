@@ -1,0 +1,27 @@
+/* NS Design System — copy.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Copy ---------------------------------------------------------------
+     Copy one short string: an org ID, an API key, a token name, a share link.
+     The code block has its own copy button because it copies a whole file;
+     this is the inline one for a value sitting in a table or a spec row.
+
+     data-copied is set by JS and drives the confirmation. It is an attribute
+     rather than a class so the same hook can carry aria-live text — a copy
+     button that only changes colour tells a screen-reader user nothing. */
+  .ns-copy {
+    display: inline-flex; align-items: center; gap: var(--space-1-5);
+    padding: var(--space-0-5) var(--space-2);
+    border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+    background: none; cursor: pointer;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    color: var(--color-muted);
+    transition: border-color var(--duration-fast) var(--ease-out),
+                color var(--duration-fast) var(--ease-out);
+  }
+  .ns-copy:hover { border-color: var(--color-brand-500); color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-copy:hover { color: var(--color-brand-300); }
+  .ns-copy[data-copied] { border-color: var(--color-success); color: var(--color-success-ink); }
+  .ns-copy__value { color: var(--color-ink); }
+}

@@ -1,0 +1,32 @@
+/* NS Design System — avatar.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Avatar -------------------------------------------------------------
+     People. Image or initials on a sunken disc; --ring draws course progress
+     as a conic arc (the AvatarRing React component renders this markup).
+     Stacks overlap with a surface ring so faces stay separable. */
+  .ns-avatar {
+    --_size: 2.5rem;
+    position: relative; display: inline-flex; align-items: center; justify-content: center;
+    inline-size: var(--_size); block-size: var(--_size); flex: none;
+    border-radius: var(--radius-pill); background: var(--color-surface-sunken);
+    color: var(--color-muted); overflow: hidden;
+    font-family: var(--font-mono); font-size: calc(var(--_size) * 0.34);
+    font-weight: var(--weight-label); letter-spacing: 0; text-transform: uppercase;
+  }
+  .ns-avatar img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+  .ns-avatar--sm { --_size: 1.75rem; }
+  .ns-avatar--lg { --_size: 3.5rem; }
+  .ns-avatar--xl { --_size: 5rem; }
+  /* Progress ring: a wrapper draws the arc so the avatar's clip stays round. */
+  .ns-avatar-ring {
+    --p: 0; position: relative; display: inline-flex; padding: 3px; border-radius: var(--radius-pill);
+    background: conic-gradient(var(--color-brand-500) calc(var(--p) * 1%), var(--color-border) 0);
+  }
+  .ns-avatar-ring > .ns-avatar { border: 2px solid var(--color-surface); }
+  .ns-avatar-stack { display: inline-flex; }
+  .ns-avatar-stack .ns-avatar { border: 2px solid var(--color-surface); }
+  .ns-avatar-stack .ns-avatar + .ns-avatar { margin-inline-start: calc(-1 * var(--space-2)); }
+  .ns-avatar-stack .ns-avatar--more { background: var(--color-surface-raised); color: var(--color-label); font-size: var(--size-label); }
+}

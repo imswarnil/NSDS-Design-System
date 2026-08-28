@@ -25,27 +25,39 @@
      state cannot drift apart.
    - Every new component is checked against the five Design Principles in
      readme.md before it ships. */
-@import "./primitives/button.css";
-@import "./primitives/form.css";
-@import "./primitives/overlay.css";
+@import "./components/button/button.css";
+@import "./components/form/form.css";
+@import "./components/overlay/overlay.css";
 @import "./navigation/navigation.css";
 @import "./navigation/navbar.css";
-@import "./primitives/feedback.css";
-@import "./primitives/progress.css";
-@import "./primitives/table.css";
+@import "./components/feedback/feedback.css";
+@import "./components/progress/progress.css";
+@import "./components/table/table.css";
 @import "./product/chart.css";
-@import "./primitives/display.css";
+@import "./components/card/card.css";
+@import "./components/strip/strip.css";
+@import "./components/tag/tag.css";
+@import "./components/badge/badge.css";
+@import "./components/chip/chip.css";
+@import "./components/avatar/avatar.css";
+@import "./components/list/list.css";
+@import "./components/logo/logo.css";
+@import "./components/divider/divider.css";
+@import "./components/kbd/kbd.css";
+@import "./components/copy/copy.css";
+@import "./components/deflist/deflist.css";
+@import "./components/marquee/marquee.css";
 @import "./product/lms.css";
 @import "./product/training.css";
 @import "./product/catalog.css";
 @import "./content/blog.css";
 @import "./navigation/toc.css";
-@import "./primitives/media.css";
+@import "./components/media/media.css";
 @import "./content/prose.css";
 @import "./content/content.css";
 @import "./integrations/ghost.css";
-@import "./primitives/code.css";
-@import "./foundation/type-fx.css";
+@import "./components/code/code.css";
+@import "./foundation/typography.css";
 @import "./foundation/motion.css";
 @import "./product/auth.css";
 @import "./product/helpdesk.css";
@@ -55,12 +67,15 @@
 @import "./integrations/monetization.css";
 @import "./integrations/ads.css";
 @import "./foundation/icon.css";
+@import "./layout/section.css";
 @import "./content/sections.css";
 @import "./product/admin.css";
 @import "./foundation/a11y.css";
+@import "./layout/container.css";
+@import "./layout/grid.css";
 /* Layout primitives last in the foundation group: they are the lowest-
    specificity structural classes and anything may override them. */
-@import "./foundation/layout.css";
+@import "./layout/stack.css";
 
 /* Print last, ON PURPOSE: inside one layer, source order decides ties, and
    the print contract must win every one of them. Nothing goes below this. */

@@ -1,0 +1,39 @@
+/* NS Design System — deflist.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Definition list ----------------------------------------------------
+     Term and value pairs: course specs, Salesforce metadata attributes, an
+     order summary. A real <dl>, because that is exactly what a <dl> is for
+     and screen readers announce the pairing.
+
+     Two columns on a wide surface, stacked below it — a 12rem term column is
+     unreadable on a phone. Terms are mono, which is Principle 2 doing its job:
+     the term is a key, the value is content, and the eye separates them
+     without a rule between. */
+  .ns-deflist {
+    display: grid; grid-template-columns: minmax(0, 12rem) minmax(0, 1fr);
+    gap: 0; margin: 0;
+  }
+  .ns-deflist dt {
+    padding-block: var(--space-2); padding-inline-end: var(--space-4);
+    border-block-start: 1px solid var(--color-border);
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-deflist dd {
+    margin: 0; padding-block: var(--space-2);
+    border-block-start: 1px solid var(--color-border);
+    font-size: var(--size-small); color: var(--color-ink); min-inline-size: 0;
+  }
+  .ns-deflist > dt:first-of-type, .ns-deflist > dt:first-of-type + dd { border-block-start: 0; }
+  .ns-deflist--stack { grid-template-columns: minmax(0, 1fr); }
+  .ns-deflist--stack dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
+  .ns-deflist--stack dd { border-block-start: 0; padding-block-start: var(--space-1); }
+  @media (max-width: 47.999rem) {
+    .ns-deflist { grid-template-columns: minmax(0, 1fr); }
+    .ns-deflist dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
+    .ns-deflist dd { border-block-start: 0; padding-block-start: var(--space-1); }
+  }
+}

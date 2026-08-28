@@ -348,12 +348,22 @@ broken relative paths, root-absolute assets, duplicate ids and dangling
 NSDS-Design-System/
 ├── LIVE.md            the hosted site: URLs, contents, deploy pipeline, fixes
 ├── OBS.md             building the lesson and live scenes in OBS Studio
-├── tokens/            authored token CSS + generated JSON/JS/Tailwind exports
-├── components/
+├── src/
+│   ├── tokens/        authored token CSS (+ the generated Tailwind bridge)
 │   ├── css/           the portable .ns-* layer BOTH products render
-│   ├── core/          shared React components
-│   ├── course/        LMS-specific React components
-│   └── forms/ overlays/ navigation/ feedback/ progress/
+│   │   ├── foundation/    a11y, typography, motion, icon, print
+│   │   ├── layout/        one file per layout level: section, container,
+│   │   │                  grid, stack
+│   │   ├── components/    ONE FOLDER PER COMPONENT — button/, form/, card/,
+│   │   │                  tag/, badge/, chip/, avatar/, list/, table/,
+│   │   │                  code/, overlay/, feedback/, progress/, media/,
+│   │   │                  strip/, marquee/, divider/, kbd/, copy/,
+│   │   │                  deflist/, logo/
+│   │   ├── navigation/ content/ product/ integrations/
+│   │   └── index.css      the import manifest — its ORDER is the cascade
+│   ├── react/         thin React wrappers — behaviour only, never styling
+│   ├── icons/         icon source, one SVG per icon per style
+│   └── patterns/      background patterns
 ├── icons/             both icon sets: Phosphor subset (font + classes) + bespoke sprite
 ├── fonts/             Figtree — variable woff2s (normal + italic, latin + ext)
 │                   (~62 KB), the OFL licence, and the weight docs in its README
@@ -414,13 +424,15 @@ conventions someone has to remember.
 - `tokens/` — `colors.css`, `dataviz.css`, `spacing.css`, `layout.css`,
   `fonts.css`, `typography.css`, `effects.css`, `base.css`, plus the generated
   `tokens.json` / `tokens.js` / `tokens.d.ts` / `tailwind.css` exports.
-- `src/css/` — the portable component layer both products render:
-  `button`, `form`, `overlay`, `navigation`, `navbar`, `feedback`, `progress`,
-  `icon`, `sections`, `admin`, `a11y`, **`code`** (the syntax highlighter),
-  **`type-fx`** (the typographic effects), `lms` (course card, curriculum,
-  lesson chrome), **`catalog`** (course hero, enrol card, filter rail,
-  testimonials) and **`blog`** (post card, post header, post layout, TOC,
-  callouts, author box).
+- `src/css/` — the portable component layer both products render, grouped by
+  the question "where does a rule live": `foundation/` (invisible groundwork),
+  `layout/` (the section → container → stack contract, one file per level),
+  `components/` (one folder per component), `navigation/`, `content/`
+  (reading surfaces and the marketing bands), `product/` (whole surfaces:
+  lms, training, catalog, player, deck, ai, admin, helpdesk, auth, chart)
+  and `integrations/` (ghost, ads, monetization). `index.css` is the import
+  manifest and its order is the cascade order. `docs/BUILD.md` walks the
+  whole pipeline.
 - `components/core/` — Button, Kicker, Chip, Badge, Input, AvatarRing, Logo,
   Navbar, Footer, Hero, TableOfContents, TimelineStepper,
   **SyntaxHighlighter** (+ `highlight.js`, the shared tokenizer),

@@ -5553,14 +5553,10 @@
 @keyframes ns-chart-slide { from { transform: scaleX(0); } }
 @keyframes ns-chart-draw { to { stroke-dashoffset: 0; } }
 @keyframes ns-chart-arc { from { stroke-dasharray: 0 100; } }
-/* NS Design System — display: card, tag, avatar, list.
-   =========================================================================
-   The small reusable surfaces every screen is assembled from. All four obey
-   Principle 1 — the hairline is the structure: a card is a 1px border, a tag
-   is a 1px border, a list row is a 1px rule; hover brightens a border to
-   brand blue, nothing lifts. */
+/* NS Design System — card.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
 @layer ns-components {
-
   /* --- Card ---------------------------------------------------------------
      The generic surface. Hairline border, 6px radius, no shadow at rest;
      hover = brand border + a 2px top accent line (the system's card device).
@@ -5623,7 +5619,11 @@
   /* Horizontal: media beside body, for list-like collections. */
   .ns-card--row { flex-direction: row; align-items: stretch; }
   .ns-card--row .ns-card__media { inline-size: 9rem; aspect-ratio: 4 / 3; flex: none; }
-
+}
+/* NS Design System — strip.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Strip ---------------------------------------------------------------
      A horizontal shelf of cards — "related", "continue learning", "more from
      this author". Scroll-snap so a partial card at the edge still lands
@@ -5645,7 +5645,11 @@
   }
   .ns-strip > * { scroll-snap-align: start; }
   .ns-strip--wide { grid-auto-columns: minmax(min(20rem, 100%), 1fr); }
-
+}
+/* NS Design System — tag.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Tag & pill ---------------------------------------------------------
      A tag names a taxonomy (topic, level, type) — mono, uppercase, hairline.
      The pill SHAPE is reserved for true pills (Principle 4): counts and
@@ -5667,7 +5671,11 @@
   .ns-tag__count { color: var(--color-label); }
   .ns-tag__x { display: inline-flex; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; color: var(--color-label); }
   .ns-tag__x:hover { color: var(--color-error-ink); }
-
+}
+/* NS Design System — badge.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Badge --------------------------------------------------------------
      Status, told the way a build log tells it: a hairline box, mono text, and
      a coloured DOT. Principle 3 — the colour is the dot, never a pastel fill
@@ -5698,7 +5706,11 @@
   /* An icon replaces the dot rather than joining it — two status marks on one
      badge is two claims about the same state. */
   .ns-badge__icon { color: var(--_dot); font-size: 0.9rem; }
-
+}
+/* NS Design System — chip.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Chip ---------------------------------------------------------------
      The icon tile that fronts a feature row or an empty state. Tinted from a
      single hue via color-mix so the fill and its hairline are provably the
@@ -5718,7 +5730,11 @@
   .ns-chip--accent { --_c: var(--color-accent-500); }
   .ns-chip--sm { --_size: 2rem; }
   .ns-chip--lg { --_size: 3rem; }
-
+}
+/* NS Design System — avatar.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Avatar -------------------------------------------------------------
      People. Image or initials on a sunken disc; --ring draws course progress
      as a conic arc (the AvatarRing React component renders this markup).
@@ -5746,7 +5762,11 @@
   .ns-avatar-stack .ns-avatar { border: 2px solid var(--color-surface); }
   .ns-avatar-stack .ns-avatar + .ns-avatar { margin-inline-start: calc(-1 * var(--space-2)); }
   .ns-avatar-stack .ns-avatar--more { background: var(--color-surface-raised); color: var(--color-label); font-size: var(--size-label); }
-
+}
+/* NS Design System — list.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- List ---------------------------------------------------------------
      The terminal-row list — how this system renders any collection: mono
      index, title, meta on the right, one hairline rule between rows. Hover
@@ -5773,7 +5793,11 @@
   .ns-list--boxed .ns-list__row { padding-inline: var(--space-4); }
   .ns-list--boxed .ns-list__row:first-child { border-block-start: 0; }
   .ns-list--boxed .ns-list__row:last-child { border-block-end: 0; }
-
+}
+/* NS Design System — logo.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Logo ---------------------------------------------------------------
      The wordmark lockup: the favicon asset plus the name. Never a pictorial
      mark invented beyond that asset — see guidelines/brand-logo-lockups.
@@ -5801,7 +5825,11 @@
     position: absolute; inline-size: 1px; block-size: 1px;
     overflow: hidden; clip-path: inset(50%); white-space: nowrap;
   }
-
+}
+/* NS Design System — divider.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Divider ------------------------------------------------------------
      A rule between things. Principle 1 says the hairline IS the structure, so
      this is the one component that is nothing but the hairline.
@@ -5825,7 +5853,11 @@
   .ns-divider--labelled::after {
     content: ""; flex: 1; block-size: 1px; background: var(--color-border);
   }
-
+}
+/* NS Design System — kbd.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Kbd ----------------------------------------------------------------
      A key, and sequences of keys. The editor and the admin both have
      shortcuts and had no way to print one.
@@ -5852,7 +5884,11 @@
     font-family: var(--font-mono); font-size: var(--size-label);
     color: var(--color-label);
   }
-
+}
+/* NS Design System — copy.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Copy ---------------------------------------------------------------
      Copy one short string: an org ID, an API key, a token name, a share link.
      The code block has its own copy button because it copies a whole file;
@@ -5875,7 +5911,11 @@
   [data-theme="dark"] .ns-copy:hover { color: var(--color-brand-300); }
   .ns-copy[data-copied] { border-color: var(--color-success); color: var(--color-success-ink); }
   .ns-copy__value { color: var(--color-ink); }
-
+}
+/* NS Design System — deflist.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Definition list ----------------------------------------------------
      Term and value pairs: course specs, Salesforce metadata attributes, an
      order summary. A real <dl>, because that is exactly what a <dl> is for
@@ -5910,8 +5950,11 @@
     .ns-deflist dt { padding-block-end: 0; border-block-start: 0; padding-block-start: var(--space-3); }
     .ns-deflist dd { border-block-start: 0; padding-block-start: var(--space-1); }
   }
-
-
+}
+/* NS Design System — marquee.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
   /* --- Marquee ------------------------------------------------------------
      A continuously scrolling strip. Logos, credentials, certifications,
      "now teaching" — content that is ambient rather than read.
@@ -6053,7 +6096,6 @@
 
 
   /* The Table variations that used to live here are in table.css. */
-
 }
 /* NS Design System — LMS: course card, curriculum, lesson chrome, pages.
    =========================================================================
@@ -16790,57 +16832,12 @@
   .ns-icon--duotone-strong { --ns-icon-tint: 0.34; }
 
 }
-/* NS Design System — sections: the reusable page bands.
-   =========================================================================
-   Full-width page sections both products compose screens from: hero, feature
-   grid, stat band, testimonial, CTA, FAQ, logo row. Each is one band with
-   one job; a marketing page is a stack of these, an app dashboard reuses the
-   same grammar at smaller scale.
-
-   Shared grammar:
-     - every band opens with the code-comment kicker + a balanced heading;
-     - the container is --container-page, gutters from --gutter;
-     - vertical rhythm comes from the SEMANTIC scale, not from raw --space-N:
-       a band's padding-block is --stack-lg, which tokens/spacing.css defines
-       as the step "between page sections" — because that is exactly what a
-       band's padding is doing. Two variants sit deliberately off it and say
-       so at the call site;
-     - dark bands use the navy console surface + the hairline grid motif,
-       never a gradient.
-
-   A BAND IS A READING SURFACE, AND TAKES THE READING SCALE.
-   -------------------------------------------------------------------------
-   tokens/typography.css forks the scale once, on the axis of SCANNED versus
-   READ: 14/13 for a rail, a table, a player's chrome and a dashboard, and
-   --size-prose* for what a person reads continuously.
-
-   This layer was on the wrong side of that fork. Every band's body copy —
-   the feature paragraph, the router's "when", the fit list, the FAQ answer,
-   the compare panels — was set at --size-small (13), one step BELOW the UI
-   base and level with a table caption. Nobody scans a homepage; they read
-   it, once, deciding. Marketing copy set smaller than a table row is the
-   same category error the fork exists to prevent, pointing the other way.
-
-   So the band layer takes the reading scale:
-
-     lede            --size-prose-lead   20
-     card heading    --size-prose        17
-     body copy       --size-prose-small  15
-     band kicker     --size-mono         13
-     mono labels     --size-label        11   (unchanged)
-
-   The mono VOICE does not move — an index, a duration and a stat label are
-   data, not prose, and the label scale is where they belong on either side
-   of the fork. The band kicker is the one exception and it earns it by being
-   a phrase rather than a datum: it is the sentence that frames the heading,
-   and at the 11px label floor nobody read it.
-
-   Cards composed INTO a band follow it too — see the rule at the foot of
-   this file. The same card in a catalogue grid keeps the UI scale, which is
-   not an exception to the fork but an application of it: the homepage's
-   three courses are read, a catalogue of forty is scanned. */
+/* NS Design System — the section.
+   The SECTION level of the layout contract: full-bleed, owns the ground
+   and the vertical padding between page sections. The marketing bands
+   built ON this level stay in content/sections.css — this file is the
+   level itself. See docs/LAYOUT.md. */
 @layer ns-components {
-
   /* --- Band + head --------------------------------------------------------- */
   .ns-band { padding-block: var(--stack-lg); }
   /* Off the stack scale on purpose: --stack-md (32px) is subsection spacing
@@ -16913,6 +16910,57 @@
   .ns-band__title { font-size: var(--size-h2); line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); text-wrap: balance; }
   .ns-band__lede { font-size: var(--size-prose-lead); line-height: var(--leading-snug); color: var(--color-muted); margin-block-start: var(--space-3); text-wrap: pretty; }
   .ns-band--dark .ns-band__lede { color: var(--color-on-dark); opacity: 0.75; /* lint-ok: on-dark muted is the on-dark ink dimmed, not a second token */ }
+}
+/* NS Design System — sections: the reusable page bands.
+   =========================================================================
+   Full-width page sections both products compose screens from: hero, feature
+   grid, stat band, testimonial, CTA, FAQ, logo row. Each is one band with
+   one job; a marketing page is a stack of these, an app dashboard reuses the
+   same grammar at smaller scale.
+
+   Shared grammar:
+     - every band opens with the code-comment kicker + a balanced heading;
+     - the container is --container-page, gutters from --gutter;
+     - vertical rhythm comes from the SEMANTIC scale, not from raw --space-N:
+       a band's padding-block is --stack-lg, which tokens/spacing.css defines
+       as the step "between page sections" — because that is exactly what a
+       band's padding is doing. Two variants sit deliberately off it and say
+       so at the call site;
+     - dark bands use the navy console surface + the hairline grid motif,
+       never a gradient.
+
+   A BAND IS A READING SURFACE, AND TAKES THE READING SCALE.
+   -------------------------------------------------------------------------
+   tokens/typography.css forks the scale once, on the axis of SCANNED versus
+   READ: 14/13 for a rail, a table, a player's chrome and a dashboard, and
+   --size-prose* for what a person reads continuously.
+
+   This layer was on the wrong side of that fork. Every band's body copy —
+   the feature paragraph, the router's "when", the fit list, the FAQ answer,
+   the compare panels — was set at --size-small (13), one step BELOW the UI
+   base and level with a table caption. Nobody scans a homepage; they read
+   it, once, deciding. Marketing copy set smaller than a table row is the
+   same category error the fork exists to prevent, pointing the other way.
+
+   So the band layer takes the reading scale:
+
+     lede            --size-prose-lead   20
+     card heading    --size-prose        17
+     body copy       --size-prose-small  15
+     band kicker     --size-mono         13
+     mono labels     --size-label        11   (unchanged)
+
+   The mono VOICE does not move — an index, a duration and a stat label are
+   data, not prose, and the label scale is where they belong on either side
+   of the fork. The band kicker is the one exception and it earns it by being
+   a phrase rather than a datum: it is the sentence that frames the heading,
+   and at the 11px label floor nobody read it.
+
+   Cards composed INTO a band follow it too — see the rule at the foot of
+   this file. The same card in a catalogue grid keeps the UI scale, which is
+   not an exception to the fork but an application of it: the homepage's
+   three courses are read, a catalogue of forty is scanned. */
+@layer ns-components {
 
   /* --- Assembly: the components rendering the product ---------------------
      The hero illustration, told in two acts on one loop, inside a browser
@@ -19557,6 +19605,21 @@
      case; anything genuinely tabbable keeps its ring. */
   [tabindex="-1"]:focus { outline: none; }
 
+  /* --- Motion opt-out -----------------------------------------------------
+     base.css already collapses durations globally. This is for the narrower
+     case: content that should not animate at all rather than animate fast —
+     an autoplaying marquee or the illustration float loop, which at 0.001ms
+     would snap to a single frame rather than stop. */
+  @media (prefers-reduced-motion: reduce) {
+    .ns-motion-safe { animation: none !important; }
+  }
+}
+/* NS Design System — containers.
+   The CONTAINER level of the layout contract: a measure, centred, with
+   gutters. .ns-page is the shell both products write on every template;
+   .ns-center is the same level for anything not inside a band; the docs
+   shell is a container with a sticky rail. See docs/LAYOUT.md. */
+@layer ns-components {
   /* --- Layout primitives --------------------------------------------------
      The page shell, spelled once. Both products write this on every template;
      without it they each invent their own max-width and the two drift. */
@@ -19578,19 +19641,6 @@
      that has no band wrapping it. */
   .ns-page--demo { padding-block: var(--space-8); } /* used-by: ghost-theme, lms */
 
-  /* Auto-fitting card grid. `min()` keeps the track from overflowing the
-     viewport at 320px, which a bare minmax(18rem, 1fr) does. */
-  .ns-grid {
-    display: grid; gap: var(--gap-grid);
-    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
-  }
-  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
-  .ns-grid--xs { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr)); }
-  /* auto-FIT, not auto-fill: the last row stretches to fill the width instead
-     of leaving empty tracks. Right when the count is small and known (three
-     states of an ad slot, four plan cards); wrong for a feed, where a
-     one-result page would show one card three columns wide. */
-  .ns-grid--fit { grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
 
   /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
      column below lg, where the sidebar becomes a drawer. */
@@ -19607,14 +19657,56 @@
     .ns-docs-layout__toc { display: none; }
   }
 
-  /* --- Motion opt-out -----------------------------------------------------
-     base.css already collapses durations globally. This is for the narrower
-     case: content that should not animate at all rather than animate fast —
-     an autoplaying marquee or the illustration float loop, which at 0.001ms
-     would snap to a single frame rather than stop. */
-  @media (prefers-reduced-motion: reduce) {
-    .ns-motion-safe { animation: none !important; }
+  /* --- Centre: a measure, centred ------------------------------------------
+     A column with a maximum width and automatic side margins. The container
+     level for things that are NOT inside a band — a bare page, a demo, an
+     email body. Takes the width from a token so the three measures stay the
+     three measures. */
+  .ns-center { margin-inline: auto; max-inline-size: var(--container-page); }
+  .ns-center--narrow { max-inline-size: var(--container-narrow); }
+  .ns-center--prose { max-inline-size: var(--container-prose); }
+  /* Narrower than every container token: a ONE-FIELD form — a signup, a
+     search, an unsubscribe. --container-narrow (56rem) is the width of a
+     settings form with labelled rows; a single input stretched that far
+     reads as a site-wide search bar rather than as a thing to fill in. */
+  .ns-center--compact { max-inline-size: 32rem; }
+  /* A centre that is NOT centred — takes the measure, keeps the left edge.
+     A search box at the head of a listing lines up with the listing; the
+     same box centred looks like a hero that lost its heading. */
+  .ns-center--flush { margin-inline: 0; margin-block-end: var(--stack-md); }
+  /* With the gutters, for a centre that is doing a container's whole job. */
+  .ns-center--gutter { padding-inline: var(--gutter); }
+  /* Block padding, for a page wrapper that is a section in everything but
+     name — a listing grid or a detail layout on a page with no band around
+     it. It gets the band's own step, so a wrapper and a band space the page
+     identically instead of the wrapper inventing a ninth value.
+
+     ONE ELEMENT, deliberately. A band is two (ground + measure) because its
+     ground is full-bleed; a wrapper has no ground, so splitting it in two
+     would add a div for nothing. --pad-b is the common case: a page whose
+     top spacing already came from the header above it. */
+  .ns-center--pad { padding-block: var(--stack-lg); }
+  .ns-center--pad-b { padding-block-end: var(--stack-lg); }
+  .ns-center--pad-t { padding-block-start: var(--stack-md); }
+}
+/* NS Design System — the grid.
+   Auto-fitting card grids. A track list is a LAYOUT decision, so it lives
+   at the layout level — a card never sets its own column. */
+@layer ns-components {
+
+  /* Auto-fitting card grid. `min()` keeps the track from overflowing the
+     viewport at 320px, which a bare minmax(18rem, 1fr) does. */
+  .ns-grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
   }
+  .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
+  .ns-grid--xs { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr)); }
+  /* auto-FIT, not auto-fill: the last row stretches to fill the width instead
+     of leaving empty tracks. Right when the count is small and known (three
+     states of an ad slot, four plan cards); wrong for a feed, where a
+     one-result page would show one card three columns wide. */
+  .ns-grid--fit { grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
 }
 /* Layout primitives last in the foundation group: they are the lowest-
    specificity structural classes and anything may override them. */
@@ -19695,38 +19787,6 @@
      to read. The `16rem` is a MEASURE floor, not a chosen width: below it a
      column of text stops being a column. */
   .ns-cluster__fill { flex: 1; min-inline-size: 16rem; }
-
-  /* --- Centre: a measure, centred ------------------------------------------
-     A column with a maximum width and automatic side margins. The container
-     level for things that are NOT inside a band — a bare page, a demo, an
-     email body. Takes the width from a token so the three measures stay the
-     three measures. */
-  .ns-center { margin-inline: auto; max-inline-size: var(--container-page); }
-  .ns-center--narrow { max-inline-size: var(--container-narrow); }
-  .ns-center--prose { max-inline-size: var(--container-prose); }
-  /* Narrower than every container token: a ONE-FIELD form — a signup, a
-     search, an unsubscribe. --container-narrow (56rem) is the width of a
-     settings form with labelled rows; a single input stretched that far
-     reads as a site-wide search bar rather than as a thing to fill in. */
-  .ns-center--compact { max-inline-size: 32rem; }
-  /* A centre that is NOT centred — takes the measure, keeps the left edge.
-     A search box at the head of a listing lines up with the listing; the
-     same box centred looks like a hero that lost its heading. */
-  .ns-center--flush { margin-inline: 0; margin-block-end: var(--stack-md); }
-  /* With the gutters, for a centre that is doing a container's whole job. */
-  .ns-center--gutter { padding-inline: var(--gutter); }
-  /* Block padding, for a page wrapper that is a section in everything but
-     name — a listing grid or a detail layout on a page with no band around
-     it. It gets the band's own step, so a wrapper and a band space the page
-     identically instead of the wrapper inventing a ninth value.
-
-     ONE ELEMENT, deliberately. A band is two (ground + measure) because its
-     ground is full-bleed; a wrapper has no ground, so splitting it in two
-     would add a div for nothing. --pad-b is the common case: a page whose
-     top spacing already came from the header above it. */
-  .ns-center--pad { padding-block: var(--stack-lg); }
-  .ns-center--pad-b { padding-block-end: var(--stack-lg); }
-  .ns-center--pad-t { padding-block-start: var(--stack-md); }
 }
 
 /* Print last, ON PURPOSE: inside one layer, source order decides ties, and

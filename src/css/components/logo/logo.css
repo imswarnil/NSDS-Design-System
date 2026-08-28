@@ -1,0 +1,32 @@
+/* NS Design System — logo.
+   Split from the old primitives/display.css; the argument for the component
+   is the banner comment below. */
+@layer ns-components {
+  /* --- Logo ---------------------------------------------------------------
+     The wordmark lockup: the favicon asset plus the name. Never a pictorial
+     mark invented beyond that asset — see guidelines/brand-logo-lockups.
+
+     --size-* rather than a size prop: three fixed steps, because a lockup that
+     can be any pixel height is a lockup nobody can match across two products.
+     The text scales from the mark via --ns-logo-size, so the ratio the brand
+     guidelines specify holds at every step without being restated. */
+  .ns-logo {
+    --ns-logo-size: 1.5rem;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-heading); font-weight: var(--weight-heading);
+    font-size: calc(var(--ns-logo-size) * 0.66);
+    color: var(--color-ink); white-space: nowrap; text-decoration: none;
+  }
+  .ns-logo__mark { inline-size: var(--ns-logo-size); block-size: var(--ns-logo-size); flex: none; }
+  .ns-logo--sm { --ns-logo-size: 1.25rem; }
+  .ns-logo--lg { --ns-logo-size: 2rem; }
+  /* On a brand-900 band or a photographic hero the ink token would vanish, so
+     the lockup switches to the fixed on-dark ink rather than a theme-reactive
+     one — it must stay white in BOTH themes. */
+  .ns-logo--light { color: var(--color-on-dark); }
+  /* Icon-only. The name is still announced; only the glyph is drawn. */
+  .ns-logo--compact .ns-logo__text {
+    position: absolute; inline-size: 1px; block-size: 1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+  }
+}
