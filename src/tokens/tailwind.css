@@ -72,9 +72,10 @@
   --spacing-section: var(--space-16);
   --spacing-band: var(--space-24);
 
-  --font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-code: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
 
   /* text-label carries its tracking and weight so a kicker cannot be

@@ -84,7 +84,7 @@ and the git history are all excluded. What ships:
 | `/styles.css` | the entry stylesheet the specimen cards link as `../styles.css` |
 | `/tokens/` | authored token CSS + generated `tokens.json` / `tokens.js` / `tailwind.css` |
 | `/components/css/` | the portable `.ns-*` component layer both products render |
-| `/fonts/` | Switzer + Roboto Mono — latin-subset variable woff2s + both licences |
+| `/fonts/` | Figtree — variable woff2s (normal + italic, latin + ext) + the OFL licence |
 | `/assets/` | icon fonts, logo, images, `theme-init` |
 | `/icons/`, `/patterns/`, `/templates/` | specimen source directories |
 | `/**/*.card.html` | every specimen, at its real repo-relative path (the preview iframes them) |

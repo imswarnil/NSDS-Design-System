@@ -83,7 +83,7 @@
        already in the right place in the first painted frame, on every tab. */
     centre();
 
-    /* Then once more after the first frame. Switzer and Roboto Mono load with
+    /* Then once more after the first frame. Figtree loads with
        font-display: swap, and a swap above the active link changes every
        offset below it — this is the pass that catches that. Harmless when
        nothing moved (the in-view test above short-circuits), and it cannot

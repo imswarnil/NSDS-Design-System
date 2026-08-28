@@ -12,9 +12,9 @@
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
-    --font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
-    --font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --font-mono: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --font-weight-medium: 500;
     --font-weight-semibold: 600;
     --tracking-tight: -0.01em;
@@ -57,7 +57,8 @@
     --spacing-field: var(--space-1-5);
     --spacing-section: var(--space-16);
     --spacing-band: var(--space-24);
-    --font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-heading: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-code: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     --text-display: clamp(2.5rem, 1.55rem + 2.2vw, 3.25rem);
     --text-display--line-height: 1.15;
     --text-h1: 2.5rem;
@@ -2303,37 +2304,57 @@
   }
 }
 @font-face {
-  font-family: "Switzer";
-  src: url("../fonts/switzer-var-latin.woff2") format("woff2-variations"), url("../fonts/switzer-var-latin.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Figtree";
+  src: url("../fonts/figtree-var-latin.woff2") format("woff2-variations"), url("../fonts/figtree-var-latin.woff2") format("woff2");
+  font-weight: 300 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "Roboto Mono";
-  src: url("../fonts/roboto-mono-var-latin.woff2") format("woff2-variations"), url("../fonts/roboto-mono-var-latin.woff2") format("woff2");
-  font-weight: 100 700;
+  font-family: "Figtree";
+  src: url("../fonts/figtree-var-latin-ext.woff2") format("woff2-variations"), url("../fonts/figtree-var-latin-ext.woff2") format("woff2");
+  font-weight: 300 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: "Switzer Fallback";
+  font-family: "Figtree";
+  src: url("../fonts/figtree-italic-var-latin.woff2") format("woff2-variations"), url("../fonts/figtree-italic-var-latin.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("../fonts/figtree-italic-var-latin-ext.woff2") format("woff2-variations"), url("../fonts/figtree-italic-var-latin-ext.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Figtree Fallback";
   src: local("Helvetica Neue"), local("Arial"), local("Segoe UI"), local("Roboto");
-  size-adjust: 99%;
-  ascent-override: 97%;
-  descent-override: 24%;
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
   line-gap-override: 0%;
 }
 :root {
-  --ns-font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --ns-font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --ns-font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --ns-font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --ns-font-heading: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ns-font-mono: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ns-font-code: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --ns-font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   --ns-font-icon: "Phosphor";
   --ns-font-icon-fill: "Phosphor-Fill";
   --font-sans: var(--ns-font-sans);
   --font-heading: var(--ns-font-heading);
   --font-mono: var(--ns-font-mono);
+  --font-code: var(--ns-font-code);
   --font-serif: var(--ns-font-serif);
   --font-icon: var(--ns-font-icon);
   --font-icon-fill: var(--ns-font-icon-fill);
@@ -2379,7 +2400,7 @@
   --weight-body: 400;
   --weight-regular: 400;
   --weight-body-strong: 600;
-  --measure-prose: 68ch;
+  --measure-prose: 62ch;
   --measure-narrow: 46ch;
   --ns-radius-card: 6px;
   --ns-radius-btn: 4px;
@@ -2507,7 +2528,10 @@
   [data-theme="dark"] a {
     color: var(--color-brand-300);
   }
-  code, kbd, .ns-label {
+  code, pre, samp {
+    font-family: var(--font-code);
+  }
+  kbd, .ns-label {
     font-family: var(--font-mono);
   }
 }
@@ -16481,108 +16505,6 @@
   .ns-gate--inline .ns-gate__title {
     font-size: var(--size-body);
   }
-  .ns-plans {
-    display: grid;
-    gap: var(--space-5);
-    margin-block: var(--stack-md);
-  }
-  .ns-plans__switch {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .ns-plans__grid {
-    display: grid;
-    gap: var(--gap-grid);
-    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
-  }
-  .ns-plan {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    padding: var(--pad-card-lg);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-card);
-    background: var(--color-surface);
-  }
-  .ns-plan--featured {
-    border-inline-start: 3px solid var(--color-featured-ink);
-  }
-  .ns-plan__name {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-family: var(--font-heading);
-    font-size: var(--size-prose);
-    font-weight: var(--weight-semibold);
-    color: var(--color-muted);
-  }
-  .ns-plan--featured .ns-plan__name {
-    color: var(--color-featured-ink);
-  }
-  .ns-plan__price {
-    display: flex;
-    align-items: baseline;
-    gap: var(--space-2);
-    font-family: var(--font-heading);
-    font-size: var(--size-h2);
-    font-weight: var(--weight-heading);
-    letter-spacing: var(--tracking-tight);
-    color: var(--color-ink);
-    font-variant-numeric: tabular-nums;
-  }
-  .ns-plan__period {
-    font-family: var(--font-mono);
-    font-size: var(--size-label);
-    font-weight: var(--weight-regular);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--color-label);
-  }
-  .ns-plan__save {
-    align-self: flex-start;
-    font-family: var(--font-mono);
-    font-size: var(--size-label);
-    letter-spacing: var(--tracking-label);
-    text-transform: uppercase;
-    color: var(--color-success-ink);
-  }
-  .ns-plan__text {
-    font-size: var(--size-prose-small);
-    line-height: var(--leading-snug);
-    color: var(--color-muted);
-    text-wrap: pretty;
-  }
-  .ns-plan__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: var(--space-2);
-    font-size: var(--size-prose-small);
-  }
-  .ns-plan__list li {
-    display: flex;
-    gap: var(--space-2);
-    align-items: flex-start;
-    color: var(--color-muted);
-  }
-  .ns-plan__list i {
-    flex: none;
-    margin-block-start: 0.15em;
-    color: var(--color-success);
-  }
-  .ns-plan__foot {
-    margin-block-start: auto;
-    padding-block-start: var(--space-2);
-  }
-  .ns-plan[data-state="current"] {
-    border-color: var(--color-success);
-  }
-  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn {
-    pointer-events: none;
-    opacity: var(--opacity-disabled);
-  }
   .ns-memberbar {
     display: flex;
     flex-wrap: wrap;
@@ -16708,7 +16630,7 @@
     background: var(--code-surface);
     color: var(--code-ink);
     overflow: hidden;
-    font-family: var(--font-mono);
+    font-family: var(--font-code);
   }
   .ns-code--dark, [data-theme="dark"] .ns-code {
     --code-surface: var(--color-brand-900);
@@ -17125,7 +17047,7 @@
     margin-block-start: var(--space-1-5);
   }
   .ns-code-inline {
-    font-family: var(--font-mono);
+    font-family: var(--font-code);
     font-size: 0.875em;
     padding: 0 var(--space-1);
     border: 1px solid var(--color-border);
@@ -17740,12 +17662,15 @@
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
     color: var(--color-label);
+    font-variant-numeric: tabular-nums;
   }
   .ns-record {
     font-family: var(--font-mono);
     font-size: var(--size-mono);
     line-height: var(--leading-body);
     color: var(--color-muted);
+    letter-spacing: var(--tracking-wide);
+    font-variant-numeric: tabular-nums;
   }
   .ns-anim {
     animation: ns-anim-fade var(--duration-base) var(--ease-out) both;
@@ -23198,13 +23123,13 @@
   .ns-footer--dark .ns-footer__col a:hover, .ns-footer--dark .ns-footer__bar a:hover {
     color: var(--color-on-brand);
   }
-  .ns-compare {
+  .ns-delta {
     display: grid;
     gap: var(--space-4);
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: stretch;
   }
-  .ns-compare__side {
+  .ns-delta__side {
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
@@ -23213,15 +23138,15 @@
     border-radius: var(--radius-card);
     min-inline-size: 0;
   }
-  .ns-compare__side--before {
+  .ns-delta__side--before {
     background: var(--color-surface-sunken);
     color: var(--color-muted);
   }
-  .ns-compare__side--after {
+  .ns-delta__side--after {
     background: var(--color-surface-raised);
     box-shadow: inset 2px 0 0 var(--color-brand-500);
   }
-  .ns-compare__label {
+  .ns-delta__label {
     display: flex;
     align-items: center;
     gap: var(--space-2);
@@ -23232,31 +23157,31 @@
     text-transform: uppercase;
     color: var(--color-label);
   }
-  .ns-compare__side--after .ns-compare__label {
+  .ns-delta__side--after .ns-delta__label {
     color: var(--color-brand-600);
   }
-  [data-theme="dark"] .ns-compare__side--after .ns-compare__label {
+  [data-theme="dark"] .ns-delta__side--after .ns-delta__label {
     color: var(--color-brand-300);
   }
-  .ns-compare__text {
+  .ns-delta__text {
     font-size: var(--size-prose-small);
     line-height: var(--leading-snug);
     margin: 0;
   }
-  .ns-compare__side--after .ns-compare__text {
+  .ns-delta__side--after .ns-delta__text {
     color: var(--color-ink);
   }
-  .ns-compare__seam {
+  .ns-delta__seam {
     display: grid;
     place-items: center;
     color: var(--color-label);
     font-size: var(--size-h4);
   }
   @media (max-width: 47.999rem) {
-    .ns-compare {
+    .ns-delta {
       grid-template-columns: minmax(0, 1fr);
     }
-    .ns-compare__seam {
+    .ns-delta__seam {
       rotate: 90deg;
     }
   }
@@ -23689,6 +23614,108 @@
     .ns-maker__stats {
       grid-column: 1;
     }
+  }
+  .ns-plans {
+    display: grid;
+    gap: var(--space-5);
+    margin-block: var(--stack-md);
+  }
+  .ns-plans__switch {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .ns-plans__grid {
+    display: grid;
+    gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+  .ns-plan {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  .ns-plan--featured {
+    border-inline-start: 3px solid var(--color-featured-ink);
+  }
+  .ns-plan__name {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-heading);
+    font-size: var(--size-prose);
+    font-weight: var(--weight-semibold);
+    color: var(--color-muted);
+  }
+  .ns-plan--featured .ns-plan__name {
+    color: var(--color-featured-ink);
+  }
+  .ns-plan__price {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    font-family: var(--font-heading);
+    font-size: var(--size-h2);
+    font-weight: var(--weight-heading);
+    letter-spacing: var(--tracking-tight);
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .ns-plan__period {
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    font-weight: var(--weight-regular);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-label);
+  }
+  .ns-plan__save {
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: var(--size-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-success-ink);
+  }
+  .ns-plan__text {
+    font-size: var(--size-prose-small);
+    line-height: var(--leading-snug);
+    color: var(--color-muted);
+    text-wrap: pretty;
+  }
+  .ns-plan__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+    font-size: var(--size-prose-small);
+  }
+  .ns-plan__list li {
+    display: flex;
+    gap: var(--space-2);
+    align-items: flex-start;
+    color: var(--color-muted);
+  }
+  .ns-plan__list i {
+    flex: none;
+    margin-block-start: 0.15em;
+    color: var(--color-success);
+  }
+  .ns-plan__foot {
+    margin-block-start: auto;
+    padding-block-start: var(--space-2);
+  }
+  .ns-plan[data-state="current"] {
+    border-color: var(--color-success);
+  }
+  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn {
+    pointer-events: none;
+    opacity: var(--opacity-disabled);
   }
   .ns-sponsorask {
     display: flex;
@@ -25439,7 +25466,7 @@
     padding: var(--space-4) var(--space-5);
     flex-direction: row;
   }
-  .ns-file {
+  .ns-upload {
     display: flex;
     align-items: center;
     gap: var(--space-3);
@@ -25449,20 +25476,20 @@
     font-family: var(--font-mono);
     font-size: var(--size-label);
   }
-  .ns-file__name {
+  .ns-upload__name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .ns-file__size {
+  .ns-upload__size {
     color: var(--color-muted);
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
   }
-  .ns-file__remove {
+  .ns-upload__remove {
     margin-inline-start: auto;
   }
-  .ns-file + .ns-file {
+  .ns-upload + .ns-upload {
     margin-block-start: var(--space-2);
   }
   .ns-taginput {

@@ -3265,7 +3265,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
   },
   {
-    id: "compare", title: "Before / after", family: "Sections",
+    id: "delta", title: "Before / after", family: "Sections",
     summary: "Two panels that are deliberately <strong>not peers</strong>: the left is a state the reader is in and should want to leave, the right is where the training puts them. Styling them identically would argue the opposite of the copy.",
     use: ["The delta a course produces, stated as two concrete situations", "Two versions of the same code — the shape is honest with real snippets in it"],
     not: ["Us versus a competitor. That is a different and much weaker band", "Two things that are equally valid — if neither side is worse, this is .ns-features"],
@@ -3275,15 +3275,15 @@ Map<Id, Account> byId = new Map<Id, Account>(
       "Exactly one accent, on the after panel. An accent on both is decoration",
     ],
     variants: [
-      { name: "Eight weeks apart", html: `<div class="ns-compare">
-  <div class="ns-compare__side ns-compare__side--before">
-    <span class="ns-compare__label"><i class="ph ph-warning-circle" aria-hidden="true"></i> Before</span>
-    <p class="ns-compare__text">&ldquo;Sharing is broken.&rdquo; You reproduce it once, cannot reproduce it again, and the fix is a manual share that quietly becomes permanent.</p>
+      { name: "Eight weeks apart", html: `<div class="ns-delta">
+  <div class="ns-delta__side ns-delta__side--before">
+    <span class="ns-delta__label"><i class="ph ph-warning-circle" aria-hidden="true"></i> Before</span>
+    <p class="ns-delta__text">&ldquo;Sharing is broken.&rdquo; You reproduce it once, cannot reproduce it again, and the fix is a manual share that quietly becomes permanent.</p>
   </div>
-  <span class="ns-compare__seam" aria-hidden="true"><i class="ph ph-arrow-right"></i></span>
-  <div class="ns-compare__side ns-compare__side--after">
-    <span class="ns-compare__label"><i class="ph ph-check-circle" aria-hidden="true"></i> After</span>
-    <p class="ns-compare__text">&ldquo;Recalculation is asynchronous, and the report ran inside the window.&rdquo; You name it, you chain the read, and it does not recur.</p>
+  <span class="ns-delta__seam" aria-hidden="true"><i class="ph ph-arrow-right"></i></span>
+  <div class="ns-delta__side ns-delta__side--after">
+    <span class="ns-delta__label"><i class="ph ph-check-circle" aria-hidden="true"></i> After</span>
+    <p class="ns-delta__text">&ldquo;Recalculation is asynchronous, and the report ran inside the window.&rdquo; You name it, you chain the read, and it does not recur.</p>
   </div>
 </div>` },
     ],
@@ -4467,17 +4467,17 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <input type="file" accept="video/mp4">
 </label>` },
       { name: "File rows", html: `<div style="inline-size:100%">
-  <div class="ns-file">
+  <div class="ns-upload">
     <i class="ph ph-file-video" aria-hidden="true"></i>
-    <span class="ns-file__name">02-lightning-navigation-v3.mp4</span>
-    <span class="ns-file__size">612 MB</span>
+    <span class="ns-upload__name">02-lightning-navigation-v3.mp4</span>
+    <span class="ns-upload__size">612 MB</span>
     <span class="ns-status ns-status--success">Processed</span>
-    <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-file__remove" aria-label="Remove"><i class="ph ph-x" aria-hidden="true"></i></button>
+    <button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-upload__remove" aria-label="Remove"><i class="ph ph-x" aria-hidden="true"></i></button>
   </div>
-  <div class="ns-file">
+  <div class="ns-upload">
     <i class="ph ph-file" aria-hidden="true"></i>
-    <span class="ns-file__name">navigation-cheatsheet.pdf</span>
-    <span class="ns-file__size">1.2 MB</span>
+    <span class="ns-upload__name">navigation-cheatsheet.pdf</span>
+    <span class="ns-upload__size">1.2 MB</span>
     <span class="ns-status ns-status--info">Uploading</span>
   </div>
 </div>` },

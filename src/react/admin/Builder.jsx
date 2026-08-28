@@ -199,12 +199,12 @@ export function Dropzone({ hint, accept, multiple, onFiles, compact, children })
 /** One uploaded file as a terminal row: mono name, mono size, remove. */
 export function FileRow({ name, size, onRemove }) {
   return (
-    <div className="ns-file">
+    <div className="ns-upload">
       <i className="ph ph-file" aria-hidden="true" />
-      <span className="ns-file__name">{name}</span>
-      <span className="ns-file__size">{size}</span>
+      <span className="ns-upload__name">{name}</span>
+      <span className="ns-upload__size">{size}</span>
       {onRemove && (
-        <button type="button" className="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-file__remove" aria-label={`Remove ${name}`} onClick={onRemove}>
+        <button type="button" className="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-upload__remove" aria-label={`Remove ${name}`} onClick={onRemove}>
           <i className="ph ph-x" aria-hidden="true" />
         </button>
       )}

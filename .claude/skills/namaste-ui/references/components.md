@@ -1190,7 +1190,7 @@ Mutually exclusive entry points — which of these am I? The first question a mu
 - More than four: past that it is a directory, not a fork
 - Roles without a destination. A router cell that does not go somewhere is a card
 
-### Before / after `.ns-compare`
+### Before / after `.ns-delta`
 
 Two panels that are deliberately not peers: the left is a state the reader is in and should want to leave, the right is where the training puts them. Styling them identically would argue the opposite of the copy.
 

@@ -359,7 +359,7 @@
      a fourth voice: a pull-quote is the page stopping its own argument to
      quote someone else. Set in the same grotesque as the argument it never
      quite reads as a different speaker — it reads as a bigger heading. The
-     tracking goes with it: --tracking-tight exists to correct Switzer's
+     tracking goes with it: --tracking-tight exists to correct Figtree's
      loose display metrics, and applying it to a serif that is already
      correctly fitted just closes the counters. */
   .ns-pullquote {
@@ -399,6 +399,7 @@
   .ns-label {
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    font-variant-numeric: tabular-nums;
   }
   /* A block of records — lesson rows, a log, a run of timestamps. The label
      is one line and shouts; this is several lines and does not, so it keeps
@@ -407,5 +408,6 @@
   .ns-record {
     font-family: var(--font-mono); font-size: var(--size-mono);
     line-height: var(--leading-body); color: var(--color-muted);
+    letter-spacing: var(--tracking-wide); font-variant-numeric: tabular-nums;
   }
 }

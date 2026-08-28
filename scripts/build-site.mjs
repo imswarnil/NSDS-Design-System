@@ -13,8 +13,8 @@
      styles.css + tokens/ + src/css/   the un-bundled source, shipped so
                          the site doubles as a readable reference
      assets/             icons, logo, theme-init, the runtime scripts
-     fonts/              Switzer + Roboto Mono (latin-subset variable woff2)
-                         and the Fontshare EULA that must travel with them
+     fonts/              Figtree (variable woff2, normal + italic, latin + ext)
+                         and the SIL OFL licence that must travel with it
      * / *.card.html     every specimen, at its real path (iframe srcs)
 
    Plus a real, indexable homepage at the root (see below), robots.txt,

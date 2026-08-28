@@ -284,68 +284,11 @@
   .ns-gate--inline .ns-gate__icon { inline-size: 2rem; block-size: 2rem; font-size: var(--size-body); }
   .ns-gate--inline .ns-gate__title { font-size: var(--size-body); }
 
-  /* ==================================================== MEMBERSHIP TIERS ====
-     Ghost's tiers, as a real price table. Distinct from .ns-tiers in
-     training.css, and the difference is not cosmetic: that one is a
-     two-column FREE-vs-PRO argument on a curriculum page, with no prices and
-     no billing period. This is the publication's checkout — three tiers, a
-     monthly/yearly switch, and a price that changes when you flip it.
-
-     The yearly saving is stated as a NUMBER, never as "save up to 20%": a
-     percentage the reader has to apply to a figure they have not seen yet is
-     a discount nobody can evaluate. */
-  .ns-plans { display: grid; gap: var(--space-5); margin-block: var(--stack-md); }
-  /* align-items: center, not the default stretch — the switch is a flex ITEM
-     here, and a stretched fieldset drags the segmented control to the full
-     height of the row, which renders the two options as tall columns. */
-  .ns-plans__switch { display: flex; justify-content: center; align-items: center; }
-  .ns-plans__grid {
-    display: grid; gap: var(--gap-grid);
-    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
-  }
-  .ns-plan {
-    display: flex; flex-direction: column; gap: var(--space-3);
-    padding: var(--pad-card-lg);
-    border: 1px solid var(--color-border); border-radius: var(--radius-card);
-    background: var(--color-surface);
-  }
-  /* The recommended tier is marked by its leading edge — the system's
-     standing "this one" device — not by a fill, a scale-up or a shadow. */
-  .ns-plan--featured { border-inline-start: 3px solid var(--color-featured-ink); }
-  /* "Free", "Pro", "Team" are NAMES. Mono is for values — see the note beside
-     .ns-quote figcaption in sections.css. */
-  .ns-plan__name {
-    display: inline-flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-heading); font-size: var(--size-prose);
-    font-weight: var(--weight-semibold); color: var(--color-muted);
-  }
-  .ns-plan--featured .ns-plan__name { color: var(--color-featured-ink); }
-  .ns-plan__price {
-    display: flex; align-items: baseline; gap: var(--space-2);
-    font-family: var(--font-heading); font-size: var(--size-h2);
-    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
-    color: var(--color-ink); font-variant-numeric: tabular-nums;
-  }
-  .ns-plan__period {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-regular); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-  }
-  .ns-plan__save {
-    align-self: flex-start;
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
-    color: var(--color-success-ink);
-  }
-  .ns-plan__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); text-wrap: pretty; }
-  .ns-plan__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--size-prose-small); }
-  .ns-plan__list li { display: flex; gap: var(--space-2); align-items: flex-start; color: var(--color-muted); }
-  .ns-plan__list i { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-success); }
-  .ns-plan__foot { margin-block-start: auto; padding-block-start: var(--space-2); }
-  /* The tier a member is already on states it instead of selling it. A
-     checkout that offers to sell you what you have bought is a bug. */
-  .ns-plan[data-state="current"] { border-color: var(--color-success); }
-  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn { pointer-events: none; opacity: var(--opacity-disabled); }
+  /* Membership tiers (.ns-plans / .ns-plan) moved to content/sections.css:
+     a price table is a MARKETING SECTION both products render, and filing it
+     under the Ghost integration hid it from everyone who was not building a
+     Ghost page — the same wrong-drawer bug .ns-stack had in a11y.css. Ghost
+     only populates it (data-portal on the buttons, data-state on the card). */
 
   /* ====================================================== MEMBER STATUS ====
      The strip that says who Ghost thinks you are, and what that gets you. It

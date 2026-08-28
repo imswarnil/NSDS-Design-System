@@ -11,7 +11,7 @@ This bundle is self-contained. It assumes the Namaste Salesforce Design
 System repository is **not** present, and it carries what an agent needs to
 produce work that belongs to the same system.
 
-Generated from v3.0.0: 201 public tokens,
+Generated from v3.0.0: 202 public tokens,
 2125 `.ns-*` classes, 175 documented components.
 
 ## Step 1 — get the stylesheet, do not reimplement it

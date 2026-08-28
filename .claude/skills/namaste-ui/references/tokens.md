@@ -3,7 +3,7 @@
 # Tokens
 
 Every public token, generated from `dist/tokens.json`. These are the light
-theme's values; 63 private `--ns-*`
+theme's values; 64 private `--ns-*`
 sources are omitted because a consuming project never types one — they exist
 so Tailwind's `@theme` can own the public names without aliasing itself.
 
@@ -180,6 +180,7 @@ hard-coded hex is a bug in exactly one theme and nobody notices which.
 | `--font-sans` | `var(--ns-font-sans)` |
 | `--font-heading` | `var(--ns-font-heading)` |
 | `--font-mono` | `var(--ns-font-mono)` |
+| `--font-code` | `var(--ns-font-code)` |
 | `--font-serif` | `var(--ns-font-serif)` |
 | `--font-icon` | `var(--ns-font-icon)` |
 | `--font-icon-fill` | `var(--ns-font-icon-fill)` |
@@ -215,7 +216,7 @@ hard-coded hex is a bug in exactly one theme and nobody notices which.
 | `--leading-body` | `var(--ns-leading-body)` |
 | `--leading-prose` | `var(--ns-leading-prose)` |
 | `--leading-mega` | `var(--ns-leading-mega)` |
-| `--measure-prose` | `68ch` |
+| `--measure-prose` | `62ch` |
 | `--measure-narrow` | `46ch` |
 
 ## effects

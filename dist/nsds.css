@@ -435,22 +435,23 @@
   --breakpoint-2xl: 96rem; /* 1536px — wide desktop */
 
   /* Content widths. --container-prose is the layout twin of --measure-prose:
-     672px set in Switzer at --size-prose (17px) is 68.6ch, which is what
+     672px set in Figtree at --size-prose (17px) is 62ch, which is what
      tokens/typography.css declares the measure to be. Measured, not guessed —
-     Switzer's "0" advances 0.576em, and 672 / (0.576 x 17) = 68.6.
+     Figtree's "0" advances 0.638em, and 672 / (0.638 x 17) = 62.0.
 
-     This pairing only became true at the type fork. When reading copy was
-     --size-body (14px) the same 42rem ran to 83ch, and the comment here still
-     claimed 68 characters of INTER, a face this system no longer ships. Both
-     halves were stale; the number survived by luck when the size moved.
+     THIS NUMBER HAS ALREADY GONE STALE TWICE, which is why the arithmetic is
+     shown: the comment once claimed 68 characters of Inter, then 68.6 of
+     Switzer — each time the face (or the size) moved and the number survived
+     by luck. When the face changes, recompute: rem width / (zero-advance x
+     px size).
 
-     One caveat worth carrying, because ch is a proxy and not the thing itself:
-     68ch of Switzer is ~88 REAL characters of running English, since the
-     average lowercase letter advances 0.45em against the digit's 0.576em.
+     One caveat worth carrying, because ch is a proxy and not the thing
+     itself: 62ch of Figtree is ~85 REAL characters of running English, since
+     the average lowercase letter advances well under the digit's 0.638em.
      That is at the loose end of the 45-90 a single column can hold. If
-     articles ever read too wide, this is the token — and 40rem (~84
-     characters) is the next step down, not a nudge to --measure-prose. Never
-     widen a paragraph past this just because the viewport allows it. */
+     articles ever read too wide, this is the token — and 40rem is the next
+     step down, not a nudge to --measure-prose. Never widen a paragraph past
+     this just because the viewport allows it. */
   --container-prose: 42rem;  /*  672px — lesson/blog body copy */
   /* READ THE NUMBERS, NOT THE NAMES. The ramp is
        prose 42 < narrow 56 < page 72 < wide 88 (rem)
@@ -508,102 +509,116 @@
   :target,
   h1[id], h2[id], h3[id], h4[id] { scroll-margin-top: calc(var(--navbar-h) + var(--space-4)); }
 }
-/* The type system — two self-hosted variable woff2s.
+/* The type system — ONE self-hosted face: Figtree.
    =========================================================================
-     Switzer     sans   — the whole interface AND the reading layer: headings,
-                          prose, controls, quotations. One face across the
-                          range, separated by WEIGHT and SIZE, never by family.
-     Roboto Mono mono   — data, labels and code: every index, duration,
-                          kicker, tag, status and <pre> in the product.
+     Figtree  sans  — the whole system: headings, prose, controls, quotations,
+                      AND the data voice. One geometric grotesque, variable
+                      300–900, normal + italic, latin + latin-ext — four
+                      woff2s, ~62 KB total, SIL OFL (fonts/licences/).
 
-   Switzer is an Indian Type Foundry face from Fontshare under the Fontshare
-   Free Font EULA (free for personal AND commercial use, any medium,
-   self-hosting explicitly permitted); the EULA travels with it in
-   fonts/FONTSHARE-EULA.txt. Roboto Mono is under the SIL Open Font Licence
-   1.1, in fonts/licences/. Both licences must stay in the repo. Both faces are
-   subset to latin plus the punctuation and arrows the UI actually draws —
-   67 KB for the pair. Re-subset upstream if a page ever needs extended
-   coverage; see fonts/README.md.
+   ONE FACE, ON PURPOSE. The system used to ship two — Switzer for words,
+   Roboto Mono for data — and the mono family was doing a job that treatment
+   can do: the label voice was never really "monospace", it was UPPERCASE,
+   TRACKED, BOLD, SMALL and TABULAR, and the family was just the loudest of
+   those five signals. Dropping to one face halves the requests, removes the
+   seam where the two faces met at one size, and makes the label voice a
+   recipe any face can wear:
 
-   MONO IS SHIPPED, AND IT HAS TO BE. Every index, timestamp, duration,
-   kicker, tag and status runs through the mono face — it is the material
-   Principle 2 is made of, and it is on screen far more often than a code
-   block is. Borrowing that face from the OS meant the most-repeated voice in
-   the interface was SF Mono on a Mac, Consolas on Windows and a lottery on
-   Linux: three different products, none of them chosen. Roboto Mono is the
-   one shipped for it — a plain, wide-set, unmannered grotesque mono that
-   stays quiet at the 11px tracked-uppercase label floor where this system
-   spends most of its mono, and that a reader recognises without noticing.
-   37 KB, doing the work of the face seen most.
+     uppercase + letter-spacing + weight 600–700 + --size-label/--size-mono
+     + font-variant-numeric: tabular-nums
 
-   The consequence that used to be listed here — that a mono run is a
-   different width on every platform, so nothing may be laid out against one —
-   is gone: the face is now the same everywhere, and the
-   font-variant-numeric: tabular-nums in tokens/base.css keeps digit columns
-   aligned on top of that.
+   Figtree carries `tnum`, so digit columns still align — tokens/base.css and
+   the label classes opt into it, because Figtree's DEFAULT figures are
+   proportional (right for prose, wrong for a duration column).
 
-   NO SHIPPED SERIF. The editorial register (pull-quotes, drop caps, section
-   quotations) used to run on Sentient. It has been retired: --font-serif now
-   resolves to the platform's own serif, so the register still reads as a
-   quotation on every machine that has Georgia while costing nothing, and the
-   system ships exactly two faces. If the quoting voice should be Switzer
-   instead, point --ns-font-serif at --ns-font-sans — one line in
+   CODE IS THE EXCEPTION, AND IT IS NOT SHIPPED. Indentation is the syntax in
+   a code block, and a proportional face destroys it — so --font-code resolves
+   to the platform's own mono (SF Mono, Consolas, …) at zero bytes, exactly
+   the trade --font-serif already makes for quotations. The system ships one
+   face; it borrows two.
+
+   NO SHIPPED SERIF, unchanged: --font-serif resolves to the platform's serif
+   for pull-quotes and drop caps. If quotations should be Figtree instead,
+   point --ns-font-serif at --ns-font-sans — one line in
    tokens/typography.css. */
 @font-face {
-  font-family: "Switzer";
-  src: url("../fonts/switzer-var-latin.woff2") format("woff2-variations"), url("../fonts/switzer-var-latin.woff2") format("woff2");
-  font-weight: 100 900;
+  font-family: "Figtree";
+  src: url("../fonts/figtree-var-latin.woff2") format("woff2-variations"), url("../fonts/figtree-var-latin.woff2") format("woff2");
+  font-weight: 300 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  /* Data, labels and code — see the note above. Variable 100-700; the system
-     uses 400 for code and 700 for the tracked uppercase labels. */
-  font-family: "Roboto Mono";
-  src: url("../fonts/roboto-mono-var-latin.woff2") format("woff2-variations"), url("../fonts/roboto-mono-var-latin.woff2") format("woff2");
-  font-weight: 100 700;
+  font-family: "Figtree";
+  src: url("../fonts/figtree-var-latin-ext.woff2") format("woff2-variations"), url("../fonts/figtree-var-latin-ext.woff2") format("woff2");
+  font-weight: 300 900;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-/* Metric-matched system fallback so text does not jump when Switzer arrives.
-   Switzer is a fairly narrow, tall-x-height grotesque; these overrides pull
-   Helvetica/Arial onto the same line rhythm so the swap is not a reflow. */
 @font-face {
-  font-family: "Switzer Fallback";
+  font-family: "Figtree";
+  src: url("../fonts/figtree-italic-var-latin.woff2") format("woff2-variations"), url("../fonts/figtree-italic-var-latin.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("../fonts/figtree-italic-var-latin-ext.woff2") format("woff2-variations"), url("../fonts/figtree-italic-var-latin-ext.woff2") format("woff2");
+  font-weight: 300 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* Metric-matched system fallback so text does not jump when Figtree arrives.
+   Figtree's box is 950/-250 on a 1000 upem with a 500 x-height — the
+   overrides pull Helvetica/Arial onto that rhythm so the swap is not a
+   reflow. */
+@font-face {
+  font-family: "Figtree Fallback";
   src: local("Helvetica Neue"), local("Arial"), local("Segoe UI"), local("Roboto");
-  size-adjust: 99%;
-  ascent-override: 97%;
-  descent-override: 24%;
+  size-adjust: 100%;
+  ascent-override: 95%;
+  descent-override: 25%;
   line-gap-override: 0%;
 }
 :root {
   /* Private source layer — see the note in tokens/colors.css for why the
      names Tailwind's @theme owns are aliased rather than declared directly. */
-  --ns-font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* Switzer twice, not a display/text pair. The old system ran two cuts —
-     one to speak, one to explain — and the seam between them had to be
-     managed at every size. One well-drawn grotesque across the whole range,
-     separated by WEIGHT and SIZE rather than by face, is both quieter and one
-     fewer download. Heading and body therefore resolve to the same stack;
-     --font-heading survives as a name so components do not all have to change
-     and so a future display face is one token away. */
-  --ns-font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* THE LABEL VOICE, and the code voice — one face for both, because both are
-     "this is data, not prose". Shipped rather than borrowed from the OS: this
-     face sets every index, duration, kicker, tag and status in the product,
-     so it is seen more than any other and is not a thing to leave to chance.
-     See tokens/fonts.css for why Roboto Mono specifically. */
-  --ns-font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --ns-font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Figtree twice, not a display/text pair. One geometric grotesque across
+     the whole range, separated by WEIGHT and SIZE rather than by face —
+     quieter, and one fewer download. Heading and body therefore resolve to
+     the same stack; --font-heading survives as a name so components do not
+     all have to change and so a future display face is one token away. */
+  --ns-font-heading: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* THE LABEL VOICE — and it is Figtree too. The system ships ONE face; what
+     makes a kicker, an index, a duration or a status read as data is the
+     TREATMENT, not the family: uppercase, letter-spacing, weight 600–700, the
+     small sizes, and tabular figures (tokens/base.css and the label classes
+     set font-variant-numeric, because Figtree's default figures are
+     proportional). The token survives as a name so the 300+ places that say
+     "this is data, not prose" keep saying it in one word — and so the voice
+     can be re-pointed at a real mono again with one line if the treatment
+     ever proves too quiet. See tokens/fonts.css. */
+  --ns-font-mono: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* CODE — the one surface where a proportional face breaks the content:
+     indentation IS the syntax in a code block. NOT SHIPPED, exactly like the
+     serif below: the platform's own mono at zero bytes. */
+  --ns-font-code: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   /* The quoting register — pull-quotes, drop caps, section quotations: the
      places a page stops arguing and starts citing. NOT SHIPPED. The system
-     ships two faces, Switzer and Roboto Mono, so this token resolves to the
+     ships one face, Figtree, so this token resolves to the
      platform's own serif: Georgia where it exists, Iowan/Times otherwise. The
      register survives (a quotation still reads as a quotation) at zero bytes,
      and the trade is that the face is the reader's rather than ours — which
      matters far less for four blockquotes than it did for the mono voice that
      sets every label on every screen.
 
-     If quotations should be Switzer rather than a serif, point this at
+     If quotations should be Figtree rather than a serif, point this at
      var(--ns-font-sans) — one line, and no component changes. */
   --ns-font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   /* The subsetted Phosphor icon font. Named as a token so a component that
@@ -615,6 +630,7 @@
   --font-sans: var(--ns-font-sans);
   --font-heading: var(--ns-font-heading);
   --font-mono: var(--ns-font-mono);
+  --font-code: var(--ns-font-code);
   --font-serif: var(--ns-font-serif);
   --font-icon: var(--ns-font-icon);
   --font-icon-fill: var(--ns-font-icon-fill);
@@ -699,7 +715,7 @@
   --size-mono: 0.8125rem;    /* 13 — mono data sits with --size-small */
   --ns-tracking-label: 0.09em;
   --tracking-label: var(--ns-tracking-label);
-  /* Display/heading tracking. Switzer sets fairly tight already, so this is a
+  /* Display/heading tracking. Figtree sets fairly tight already, so this is a
      smaller correction than the previous cut needed — but large sizes still
      want closing up, because tracking is drawn for text sizes and does not
      scale down on its own. Body text is NEVER tightened; negative tracking at
@@ -746,31 +762,28 @@
   --leading-prose: var(--ns-leading-prose);
   --leading-mega: var(--ns-leading-mega);
 
-  /* Switzer has a real 500, which the previous family did not — so the ramp
-     is 400 / 500 / 600 / 700 rather than 400 / 600 / 700 / 800. Every step is
-     a weight the designer drew, not an interpolation we chose. */
+  /* Figtree has a real 500 — so the ramp is 400 / 500 / 600 / 700, and every
+     step is a weight the designer drew (the variable axis runs 300–900), not
+     an interpolation we chose. */
   --weight-heading: 700;
   --weight-semibold: 600;
   --weight-medium: 500;
-  /* THE READING WEIGHT. Switzer's Regular is properly fitted at 400 — it does
-     not render grey the way the previous Nunito-derived cut did, which is the
-     entire reason that face needed 450 ("Book"). Carrying 450 over would have
-     been cargo: an interpolation step invented to fix a problem this family
-     does not have, and half a step heavier than the designer drew.
-     See fonts/README.md § "Why body copy is 400". */
+  /* THE READING WEIGHT. Figtree's Regular is properly fitted at 400 — it does
+     not render grey, so there is no reason to invent a "Book" interpolation
+     between the drawn steps. See fonts/README.md § "Why body copy is 400". */
   --weight-body: 400;
   --weight-regular: 400;
-  /* Inline <strong> against Switzer 400 wants 600, not 700: Switzer's Bold is
-     considerably heavier than the old cut's and reads as a shout inline. */
+  /* Inline <strong> against Figtree 400 wants 600, not 700: Figtree's Bold
+     is decisive at heading sizes and reads as a shout inline. */
   --weight-body-strong: 600;
 
   /* Reading measure, as a character count rather than a width — this is the
      one place ch is the honest unit, because the constraint IS characters
      per line. --container-prose (42rem) is the layout twin: at --size-prose
-     in Switzer the two resolve to the same line, 68.6ch, which is why they
+     in Figtree the two resolve to the same line, 62ch, which is why they
      may not drift apart. Change one, recompute the other — the arithmetic and
      the caveat about ch-versus-real-characters are in tokens/layout.css. */
-  --measure-prose: 68ch;
+  --measure-prose: 62ch;
   --measure-narrow: 46ch;   /* ledes, pull-quotes, callouts */
 
   /* THREE PAIRS SHARE A VALUE ON PURPOSE. Do not "clean them up" by merging —
@@ -904,7 +917,7 @@
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   /* The `font:` shorthand cannot carry font-weight alongside the size/leading
      pair in the form we want, so the weight is its own declaration. It is
-     --weight-body = 400: Switzer's Regular is properly fitted and does not
+     --weight-body = 400: Figtree's Regular is properly fitted and does not
      render grey, which is why the 450 ("Book") step the previous
      Nunito-derived cut needed did not survive the font migration. See
      fonts/README.md § "Why body copy is 400" and the note beside
@@ -913,7 +926,7 @@
   /* Greyscale antialiasing in BOTH modes, which is a reversal.
      The old rule kept subpixel smoothing on in light mode deliberately: it
      adds roughly a quarter-step of apparent weight, and the previous
-     Nunito-derived cut needed it because its Regular read thin. Switzer does
+     Nunito-derived cut needed it because its Regular read thin. Figtree does
      not — it is a properly fitted grotesque, and at the 14px UI size this
      rule sets, that borrowed weight is what makes body copy look semi-bold on
      macOS. (The scale forks: 14 is the UI size, 17 is the reading size. This
@@ -922,7 +935,7 @@
      for. */
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: var(--weight-heading); margin: 0; text-wrap: balance; line-height: var(--leading-heading); }
-  /* Tighten only the sizes where Switzer's metrics run loose. h4+ stays
+  /* Tighten only the sizes where Figtree's metrics run loose. h4+ stays
      at natural tracking — it sits close to body size. */
   h1, h2, h3 { letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
   h4, h5, h6 { font-weight: var(--weight-semibold); }
@@ -936,7 +949,10 @@
   [hidden] { display: none !important; }
   strong, b { font-weight: var(--weight-body-strong); }
   /* Data is never proportional-figured: a column of timestamps or scores has
-     to line up, and that is a typographic property, not a table one. */
+     to line up, and that is a typographic property, not a table one. Since
+     the label voice moved onto Figtree — whose DEFAULT figures are
+     proportional — this rule is what keeps a duration column a column; the
+     face used to give it away free. */
   time, output, .ns-num, [data-numeric] { font-variant-numeric: tabular-nums; }
   * { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--color-muted) 45%, transparent) transparent; }
   ::selection { background-color: color-mix(in srgb, var(--color-brand-500) 22%, transparent); }
@@ -947,7 +963,10 @@
   a { color: var(--color-brand-600); }
   a:hover { color: var(--color-brand-500); }
   [data-theme="dark"] a { color: var(--color-brand-300); }
-  code, kbd, .ns-label { font-family: var(--font-mono); }
+  /* code gets the CODE face (platform mono — indentation is the syntax);
+     kbd and the label voice get the DATA treatment on the one shipped face. */
+  code, pre, samp { font-family: var(--font-code); }
+  kbd, .ns-label { font-family: var(--font-mono); }
 }
 
 /* Layered at the import site, not inside the file: phosphor.css is generated
@@ -7888,7 +7907,7 @@
      leaving space unused.
 
      THE TRADE IS REAL and belongs in the diff rather than in a regret later:
-     ~900px of Switzer at --size-prose is ~92ch, above the 45-90 a single
+     ~900px of Figtree at --size-prose is ~83ch, above the 45-90 a single
      column is usually held to. What buys it back is that this surface is not
      a blog post — it is a lesson read beside a curriculum rail and an ad
      column, both of which shorten the line the eye actually travels, and the
@@ -10817,7 +10836,7 @@
    markdown render correctly with no extra classes. Outside .ns-prose,
    elements stay unstyled primitives for app layouts to control.
 
-   The voice: Switzer at 700 for headings and at 400 for body at a comfortable
+   The voice: Figtree at 700 for headings and at 400 for body at a comfortable
    measure, mono for everything that is data — and the hairline doing the
    structure (blockquote edge, hr, table rules), never a background wash. */
 @layer ns-components {
@@ -11542,68 +11561,11 @@
   .ns-gate--inline .ns-gate__icon { inline-size: 2rem; block-size: 2rem; font-size: var(--size-body); }
   .ns-gate--inline .ns-gate__title { font-size: var(--size-body); }
 
-  /* ==================================================== MEMBERSHIP TIERS ====
-     Ghost's tiers, as a real price table. Distinct from .ns-tiers in
-     training.css, and the difference is not cosmetic: that one is a
-     two-column FREE-vs-PRO argument on a curriculum page, with no prices and
-     no billing period. This is the publication's checkout — three tiers, a
-     monthly/yearly switch, and a price that changes when you flip it.
-
-     The yearly saving is stated as a NUMBER, never as "save up to 20%": a
-     percentage the reader has to apply to a figure they have not seen yet is
-     a discount nobody can evaluate. */
-  .ns-plans { display: grid; gap: var(--space-5); margin-block: var(--stack-md); }
-  /* align-items: center, not the default stretch — the switch is a flex ITEM
-     here, and a stretched fieldset drags the segmented control to the full
-     height of the row, which renders the two options as tall columns. */
-  .ns-plans__switch { display: flex; justify-content: center; align-items: center; }
-  .ns-plans__grid {
-    display: grid; gap: var(--gap-grid);
-    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
-  }
-  .ns-plan {
-    display: flex; flex-direction: column; gap: var(--space-3);
-    padding: var(--pad-card-lg);
-    border: 1px solid var(--color-border); border-radius: var(--radius-card);
-    background: var(--color-surface);
-  }
-  /* The recommended tier is marked by its leading edge — the system's
-     standing "this one" device — not by a fill, a scale-up or a shadow. */
-  .ns-plan--featured { border-inline-start: 3px solid var(--color-featured-ink); }
-  /* "Free", "Pro", "Team" are NAMES. Mono is for values — see the note beside
-     .ns-quote figcaption in sections.css. */
-  .ns-plan__name {
-    display: inline-flex; align-items: center; gap: var(--space-2);
-    font-family: var(--font-heading); font-size: var(--size-prose);
-    font-weight: var(--weight-semibold); color: var(--color-muted);
-  }
-  .ns-plan--featured .ns-plan__name { color: var(--color-featured-ink); }
-  .ns-plan__price {
-    display: flex; align-items: baseline; gap: var(--space-2);
-    font-family: var(--font-heading); font-size: var(--size-h2);
-    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
-    color: var(--color-ink); font-variant-numeric: tabular-nums;
-  }
-  .ns-plan__period {
-    font-family: var(--font-mono); font-size: var(--size-label);
-    font-weight: var(--weight-regular); letter-spacing: var(--tracking-label);
-    text-transform: uppercase; color: var(--color-label);
-  }
-  .ns-plan__save {
-    align-self: flex-start;
-    font-family: var(--font-mono); font-size: var(--size-label);
-    letter-spacing: var(--tracking-label); text-transform: uppercase;
-    color: var(--color-success-ink);
-  }
-  .ns-plan__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); text-wrap: pretty; }
-  .ns-plan__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--size-prose-small); }
-  .ns-plan__list li { display: flex; gap: var(--space-2); align-items: flex-start; color: var(--color-muted); }
-  .ns-plan__list i { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-success); }
-  .ns-plan__foot { margin-block-start: auto; padding-block-start: var(--space-2); }
-  /* The tier a member is already on states it instead of selling it. A
-     checkout that offers to sell you what you have bought is a bug. */
-  .ns-plan[data-state="current"] { border-color: var(--color-success); }
-  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn { pointer-events: none; opacity: var(--opacity-disabled); }
+  /* Membership tiers (.ns-plans / .ns-plan) moved to content/sections.css:
+     a price table is a MARKETING SECTION both products render, and filing it
+     under the Ghost integration hid it from everyone who was not building a
+     Ghost page — the same wrong-drawer bug .ns-stack had in a11y.css. Ghost
+     only populates it (data-portal on the buttons, data-state on the card). */
 
   /* ====================================================== MEMBER STATUS ====
      The strip that says who Ghost thinks you are, and what that gets you. It
@@ -11734,7 +11696,7 @@
     border: 1px solid var(--code-rule); border-radius: var(--radius-card);
     background: var(--code-surface); color: var(--code-ink);
     overflow: hidden;
-    font-family: var(--font-mono);
+    font-family: var(--font-code);
   }
   .ns-code--dark, [data-theme="dark"] .ns-code {
     --code-surface: var(--color-brand-900);
@@ -12021,7 +11983,7 @@
   /* --- Inline code --------------------------------------------------------
      The one-liner sibling. Same mono, same sunken chip, no chrome. */
   .ns-code-inline {
-    font-family: var(--font-mono); font-size: 0.875em;
+    font-family: var(--font-code); font-size: 0.875em;
     padding: 0 var(--space-1);
     border: 1px solid var(--color-border); border-radius: var(--radius-sm);
     background: var(--color-surface-sunken); color: var(--color-ink);
@@ -12398,7 +12360,7 @@
      a fourth voice: a pull-quote is the page stopping its own argument to
      quote someone else. Set in the same grotesque as the argument it never
      quite reads as a different speaker — it reads as a bigger heading. The
-     tracking goes with it: --tracking-tight exists to correct Switzer's
+     tracking goes with it: --tracking-tight exists to correct Figtree's
      loose display metrics, and applying it to a serif that is already
      correctly fitted just closes the counters. */
   .ns-pullquote {
@@ -12438,6 +12400,7 @@
   .ns-label {
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+    font-variant-numeric: tabular-nums;
   }
   /* A block of records — lesson rows, a log, a run of timestamps. The label
      is one line and shouts; this is several lines and does not, so it keeps
@@ -12446,6 +12409,7 @@
   .ns-record {
     font-family: var(--font-mono); font-size: var(--size-mono);
     line-height: var(--leading-body); color: var(--color-muted);
+    letter-spacing: var(--tracking-wide); font-variant-numeric: tabular-nums;
   }
 }
 /* NS Design System — page motion.
@@ -17603,51 +17567,56 @@
      carries the brand. Making them look alike would be a design that argues
      the opposite of the copy.
 
+     Named .ns-delta, and it was .ns-compare once — which collided with the
+     content-block compare in content.css: two components, one class, and
+     whichever file loaded last won. An article's Flow-vs-Apex table was
+     rendering on this band's three-column before/seam/after grid.
+
      For a technical curriculum this is the most honest persuasive shape
      available, because both sides can be real code. */
-  .ns-compare {
+  .ns-delta {
     display: grid; gap: var(--space-4);
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: stretch;
   }
-  .ns-compare__side {
+  .ns-delta__side {
     display: flex; flex-direction: column; gap: var(--space-3);
     padding: var(--pad-card);
     border: 1px solid var(--color-border); border-radius: var(--radius-card);
     min-inline-size: 0;
   }
-  .ns-compare__side--before {
+  .ns-delta__side--before {
     background: var(--color-surface-sunken);
     color: var(--color-muted);
   }
-  .ns-compare__side--after {
+  .ns-delta__side--after {
     background: var(--color-surface-raised);
     /* The only accent on the band. It marks the destination, so it goes on
        exactly one of the two panels — an accent on both would be decoration. */
     box-shadow: inset 2px 0 0 var(--color-brand-500);
   }
-  .ns-compare__label {
+  .ns-delta__label {
     display: flex; align-items: center; gap: var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
-  .ns-compare__side--after .ns-compare__label { color: var(--color-brand-600); }
-  [data-theme="dark"] .ns-compare__side--after .ns-compare__label { color: var(--color-brand-300); }
-  .ns-compare__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); margin: 0; }
-  .ns-compare__side--after .ns-compare__text { color: var(--color-ink); }
+  .ns-delta__side--after .ns-delta__label { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-delta__side--after .ns-delta__label { color: var(--color-brand-300); }
+  .ns-delta__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); margin: 0; }
+  .ns-delta__side--after .ns-delta__text { color: var(--color-ink); }
   /* The seam. A column of its own rather than a pseudo-element on either
      panel, because it belongs to NEITHER — it is the transition, and giving
      it to one side makes that side taller than the other at some widths. */
-  .ns-compare__seam {
+  .ns-delta__seam {
     display: grid; place-items: center;
     color: var(--color-label); font-size: var(--size-h4);
   }
   @media (max-width: 47.999rem) {
     /* Stacked, and the arrow turns to match. An arrow still pointing right
        when the panels are stacked points at the page margin. */
-    .ns-compare { grid-template-columns: minmax(0, 1fr); }
-    .ns-compare__seam { rotate: 90deg; }
+    .ns-delta { grid-template-columns: minmax(0, 1fr); }
+    .ns-delta__seam { rotate: 90deg; }
   }
 
   /* --- 2. The router -------------------------------------------------------
@@ -18056,6 +18025,69 @@
     .ns-maker__avatar { grid-row: auto; }
     .ns-maker__stats { grid-column: 1; }
   }
+
+  /* ==================================================== MEMBERSHIP TIERS ====
+     A real price table — populated by Ghost's tiers on the theme, hand-written on the LMS. Distinct from .ns-tiers in
+     training.css, and the difference is not cosmetic: that one is a
+     two-column FREE-vs-PRO argument on a curriculum page, with no prices and
+     no billing period. This is the publication's checkout — three tiers, a
+     monthly/yearly switch, and a price that changes when you flip it.
+
+     The yearly saving is stated as a NUMBER, never as "save up to 20%": a
+     percentage the reader has to apply to a figure they have not seen yet is
+     a discount nobody can evaluate. */
+  .ns-plans { display: grid; gap: var(--space-5); margin-block: var(--stack-md); }
+  /* align-items: center, not the default stretch — the switch is a flex ITEM
+     here, and a stretched fieldset drags the segmented control to the full
+     height of the row, which renders the two options as tall columns. */
+  .ns-plans__switch { display: flex; justify-content: center; align-items: center; }
+  .ns-plans__grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+  .ns-plan {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  /* The recommended tier is marked by its leading edge — the system's
+     standing "this one" device — not by a fill, a scale-up or a shadow. */
+  .ns-plan--featured { border-inline-start: 3px solid var(--color-featured-ink); }
+  /* "Free", "Pro", "Team" are NAMES. Mono is for values — see the note beside
+     .ns-quote figcaption in sections.css. */
+  .ns-plan__name {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-heading); font-size: var(--size-prose);
+    font-weight: var(--weight-semibold); color: var(--color-muted);
+  }
+  .ns-plan--featured .ns-plan__name { color: var(--color-featured-ink); }
+  .ns-plan__price {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    font-family: var(--font-heading); font-size: var(--size-h2);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    color: var(--color-ink); font-variant-numeric: tabular-nums;
+  }
+  .ns-plan__period {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-regular); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-plan__save {
+    align-self: flex-start;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-success-ink);
+  }
+  .ns-plan__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); text-wrap: pretty; }
+  .ns-plan__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--size-prose-small); }
+  .ns-plan__list li { display: flex; gap: var(--space-2); align-items: flex-start; color: var(--color-muted); }
+  .ns-plan__list i { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-success); }
+  .ns-plan__foot { margin-block-start: auto; padding-block-start: var(--space-2); }
+  /* The tier a member is already on states it instead of selling it. A
+     checkout that offers to sell you what you have bought is a bug. */
+  .ns-plan[data-state="current"] { border-color: var(--color-success); }
+  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn { pointer-events: none; opacity: var(--opacity-disabled); }
 
   /* ===================================================== THE SPONSOR ASK ====
      The inbound half of the sponsors band: not a placement, a solicitation.
@@ -19390,17 +19422,22 @@
   .ns-dropzone__hint { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
   .ns-dropzone--compact { padding: var(--space-4) var(--space-5); flex-direction: row; }
 
-  /* An uploaded file: terminal row — mono name, mono size, status, remove. */
-  .ns-file {
+  /* An uploaded file: terminal row — mono name, mono size, status, remove.
+     Named .ns-upload, and it was .ns-file once — which collided with the
+     reader-facing download card of the same name in integrations/ghost.css,
+     whose padding and margins (loading later) restyled every row here. An
+     upload row and a download card are different components; now they have
+     different names. */
+  .ns-upload {
     display: flex; align-items: center; gap: var(--space-3);
     padding: var(--space-2) var(--space-3);
     border: 1px solid var(--color-border); border-radius: var(--radius-btn);
     font-family: var(--font-mono); font-size: var(--size-label);
   }
-  .ns-file__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ns-file__size { color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .ns-file__remove { margin-inline-start: auto; }
-  .ns-file + .ns-file { margin-block-start: var(--space-2); }
+  .ns-upload__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-upload__size { color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ns-upload__remove { margin-inline-start: auto; }
+  .ns-upload + .ns-upload { margin-block-start: var(--space-2); }
 
   /* --- Tag input ----------------------------------------------------------
      Chips inside an input-shaped box; the text entry is a bare input at the

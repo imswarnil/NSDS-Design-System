@@ -775,51 +775,56 @@
      carries the brand. Making them look alike would be a design that argues
      the opposite of the copy.
 
+     Named .ns-delta, and it was .ns-compare once — which collided with the
+     content-block compare in content.css: two components, one class, and
+     whichever file loaded last won. An article's Flow-vs-Apex table was
+     rendering on this band's three-column before/seam/after grid.
+
      For a technical curriculum this is the most honest persuasive shape
      available, because both sides can be real code. */
-  .ns-compare {
+  .ns-delta {
     display: grid; gap: var(--space-4);
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: stretch;
   }
-  .ns-compare__side {
+  .ns-delta__side {
     display: flex; flex-direction: column; gap: var(--space-3);
     padding: var(--pad-card);
     border: 1px solid var(--color-border); border-radius: var(--radius-card);
     min-inline-size: 0;
   }
-  .ns-compare__side--before {
+  .ns-delta__side--before {
     background: var(--color-surface-sunken);
     color: var(--color-muted);
   }
-  .ns-compare__side--after {
+  .ns-delta__side--after {
     background: var(--color-surface-raised);
     /* The only accent on the band. It marks the destination, so it goes on
        exactly one of the two panels — an accent on both would be decoration. */
     box-shadow: inset 2px 0 0 var(--color-brand-500);
   }
-  .ns-compare__label {
+  .ns-delta__label {
     display: flex; align-items: center; gap: var(--space-2);
     font-family: var(--font-mono); font-size: var(--size-label);
     font-weight: var(--weight-label); letter-spacing: var(--tracking-label);
     text-transform: uppercase; color: var(--color-label);
   }
-  .ns-compare__side--after .ns-compare__label { color: var(--color-brand-600); }
-  [data-theme="dark"] .ns-compare__side--after .ns-compare__label { color: var(--color-brand-300); }
-  .ns-compare__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); margin: 0; }
-  .ns-compare__side--after .ns-compare__text { color: var(--color-ink); }
+  .ns-delta__side--after .ns-delta__label { color: var(--color-brand-600); }
+  [data-theme="dark"] .ns-delta__side--after .ns-delta__label { color: var(--color-brand-300); }
+  .ns-delta__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); margin: 0; }
+  .ns-delta__side--after .ns-delta__text { color: var(--color-ink); }
   /* The seam. A column of its own rather than a pseudo-element on either
      panel, because it belongs to NEITHER — it is the transition, and giving
      it to one side makes that side taller than the other at some widths. */
-  .ns-compare__seam {
+  .ns-delta__seam {
     display: grid; place-items: center;
     color: var(--color-label); font-size: var(--size-h4);
   }
   @media (max-width: 47.999rem) {
     /* Stacked, and the arrow turns to match. An arrow still pointing right
        when the panels are stacked points at the page margin. */
-    .ns-compare { grid-template-columns: minmax(0, 1fr); }
-    .ns-compare__seam { rotate: 90deg; }
+    .ns-delta { grid-template-columns: minmax(0, 1fr); }
+    .ns-delta__seam { rotate: 90deg; }
   }
 
   /* --- 2. The router -------------------------------------------------------
@@ -1228,6 +1233,69 @@
     .ns-maker__avatar { grid-row: auto; }
     .ns-maker__stats { grid-column: 1; }
   }
+
+  /* ==================================================== MEMBERSHIP TIERS ====
+     A real price table — populated by Ghost's tiers on the theme, hand-written on the LMS. Distinct from .ns-tiers in
+     training.css, and the difference is not cosmetic: that one is a
+     two-column FREE-vs-PRO argument on a curriculum page, with no prices and
+     no billing period. This is the publication's checkout — three tiers, a
+     monthly/yearly switch, and a price that changes when you flip it.
+
+     The yearly saving is stated as a NUMBER, never as "save up to 20%": a
+     percentage the reader has to apply to a figure they have not seen yet is
+     a discount nobody can evaluate. */
+  .ns-plans { display: grid; gap: var(--space-5); margin-block: var(--stack-md); }
+  /* align-items: center, not the default stretch — the switch is a flex ITEM
+     here, and a stretched fieldset drags the segmented control to the full
+     height of the row, which renders the two options as tall columns. */
+  .ns-plans__switch { display: flex; justify-content: center; align-items: center; }
+  .ns-plans__grid {
+    display: grid; gap: var(--gap-grid);
+    grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+  }
+  .ns-plan {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--pad-card-lg);
+    border: 1px solid var(--color-border); border-radius: var(--radius-card);
+    background: var(--color-surface);
+  }
+  /* The recommended tier is marked by its leading edge — the system's
+     standing "this one" device — not by a fill, a scale-up or a shadow. */
+  .ns-plan--featured { border-inline-start: 3px solid var(--color-featured-ink); }
+  /* "Free", "Pro", "Team" are NAMES. Mono is for values — see the note beside
+     .ns-quote figcaption in sections.css. */
+  .ns-plan__name {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    font-family: var(--font-heading); font-size: var(--size-prose);
+    font-weight: var(--weight-semibold); color: var(--color-muted);
+  }
+  .ns-plan--featured .ns-plan__name { color: var(--color-featured-ink); }
+  .ns-plan__price {
+    display: flex; align-items: baseline; gap: var(--space-2);
+    font-family: var(--font-heading); font-size: var(--size-h2);
+    font-weight: var(--weight-heading); letter-spacing: var(--tracking-tight);
+    color: var(--color-ink); font-variant-numeric: tabular-nums;
+  }
+  .ns-plan__period {
+    font-family: var(--font-mono); font-size: var(--size-label);
+    font-weight: var(--weight-regular); letter-spacing: var(--tracking-label);
+    text-transform: uppercase; color: var(--color-label);
+  }
+  .ns-plan__save {
+    align-self: flex-start;
+    font-family: var(--font-mono); font-size: var(--size-label);
+    letter-spacing: var(--tracking-label); text-transform: uppercase;
+    color: var(--color-success-ink);
+  }
+  .ns-plan__text { font-size: var(--size-prose-small); line-height: var(--leading-snug); color: var(--color-muted); text-wrap: pretty; }
+  .ns-plan__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: var(--size-prose-small); }
+  .ns-plan__list li { display: flex; gap: var(--space-2); align-items: flex-start; color: var(--color-muted); }
+  .ns-plan__list i { flex: none; margin-block-start: 0.15em; /* lint-ok: optical alignment to cap height, relative to font-size not the spacing scale */ color: var(--color-success); }
+  .ns-plan__foot { margin-block-start: auto; padding-block-start: var(--space-2); }
+  /* The tier a member is already on states it instead of selling it. A
+     checkout that offers to sell you what you have bought is a bug. */
+  .ns-plan[data-state="current"] { border-color: var(--color-success); }
+  .ns-plan[data-state="current"] .ns-plan__foot .ns-btn { pointer-events: none; opacity: var(--opacity-disabled); }
 
   /* ===================================================== THE SPONSOR ASK ====
      The inbound half of the sponsors band: not a placement, a solicitation.

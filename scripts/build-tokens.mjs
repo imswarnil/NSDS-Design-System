@@ -280,6 +280,8 @@ const twLines = [
   `  --font-sans: ${lit("--ns-font-sans")};`,
   `  --font-heading: ${lit("--ns-font-heading")};`,
   `  --font-mono: ${lit("--ns-font-mono")};`,
+  /* Code borrows the platform mono at zero bytes — see tokens/fonts.css. */
+  `  --font-code: ${lit("--ns-font-code")};`,
   /* The editorial voice. Fallback-only by design — see tokens/typography.css. */
   `  --font-serif: ${lit("--ns-font-serif")};`,
   "",
@@ -337,7 +339,7 @@ const twLines = [
   `  --text-data: ${lit("--size-label")};`,
   "  --text-data--line-height: 1.4;",
   "",
-  /* 400 is the READING weight — Switzer's Regular is properly fitted and does
+  /* 400 is the READING weight — Figtree's Regular is properly fitted and does
      not render grey, which is why the 450 ("Book") step the previous cut
      needed did not survive the font migration. See fonts/README.md § "Why
      body copy is 400". Bridged because it was unreachable as a utility, which

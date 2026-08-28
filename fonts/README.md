@@ -1,125 +1,97 @@
 # Fonts
 
-Two shipped faces. 67 KB total.
+**One shipped face. ~62 KB total, in four files.**
 
 | role | face | file | axis | size |
 |---|---|---|---|---|
-| sans — interface, reading **and** quotations | **Switzer** | `switzer-var-latin.woff2` | `wght 100–900` | 29 KB |
-| mono — data, labels, code | **Roboto Mono** | `roboto-mono-var-latin.woff2` | `wght 100–700` | 37 KB |
+| sans — interface, reading **and** the data voice | **Figtree** | `figtree-var-latin.woff2` | `wght 300–900` | 20 KB |
+| — latin-extended coverage | Figtree | `figtree-var-latin-ext.woff2` | `wght 300–900` | 10 KB |
+| — italic | Figtree | `figtree-italic-var-latin.woff2` | `wght 300–900` | 21 KB |
+| — italic, latin-ext | Figtree | `figtree-italic-var-latin-ext.woff2` | `wght 300–900` | 10 KB |
+| code — `pre`, `code`, the `.ns-code` component | *platform mono* | — not shipped — | — | 0 KB |
 | serif — quotations | *platform serif* | — not shipped — | — | 0 KB |
 
-Switzer is an [Indian Type Foundry](https://www.indiantypefoundry.com) face
-from [Fontshare](https://www.fontshare.com); Roboto Mono is the Roboto Mono
-Project Authors', under the SIL Open Font Licence 1.1 (`licences/`). Both are
-latin-subset variable woff2, self-hosted — nothing is fetched from a
-third-party CDN at run time.
+Figtree is Erik Kennedy's geometric grotesque, under the **SIL Open Font
+Licence 1.1** (`licences/OFL-figtree.txt`, which must travel with the files).
+Variable woff2, self-hosted — nothing is fetched from a third-party CDN at run
+time. Every weight from Light 300 to Black 900 is one file per style; the
+latin-ext and italic files load only when a page actually uses those
+characters, because the `@font-face` rules carry `unicode-range`.
 
-## Licence
+## Why one face, not two
 
-**Fontshare Free Font EULA** — `FONTSHARE-EULA.txt`, which must travel with
-Switzer. In short: free for personal *and* commercial use,
-unlimited time, any medium (print, web, mobile, apps, broadcast), any number of
-devices, and self-hosting is explicitly provided for. The fonts remain ITF's
-intellectual property; you may not sell or redistribute the font software
-itself.
+The system used to ship a pair — Switzer for words, Roboto Mono for data —
+and the mono family was doing a job that treatment does better. The label
+voice was never really "monospace": it was **uppercase, tracked, bold, small
+and tabular**, and the family was merely the loudest of those five signals.
 
-**SIL Open Font Licence 1.1** — `licences/roboto-mono-OFL.txt`, which must
-travel with Roboto Mono on the same terms: use and self-host freely, including
-commercially, but ship the licence with the file.
+So the data voice is now a **recipe**, not a font:
 
-That last point is the one that matters here: this repository redistributes
-font files as part of a design system, so both licences ship alongside them and
-the attribution stays in this file.
+```
+uppercase + letter-spacing (--tracking-label) + weight 600–700
++ --size-label / --size-mono + font-variant-numeric: tabular-nums
+```
 
-## Why one sans, not a display/text pair
+`--font-mono` survives as a token name — the three-hundred-odd places that say
+"this is data, not prose" keep saying it in one word — it simply resolves to
+Figtree. If the treatment ever proves too quiet, pointing that one token back
+at a real mono restores the old voice with no component changes.
 
-The previous family ran two cuts — one to speak, one to explain — and the seam
-between them had to be managed at every size: two sets of metrics, two
-optical weights that meant different things, and a heading that never quite
-sat on the same rhythm as the paragraph under it.
+**Tabular figures are now opt-in, and the system opts in.** Roboto Mono
+aligned digit columns for free; Figtree's default figures are proportional
+(right for prose, wrong for a duration column). Figtree carries the `tnum`
+feature, and `tokens/base.css` plus the label classes (`.ns-label`,
+`.ns-record`, `time`, `output`, `[data-numeric]`) apply it.
 
-Switzer covers the whole range on its own. Heading and body are separated by
-**weight and size**, not by face, which is quieter, one fewer download, and
-removes an entire class of "why does this heading look wrong at 20px" bug.
+## Why heading and body are the same stack
 
-`--font-heading` still exists as a token name — components reference it, and a
-future display face is one token away — it simply resolves to the same stack.
+Heading and body are separated by **weight and size**, not by face — quieter,
+one fewer seam to manage, and `--font-heading` still exists as a token so a
+future display face is one edit away.
 
 ## Why body copy is 400
 
-The previous family was a Nunito-derived cut whose true Regular rendered
-*grey* rather than black at reading sizes, so this system set body copy at
-**450 ("Book")** — one interpolation step up the `wght` axis, invented
-specifically to fix that face's problem.
+Figtree's Regular is properly fitted at reading sizes — it does not render
+grey, so there is no reason to invent a "Book" interpolation between the drawn
+steps. The ramp is `400 / 500 / 600 / 700`, every step a weight the designer
+drew; the variable axis (300–900) leaves Light and Black available for display
+work without another download.
 
-Switzer does not have that problem. Its Regular is properly fitted, and
-carrying 450 across would have been cargo: half a step heavier than the
-designer drew, justified by a reason nobody could still state.
+## Why code is not shipped
 
-Switzer also has a real **500**, which the old family lacked. So the ramp is
-`400 / 500 / 600 / 700` and every step is a weight that was actually drawn —
-no interpolations of our own choosing.
+Indentation *is* the syntax in a code block, and a proportional face destroys
+it — so code is the one surface that stays monospace. `--font-code` resolves
+to the platform's own mono (SF Mono, Consolas, …) at zero bytes: the exact
+trade `--font-serif` makes for quotations. A code block is a handful of
+elements on the pages that have one; the label voice is hundreds of elements
+on every screen. Different exposure, different answer — which is the same
+argument that used to justify *shipping* the mono, inverted by the label voice
+no longer needing a mono at all.
 
 ## Why no serif is shipped
 
-The editorial register — pull-quotes, drop caps, section quotations — used to
-run on **Sentient**, a 40 KB serif carrying perhaps four elements on a page.
-It has been retired. `--font-serif` now resolves to the platform's own serif
-(Georgia, then Iowan Old Style, then Times), so a quotation still reads as a
-quotation without a download, and the system ships exactly two faces.
+Pull-quotes, drop caps and section quotations resolve to the platform's serif
+(Georgia, then Iowan Old Style, then Times). A quotation still reads as a
+quotation without a download. If the quoting voice should be Figtree instead,
+point `--ns-font-serif` at `var(--ns-font-sans)` — one line in
+`tokens/typography.css`.
 
-The asymmetry with mono below is deliberate and worth being explicit about:
-mono is *structural* and appears hundreds of times on every screen, so leaving
-it to the reader's machine meant leaving the most-repeated voice in the product
-to chance. A blockquote is a handful of elements on a handful of pages, and
-Georgia is a perfectly good serif. Different exposure, different answer.
+## Sources and re-cutting
 
-If the quoting voice should be Switzer rather than a serif, point
-`--ns-font-serif` at `var(--ns-font-sans)` — one line in
-`tokens/typography.css`, no component changes.
-
-## Why mono is shipped
-
-Monospace is structural in this system (Principle 2): every index, duration,
-timestamp, status, tag and kicker runs through it, and that split is what makes
-a list read as data and a paragraph read as writing.
-
-Which means it is the face the reader sees **most** — far more often than a
-code block. Borrowing it from the OS made the most-repeated voice in the
-interface SF Mono on a Mac, Consolas on Windows and a lottery on Linux: three
-different products, none of them chosen, and each drawn for 13px code rather
-than for the 11px tracked uppercase this system actually sets.
-
-**Roboto Mono** is what it runs on: plain, wide-set and unmannered, with none
-of the personality a coding face carries — which is the point, because this is
-a face doing structural work behind `01`, `21:15` and `// Getting started`
-several hundred times a page, not a face anyone is meant to admire. It is also
-the mono most readers have already seen ten thousand times, so it disappears.
-37 KB — the one download here that earns itself on every screen rather than
-only on the pages with code.
-
-The old consequence — that a mono run is a different width on every platform,
-so nothing may be laid out against one — no longer applies: the face is the
-same everywhere now. The `font-variant-numeric: tabular-nums` in
-`tokens/base.css` still keeps digit columns aligned.
-
-## Subsetting
-
-Both files are subset to latin plus the punctuation, arrows and symbols the UI
-actually draws. To re-cut with wider coverage:
+The four woff2s are Google Fonts' own latin / latin-ext splits of the variable
+cut (v9), fetched from `fonts.gstatic.com` and committed here; `OFL.txt` comes
+from [google/fonts](https://github.com/google/fonts) at `ofl/figtree/`. For a
+different subset, start from `Figtree[wght].ttf` in that repo:
 
 ```sh
-pyftsubset Switzer-Variable.woff2 \
-  --output-file=switzer-var-latin.woff2 --flavor=woff2 \
+pyftsubset "Figtree[wght].ttf" \
+  --output-file=figtree-var-latin.woff2 --flavor=woff2 \
   --layout-features='*' --no-hinting --desubroutinize \
-  --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
+  --unicodes="U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD"
 ```
 
-Switzer's source comes from the "Download family" zip on its Fontshare page —
-the variable cut is at `Switzer_Complete/Fonts/WEB/fonts/Switzer-Variable.woff2`.
-Roboto Mono's is `ofl/robotomono/RobotoMono[wght].ttf` in
-[google/fonts](https://github.com/google/fonts), which is also where `OFL.txt`
-came from.
+Keep `--layout-features='*'` — dropping it strips `tnum`, and with it every
+aligned digit column in the product.
 
-`@font-face` declarations live in `tokens/fonts.css`; the stacks and the scale
-live in `tokens/typography.css`.
+`@font-face` declarations live in `src/tokens/fonts.css`; the stacks and the
+scale live in `src/tokens/typography.css`.

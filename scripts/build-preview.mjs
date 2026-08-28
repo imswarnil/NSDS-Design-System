@@ -199,7 +199,7 @@ ${PROSE}
     <details class="code"><summary>markup</summary><pre><code>${esc(PROSE)}</code></pre></details>
     <p class="sub">What each element does</p>
     <div class="use-grid"><div><ul>
-      <li><strong>Headings</strong> — Switzer at 700, air above, little below: a heading belongs to what follows</li>
+      <li><strong>Headings</strong> — Figtree at 700, air above, little below: a heading belongs to what follows</li>
       <li><strong>Links</strong> — brand blue, hairline underline solidifying on hover</li>
       <li><strong>ul</strong> — square markers (sharp geometry, not the default disc); <strong>ol</strong> — mono numerals</li>
       <li><strong>blockquote</strong> — the 2px brand edge, mono attribution; never an italic wash</li>
@@ -226,10 +226,10 @@ ${PROSE}
     <p class="sub">Everything else</p>
     <p class="variant-note">Chart colors live in the <a href="./chart-intro.html">Charts section</a> — seven categorical slots plus sequential and diverging ramps, CI-checked for colorblind separation and contrast in both modes. <code>--color-accent-*</code> is a deprecated alias of brand blue; new code never references it.</p>
     ${spec(["guidelines/colors-brand.card.html", "guidelines/colors-semantic.card.html", "guidelines/colors-status.card.html", "guidelines/colors-dark-mode.card.html"])}` },
-  { id: "type", title: "Typography", lede: "Two self-hosted faces. <strong>Switzer</strong> is the whole interface AND the reading layer \u2014 one grotesque separated by weight and size rather than a display/text pair, and it sets the quotations too; <strong>Roboto Mono</strong> is the data voice, and it is shipped rather than borrowed from the OS because it sets every index, duration, tag and status on every screen. Switzer is an Indian Type Foundry cut from <a href=\"https://www.fontshare.com\">Fontshare</a>, Roboto Mono is under the SIL OFL \u2014 <strong>67&thinsp;KB for the pair</strong>, licences in <code>fonts/</code>. The scale <strong>forks</strong> on the axis that matters: scanned versus read. UI copy \u2014 rails, tables, admin, player chrome \u2014 is <strong>14&nbsp;px</strong> on the compact scale after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>, because this is a product with an app inside it; an <em>article</em> reads at <strong>17&nbsp;px</strong> with its own 1.7 leading, because a 2,000-word essay is not a table row. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
-    <p class="sub">The pairing</p>
+  { id: "type", title: "Typography", lede: "One self-hosted face. <strong>Figtree</strong> is the whole system \u2014 headings, prose, controls AND the data voice, one geometric grotesque separated by weight, size and treatment rather than by family. The label voice is a <em>recipe</em>: uppercase, tracked, bold, small, tabular figures. Code and quotations borrow the platform's own mono and serif at zero bytes. Figtree is Erik Kennedy's, under the SIL OFL \u2014 <strong>~62&thinsp;KB in four variable woff2s</strong> (normal + italic, latin + ext), licence in <code>fonts/</code>. The scale <strong>forks</strong> on the axis that matters: scanned versus read. UI copy \u2014 rails, tables, admin, player chrome \u2014 is <strong>14&nbsp;px</strong> on the compact scale after <a href=\"https://github.com/openclaw/carapace\">openclaw/carapace</a>, because this is a product with an app inside it; an <em>article</em> reads at <strong>17&nbsp;px</strong> with its own 1.7 leading, because a 2,000-word essay is not a table row. This page is the whole typographic contract: the scale, the reading weight, the effects, the voice, and the accessibility floor. <a href=\"./demo-type-specimen.html\">Open the full specimen \u2197</a>", body: () => `
+    <p class="sub">One face, three voices</p>
     <div class="demo demo--stack" style="gap:var(--space-2)">
-      <span class="ns-label">// Switzer 700 &middot; heading</span>
+      <span class="ns-label">// Figtree 700 &middot; heading</span>
       <span style="font-family:var(--font-heading);font-size:var(--size-h1);font-weight:var(--weight-heading);letter-spacing:var(--tracking-tight);line-height:var(--leading-tight)">Build on the platform, not around it</span>
       <span style="font-family:var(--font-sans);font-size:var(--size-body);color:var(--color-muted);max-inline-size:var(--measure-prose)">The same face carries the reading layer — lesson copy, descriptions, and every sentence longer than a label. Nothing changes but weight and size, which is why the page reads as one voice rather than two negotiating.</span>
       <span style="font-family:var(--font-mono);font-size:var(--size-mono)">01 &middot; APEX BASICS &middot; 12:40 &middot; <span style="color:var(--color-success-ink)">COMPLETE</span></span>
@@ -261,7 +261,7 @@ ${PROSE}
     <p class="sub">The three voices</p>
     <div class="demo demo--stack" style="gap:var(--space-4)">
       <div>
-        <span class="ns-label">Switzer &middot; wght 100&ndash;900 &middot; shipped, 29&thinsp;KB</span>
+        <span class="ns-label">Figtree &middot; wght 300&ndash;900 variable &middot; shipped</span>
         <div style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:700;letter-spacing:var(--tracking-tight)">700 — hero and h1&ndash;h3</div>
         <div style="font-family:var(--font-heading);font-size:var(--size-h3);font-weight:600">600 — h4, card titles, buttons, inline emphasis</div>
         <div style="font-family:var(--font-heading);font-size:var(--size-h4);font-weight:500">500 — nav links, tab labels</div>
@@ -272,15 +272,19 @@ ${PROSE}
         <blockquote class="ns-pullquote" style="margin-block-start:var(--space-2)">The hairline is the structure. Everything else is negotiable.</blockquote>
       </div>
       <div>
-        <span class="ns-label">Roboto Mono &middot; wght 100&ndash;700 &middot; shipped, 37&thinsp;KB &middot; the data voice</span>
-        <div style="font-family:var(--font-mono);font-size:var(--size-mono);font-weight:400">400 — code blocks, inline code, timestamps</div>
+        <span class="ns-label">the data voice &middot; same Figtree, different treatment</span>
+        <div style="font-family:var(--font-mono);font-size:var(--size-mono);font-variant-numeric:tabular-nums;letter-spacing:var(--tracking-wide)">01 &middot; 12:40 &middot; 2026-08-28 — regular-case records, tracked and tabular</div>
         <div class="ns-label" style="font-size:var(--size-label)">700 — kickers &middot; indexes &middot; status labels</div>
       </div>
+      <div>
+        <span class="ns-label">code &middot; the platform mono &middot; NOT shipped</span>
+        <div style="font-family:var(--font-code);font-size:var(--size-mono)">if (Trigger.isBefore) &#123; validate(records); &#125;</div>
+      </div>
     </div>
-    <p class="variant-note">Mono is the material Principle&nbsp;2 is made of — every index, duration, timestamp and status runs through it — and it is still the one face this system does not ship. Those runs are short, tracked and uppercase, and the reader&rsquo;s own console face is not merely adequate there, it is more familiar than anything we could send them. The consequence to know: mono is SF&nbsp;Mono on macOS, Consolas on Windows, and whatever the distro sets on Linux, so a mono run is <em>not</em> an identical width across platforms. The <code>tabular-nums</code> in <code>tokens/base.css</code> is what keeps digits aligned.</p>
+    <p class="variant-note">The data voice is the material Principle&nbsp;2 is made of — every index, duration, timestamp and status runs through it — and it is a <strong>treatment, not a family</strong>: uppercase, <code>--tracking-label</code>, weight 600&ndash;700, the small sizes, and <code>font-variant-numeric:&nbsp;tabular-nums</code> (Figtree&rsquo;s default figures are proportional, so <code>tokens/base.css</code> and the label classes opt in — that is what keeps a duration column a column). <code>--font-mono</code> survives as the token name so the three-hundred-odd call sites keep saying &ldquo;this is data&rdquo; in one word. Code is the exception: indentation <em>is</em> the syntax, so <code>--font-code</code> resolves to the reader&rsquo;s own SF&nbsp;Mono&thinsp;/&thinsp;Consolas at zero bytes — the same trade the serif makes.</p>
 
     <p class="sub">Why body copy is 400</p>
-    <p class="variant-note">The previous family was a Nunito-derived cut whose true Regular rendered <em>grey</em> rather than black, so this system set reading copy at <strong>450 (&ldquo;Book&rdquo;)</strong> — an interpolation step invented to fix that face&rsquo;s problem. Switzer does not have it: its Regular is properly fitted, and carrying 450 across would have been cargo — half a step heavier than the designer drew, for no reason anyone could still state. Body is <strong>400</strong>. Switzer also has a real <strong>500</strong>, which the old family lacked, so the ramp is 400&thinsp;/&thinsp;500&thinsp;/&thinsp;600&thinsp;/&thinsp;700 and every step is a weight that was actually drawn.</p>
+    <p class="variant-note">An earlier family here was a Nunito-derived cut whose true Regular rendered <em>grey</em> rather than black, so reading copy sat at <strong>450 (&ldquo;Book&rdquo;)</strong> — an interpolation invented to fix that face&rsquo;s problem. Figtree does not have it: its Regular is properly fitted, so body is <strong>400</strong> and the ramp is 400&thinsp;/&thinsp;500&thinsp;/&thinsp;600&thinsp;/&thinsp;700 — every step a drawn weight, with Light&nbsp;300 and Black&nbsp;900 on the variable axis for display work at no extra download.</p>
 
     <p class="sub">The scale</p>
     ${typeRows(pick(/^--size-/).filter((t) => t.name !== "--size-mega"))}
@@ -2461,13 +2465,13 @@ const ADMIN_DEMO_JS = `
       var zone = input.closest('.ns-dropzone');
       Array.prototype.forEach.call(input.files, function (f) {
         var row = document.createElement('div');
-        row.className = 'ns-file';
+        row.className = 'ns-upload';
         var mb = (f.size / 1048576).toFixed(1);
         row.innerHTML = '<i class="ph ph-file" aria-hidden="true"></i>' +
-          '<span class="ns-file__name">' + f.name + '</span>' +
-          '<span class="ns-file__size">' + (mb < 0.1 ? (f.size / 1024).toFixed(0) + ' KB' : mb + ' MB') + '</span>' +
+          '<span class="ns-upload__name">' + f.name + '</span>' +
+          '<span class="ns-upload__size">' + (mb < 0.1 ? (f.size / 1024).toFixed(0) + ' KB' : mb + ' MB') + '</span>' +
           '<span class="ns-status ns-status--info">Uploading</span>' +
-          '<button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-file__remove" aria-label="Remove ' + f.name + '"><i class="ph ph-x" aria-hidden="true"></i></button>';
+          '<button type="button" class="ns-btn ns-btn--quiet ns-btn--sm ns-btn--icon ns-upload__remove" aria-label="Remove ' + f.name + '"><i class="ph ph-x" aria-hidden="true"></i></button>';
         zone.parentNode.insertBefore(row, zone.nextSibling);
         setTimeout(function () {
           var st = row.querySelector('.ns-status');
@@ -2478,8 +2482,8 @@ const ADMIN_DEMO_JS = `
     });
   });
   document.addEventListener('click', function (e) {
-    var rm = e.target.closest('.ns-file__remove');
-    if (rm) { rm.closest('.ns-file').remove(); touched(); }
+    var rm = e.target.closest('.ns-upload__remove');
+    if (rm) { rm.closest('.ns-upload').remove(); touched(); }
   });
 
   /* Rich text: real formatting on the contenteditable area. */

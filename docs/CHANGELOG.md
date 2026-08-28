@@ -17,6 +17,75 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Changed — BREAKING: one face. Figtree, self-hosted, and nothing else shipped
+
+The system shipped two fonts — Switzer for words, Roboto Mono for data — and
+now ships **one**: Figtree (Erik Kennedy, SIL OFL), a variable 300–900 in four
+woff2s (~62 KB: normal + italic, latin + latin-ext, loaded on demand via
+`unicode-range`). The insight is that the label voice was never really
+"monospace" — it was **uppercase, tracked, bold, small and tabular**, and the
+family was merely the loudest of those five signals. The data voice is now a
+recipe any face can wear, applied by the same classes as before.
+
+- `--font-sans` / `--font-heading` / `--font-mono` all resolve to Figtree.
+  `--font-mono` **survives as a name** so the 300+ "this is data" call sites
+  did not change — and the voice can be re-pointed at a real mono in one line.
+- **New `--font-code`** — `pre`, `code`, `samp` and `.ns-code` resolve to the
+  platform's own mono at zero bytes (indentation *is* the syntax there), the
+  exact trade `--font-serif` already made for quotations.
+- **Tabular figures became opt-in, and the system opts in.** Roboto Mono
+  aligned digit columns for free; Figtree's default figures are proportional.
+  `tokens/base.css`, `.ns-label` and `.ns-record` apply `tnum` (verified
+  present in the shipped file — resubset with `--layout-features='*'` or
+  every digit column in the product un-aligns).
+- `--measure-prose` recomputed **68ch → 62ch**: Figtree's "0" advances
+  0.638em against Switzer's 0.576, and the measure is arithmetic, not taste
+  (672px / (0.638 × 17px)). The comment in `tokens/layout.css` now shows the
+  formula because this number had already gone stale twice.
+- The weight ramp (400/500/600/700) fits inside Figtree's drawn range; the
+  type specimen now shows the real 300–900 axis instead of a 200 and an 800
+  the ramp never used.
+- Switzer, Roboto Mono and the Fontshare EULA are removed; `fonts/README.md`
+  rewritten around the one-face argument.
+
+### Fixed — two components wearing one class name, and a gate so it stays fixed
+
+`check-markup.mjs` now fails when the same block-level class is **defined in
+two files** — two components, one name, and whichever file loads later
+silently restyles the other. It found (and this release fixes):
+
+- **`.ns-compare` was two components.** An article comparison block
+  (`content.css`) and the marketing before/after band (`sections.css`).
+  sections.css loads later, so every article's Flow-vs-Apex table was
+  rendering on the band's three-column before/seam/after grid. The band is
+  now **`.ns-delta`**; the article block keeps the name.
+- **`.ns-file` was two components.** An admin upload row (`admin.css`) and
+  Ghost's reader-facing download card (`ghost.css`), whose card padding was
+  restyling every upload row. The upload row is now **`.ns-upload`**.
+- Both components also shared a styleguide id, so one doc page silently
+  overwrote the other — `c-compare.html` was whichever was rendered last.
+
+### Changed — the homepage argues once per question
+
+- The two adjacent author bands — "About the author" (the story) and "Who
+  wrote it" (the profile cards) — **merged into one**: the story is the
+  credential, the cards close it. The story's stat strip duplicated the
+  cards' fields (24,100 learners and 11 years each appeared twice on one
+  screen); the cards keep the numbers.
+- **Ground rhythm restored**: strict sunken/plain alternation. Three sunken
+  bands in a row stack their borders; two plain bands in a row get no
+  separation at all — `--sunken` exists precisely to alternate.
+- **`.ns-plans` (the price table) moved** from `integrations/ghost.css` to
+  `content/sections.css`: a pricing band is a marketing section both products
+  render; Ghost only populates it. Same wrong-drawer bug `.ns-stack` had.
+
+### Fixed
+
+- `docs/CHANGELOG.md` carried a second `## [Unreleased]` heading stranded
+  between 3.0.0 and 2.3.0 — entries that shipped in 3.0.0 but were never
+  folded in when it was cut.
+
+
 ### Added — the layout contract, and a gate that keeps it
 
 Three nested levels, one rule: **a level never does another level's job.** A
@@ -2238,7 +2307,9 @@ palette cards stays inline — those values *are* the documentation.
 animations and `.dark`/`.light` variant descendants where the CSS is the
 artwork, not a layout helper.
 
-## [Unreleased]
+<!-- The entries below were written under a second [Unreleased] heading and
+     shipped in 3.0.0 — the heading was never folded in when 3.0.0 was cut.
+     They are part of [3.0.0] above. -->
 
 ### Added — Blog, as its own family
 

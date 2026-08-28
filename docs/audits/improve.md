@@ -33,7 +33,7 @@ them:
   instead of `--size-small` (13). Every mono run is on `--size-mono` rather
   than borrowing `--size-small`.
 - **The measure.** `--container-prose` and `--measure-prose` agree and both
-  comments carry the measured arithmetic (42rem at 17px in Switzer = 68.6ch),
+  comments carry the measured arithmetic (42rem at 17px, recomputed per face),
   plus the caveat that 68ch is ~88 real characters.
 - **Keyframes.** None in `tokens/`. All `ns-`-prefixed, all in
   `components/css/motion.css`, and the byte-identical duplicate pairs

@@ -79,7 +79,7 @@ long rather than hidden.
 This system is not "brand blue on white Tailwind cards." It follows **five explicit rules**, borrowed from developer-tool product design (Mux, Vercel, Linear) rather than marketing-site conventions — every component in `components/` inherits them, and any new component should be checked against this list before it ships.
 
 1. **The hairline is the structure, not the shadow.** Cards, inputs, and tags are built from a single `1px` border (`--color-border`). Soft drop-shadows are almost entirely retired (`--shadow-card` is nearly flat) — elevation comes from a border brightening to brand-blue on hover, never a floating lift.
-2. **Monospace is a structural material, not a code-block accessory.** The mono face renders every index, duration, timestamp, status tag and section kicker — Switzer is reserved for prose, headings and quotations. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color.
+2. **The data voice is a structural material, not a code-block accessory.** Every index, duration, timestamp, status tag and section kicker is set in the label treatment — uppercase, tracked, bold, small, tabular figures — while prose, headings and quotations run untreated. This is what makes a list of lessons read as *data* and a paragraph read as *writing*, without touching color. (The treatment used to be carried by a second, monospace family; it is now the same Figtree wearing a different uniform, and `--font-mono` survives as the token that applies it.)
 3. **One signal color.** Brand blue (`#0176D3`) is the only color that means "interactive" or "active." Status (success/warning/error) shows as a small dot + mono text, never a background wash — so a screen with a solid blue button on it has exactly one obvious next action.
 4. **Sharp, specific geometry.** `--radius-card` (6px) and `--radius-btn` (4px) replace the generic "12px + pill-everywhere" look; `--radius-pill` is reserved for true pills (tags). Nothing is rounded just because rounding is the default.
 5. **Motion is instant, not springy.** State changes (hover, press, active) resolve in 120–180ms with a plain ease-out — no bounce, no scale-pop, no translateY lift on hover. The one exception is the small float loop on decorative illustrations. This is what makes the UI feel like a precise tool, not a marketing page.
@@ -105,7 +105,7 @@ Governed by the five Design Principles above. In short:
 
 - **Color:** one working blue (`#0176D3`) carries every interactive/active signal. Status colors show as a dot + mono text, never a tinted background fill.
 - **Dark mode:** semantic role tokens (`--color-surface`, `--color-ink`, `--color-muted`, `--color-border`) flip under `[data-theme="dark"]` on `<html>`, resolving to the brand navy scale (`--color-brand-800`/`900`) rather than a generic slate — dark mode is *this brand's* console, not a GitHub reskin.
-- **Type:** Switzer for headings (700) and prose (**400 at 17px on reading surfaces, 14px in the app** — a compact scale after [carapace](https://github.com/openclaw/carapace), forked once on scanned-versus-read); Roboto Mono for every index, label, timestamp and status tag, uppercase and letter-spaced (`--tracking-label`). Reading copy caps at `--measure-prose` (68ch).
+- **Type:** one face — Figtree for headings (700) and prose (**400 at 17px on reading surfaces, 14px in the app** — a compact scale after [carapace](https://github.com/openclaw/carapace), forked once on scanned-versus-read); every index, label, timestamp and status tag takes the same face in the data treatment: uppercase, letter-spaced (`--tracking-label`), tabular figures. Code alone borrows the platform mono. Reading copy caps at `--measure-prose` (62ch).
 - **Geometry:** `--radius-card` 6px, `--radius-btn` 4px — sharp and specific, not "rounded because rounded." `--radius-pill` only for true pill tags.
 - **Elevation:** a `1px` hairline border is the primary structuring device; hover brightens the border to brand-blue (or draws a left/top accent line), it never lifts on a shadow.
 - **Spacing:** a 4px scale (`--space-*`) whose index matches Tailwind's 1:1, so `p-4` in a Handlebars template and `var(--space-4)` in a React component are the same 16px. Semantic aliases (`--pad-card`, `--gap-grid`, `--stack-lg`) carry the repeated structural relationships.
@@ -205,8 +205,9 @@ Only the top two steps clamp: a hero has to survive a 360px phone, a paragraph
 does not. Everything is `rem`, because one `px` font-size is one piece of text
 that stops responding to browser zoom.
 
-**Weights** are `400 / 500 / 600 / 700` — every step a weight Switzer's
-designer actually drew, no interpolations of our own. Body is 400.
+**Weights** are `400 / 500 / 600 / 700` — every step a weight Figtree's
+designer actually drew, no interpolations of our own; the variable axis
+(300–900) keeps Light and Black available for display work. Body is 400.
 
 Two Tailwind utilities worth knowing apart:
 
@@ -354,8 +355,8 @@ NSDS-Design-System/
 │   ├── course/        LMS-specific React components
 │   └── forms/ overlays/ navigation/ feedback/ progress/
 ├── icons/             both icon sets: Phosphor subset (font + classes) + bespoke sprite
-├── fonts/             Switzer + Roboto Mono — latin-subset variable woff2s
-│                   (67 KB), both licences, and the weight docs in its README
+├── fonts/             Figtree — variable woff2s (normal + italic, latin + ext)
+│                   (~62 KB), the OFL licence, and the weight docs in its README
 ├── patterns/          nine hairline background patterns (pure CSS)
 ├── templates/         framework-agnostic HTML for full surfaces
 ├── assets/            logo, images, theme-init.js
@@ -516,11 +517,10 @@ conventions someone has to remember.
   **Content Design**, and the four type cards: **Text Effects**, **Display
   Typography**, **Circular Text / Links / Citations** and **Typographic
   Accessibility**.
-- `fonts/` — Switzer + Roboto Mono variable woff2s, `FONTSHARE-EULA.txt` and `licences/`,
-  which must travel with them. No static package is generated: the EULA
-  permits self-hosting but not redistributing the font software, and shipping
-  a derived static family is redistribution. `fonts/README.md` holds the
-  weight tables, the optical rules and the subsetting recipe.
+- `fonts/` — the Figtree variable woff2s and `licences/OFL-figtree.txt`,
+  which travels with them (SIL OFL: self-host and use freely, ship the
+  licence with the files). `fonts/README.md` holds the weight tables, the
+  optical rules and the subsetting recipe.
 - `scripts/` — the build, the ten checks, and the preview generator + server.
 - `docs/` — `LAYOUT.md` (the section → container → stack contract), `INTEGRATION.md` (wiring both products), `CUSTOMISING.md`, `ICONS.md`, `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
 
@@ -543,54 +543,51 @@ find-replace away from these, but they would be a *third* renderer to keep in
 sync and would look framework-specific when the point of this layer is that
 it is not. One neutral copy, adapted at the edge, keeps the contract single.
 
-## Font pairing
+## The face
 
-Two shipped faces — **67 KB**, latin-subset variable woff2, both
-self-hosted. Switzer is an [Indian Type
-Foundry](https://www.indiantypefoundry.com) cut from
-[Fontshare](https://www.fontshare.com) under the Fontshare Free Font EULA
-(`fonts/FONTSHARE-EULA.txt`); Roboto Mono is under the SIL Open Font Licence
-1.1 (`fonts/licences/`). Both licences permit self-hosting and commercial use
-and require the licence text to travel with the files.
+**One shipped face — Figtree**, ~62 KB in four variable woff2s (normal +
+italic, latin + latin-ext), self-hosted, SIL OFL 1.1
+(`fonts/licences/OFL-figtree.txt` travels with the files). Nothing is fetched
+from a third-party font host at run time.
 
 | Role | Face | Weights | Why |
 |---|---|---|---|
-| Headings, display **and** prose | **Switzer** (variable 100–900) | 700 headings, 600 sub-heads, 500 nav, **400 body** | One grotesque across the whole range. Neutral, tightly drawn, reads "product" rather than "marketing". |
-| Quotations — the editorial voice | *platform serif* — **not shipped** | 400 | Georgia / Iowan Old Style / Times. A quotation still reads as a quotation, and a handful of blockquotes per page does not earn a 40 KB face the way the mono voice on every label does. |
-| Structure: indexes, labels, timestamps, kickers, code | **Roboto Mono** (variable 100–700) | 400 code, 700 labels | The face the reader sees most — every index, duration, tag and status. Plain, wide-set and unmannered on purpose: it does structural work behind `01` and `21:15` hundreds of times a page rather than asking to be admired. Shipped rather than borrowed, so the most-repeated voice in the UI is the same on every platform. |
+| Headings, display **and** prose | **Figtree** (variable 300–900) | 700 headings, 600 sub-heads, 500 nav, **400 body** | One geometric grotesque across the whole range. Neutral, tightly drawn, reads "product" rather than "marketing". |
+| Data: indexes, labels, timestamps, kickers | **Figtree** — the same file | 600–700, uppercase, tracked, tabular | The data voice is a *treatment*, not a family: uppercase + `--tracking-label` + the small sizes + `tabular-nums`. `--font-mono` survives as the token that applies it. |
+| Code — `pre`, `code`, `.ns-code` | *platform mono* — **not shipped** | 400 | Indentation *is* the syntax, so code stays monospace — SF Mono / Consolas at zero bytes, the same trade the serif makes. |
+| Quotations — the editorial voice | *platform serif* — **not shipped** | 400 | Georgia / Iowan Old Style / Times. A quotation still reads as a quotation, and four blockquotes a page do not earn a download. |
 
-**One sans, not a display/text pair.** The previous system ran two cuts — one
-to speak, one to explain — and the seam between them had to be managed at
-every size: two sets of metrics, two optical weights meaning different things,
-a heading never quite on the same rhythm as the paragraph under it. Switzer
-covers the range alone, separated by **weight and size** rather than by face.
-`--font-heading` survives as a token name (components reference it, and a
-future display face is one token away); it resolves to the same stack.
+**One face, not a pair.** The system used to ship two — one to speak, one to
+keep the records — and the mono family was doing a job that treatment does
+better. Heading and body are separated by **weight and size**; data is
+separated by **treatment**; `--font-heading` and `--font-mono` survive as
+token names so components never had to change and either voice is one edit
+from a dedicated face again.
 
-The faces still **never compete for a job** — that hard rule is Principle 2.
-If it is a sentence it is Switzer; if it is a quotation it is the platform serif; if it
-is data it is mono, uppercase and tracked (`--tracking-label`).
+The voices still **never compete for a job** — that hard rule is Principle 2.
+If it is a sentence it is set plain; if it is a quotation it is the platform
+serif; if it is data it is uppercase, tracked and tabular
+(`--tracking-label`); if it is code it is the platform mono.
 
 Optical corrections applied (the part generic deployments miss):
 
-- **`--tracking-tight` (-0.022em) on h1–h3.** Switzer sets fairly tight
+- **`--tracking-tight` (-0.022em) on h1–h3.** Figtree sets fairly tight
   already, so this is a smaller correction than the previous cut needed — but
   large sizes still want closing up, because tracking is drawn for text sizes
   and does not scale down on its own. Body text is never tightened.
 - **`text-wrap: balance` on headings**, so a two-line title breaks evenly
   instead of leaving one orphaned word.
 - **Tabular numerals** (`font-variant-numeric: tabular-nums`) on every
-  duration, count and score — this is also what keeps digits aligned across
-  the three different platform mono faces.
-- **Body copy is 400, not 450.** The previous Nunito-derived cut rendered
-  *grey* rather than black at reading sizes, so this system used **450
-  ("Book")** — an interpolation step invented for that face's problem.
-  Switzer's Regular is properly fitted and does not have it; carrying 450
-  across would have been cargo. Switzer also has a real **500**, which the old
-  family lacked, so the ramp is 400 / 500 / 600 / 700 and every step is a
-  weight that was actually drawn.
-- Both shipped faces are **self-hosted variable woff2s** with a metric-matched
-  fallback (`Switzer Fallback`) — no FOUT jump, no third-party font host.
+  duration, count and score. Figtree's default figures are proportional —
+  right for prose, wrong for a data column — so the label classes and
+  `tokens/base.css` opt in via the font's own `tnum` feature.
+- **Body copy is 400, not 450.** An earlier Nunito-derived cut rendered
+  *grey* rather than black at reading sizes, so the system once used **450
+  ("Book")** — an interpolation invented for that face's problem. Figtree's
+  Regular is properly fitted; the ramp is 400 / 500 / 600 / 700 and every
+  step is a weight that was actually drawn.
+- The face is a **self-hosted variable woff2** with a metric-matched fallback
+  (`Figtree Fallback`) — no FOUT jump, no third-party font host.
 
 Weight tables, the subsetting recipe and the reasoning: `fonts/README.md`.
 

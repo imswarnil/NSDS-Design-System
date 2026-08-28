@@ -387,17 +387,22 @@
   .ns-dropzone__hint { font-family: var(--font-mono); font-size: var(--size-label); color: var(--color-label); }
   .ns-dropzone--compact { padding: var(--space-4) var(--space-5); flex-direction: row; }
 
-  /* An uploaded file: terminal row — mono name, mono size, status, remove. */
-  .ns-file {
+  /* An uploaded file: terminal row — mono name, mono size, status, remove.
+     Named .ns-upload, and it was .ns-file once — which collided with the
+     reader-facing download card of the same name in integrations/ghost.css,
+     whose padding and margins (loading later) restyled every row here. An
+     upload row and a download card are different components; now they have
+     different names. */
+  .ns-upload {
     display: flex; align-items: center; gap: var(--space-3);
     padding: var(--space-2) var(--space-3);
     border: 1px solid var(--color-border); border-radius: var(--radius-btn);
     font-family: var(--font-mono); font-size: var(--size-label);
   }
-  .ns-file__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ns-file__size { color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .ns-file__remove { margin-inline-start: auto; }
-  .ns-file + .ns-file { margin-block-start: var(--space-2); }
+  .ns-upload__name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ns-upload__size { color: var(--color-muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ns-upload__remove { margin-inline-start: auto; }
+  .ns-upload + .ns-upload { margin-block-start: var(--space-2); }
 
   /* --- Tag input ----------------------------------------------------------
      Chips inside an input-shaped box; the text entry is a bare input at the

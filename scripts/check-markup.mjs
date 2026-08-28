@@ -66,6 +66,36 @@ for (const [file, src] of cssSources) {
   }
 }
 
+/* ---- one class, one owner ----------------------------------------------
+   A BLOCK-LEVEL definition (`.ns-x {` at the start of a rule) in two files is
+   two components wearing one name, and whichever file loads later silently
+   restyles the other. It happened twice before this check existed: .ns-compare
+   was both an article comparison (content.css) and a marketing before/after
+   band (sections.css), so every article compare rendered on the band's
+   three-column grid; .ns-file was both an admin upload row and a Ghost
+   download card. Contextual rules (`.ns-topnav .ns-btn`) and __element/--
+   modifier rules are fine — this only fires on two files each claiming the
+   BLOCK. */
+const blockOwner = new Map();
+const collisions = [];
+for (const [file, src] of cssSources) {
+  const stripped = src.replace(/\/\*[\s\S]*?\*\//g, "");
+  for (const m of stripped.matchAll(/^\s*\.(ns-[a-z][a-zA-Z0-9-]*)\s*\{/gm)) {
+    const cls = m[1];
+    if (cls.includes("__") || /--/.test(cls)) continue;
+    const owner = blockOwner.get(cls);
+    if (owner && owner !== file) collisions.push([cls, owner, file]);
+    else blockOwner.set(cls, file);
+  }
+}
+if (collisions.length) {
+  console.error(`${collisions.length} class(es) block-defined in two files — two components, one name:\n`);
+  for (const [cls, a, b] of [...new Map(collisions.map((c) => [c[0], c])).values()])
+    console.error(`  .${cls}\n    ${a}\n    ${b}\n`);
+  console.error("Rename one of them. The later file silently restyles the earlier component.");
+  process.exit(1);
+}
+
 /* A BLOCK ROOT with no declarations of its own is still defined. .ns-ccard and
    .ns-bcard are the two: both compose .ns-card for their looks and exist only
    as a namespace for __elements and --modifiers, so markup writes

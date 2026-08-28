@@ -126,8 +126,8 @@ camera ends up three pixels off in one scene out of seventeen.
 | Action-safe box | 67, 38 | 1786 × 1004 | graphics may touch it |
 | Grid unit | — | 160 × 135 | 12 columns × 8 rows |
 | Top accent bar | 0, 0 | 1920 × 4 | brand-500 `#0176d3`, full bleed |
-| Kicker | 96, 78 | — | Roboto Mono 20px, uppercase, `.1em` tracking |
-| Lesson index / live badge | right edge 1824, y 78 | — | Roboto Mono 20px, right-aligned |
+| Kicker | 96, 78 | — | Figtree (uppercase, tracked) 20px, uppercase, `.1em` tracking |
+| Lesson index / live badge | right edge 1824, y 78 | — | Figtree (uppercase, tracked) 20px, right-aligned |
 | Topic / step bar | 96, 205 | 1728 × 40 | 1px rule under it |
 | Camera C1, standard 16:9 | 1440, 748 | **384 × 216** | 20% of width, exactly 16:9 |
 | Camera C1, small 16:9 | 1498, 780 | **326 × 184** | 17%, when the corner is tight |
@@ -384,7 +384,7 @@ Three things make this work:
 - **Fixed 1920×1080** with `overflow: hidden`, so the page is the canvas and
   every pixel coordinate in §4 is literal.
 - **The real stylesheet**, loaded from the live site, so `--color-brand-500`,
-  Switzer and Roboto Mono are the same values the product uses. Download it
+  Figtree is the same face the product uses. Download it
   locally if you record somewhere without a connection.
 
 For a light-theme lesson, add `data-theme="light"` to the `<html>` tag and swap

@@ -5,7 +5,7 @@
    markdown render correctly with no extra classes. Outside .ns-prose,
    elements stay unstyled primitives for app layouts to control.
 
-   The voice: Switzer at 700 for headings and at 400 for body at a comfortable
+   The voice: Figtree at 700 for headings and at 400 for body at a comfortable
    measure, mono for everything that is data — and the hairline doing the
    structure (blockquote edge, hr, table rules), never a background wash. */
 @layer ns-components {

@@ -3,7 +3,7 @@
 Seven files that OBS can point a **Browser Source** at directly. They are the
 same components the styleguide documents — not approximations typed into a
 Text source — because they load the system's real stylesheet, so
-`--color-brand-500`, Switzer, Roboto Mono and the light/dark token flip are
+`--color-brand-500`, Figtree and the light/dark token flip are
 all the values the product uses.
 
 `overlay.css` is the reusable layer; every file below is a thin page over it.

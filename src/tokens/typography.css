@@ -1,31 +1,37 @@
 :root {
   /* Private source layer — see the note in tokens/colors.css for why the
      names Tailwind's @theme owns are aliased rather than declared directly. */
-  --ns-font-sans: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  /* Switzer twice, not a display/text pair. The old system ran two cuts —
-     one to speak, one to explain — and the seam between them had to be
-     managed at every size. One well-drawn grotesque across the whole range,
-     separated by WEIGHT and SIZE rather than by face, is both quieter and one
-     fewer download. Heading and body therefore resolve to the same stack;
-     --font-heading survives as a name so components do not all have to change
-     and so a future display face is one token away. */
-  --ns-font-heading: "Switzer", "Switzer Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  /* THE LABEL VOICE, and the code voice — one face for both, because both are
-     "this is data, not prose". Shipped rather than borrowed from the OS: this
-     face sets every index, duration, kicker, tag and status in the product,
-     so it is seen more than any other and is not a thing to leave to chance.
-     See tokens/fonts.css for why Roboto Mono specifically. */
-  --ns-font-mono: "Roboto Mono", ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --ns-font-sans: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* Figtree twice, not a display/text pair. One geometric grotesque across
+     the whole range, separated by WEIGHT and SIZE rather than by face —
+     quieter, and one fewer download. Heading and body therefore resolve to
+     the same stack; --font-heading survives as a name so components do not
+     all have to change and so a future display face is one token away. */
+  --ns-font-heading: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* THE LABEL VOICE — and it is Figtree too. The system ships ONE face; what
+     makes a kicker, an index, a duration or a status read as data is the
+     TREATMENT, not the family: uppercase, letter-spacing, weight 600–700, the
+     small sizes, and tabular figures (tokens/base.css and the label classes
+     set font-variant-numeric, because Figtree's default figures are
+     proportional). The token survives as a name so the 300+ places that say
+     "this is data, not prose" keep saying it in one word — and so the voice
+     can be re-pointed at a real mono again with one line if the treatment
+     ever proves too quiet. See tokens/fonts.css. */
+  --ns-font-mono: "Figtree", "Figtree Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* CODE — the one surface where a proportional face breaks the content:
+     indentation IS the syntax in a code block. NOT SHIPPED, exactly like the
+     serif below: the platform's own mono at zero bytes. */
+  --ns-font-code: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   /* The quoting register — pull-quotes, drop caps, section quotations: the
      places a page stops arguing and starts citing. NOT SHIPPED. The system
-     ships two faces, Switzer and Roboto Mono, so this token resolves to the
+     ships one face, Figtree, so this token resolves to the
      platform's own serif: Georgia where it exists, Iowan/Times otherwise. The
      register survives (a quotation still reads as a quotation) at zero bytes,
      and the trade is that the face is the reader's rather than ours — which
      matters far less for four blockquotes than it did for the mono voice that
      sets every label on every screen.
 
-     If quotations should be Switzer rather than a serif, point this at
+     If quotations should be Figtree rather than a serif, point this at
      var(--ns-font-sans) — one line, and no component changes. */
   --ns-font-serif: Georgia, "Iowan Old Style", "Times New Roman", Times, serif;
   /* The subsetted Phosphor icon font. Named as a token so a component that
@@ -37,6 +43,7 @@
   --font-sans: var(--ns-font-sans);
   --font-heading: var(--ns-font-heading);
   --font-mono: var(--ns-font-mono);
+  --font-code: var(--ns-font-code);
   --font-serif: var(--ns-font-serif);
   --font-icon: var(--ns-font-icon);
   --font-icon-fill: var(--ns-font-icon-fill);
@@ -121,7 +128,7 @@
   --size-mono: 0.8125rem;    /* 13 — mono data sits with --size-small */
   --ns-tracking-label: 0.09em;
   --tracking-label: var(--ns-tracking-label);
-  /* Display/heading tracking. Switzer sets fairly tight already, so this is a
+  /* Display/heading tracking. Figtree sets fairly tight already, so this is a
      smaller correction than the previous cut needed — but large sizes still
      want closing up, because tracking is drawn for text sizes and does not
      scale down on its own. Body text is NEVER tightened; negative tracking at
@@ -168,31 +175,28 @@
   --leading-prose: var(--ns-leading-prose);
   --leading-mega: var(--ns-leading-mega);
 
-  /* Switzer has a real 500, which the previous family did not — so the ramp
-     is 400 / 500 / 600 / 700 rather than 400 / 600 / 700 / 800. Every step is
-     a weight the designer drew, not an interpolation we chose. */
+  /* Figtree has a real 500 — so the ramp is 400 / 500 / 600 / 700, and every
+     step is a weight the designer drew (the variable axis runs 300–900), not
+     an interpolation we chose. */
   --weight-heading: 700;
   --weight-semibold: 600;
   --weight-medium: 500;
-  /* THE READING WEIGHT. Switzer's Regular is properly fitted at 400 — it does
-     not render grey the way the previous Nunito-derived cut did, which is the
-     entire reason that face needed 450 ("Book"). Carrying 450 over would have
-     been cargo: an interpolation step invented to fix a problem this family
-     does not have, and half a step heavier than the designer drew.
-     See fonts/README.md § "Why body copy is 400". */
+  /* THE READING WEIGHT. Figtree's Regular is properly fitted at 400 — it does
+     not render grey, so there is no reason to invent a "Book" interpolation
+     between the drawn steps. See fonts/README.md § "Why body copy is 400". */
   --weight-body: 400;
   --weight-regular: 400;
-  /* Inline <strong> against Switzer 400 wants 600, not 700: Switzer's Bold is
-     considerably heavier than the old cut's and reads as a shout inline. */
+  /* Inline <strong> against Figtree 400 wants 600, not 700: Figtree's Bold
+     is decisive at heading sizes and reads as a shout inline. */
   --weight-body-strong: 600;
 
   /* Reading measure, as a character count rather than a width — this is the
      one place ch is the honest unit, because the constraint IS characters
      per line. --container-prose (42rem) is the layout twin: at --size-prose
-     in Switzer the two resolve to the same line, 68.6ch, which is why they
+     in Figtree the two resolve to the same line, 62ch, which is why they
      may not drift apart. Change one, recompute the other — the arithmetic and
      the caveat about ch-versus-real-characters are in tokens/layout.css. */
-  --measure-prose: 68ch;
+  --measure-prose: 62ch;
   --measure-narrow: 46ch;   /* ledes, pull-quotes, callouts */
 
   /* THREE PAIRS SHARE A VALUE ON PURPOSE. Do not "clean them up" by merging —
