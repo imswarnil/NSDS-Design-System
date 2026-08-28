@@ -78,8 +78,27 @@ for (const [file, src] of cssSources) {
    BLOCK. */
 const blockOwner = new Map();
 const collisions = [];
+/* A rule inside an @media block is a CONTEXTUAL override of a component that
+   lives elsewhere — print.css re-declares half the system under @media print
+   and defines nothing. Only a top-level block claims ownership, so @media
+   bodies are cut before scanning (brace-matched, since a regex cannot count). */
+const stripAtMedia = (css) => {
+  let out = "", i = 0;
+  while (i < css.length) {
+    const at = css.indexOf("@media", i);
+    if (at === -1) { out += css.slice(i); break; }
+    out += css.slice(i, at);
+    let j = css.indexOf("{", at), depth = 1;
+    while (depth && ++j < css.length) {
+      if (css[j] === "{") depth++;
+      else if (css[j] === "}") depth--;
+    }
+    i = j + 1;
+  }
+  return out;
+};
 for (const [file, src] of cssSources) {
-  const stripped = src.replace(/\/\*[\s\S]*?\*\//g, "");
+  const stripped = stripAtMedia(src.replace(/\/\*[\s\S]*?\*\//g, ""));
   for (const m of stripped.matchAll(/^\s*\.(ns-[a-z][a-zA-Z0-9-]*)\s*\{/gm)) {
     const cls = m[1];
     if (cls.includes("__") || /--/.test(cls)) continue;

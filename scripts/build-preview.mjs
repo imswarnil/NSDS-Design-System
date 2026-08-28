@@ -451,28 +451,63 @@ ${PROSE}
     <p class="sub">Stack — rhythm down</p>
     <p class="note"><code>&gt; * + *</code> and nothing else, so the first child never carries a stray top margin and a stack cannot double up against its section's own padding. Four steps, matching <code>--stack-*</code>.</p>
     <div class="demo demo--stack">
-      ${[["ns-stack--xs", "--stack-xs", "8px — a label and its value, a caption under a figure"],
-         ["ns-stack", "--stack-sm", "16px — the default: a kicker, a heading, a paragraph"],
-         ["ns-stack--md", "--stack-md", "32px — between subsections inside one band"],
-         ["ns-stack--lg", "--stack-lg", "64px — between page sections, when there is no band"]]
-        .map(([cls, tok, why]) => `
+
       <div class="lvlrow">
-        <code class="lvlrow__cls">.${cls}</code>
-        <span class="${cls} lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
-        <span class="lvlrow__why"><code>${tok}</code> · ${why}</span>
-      </div>`).join("")}
+        <code class="lvlrow__cls">.ns-stack--xs</code>
+        <span class="ns-stack--xs lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
+        <span class="lvlrow__why"><code>--stack-xs</code> · 8px — a label and its value, a caption under a figure</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-stack</code>
+        <span class="ns-stack lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
+        <span class="lvlrow__why"><code>--stack-sm</code> · 16px — the default: a kicker, a heading, a paragraph</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-stack--sm</code>
+        <span class="ns-stack--sm lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
+        <span class="lvlrow__why"><code>--stack-sm</code> · 16px — the default, named. &ldquo;The default&rdquo; is not a step somebody can choose on purpose</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-stack--md</code>
+        <span class="ns-stack--md lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
+        <span class="lvlrow__why"><code>--stack-md</code> · 32px — between subsections inside one band</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-stack--lg</code>
+        <span class="ns-stack--lg lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
+        <span class="lvlrow__why"><code>--stack-lg</code> · 64px — between page sections, when there is no band</span>
+      </div>
     </div>
 
     <p class="sub">Cluster — rhythm across</p>
     <p class="note">Things in a row that wrap, with one gap in both axes. <code>align-items: center</code>, because a cluster is nearly always controls or chips of differing heights; <code>--baseline</code> for the rarer case of text at two sizes on one line. <code>.ns-cluster__end</code> pushes everything after it to the far edge, and <code>.ns-cluster__fill</code> takes the leftover width without wrapping below a readable measure.</p>
     <div class="demo demo--stack">
-      ${[["ns-cluster", "--gap-inline (8px)"], ["ns-cluster ns-cluster--md", "--space-4 (16px)"], ["ns-cluster ns-cluster--lg", "--space-6 (24px)"]]
-        .map(([cls, tok]) => `
+
       <div class="lvlrow">
-        <code class="lvlrow__cls">.${cls.split(" ").pop()}</code>
-        <span class="${cls}"><span class="ns-chip">One</span><span class="ns-chip">Two</span><span class="ns-chip">Three</span></span>
-        <span class="lvlrow__why"><code>${tok}</code></span>
-      </div>`).join("")}
+        <code class="lvlrow__cls">.ns-cluster--xs</code>
+        <span class="ns-cluster ns-cluster--xs"><span class="ns-chip">One</span><span class="ns-chip">Two</span><span class="ns-chip">Three</span></span>
+        <span class="lvlrow__why"><code>--space-1-5 (6px)</code></span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-cluster</code>
+        <span class="ns-cluster"><span class="ns-chip">One</span><span class="ns-chip">Two</span><span class="ns-chip">Three</span></span>
+        <span class="lvlrow__why"><code>--gap-inline (8px)</code></span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-cluster--md</code>
+        <span class="ns-cluster ns-cluster--md"><span class="ns-chip">One</span><span class="ns-chip">Two</span><span class="ns-chip">Three</span></span>
+        <span class="lvlrow__why"><code>--space-4 (16px)</code></span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-cluster--lg</code>
+        <span class="ns-cluster ns-cluster--lg"><span class="ns-chip">One</span><span class="ns-chip">Two</span><span class="ns-chip">Three</span></span>
+        <span class="lvlrow__why"><code>--space-6 (24px)</code></span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-cluster--baseline</code>
+        <span class="ns-cluster ns-cluster--baseline lvlrow__demo"><span style="font-size:var(--size-h3);font-weight:var(--weight-heading)">1,482</span><span class="ns-label">learners</span><span style="font-size:var(--size-small);color:var(--color-muted)">as of August</span></span>
+        <span class="lvlrow__why">Text at two sizes on one line sits on one baseline — a figure beside its label</span>
+      </div>
       <div class="lvlrow">
         <code class="lvlrow__cls">.ns-cluster__end</code>
         <span class="ns-cluster lvlrow__demo"><span class="ns-chip">Left</span><span class="ns-chip ns-cluster__end">Far right</span></span>
@@ -481,7 +516,30 @@ ${PROSE}
     </div>
 
     <p class="sub">Centre — a measure, centred</p>
-    <p class="note">The container level for things that are <em>not</em> inside a band: a bare page, a demo, an email body. One element, deliberately — a band is two because its ground is full-bleed, and a wrapper has no ground. Add <code>--gutter</code> for the side padding and <code>--pad</code> / <code>--pad-t</code> / <code>--pad-b</code> for the block padding a band would otherwise have spent.</p>
+    <p class="note">The container level for things that are <em>not</em> inside a band: a bare page, a demo, an email body. One element, deliberately — a band is two because its ground is full-bleed, and a wrapper has no ground. Add <code>--gutter</code> for the side padding and <code>--pad</code> / <code>--pad-t</code> / <code>--pad-b</code> for the block padding a band would otherwise have spent. The bars are to scale against each other — the real widths are in the table below.</p>
+    <div class="demo demo--stack">
+
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-center</code>
+        <span class="ns-center lvlrow__demo"><span class="lvl__box" style="inline-size:100%"></span></span>
+        <span class="lvlrow__why"><code>--container-page · 72rem</code> — the standard page shell</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-center--narrow</code>
+        <span class="ns-center ns-center--narrow lvlrow__demo"><span class="lvl__box" style="inline-size:77.8%"></span></span>
+        <span class="lvlrow__why"><code>--container-narrow · 56rem</code> — forms, auth, settings</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-center--prose</code>
+        <span class="ns-center ns-center--prose lvlrow__demo"><span class="lvl__box" style="inline-size:58.3%"></span></span>
+        <span class="lvlrow__why"><code>--container-prose · 42rem</code> — anything read continuously</span>
+      </div>
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-center--compact</code>
+        <span class="ns-center ns-center--compact lvlrow__demo"><span class="lvl__box" style="inline-size:44.4%"></span></span>
+        <span class="lvlrow__why"><code>32rem</code> — a one-field form: a signup, a search</span>
+      </div>
+    </div>
     ${plainRows(pick(/^--container-/))}
 
     <p class="sub">Bare — the browser's own box, removed</p>
@@ -1847,7 +1905,11 @@ const CSS = `
   .lvlrow + .lvlrow { border-block-start: 1px solid var(--color-border); }
   .lvlrow__cls { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-brand-600); }
   .lvlrow__why { font-size: var(--size-small); color: var(--color-muted); }
-  .lvlrow__demo { display: block; }
+  /* An explicit 100% inline-size, because .ns-center brings margin-inline:auto
+     and auto margins beat a grid track's stretch — the demo span otherwise
+     resolves to fit-content, which for a box of empty bars is zero. */
+  .lvlrow__demo { display: block; inline-size: 100%; }
+  .lvlrow__center { justify-content: center; }
   .lvlrow .lvl__box { inline-size: 100%; block-size: var(--space-5); }
   @media (max-width: 47.999rem) {
     .lvlrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }

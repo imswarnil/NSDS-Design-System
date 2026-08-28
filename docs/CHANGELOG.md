@@ -17,6 +17,42 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — a print contract, because two motion systems printed blank pages
+
+`foundation/print.css`, imported last so it wins every in-layer tie. The
+page-level rules every surface shares: navigation chrome, buttons, forms,
+marquees and players go away (the breadcrumb stays — on paper it is
+provenance); the dark and sunken grounds flatten to ink on white; external
+links in prose print their URL; cards, code and figures refuse to split
+across sheets; headings hold on to what follows them.
+
+Two of those rules fix real print bugs rather than taste. The `--onview`
+entrances start at opacity 0 on a scroll timeline — print has no scroll, an
+inactive timeline freezes at the START, and `fill: both` holds it there, so
+every band the reader had not scrolled past printed **blank**. And
+`.ns-reveal` hides its line behind a translate inside an overflow clip, so
+an unrevealed hero headline printed as an empty bar. Both resolve to their
+final frame on paper. (The table's heat-wash strip, the ad's self-removal
+and the certificate's ink inversion already existed per-component; this is
+the layer under them.)
+
+### Changed — the styleguide practices the layout contract
+
+- The **Layout & elevation** page now demos every primitive it defines —
+  `--sm` named among the stack steps, `--xs` and `--baseline` among the
+  clusters, and the four centre measures drawn as bars to scale (a 72rem
+  measure cannot be shown at true size inside a 632px doc column, so the
+  bars show proportion and the token table below shows truth).
+- The component pages' copy-paste samples stop teaching inline layout where
+  a primitive exists: user-agent resets become `.ns-bare`, flex rows at
+  scale steps become `.ns-cluster` variants, tight grid stacks become
+  `.ns-stack--xs`. Width framing stays inline — a demo needs a width the
+  way a page does not.
+- The two-files-one-class gate learned that a rule inside `@media` is a
+  contextual override, not a second definition — print.css re-declares half
+  the system under `@media print` and defines nothing.
+
+
 ### Changed — BREAKING: one face. Figtree, self-hosted, and nothing else shipped
 
 The system shipped two fonts — Switzer for words, Roboto Mono for data — and

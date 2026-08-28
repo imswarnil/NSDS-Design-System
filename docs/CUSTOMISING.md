@@ -121,7 +121,7 @@ to reimplement.
 src/
   tokens/      authored token CSS — the theming surface
   css/         the .ns-* layer, grouped
-    foundation/    a11y, icon, motion, type-fx
+    foundation/    a11y, layout, icon, motion, type-fx, print
     primitives/    button, form, display, media, feedback, progress,
                    overlay, table, code
     navigation/    navigation, navbar, toc

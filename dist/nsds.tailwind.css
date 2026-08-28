@@ -25770,6 +25770,56 @@
   .ns-center--pad-t {
     padding-block-start: var(--stack-md);
   }
+  @media print {
+    .ns-topnav, .ns-footer, .ns-toc, .ns-sidebar, .ns-drawer, .ns-banner, .ns-blog-listing__rail, .ns-course-detail__rail, .ns-pagination, .ns-searchbtn, .ns-palette, .ns-postnav, .ns-sponsor, .ns-sponsorask, .ns-marquee, .ns-marquee-deck, .ns-btn, .ns-field, .ns-share, .ns-vplayer, dialog {
+      display: none;
+    }
+    .ns-band {
+      padding-block: var(--space-6);
+    }
+    .ns-band--sunken, .ns-band--tight {
+      background: none;
+      border-block: 0;
+    }
+    .ns-band--dark, .ns-hero, .ns-photoband {
+      background: none;
+      color: var(--color-ink);
+    }
+    .ns-band--dark *, .ns-hero * {
+      color: inherit;
+    }
+    .ns-band--grid::before, .ns-band--grid-live::before, .ns-photoband::before {
+      display: none;
+    }
+    [class*="ns-anim"], [class*="ns-anim"] > *, .ns-parallax {
+      animation: none;
+    }
+    .ns-reveal > span {
+      transform: none;
+    }
+    .ns-reveal {
+      overflow: visible;
+    }
+    .ns-prose a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: var(--size-fine);
+      color: var(--color-muted);
+      word-break: break-all;
+    }
+    .ns-card, .ns-code, .ns-quote, .ns-takeaway, .ns-compare, .ns-delta, .ns-alert, .ns-series, figure, blockquote, table, pre {
+      break-inside: avoid;
+    }
+    h1, h2, h3, h4, .ns-band__head {
+      break-after: avoid;
+    }
+    .ns-prose p {
+      orphans: 3;
+      widows: 3;
+    }
+    .ns-card, .ns-code, .ns-modal {
+      box-shadow: none;
+    }
+  }
 }
 @property --tw-space-y-reverse {
   syntax: "*";

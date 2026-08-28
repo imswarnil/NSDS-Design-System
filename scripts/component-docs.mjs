@@ -83,7 +83,7 @@ export const COMPONENTS = [
     <span class="ns-card__kicker">// Course</span>
     <span class="ns-card__title">Apex basics</span>
     <p class="ns-card__text">The platform's own language, from zero to first deploy.</p>
-    <div style="display:flex;gap:var(--space-2);margin-block-start:var(--space-2)">
+    <div class="ns-cluster" style="margin-block-start:var(--space-2)">
       <button class="ns-btn ns-btn--primary ns-btn--sm">Start</button>
       <button class="ns-btn ns-btn--outline ns-btn--sm">Syllabus</button>
       <button class="ns-btn ns-btn--quiet ns-btn--icon ns-btn--sm" aria-label="Save"><i class="ph ph-bookmark-simple" aria-hidden="true"></i></button>
@@ -980,7 +980,7 @@ export const COMPONENTS = [
       <label class="ns-field__label" for="su-p">Password</label>
       <input class="ns-input" id="su-p" type="password" autocomplete="new-password" aria-describedby="su-rules">
     </div>
-    <ul class="ns-auth__rules" id="su-rules" style="list-style:none;padding:0;margin:0">
+    <ul class="ns-auth__rules ns-bare" id="su-rules">
       <li><span class="ns-status ns-status--success">At least 8 characters</span></li>
       <li><span class="ns-status ns-status--success">Contains a number</span></li>
       <li><span class="ns-status ns-status--idle">Contains a symbol</span></li>
@@ -989,7 +989,7 @@ export const COMPONENTS = [
   </form>
   <p class="ns-auth__alt">By continuing you agree to the <a href="#">terms</a>. Already learning? <a href="#">Sign in</a></p>
 </div>` },
-      { name: "Live password rules", note: "Not a strength bar — \"add a symbol\" is actionable, a yellow bar is a mood.", html: `<ul class="ns-auth__rules" style="list-style:none;padding:0;margin:0">
+      { name: "Live password rules", note: "Not a strength bar — \"add a symbol\" is actionable, a yellow bar is a mood.", html: `<ul class="ns-auth__rules ns-bare">
   <li><span class="ns-status ns-status--success">At least 8 characters</span></li>
   <li><span class="ns-status ns-status--success">Contains a number</span></li>
   <li><span class="ns-status ns-status--idle">Contains a symbol</span></li>
@@ -1046,7 +1046,7 @@ export const COMPONENTS = [
     variants: [
       { name: "Inline", note: "The one-liner for article feet and footers.", html: `<form class="ns-field" style="max-inline-size:26rem;inline-size:100%" onsubmit="return false">
   <label class="ns-field__label" for="nl-e">Email address</label>
-  <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
+  <div class="ns-cluster">
     <input class="ns-input" id="nl-e" type="email" autocomplete="email" placeholder="you@example.com" style="flex:1;min-inline-size:12rem">
     <button class="ns-btn ns-btn--primary" type="submit">Subscribe</button>
   </div>
@@ -1055,7 +1055,7 @@ export const COMPONENTS = [
       { name: "In the CTA band", note: "The dark band closing a page, with the form as its action.", dark: true, html: `<div style="text-align:center;inline-size:100%;max-inline-size:30rem;margin-inline:auto">
   <span class="ns-kicker">// newsletter</span>
   <h2 style="color:var(--color-on-brand);font-size:var(--size-h3);margin-block:var(--space-2) var(--space-4)">One lesson a week, in your inbox</h2>
-  <form style="display:flex;gap:var(--space-2);flex-wrap:wrap;justify-content:center" onsubmit="return false">
+  <form class="ns-cluster" style="justify-content:center" onsubmit="return false">
     <input class="ns-input" type="email" aria-label="Email address" placeholder="you@example.com" style="flex:1;min-inline-size:12rem">
     <button class="ns-btn ns-btn--white" type="submit">Subscribe</button>
   </form>
@@ -1262,7 +1262,7 @@ export const COMPONENTS = [
       <span><i class="ph ph-clock" aria-hidden="true"></i>24h</span>
       <span><i class="ph ph-medal" aria-hidden="true"></i>Certificate</span>
     </span>
-    <div style="display:flex;gap:var(--space-2);margin-block-start:var(--space-2)">
+    <div class="ns-cluster" style="margin-block-start:var(--space-2)">
       <a class="ns-btn ns-btn--primary ns-btn--sm" href="#">Start the track</a>
       <a class="ns-btn ns-btn--outline ns-btn--sm" href="#">What's inside</a>
     </div>
@@ -2238,7 +2238,7 @@ export const COMPONENTS = [
       <span><i class="ph ph-books" aria-hidden="true"></i>9 courses</span>
     </div>
     <p class="ns-instructor__bio">Eleven years building on the platform, most of them cleaning up other people's triggers. Teaches the way he wishes it had been taught to him: the model first, the syntax second.</p>
-    <div style="margin-block-start:var(--space-4);display:flex;gap:var(--space-2)">
+    <div class="ns-cluster" style="margin-block-start:var(--space-4)">
       <a class="ns-btn ns-btn--outline ns-btn--sm" href="#">All 9 courses</a>
       <a class="ns-btn ns-btn--quiet ns-btn--sm" href="#">Profile</a>
     </div>
@@ -5021,7 +5021,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
   <span class="ns-pace__label">Finish by</span>
   <time class="ns-pace__date" data-pace-date>&mdash;</time>
   <span class="ns-pace__meta"><b data-pace-rate>&mdash;</b><span>42 hours &middot; 8 modules</span></span>
-  <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0">
+  <fieldset class="ns-pace__control ns-bare">
     <legend class="ns-visually-hidden">How much time per day</legend>
     <div class="ns-segmented">
       <label class="ns-segmented__option"><input type="radio" name="pace-a" value="15"><span>15 min</span></label>
@@ -5051,7 +5051,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     <time class="ns-pace__date" data-pace-date>&mdash;</time>
     <span class="ns-pace__meta"><b data-pace-rate>&mdash;</b><span>18 hours</span></span>
   </div>
-  <fieldset class="ns-pace__control" style="border:0;padding:0;margin:0;max-inline-size:16rem">
+  <fieldset class="ns-pace__control ns-bare" style="max-inline-size:16rem">
     <legend class="ns-visually-hidden">How much time per day</legend>
     <div class="ns-segmented">
       <label class="ns-segmented__option"><input type="radio" name="pace-b" value="15"><span>15 min</span></label>
@@ -5115,7 +5115,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
       "Below lg it becomes a vertical timeline. Four cards side by side on a phone is four cards nobody can read and a connector that means nothing",
     ],
     variants: [
-      { name: "Four stops", stack: true, note: "Stop 1 done, stop 2 current. The connector after a done stop turns green, so the completed run reads as one continuous line rather than four separate ticks.", html: `<ol class="ns-path" style="list-style:none;margin:0;padding:0">
+      { name: "Four stops", stack: true, note: "Stop 1 done, stop 2 current. The connector after a done stop turns green, so the completed run reads as one continuous line rather than four separate ticks.", html: `<ol class="ns-path ns-bare">
   <li class="ns-path__stop" data-state="done">
     <span class="ns-path__node">01</span>
     <a class="ns-path__card" href="#0">
@@ -5206,7 +5206,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     ],
     variants: [
       { name: "Three tiers", stack: true, html: `<div class="ns-plans">
-  <fieldset class="ns-plans__switch" style="border:0;padding:0;margin:0">
+  <fieldset class="ns-plans__switch ns-bare">
     <legend class="ns-visually-hidden">Billing period</legend>
     <div class="ns-segmented">
       <label class="ns-segmented__option"><input type="radio" name="period" value="monthly" checked><span>Monthly</span></label>
@@ -5578,7 +5578,7 @@ Map<Id, Account> byId = new Map<Id, Account>(
     not: ["One animation per element — a page where twelve things fly in individually is a page nobody can read while it assembles", "Anything travelling further than half a rem; past that it reads as a slide deck", "Interaction feedback — a hover or a press is 120ms and lives on the component"],
     a11y: ["All nine are off under prefers-reduced-motion: the global guard in tokens/effects.css collapses every animation to 0.001ms, so none of these carries its own media query", "That is deliberate — a per-component opt-out is a per-component chance to forget", "Nothing here gates content: every element is readable if the animation never runs"],
     variants: [
-      { name: "The nine", stack: true, note: "Reload the page to replay. rise is the workhorse; fall is only for things that belong to what is above them.", html: `<div class="ns-anim-stagger" style="display:grid;gap:var(--space-2)">
+      { name: "The nine", stack: true, note: "Reload the page to replay. rise is the workhorse; fall is only for things that belong to what is above them.", html: `<div class="ns-anim-stagger ns-stack--xs">
   <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">01 · fade</span><span class="ns-card__text">Already in place, just arrives.</span></div></div>
   <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">02 · rise</span><span class="ns-card__text">The workhorse — cards, sections, list blocks.</span></div></div>
   <div class="ns-card"><div class="ns-card__body"><span class="ns-card__kicker">03 · fall</span><span class="ns-card__text">Only for things belonging to what is above them.</span></div></div>
@@ -7082,7 +7082,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     </li>
   </ul>
 </figure>` },
-      { name: "Ratios", note: "A video is 16:9 until the platform says otherwise, and the two that say otherwise are vertical and square. <code>--9x16</code> caps its own width at 22rem — about a phone at arm's length — because an uncapped vertical video is a two-metre column on a desktop.", html: `<div style="display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:flex-start">
+      { name: "Ratios", note: "A video is 16:9 until the platform says otherwise, and the two that say otherwise are vertical and square. <code>--9x16</code> caps its own width at 22rem — about a phone at arm's length — because an uncapped vertical video is a two-metre column on a desktop.", html: `<div class="ns-cluster ns-cluster--md" style="align-items:flex-start">
   <div class="ns-video ns-video--9x16" style="inline-size:9rem">
     <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
     <span class="ns-video__tag">Short</span><span class="ns-video__dur">0:42</span>
@@ -7096,7 +7096,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <span class="ns-video__dur">02:18</span>
   </div>
 </div>` },
-      { name: "Effects", note: "Two, and both act on the POSTER — the frame and the controls stay still. Hover or tab to the left one and a muted loop crossfades in, which is the one genuinely useful motion on a thumbnail: it answers &ldquo;is this the clip I mean&rdquo; without a page load. The right one is a slow scale, clipped by the frame. Both stop dead under <code>prefers-reduced-motion</code>. With no <code>__preview</code> element the modifier does nothing, which is the correct failure.", html: `<div style="display:flex;flex-wrap:wrap;gap:var(--space-4)">
+      { name: "Effects", note: "Two, and both act on the POSTER — the frame and the controls stay still. Hover or tab to the left one and a muted loop crossfades in, which is the one genuinely useful motion on a thumbnail: it answers &ldquo;is this the clip I mean&rdquo; without a page load. The right one is a slow scale, clipped by the frame. Both stop dead under <code>prefers-reduced-motion</code>. With no <code>__preview</code> element the modifier does nothing, which is the correct failure.", html: `<div class="ns-cluster ns-cluster--md">
   <div class="ns-video ns-video--hover" tabindex="0" style="inline-size:14rem">
     <span class="ns-video__poster ns-ph" aria-hidden="true"></span>
     <span class="ns-video__preview" aria-hidden="true" style="background:var(--color-brand-600);display:grid;place-items:center;color:var(--color-on-dark);font-family:var(--font-mono);font-size:var(--size-label)">PREVIEW LOOP</span>
@@ -7651,7 +7651,7 @@ ${codeBodyPlain(`import { tokens } from "@namaste-salesforce/design-system";`, "
     <button type="submit" class="ns-btn ns-btn--primary ns-btn--icon ns-btn--sm" aria-label="Send message"><i class="ph ph-paper-plane-tilt" aria-hidden="true"></i></button>
   </div>
 </form>` },
-      { name: "Mode picker", note: "Which teacher you are talking to. Tutor explains, Coach answers with a question first, Reviewer marks the code you paste. The trigger is mono because it is a label; the menu is the shared ns-menu.", html: `<div style="display:flex;gap:var(--space-4);align-items:flex-start">
+      { name: "Mode picker", note: "Which teacher you are talking to. Tutor explains, Coach answers with a question first, Reviewer marks the code you paste. The trigger is mono because it is a label; the menu is the shared ns-menu.", html: `<div class="ns-cluster ns-cluster--md" style="align-items:flex-start">
   <button type="button" class="ns-aimode" aria-expanded="true" aria-haspopup="true"><i class="ph ph-graduation-cap" aria-hidden="true"></i> Tutor <i class="ph ph-caret-down" aria-hidden="true"></i></button>
   <div class="ns-menu" style="position:static;display:block;inline-size:17rem">
     <p class="ns-menu__label">Mode</p>

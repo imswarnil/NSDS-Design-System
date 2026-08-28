@@ -19728,3 +19728,96 @@
   .ns-center--pad-b { padding-block-end: var(--stack-lg); }
   .ns-center--pad-t { padding-block-start: var(--stack-md); }
 }
+
+/* Print last, ON PURPOSE: inside one layer, source order decides ties, and
+   the print contract must win every one of them. Nothing goes below this. */
+/* NS Design System — print.
+   =========================================================================
+   The page-level print contract. Individual components already argue their
+   own print cases where the component knows best — the table strips its heat
+   washes, the ad removes itself, the certificate inverts its navy ground —
+   and this file is the layer under those: what EVERY page does when it meets
+   paper. It is imported last in index.css, so inside the ns-components layer
+   its declarations win every source-order tie.
+
+   The reasoning, once: paper has no pointer, no scroll and no dark mode. So
+   chrome that exists to navigate goes away, grounds that exist to separate
+   scrolled sections flatten, motion that exists to accompany scrolling
+   resolves to its final frame, and a link — whose whole value was clickable —
+   prints the one thing that survives, its address. */
+@layer ns-components {
+  @media print {
+
+    /* --- Chrome off ------------------------------------------------------
+       Everything whose only job is navigation or action. A button on paper
+       is a bordered lump that cannot be pressed; a subscribe form is a dead
+       input; a pagination row is a promise the paper cannot keep. The
+       breadcrumb stays — on paper it is provenance, not navigation. */
+    .ns-topnav, .ns-footer, .ns-toc, .ns-sidebar, .ns-drawer, .ns-banner,
+    .ns-blog-listing__rail, .ns-course-detail__rail, .ns-pagination,
+    .ns-searchbtn, .ns-palette, .ns-postnav, .ns-sponsor, .ns-sponsorask,
+    .ns-marquee, .ns-marquee-deck, .ns-btn, .ns-field, .ns-share,
+    .ns-vplayer, dialog {
+      display: none;
+    }
+
+    /* --- Grounds flatten -------------------------------------------------
+       A sunken band separates sections a reader scrolls between; on paper
+       the heading and the space do that. The dark band would spend a
+       cartridge saying what ink on white says better — its text colors are
+       chosen against navy, so both the ground and the ink reset together.
+       The band's own padding drops a step: 64px of blank paper between
+       sections is a third of a page spent on rhythm the page break already
+       provides. */
+    .ns-band { padding-block: var(--space-6); }
+    .ns-band--sunken, .ns-band--tight { background: none; border-block: 0; }
+    .ns-band--dark, .ns-hero, .ns-photoband {
+      background: none;
+      color: var(--color-ink);
+    }
+    .ns-band--dark *, .ns-hero * { color: inherit; }
+    .ns-band--grid::before, .ns-band--grid-live::before, .ns-photoband::before { display: none; }
+
+    /* --- Motion resolves to its final frame ------------------------------
+       The entrance animations start at opacity 0 and are driven by a scroll
+       timeline; print has no scroll, an inactive timeline freezes at the
+       START, and `fill: both` holds it there — so every band the reader had
+       not scrolled to would print BLANK. Same for .ns-reveal, whose hidden
+       state is a translate inside an overflow clip: an unrevealed hero
+       headline prints as an empty bar. Removing the animation removes the
+       fill, and the elements' natural styles are the finished state. */
+    [class*="ns-anim"], [class*="ns-anim"] > *, .ns-parallax {
+      animation: none;
+    }
+    .ns-reveal > span { transform: none; }
+    .ns-reveal { overflow: visible; }
+
+    /* --- Links print their one surviving property ------------------------
+       Scoped to prose and to external targets: a paper reader can type a
+       URL, and cannot do anything with "#curriculum". Internal anchors and
+       the styleguide's own demo links stay as plain text. */
+    .ns-prose a[href^="http"]::after {
+      content: " (" attr(href) ")";
+      font-size: var(--size-fine);
+      color: var(--color-muted);
+      word-break: break-all;
+    }
+
+    /* --- Break hygiene ---------------------------------------------------
+       A card split across two sheets is two half-cards; a heading stranded
+       at the foot of a page introduces nothing. Blocks hold together,
+       headings hold on to what follows them, and paragraphs neither open
+       nor close a page with a single line. */
+    .ns-card, .ns-code, .ns-quote, .ns-takeaway, .ns-compare, .ns-delta,
+    .ns-alert, .ns-series, figure, blockquote, table, pre {
+      break-inside: avoid;
+    }
+    h1, h2, h3, h4, .ns-band__head { break-after: avoid; }
+    .ns-prose p { orphans: 3; widows: 3; }
+
+    /* --- Ink, not atmosphere --------------------------------------------
+       Shadows render as grey smears at print resolution; the hairline
+       border was the structure all along and it prints perfectly. */
+    .ns-card, .ns-code, .ns-modal { box-shadow: none; }
+  }
+}

@@ -61,3 +61,7 @@
 /* Layout primitives last in the foundation group: they are the lowest-
    specificity structural classes and anything may override them. */
 @import "./foundation/layout.css";
+
+/* Print last, ON PURPOSE: inside one layer, source order decides ties, and
+   the print contract must win every one of them. Nothing goes below this. */
+@import "./foundation/print.css";

@@ -3,7 +3,7 @@
 # Class inventory
 
 Every `.ns-*` class in the component layer, grouped by the file that defines
-it. 2125 classes across 34 stylesheets.
+it. 2166 classes across 35 stylesheets.
 
 A class here is available the moment `dist/nsds.css` is linked. If you
 find yourself about to invent a class name, search this list first — the
@@ -40,6 +40,10 @@ odds are the thing already exists under a name you did not guess.
 ## foundation/motion.css
 
 `.ns-anim` · `.ns-anim--draw` · `.ns-anim--enter-end` · `.ns-anim--enter-start` · `.ns-anim--expand` · `.ns-anim--fall` · `.ns-anim--onview` · `.ns-anim--rise` · `.ns-anim--settle` · `.ns-anim-stagger` · `.ns-anim-stagger--onview` · `.ns-parallax` · `.ns-parallax--deep` · `.ns-parallax--near` · `.ns-parallax--slow` · `.ns-parallax-frame`
+
+## foundation/print.css
+
+`.ns-alert` · `.ns-band` · `.ns-band--dark` · `.ns-band--grid` · `.ns-band--grid-live` · `.ns-band--sunken` · `.ns-band--tight` · `.ns-band__head` · `.ns-banner` · `.ns-blog-listing__rail` · `.ns-btn` · `.ns-card` · `.ns-code` · `.ns-compare` · `.ns-course-detail__rail` · `.ns-delta` · `.ns-drawer` · `.ns-field` · `.ns-footer` · `.ns-hero` · `.ns-marquee` · `.ns-marquee-deck` · `.ns-modal` · `.ns-pagination` · `.ns-palette` · `.ns-parallax` · `.ns-photoband` · `.ns-postnav` · `.ns-prose` · `.ns-quote` · `.ns-reveal` · `.ns-searchbtn` · `.ns-series` · `.ns-share` · `.ns-sidebar` · `.ns-sponsor` · `.ns-sponsorask` · `.ns-takeaway` · `.ns-toc` · `.ns-topnav` · `.ns-vplayer`
 
 ## foundation/type-fx.css
 
