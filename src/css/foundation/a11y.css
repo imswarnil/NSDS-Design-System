@@ -61,18 +61,19 @@
   .ns-page--prose { max-inline-size: var(--container-prose); } /* used-by: ghost-theme, lms */
   .ns-page--narrow { max-inline-size: var(--container-narrow); }
   .ns-page--wide { max-inline-size: var(--container-wide); } /* used-by: ghost-theme, lms */
+  /* A page shell that is ALSO the section — an error page, a bare form, a
+     confirmation. Same step a band spends, so a page with a band and a
+     page without one open at the same height. */
+  .ns-page--pad { padding-block: var(--stack-lg); }
+  /* The submit at the foot of a stacked field group. It is the only child
+     of .ns-field that is not part of the label/control/help run, so it is
+     the only one that needs air above it — four templates wrote that same
+     inline margin before this rule existed. */
+  .ns-field .ns-btn--block { margin-block-start: var(--space-2); }
   /* The gutter is inline only, because a page's vertical rhythm belongs to the
      sections inside it. --demo adds the block padding for a standalone page
      that has no band wrapping it. */
   .ns-page--demo { padding-block: var(--space-8); } /* used-by: ghost-theme, lms */
-
-  /* Vertical rhythm between sections, as a class rather than a margin on
-     every heading — margins on headings collapse unpredictably next to
-     grids and cards. */
-  .ns-stack > * + * { margin-block-start: var(--stack-sm); }
-  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); } /* used-by: ghost-theme, lms */
-  .ns-stack--md > * + * { margin-block-start: var(--stack-md); } /* used-by: ghost-theme, lms */
-  .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
 
   /* Auto-fitting card grid. `min()` keeps the track from overflowing the
      viewport at 320px, which a bare minmax(18rem, 1fr) does. */
@@ -81,6 +82,12 @@
     grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
   }
   .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
+  .ns-grid--xs { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr)); }
+  /* auto-FIT, not auto-fill: the last row stretches to fill the width instead
+     of leaving empty tracks. Right when the count is small and known (three
+     states of an ad slot, four plan cards); wrong for a feed, where a
+     one-result page would show one card three columns wide. */
+  .ns-grid--fit { grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
 
   /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
      column below lg, where the sidebar becomes a drawer. */

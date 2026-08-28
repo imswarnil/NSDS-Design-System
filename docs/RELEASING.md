@@ -31,7 +31,7 @@ one that will still be here next year.
 cd "/Users/swarnil/Namaste Salesforce/NS-Design-System"
 
 npm whoami                       # expect: imswarnil
-npm run check                    # the seven gates
+npm run check                    # the ten gates
 npm publish --dry-run            # read the WARNINGS, not just the file list
 
 npm version <patch|minor|major>  # or edit the version by hand

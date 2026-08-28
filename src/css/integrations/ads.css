@@ -79,6 +79,18 @@
      ladder does not carry sets them inline rather than inventing a class —
      `style="--ns-ad-w:468px;--ns-ad-h:60px"` is a datum, not a style choice,
      the same argument the table's data bar makes. */
+  /* THE ONE COMPONENT THAT OWNS ITS OWN BLOCK MARGIN, and the exception is
+     argued rather than assumed. Everywhere else in this system a parent
+     stack spaces its children, because the parent knows what the children
+     are. An ad slot is the case where it does not: the unit is dropped into
+     a host the page did not plan for — mid-article by a script, above a
+     title by a theme setting, into a rail by a template — and the hosts that
+     forget to space it are the ones where an advertisement ends up touching
+     a paragraph, which is the single thing an ad must never do. So the slot
+     brings the distance with it. The two that sit INSIDE a row (--feed in a
+     card grid, --rail in a sidebar stack) are placed by that container and
+     opt out. */
+  .ns-ad:not(.ns-ad--feed) { margin-block: var(--stack-md); }
   .ns-ad {
     --ns-ad-w: 300px;
     --ns-ad-h: 250px;

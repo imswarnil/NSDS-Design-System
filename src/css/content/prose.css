@@ -33,6 +33,15 @@
   .ns-prose h3 { font-size: var(--size-h3); margin-block-start: var(--stack-lg); }
   .ns-prose h4 { font-size: var(--size-h4); margin-block-start: var(--stack-lg); }
   .ns-prose h2 + *, .ns-prose h3 + *, .ns-prose h4 + * { margin-block-start: var(--space-3); }
+  /* …but not when the heading OPENS the surface. The air above an h2 is the
+     distance from what came before it, and when nothing came before it that
+     distance is a hole: a tab panel or a card that starts on a heading opened
+     96px down from its own top edge, which reads as a rendering fault rather
+     than as rhythm. This is the guarantee .ns-stack gives with `> * + *`,
+     restated for the one rule in this file that could not be written that
+     way — the heading margins vary by level, so they cannot live in a single
+     adjacent-sibling rule. Listed explicitly to clear `.ns-prose h2`. */
+  .ns-prose > :is(h2, h3, h4):first-child { margin-block-start: 0; }
 
   /* Lead paragraph — the deck under a title. */
   /* Snug, not heading: a lede is a SENTENCE that wraps two or three lines,

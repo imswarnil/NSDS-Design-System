@@ -400,4 +400,12 @@
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
   }
+  /* A block of records — lesson rows, a log, a run of timestamps. The label
+     is one line and shouts; this is several lines and does not, so it keeps
+     its own case and takes body leading because it WRAPS. Mono is for
+     values; this is a column of values. */
+  .ns-record {
+    font-family: var(--font-mono); font-size: var(--size-mono);
+    line-height: var(--leading-body); color: var(--color-muted);
+  }
 }

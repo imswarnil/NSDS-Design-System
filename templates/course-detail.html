@@ -27,7 +27,7 @@
   Swap ns-chero--split for --cover / --video / --minimal / --console /
   --cert; every version carries the same parts.
 -->
-<nav class="ns-breadcrumb" aria-label="Breadcrumb" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-4) var(--gutter) 0">
+<nav class="ns-breadcrumb ns-center ns-center--gutter ns-center--pad-t" aria-label="Breadcrumb">
   <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/">Home</a></span>
   <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/courses">Courses</a></span>
   <span class="ns-breadcrumb__item"><a class="ns-breadcrumb__link" href="/courses/developer">Developer track</a></span>
@@ -65,7 +65,7 @@
           <a class="ns-btn ns-btn--primary ns-btn--lg" href="#enrol">Enrol — $49</a>
           <a class="ns-btn ns-btn--soft ns-btn--lg" href="#curriculum"><i class="ph ph-play" aria-hidden="true"></i> Preview 2 lessons</a>
         </div>
-        <div class="ns-authors" style="margin-block-start:var(--space-5)">
+        <div class="ns-authors">
           <span class="ns-authors__stack" aria-hidden="true">
             <img class="ns-authors__avatar" src="/assets/logo/favicon.svg" alt="">
             <img class="ns-authors__avatar" src="/assets/logo/favicon.svg" alt="">
@@ -94,8 +94,8 @@
   </div>
 </section>
 
-<div class="ns-course-detail" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-10) var(--gutter) var(--space-16)">
-  <main>
+<div class="ns-course-detail ns-center ns-center--gutter ns-center--pad">
+  <main class="ns-stack--md">
     <!-- Outcomes sit ABOVE the tabs, not inside one. "What will I be able to
          do" is the question every visitor arrives with, and it is the answer
          that decides whether they read anything else — so it is never behind
@@ -105,9 +105,9 @@
          identical ticks: a trigger, an error, a query, a deploy, a test. Five
          ticks is a list that has to be read; five glyphs is a list that can be
          scanned, which is what a reader does here. -->
-    <section>
+    <section class="ns-stack">
       <p class="ns-kicker">What you'll learn</p>
-      <ul class="ns-outcomes ns-outcomes--cards" style="margin-block-start:var(--space-4)">
+      <ul class="ns-outcomes ns-outcomes--cards">
         <li><i class="ph ph-lightning" aria-hidden="true"></i><span><span class="ns-outcomes__title">Bulk-safe triggers</span>Write a trigger that survives a 200-record data load, and know why the naive one does not.</span></li>
         <li><i class="ph ph-warning-circle" aria-hidden="true"></i><span><span class="ns-outcomes__title">Read a limit error</span>Take a governor-limit exception and find the line that caused it, first time.</span></li>
         <li><i class="ph ph-magnifying-glass" aria-hidden="true"></i><span><span class="ns-outcomes__title">Query selectively</span>Filter on something the platform can serve from an index, and prove it did.</span></li>
@@ -118,7 +118,7 @@
     </section>
 
     <!-- The five arguments, one click apart. -->
-    <div class="ns-tabs" role="tablist" aria-label="Course details" style="margin-block-start:var(--space-10)">
+    <div class="ns-tabs" role="tablist" aria-label="Course details">
       <button class="ns-tab" type="button" role="tab" id="cd-t-overview" aria-controls="cd-p-overview" aria-selected="true">
         <i class="ph ph-info ns-tab__icon" aria-hidden="true"></i> Overview
       </button>
@@ -137,22 +137,22 @@
     </div>
 
     <!-- ============================================= OVERVIEW ============ -->
-    <div class="ns-tabpanel" role="tabpanel" id="cd-p-overview" aria-labelledby="cd-t-overview" tabindex="0">
+    <div class="ns-tabpanel ns-stack--md" role="tabpanel" id="cd-p-overview" aria-labelledby="cd-t-overview" tabindex="0">
       <section class="ns-prose">
         <h2>About this course</h2>
         <p>Salesforce is a platform before it is a product, and Apex is how you extend it. This course starts where every other one should: the data model, the security model, and what actually happens when a record is saved.</p>
         <p>Every lesson has the same shape — a plain-English concept, one concrete example you build yourself, and a bridge to the next step.</p>
       </section>
 
-      <aside class="ns-takeaway" style="margin-block-start:var(--space-6)">
+      <aside class="ns-takeaway">
         <span class="ns-takeaway__label">In short</span>
         <p class="ns-takeaway__text">If you can write an <code>if</code> statement and you have a browser, you can finish this. What you will not have at the end is a certificate you cannot defend — every lab runs in your own org, and the code is yours.</p>
       </aside>
 
       <!-- What the course is FOR, as three claims with the bespoke icons. -->
-      <section style="margin-block-start:var(--space-10)">
+      <section class="ns-stack">
         <p class="ns-kicker">How it is built</p>
-        <div class="ns-features" style="margin-block-start:var(--space-4)">
+        <div class="ns-features">
           <article class="ns-feature">
             <div class="ns-feature__top">
               <svg class="ns-icon" aria-hidden="true"><use href="../icons/namaste-icons.svg#ns-i-roadmap"/></svg>
@@ -184,9 +184,9 @@
            that gets left out. Each row says what to do if the answer is no —
            a prerequisite with no route to meeting it is a wall, not a
            warning. -->
-      <section style="margin-block-start:var(--space-10)">
+      <section class="ns-stack">
         <p class="ns-kicker">Before you start</p>
-        <div class="ns-prereq" style="margin-block-start:var(--space-4)">
+        <div class="ns-prereq">
           <div class="ns-prereq__item" data-met="true">
             <i class="ph ph-check-circle ns-prereq__icon" aria-hidden="true"></i>
             <span>
@@ -217,9 +217,9 @@
       <!-- Where this course sits, and the honest alternative to it. A course
            page that never names the other option is a course page nobody
            believes. -->
-      <section style="margin-block-start:var(--space-10)">
+      <section class="ns-stack">
         <p class="ns-kicker">Is this the right one?</p>
-        <div class="ns-compare" style="margin-block-start:var(--space-4)">
+        <div class="ns-compare">
           <div class="ns-compare__side">
             <p class="ns-compare__title">Admin basics</p>
             <ul>
@@ -241,9 +241,9 @@
 
       <!-- The arc, as milestones rather than a second copy of the
            curriculum. -->
-      <section style="margin-block-start:var(--space-10)">
+      <section class="ns-stack">
         <p class="ns-kicker">The arc</p>
-        <ol class="ns-timeline ns-timeline--icons" style="margin-block-start:var(--space-4)">
+        <ol class="ns-timeline ns-timeline--icons">
           <li class="ns-timeline__item" data-state="done">
             <span class="ns-timeline__icon" aria-hidden="true"><i class="ph ph-database"></i></span>
             <span class="ns-timeline__time">Week 1</span>
@@ -273,9 +273,9 @@
 
       <!-- What you leave with, as a list you can tick rather than a
            paragraph. -->
-      <section style="margin-block-start:var(--space-10)">
+      <section class="ns-stack">
         <p class="ns-kicker">You finish with</p>
-        <ul class="ns-checklist" style="margin-block-start:var(--space-4)">
+        <ul class="ns-checklist">
           <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A working org with five things you built in it</span></li>
           <li data-state="done"><i class="ph ph-check-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A repository of the course code, yours to keep</span></li>
           <li><i class="ph ph-circle ns-checklist__mark" aria-hidden="true"></i><span class="ns-checklist__text">A certificate, at 100% completion</span></li>
@@ -284,7 +284,7 @@
       </section>
 
       <!-- The vocabulary the course assumes by the end. -->
-      <aside class="ns-terms" style="margin-block-start:var(--space-10)">
+      <aside class="ns-terms">
         <span class="ns-terms__label">Terms you will own by lesson 10</span>
         <dl>
           <dt>Governor limit</dt><dd>The per-transaction ceiling the platform enforces — queries, rows, CPU time.</dd>
@@ -296,8 +296,8 @@
       <!-- Secondary, so it may fold. The band that answers "what is this"
            never folds — a collapsed section is one a reader has to decide to
            open, and most will not. -->
-      <details class="ns-band ns-band--tight ns-band--collapsible" style="padding-block:var(--space-8) 0">
-        <div class="ns-band__inner" style="padding-inline:0">
+      <details class="ns-band ns-band--tight ns-band--collapsible ns-band--nested">
+        <div class="ns-band__inner">
           <summary class="ns-band__toggle">
             <h2 class="ns-band__title">Refunds, access and updates</h2>
             <span class="ns-band__toggle-hint">
@@ -317,8 +317,8 @@
     </div>
 
     <!-- ============================================ CURRICULUM ========== -->
-    <div class="ns-tabpanel" role="tabpanel" id="cd-p-curriculum" aria-labelledby="cd-t-curriculum" tabindex="0">
-      <section id="curriculum">
+    <div class="ns-tabpanel ns-stack--md" role="tabpanel" id="cd-p-curriculum" aria-labelledby="cd-t-curriculum" tabindex="0">
+      <section id="curriculum" class="ns-stack--md">
         <div class="ns-curriculum">
           <div class="ns-curriculum__bar">
             <span class="ns-curriculum__totals">5 sections · 24 lessons · 6h 20m</span>
@@ -432,9 +432,9 @@
 
         <!-- The files that come with it, listed here rather than promised in
              the enrol card's bullet list. -->
-        <div style="margin-block-start:var(--space-8)">
+        <div class="ns-stack">
           <p class="ns-kicker">Downloads included</p>
-          <div style="margin-block-start:var(--space-4)">
+          <div>
             <a class="ns-resource" href="#dl-source">
               <span class="ns-resource__icon"><i class="ph ph-code" aria-hidden="true"></i></span>
               <span class="ns-resource__body">
@@ -457,7 +457,7 @@
     </div>
 
     <!-- ============================================ INSTRUCTORS ========= -->
-    <div class="ns-tabpanel" role="tabpanel" id="cd-p-instructor" aria-labelledby="cd-t-instructor" tabindex="0">
+    <div class="ns-tabpanel ns-stack--md" role="tabpanel" id="cd-p-instructor" aria-labelledby="cd-t-instructor" tabindex="0">
       <div class="ns-instructors ns-instructors--pair">
         <div class="ns-instructor">
           <img class="ns-instructor__avatar" src="/assets/logo/favicon.svg" alt="">
@@ -487,14 +487,14 @@
         </div>
       </div>
 
-      <figure class="ns-quote" style="margin-block-start:var(--space-10)">
+      <figure class="ns-quote">
         <blockquote>We teach the thing that goes wrong at 200 records, because that is the thing nobody teaches and everybody hits.</blockquote>
         <figcaption>Swarnil Singhai · on why lesson 09 exists</figcaption>
       </figure>
 
-      <section style="margin-block-start:var(--space-10)">
+      <section class="ns-stack">
         <p class="ns-kicker">Also from this pair</p>
-        <div class="ns-course-strip" style="margin-block-start:var(--space-4)">
+        <div class="ns-course-strip">
           <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">SOQL, properly</span></a><span class="ns-ccard__meta"><span>6 lessons</span><span>1h 05m</span></span></div></div>
           <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">LWC from scratch</span></a><span class="ns-ccard__meta"><span>14 lessons</span><span>4h 10m</span></span></div></div>
           <div class="ns-card ns-ccard ns-ccard--compact"><div class="ns-card__body"><span class="ns-card__kicker">// Course</span><a class="ns-card__link" href="#"><span class="ns-card__title">Integration patterns</span></a><span class="ns-ccard__meta"><span>11 lessons</span><span>3h 30m</span></span></div></div>
@@ -503,7 +503,7 @@
     </div>
 
     <!-- ============================================== REVIEWS =========== -->
-    <div class="ns-tabpanel" role="tabpanel" id="cd-p-reviews" aria-labelledby="cd-t-reviews" tabindex="0">
+    <div class="ns-tabpanel ns-stack--md" role="tabpanel" id="cd-p-reviews" aria-labelledby="cd-t-reviews" tabindex="0">
       <!-- The distribution before the quotes. Five stars and a number is a
            claim; the shape of the distribution is evidence. -->
       <dl class="ns-deflist">
@@ -513,7 +513,7 @@
         <dt>2 star</dt><dd><meter class="ns-meter" value="2" max="100" low="50" high="80" optimum="100" aria-label="2% of reviews are two star"></meter></dd>
       </dl>
 
-      <div class="ns-testimonials" style="margin-block-start:var(--space-8)">
+      <div class="ns-testimonials">
         <blockquote class="ns-testimonial ns-testimonial--featured">
           <span class="ns-rating" data-value="5" data-of="5">
             <span class="ns-rating__value">5.0</span>
@@ -547,7 +547,7 @@
     </div>
 
     <!-- ================================================== FAQ =========== -->
-    <div class="ns-tabpanel" role="tabpanel" id="cd-p-faq" aria-labelledby="cd-t-faq" tabindex="0">
+    <div class="ns-tabpanel ns-stack--md" role="tabpanel" id="cd-p-faq" aria-labelledby="cd-t-faq" tabindex="0">
       <div class="ns-faq">
         <details class="ns-faq__item" open>
           <summary>Do I need a paid Salesforce license?</summary>
@@ -567,7 +567,7 @@
         </details>
       </div>
 
-      <div class="ns-alert ns-alert--info" style="margin-block-start:var(--space-8)">
+      <div class="ns-alert ns-alert--info">
         <i class="ph ph-info ns-alert__icon" aria-hidden="true"></i>
         <div class="ns-alert__body">
           <p class="ns-alert__title">Still deciding?</p>
@@ -581,8 +581,8 @@
 
     <!-- Related sits OUTSIDE the tabs: it is where you go if the answer to
          this page is no, and that has to be reachable from every tab. -->
-    <section style="margin-block-start:var(--space-8)">
-      <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
+    <section>
+      <div class="ns-band__head ns-band__head--between">
         <div><p class="ns-kicker">Related</p><h2 class="ns-band__title" style="font-size:var(--size-h3)">Learners also took</h2></div>
         <div class="ns-band__actions"><a class="ns-btn ns-btn--outline ns-btn--sm" href="/courses">All courses <i class="ph ph-arrow-right ns-btn__arrow" aria-hidden="true"></i></a></div>
       </div>
@@ -629,8 +629,8 @@
     <!-- What the course is FOR, at the size the argument deserves: the badge
          it counts towards. -->
     <div class="ns-card ns-card--sunken">
-      <div class="ns-card__body" style="display:grid;justify-items:center;gap:var(--space-3)">
-        <span class="ns-certbadge ns-certbadge--associate" style="inline-size:7rem">
+      <div class="ns-card__body ns-card__body--center">
+        <span class="ns-certbadge ns-certbadge--associate ns-certbadge--lg">
           <span class="ns-certbadge__plate" aria-hidden="true"></span>
           <span class="ns-certbadge__ribbon" aria-hidden="true"></span>
           <span class="ns-certbadge__inner">

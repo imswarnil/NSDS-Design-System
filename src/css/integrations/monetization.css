@@ -140,6 +140,9 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center; column-gap: var(--space-5);
   }
+  /* Fills its column instead of shrinking to its contents — for a leaderboard
+     that IS the section rather than one card among several. */
+  .ns-sponsor--full { inline-size: 100%; }
   .ns-sponsor--leaderboard .ns-sponsor__label { grid-column: 1 / -1; grid-row: 1; }
   .ns-sponsor--leaderboard .ns-sponsor__logo { grid-row: 2; }
   .ns-sponsor--leaderboard .ns-sponsor__body { grid-row: 2; }

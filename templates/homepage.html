@@ -350,7 +350,7 @@
       <h2 class="ns-band__title">Four stages, in order</h2>
       <p class="ns-band__lede">Start anywhere you already are. Each stage ends where the next begins.</p>
     </header>
-    <ol class="ns-path ns-anim-stagger ns-anim-stagger--onview" style="list-style:none;margin:0;padding:0">
+    <ol class="ns-path ns-bare ns-anim-stagger ns-anim-stagger--onview">
       <li class="ns-path__stop">
         <span class="ns-path__node">01</span>
         <a class="ns-path__card" href="#">
@@ -907,7 +907,7 @@
       <figcaption>Priya S. &middot; Salesforce Developer &middot; batch 2025</figcaption>
     </figure>
   </div>
-  <div class="ns-band__inner" style="margin-block-start:var(--space-10)">
+  <div class="ns-band__inner ns-band__inner--continued">
     <!-- THREE ROWS, ALTERNATING DIRECTION, THREE DIFFERENT SPEEDS.
 
          The alternation is what turns a strip into a crowd. Three rows all
@@ -925,7 +925,7 @@
          All three pause on hover and focus-within, and stop dead under
          prefers-reduced-motion via the global guard. -->
     <div class="ns-marquee-deck">
-      <div class="ns-marquee-deck__tilt" style="display:grid;gap:var(--space-5)">
+      <div class="ns-marquee-deck__tilt">
         <div class="ns-marquee ns-marquee--window">
           <div class="ns-marquee__track">
           <div class="ns-marquee__item ns-marquee__item--card">
@@ -1745,8 +1745,8 @@
       <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 111 24" role="img" aria-label="Contoso Data"><use href="../icons/brand-marks.svg#ns-b-contoso"/></svg>
       <svg class="ns-brandmark ns-brandmark--lg" viewBox="0 0 97 24" role="img" aria-label="Initrode"><use href="../icons/brand-marks.svg#ns-b-initrode"/></svg>
     </div>
-    <div style="margin-block-start:var(--space-8)">
-      <a class="ns-sponsor ns-sponsor--leaderboard" href="#" style="inline-size:100%">
+    <div class="ns-stack--md">
+      <a class="ns-sponsor ns-sponsor--leaderboard ns-sponsor--full" href="#">
         <span class="ns-sponsor__label">Sponsored</span>
         <!-- The MARK, not the lockup. .ns-sponsor__name sets the company name
              as real text right beside this — a11y requires it, and the docs
@@ -1772,7 +1772,7 @@
          buys ad space. It is also not a .ns-cta, because the page gets one
          closer and spending it on "sponsor us" would sell the wrong thing to
          the 99% who came here to learn. -->
-    <div class="ns-sponsorask ns-anim ns-anim--rise ns-anim--onview" style="margin-block-start:var(--space-6)">
+    <div class="ns-sponsorask ns-anim ns-anim--rise ns-anim--onview">
       <span class="ns-sponsorask__icon" aria-hidden="true"><i class="ph ph-megaphone"></i></span>
       <div class="ns-sponsorask__body">
         <span class="ns-sponsorask__title">Put your tool in front of people who will actually install it</span>
@@ -1796,10 +1796,10 @@
       <h2 class="ns-band__title">One lesson in your inbox, every Tuesday</h2>
       <p class="ns-band__lede">The same writing as the training, a module at a time. No launch emails, no webinars.</p>
     </header>
-    <form class="ns-field" data-members-form="subscribe" action="#" style="max-inline-size:32rem;margin-inline:auto">
+    <form class="ns-field ns-center ns-center--compact" data-members-form="subscribe" action="#">
       <label class="ns-field__label" for="home-subscribe-email">Email address</label>
-      <div style="display:flex;gap:var(--space-2);flex-wrap:wrap">
-        <input id="home-subscribe-email" class="ns-input" style="flex:1;min-inline-size:14rem"
+      <div class="ns-cluster">
+        <input id="home-subscribe-email" class="ns-input ns-cluster__fill"
                type="email" name="email" autocomplete="email" required
                placeholder="you@example.com" data-members-email>
         <button class="ns-btn ns-btn--primary" type="submit">Subscribe</button>

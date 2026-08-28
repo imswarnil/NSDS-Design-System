@@ -3977,18 +3977,18 @@ Map<Id, Account> byId = new Map<Id, Account>(
     </div>
   </div>
 
-  <aside class="ns-blog-listing__rail">
-    <nav aria-label="Categories">
-      <p class="ns-toc__title" style="padding-inline:0">Categories</p>
-      <div style="display:flex;flex-wrap:wrap;gap:var(--space-2)">
+  <aside class="ns-blog-listing__rail ns-widgets">
+    <nav class="ns-widget" aria-label="Categories">
+      <p class="ns-widget__title">Categories</p>
+      <div class="ns-cluster">
         <a class="ns-tag ns-tag--pill" href="#">Apex <span class="ns-tag__count">24</span></a>
         <a class="ns-tag ns-tag--pill" href="#">Flows <span class="ns-tag__count">18</span></a>
         <a class="ns-tag ns-tag--pill" href="#">SOQL <span class="ns-tag__count">9</span></a>
         <a class="ns-tag ns-tag--pill" href="#">Architecture <span class="ns-tag__count">7</span></a>
       </div>
     </nav>
-    <div>
-      <p class="ns-toc__title" style="padding-inline:0">Recent</p>
+    <div class="ns-widget">
+      <p class="ns-widget__title">Recent</p>
       <div class="ns-blog-archive">
         <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201</span><span class="ns-blog-archive__read">6m</span></a>
         <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">28 Jul</span><span class="ns-blog-archive__title">The data model is the product</span><span class="ns-blog-archive__read">12m</span></a>

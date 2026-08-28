@@ -126,6 +126,9 @@
     padding-block-end: var(--space-5); margin-block-end: var(--space-6);
     border-block-end: 1px solid var(--color-border);
   }
+  /* The kicker reused as a SUBHEADING, partway down a dashboard, opening a
+     block below the one above it. Same type, a subsection's distance. */
+  .ns-pagehead__kicker--section { margin-block-start: var(--stack-md); }
   .ns-pagehead__kicker {
     display: block;
     font-family: var(--font-mono); font-size: var(--size-label);

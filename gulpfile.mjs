@@ -65,6 +65,12 @@ export const check = gulp.series(
      so it runs before build-css and cannot pass on a stale dist/. */
   run("check-cascade.mjs"),
   run("check-components.mjs"),
+  /* The layout contract: a section, a container and a stack, each doing only
+     its own job. It guards the same boundary check-components guards on the
+     React side — that one bans styling in a .jsx, this one bans it in an
+     inline `style=` — and the two together are why "where does this spacing
+     live" has one answer. */
+  run("check-layout.mjs"),
   /* The icon subset. It does not fail the build yet — see the header in
      scripts/check-icons.mjs — but a missing glyph is an INVISIBLE control, and
      the only way that gets noticed is if the build says so every time. */

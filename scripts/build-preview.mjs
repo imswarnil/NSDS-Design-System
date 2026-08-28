@@ -427,7 +427,62 @@ ${PROSE}
       </div>
     </div>
     ${spec(["guidelines/spacing-layout.card.html"])}` },
-  { id: "layout", title: "Layout & elevation", lede: "Containers, breakpoints, fixed chrome, and the six-layer elevation order.", body: () => `
+  { id: "layout", title: "Layout & elevation", lede: "Three nested levels — <strong>section</strong>, <strong>container</strong>, <strong>stack</strong> — and one rule: a level never does another level's job. Plus the containers, breakpoints, fixed chrome and the six-layer elevation order the three are built from.", body: () => `
+    <p class="sub">The three levels</p>
+    <p class="note">Every page in this system is the same three nested things. A <strong>section</strong> owns the ground and the space between page sections; a <strong>container</strong> owns the maximum width and the gutters; a <strong>stack</strong> owns the rhythm between the elements inside. Nothing else owns spacing — and specifically, <em>an element does not set its own top margin</em>. Its parent's stack does.</p>
+    <p class="note">The reason is not tidiness. Spacing set by the child is spacing decided in as many places as there are children, and it drifts: an audit of these templates found <strong>133 inline layout declarations</strong>, including <code>margin-block-start</code> at eight different values where the scale has four. Every one of them is now a class, and <code>scripts/check-layout.mjs</code> fails the build if a new one appears.</p>
+    <div class="demo demo--stack">
+      <div class="lvl lvl--band">
+        <span class="lvl__tag">.ns-band</span><span class="lvl__role">section — ground + space between sections</span>
+        <div class="lvl lvl--inner">
+          <span class="lvl__tag">.ns-band__inner</span><span class="lvl__role">container — max width + gutters</span>
+          <div class="lvl lvl--stack">
+            <span class="lvl__tag">.ns-stack</span><span class="lvl__role">stack — rhythm between children</span>
+            <span class="lvl__box"></span><span class="lvl__box"></span><span class="lvl__box"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub">Stack — rhythm down</p>
+    <p class="note"><code>&gt; * + *</code> and nothing else, so the first child never carries a stray top margin and a stack cannot double up against its section's own padding. Four steps, matching <code>--stack-*</code>.</p>
+    <div class="demo demo--stack">
+      ${[["ns-stack--xs", "--stack-xs", "8px — a label and its value, a caption under a figure"],
+         ["ns-stack", "--stack-sm", "16px — the default: a kicker, a heading, a paragraph"],
+         ["ns-stack--md", "--stack-md", "32px — between subsections inside one band"],
+         ["ns-stack--lg", "--stack-lg", "64px — between page sections, when there is no band"]]
+        .map(([cls, tok, why]) => `
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.${cls}</code>
+        <span class="${cls} lvlrow__demo"><span class="lvl__box"></span><span class="lvl__box"></span></span>
+        <span class="lvlrow__why"><code>${tok}</code> · ${why}</span>
+      </div>`).join("")}
+    </div>
+
+    <p class="sub">Cluster — rhythm across</p>
+    <p class="note">Things in a row that wrap, with one gap in both axes. <code>align-items: center</code>, because a cluster is nearly always controls or chips of differing heights; <code>--baseline</code> for the rarer case of text at two sizes on one line. <code>.ns-cluster__end</code> pushes everything after it to the far edge, and <code>.ns-cluster__fill</code> takes the leftover width without wrapping below a readable measure.</p>
+    <div class="demo demo--stack">
+      ${[["ns-cluster", "--gap-inline (8px)"], ["ns-cluster ns-cluster--md", "--space-4 (16px)"], ["ns-cluster ns-cluster--lg", "--space-6 (24px)"]]
+        .map(([cls, tok]) => `
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.${cls.split(" ").pop()}</code>
+        <span class="${cls}"><span class="ns-chip">One</span><span class="ns-chip">Two</span><span class="ns-chip">Three</span></span>
+        <span class="lvlrow__why"><code>${tok}</code></span>
+      </div>`).join("")}
+      <div class="lvlrow">
+        <code class="lvlrow__cls">.ns-cluster__end</code>
+        <span class="ns-cluster lvlrow__demo"><span class="ns-chip">Left</span><span class="ns-chip ns-cluster__end">Far right</span></span>
+        <span class="lvlrow__why">One class instead of a hand-written <code>margin-inline-start: auto</code></span>
+      </div>
+    </div>
+
+    <p class="sub">Centre — a measure, centred</p>
+    <p class="note">The container level for things that are <em>not</em> inside a band: a bare page, a demo, an email body. One element, deliberately — a band is two because its ground is full-bleed, and a wrapper has no ground. Add <code>--gutter</code> for the side padding and <code>--pad</code> / <code>--pad-t</code> / <code>--pad-b</code> for the block padding a band would otherwise have spent.</p>
+    ${plainRows(pick(/^--container-/))}
+
+    <p class="sub">Bare — the browser's own box, removed</p>
+    <p class="note"><code>.ns-bare</code> strips the user-agent margin, padding, border and marker from a <code>fieldset</code>, <code>ul</code>, <code>ol</code> or <code>dd</code>. It is a reset, not a layout decision, and keeping the two apart is the point: put <code>.ns-bare</code> on the semantic element, then put the real layout on the same node with a stack or a cluster.</p>
+
     <p class="sub">Containers &amp; breakpoints</p>
     ${plainRows(pick(/^--(container|breakpoint|gutter|navbar|sidebar|toc|player|target)/))}
     <p class="sub">Elevation order — six layers, no more</p>
@@ -1764,6 +1819,35 @@ const CSS = `
           padding: var(--space-6); display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
   .demo--dark { background: var(--color-brand-900); border-color: var(--color-brand-900); }
   .demo--stack { flex-direction: column; align-items: stretch; }
+  /* The nested-levels diagram: each level is a labelled box drawn INSIDE the
+     one above, because the relationship is containment and a legend beside
+     three swatches does not show containment. */
+  .lvl { border: 1px dashed var(--color-border); border-radius: var(--radius-card); padding: var(--space-4); }
+  .lvl--band { background: var(--color-surface-sunken); }
+  .lvl--inner { margin-block-start: var(--space-3); background: var(--color-surface); }
+  .lvl--stack { margin-block-start: var(--space-3); border-style: solid; border-color: var(--color-brand-300); }
+  .lvl__tag { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
+              letter-spacing: var(--tracking-label); color: var(--color-brand-600); }
+  .lvl__role { font-size: var(--size-small); color: var(--color-muted); margin-inline-start: var(--space-2); }
+  .lvl__box { display: block; block-size: var(--space-6); border-radius: var(--radius-sm);
+              background: var(--color-brand-100); }
+  .lvl--stack .lvl__box:first-of-type { margin-block-start: var(--space-3); }
+  .lvl--stack .lvl__box + .lvl__box { margin-block-start: var(--space-3); }
+  [data-theme="dark"] .lvl__box { background: var(--color-brand-800); }
+  /* One row per step: the class, the thing it does, and why you would pick
+     it. The middle column is the actual class doing the actual spacing —
+     a picture of a stack that is not itself a stack is a picture that can
+     be wrong. */
+  .lvlrow { display: grid; grid-template-columns: 12rem minmax(0, 1fr) minmax(0, 1.4fr);
+            gap: var(--space-4); align-items: center; padding-block: var(--space-3); }
+  .lvlrow + .lvlrow { border-block-start: 1px solid var(--color-border); }
+  .lvlrow__cls { font-family: var(--font-mono); font-size: var(--size-mono); color: var(--color-brand-600); }
+  .lvlrow__why { font-size: var(--size-small); color: var(--color-muted); }
+  .lvlrow__demo { display: block; }
+  .lvlrow .lvl__box { inline-size: 100%; block-size: var(--space-5); }
+  @media (max-width: 47.999rem) {
+    .lvlrow { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
+  }
   /* Chrome demos — a navbar is edge-to-edge or it is not a navbar. The bar is
      unstuck inside the demo box (it would otherwise pin itself to the top of
      the styleguide while its box scrolled away) and the corners are rounded
@@ -2101,7 +2185,7 @@ const DEMOS = [
      a product page: the point is that the same band grammar, the same
      cards and the same rails build a personal site, a docs page and a link
      page without a component being added for any of them. */
-  { out: "demo-personal-site.html", tpl: "personal-site.html", title: "Personal site — full page", back: "c-shero.html", note: "a one-page personal site, built from the product homepage's own bands — ZERO new classes were needed for this page" },
+  { out: "demo-personal-site.html", tpl: "personal-site.html", title: "Personal site — full page", back: "c-shero.html", note: "a one-page personal site, built from the product homepage's own bands — one new class in the whole page, .ns-profile__avatar--xl" },
   { out: "demo-docs.html", tpl: "docs.html", title: "Documentation page — full page", back: "c-post-layout.html", note: "nav | article | outline. The one shape that genuinely wants navigation on both sides: the left is what else exists, the right is what is on this page" },
   { out: "demo-links.html", tpl: "links.html", title: "Link page — full page", back: "c-button.html", note: "the one-link-in-a-bio page. Narrow on every screen, exactly one filled row, and the links are a real nav rather than cards" },
   { out: "demo-blog-post-sidebar.html", tpl: "blog-post-sidebar.html", title: "Blog post, sidebar — full page", back: "c-post-layout.html", note: "article + a real sidebar: related, courses, the training CTA, newsletter, categories, sponsor. The author is NOT in the rail — a bio belongs after the piece, not beside it" },

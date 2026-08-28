@@ -51,6 +51,10 @@
   .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-200); }
   .ns-card__body { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--pad-card); flex: 1; }
+  /* A body whose children are centred rather than left-aligned — a badge
+     card, a stat card, an empty state inside a card. The card owns the
+     arrangement of its own body; the badge inside does not centre itself. */
+  .ns-card__body--center { align-items: center; text-align: center; gap: var(--space-3); }
   .ns-card__kicker { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
                      letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
   .ns-card__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
@@ -439,6 +443,7 @@
      word off every line. */
   .ns-marquee--vertical .ns-bubble { inline-size: auto; }
   .ns-marquee-deck__tilt {
+    display: grid; gap: var(--space-5);
     transform: rotateX(9deg) rotateZ(-2deg); /* lint-ok: a depth angle, not a spacing value */
     transform-origin: center top;
   }

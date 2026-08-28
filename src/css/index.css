@@ -58,3 +58,6 @@
 @import "./content/sections.css";
 @import "./product/admin.css";
 @import "./foundation/a11y.css";
+/* Layout primitives last in the foundation group: they are the lowest-
+   specificity structural classes and anything may override them. */
+@import "./foundation/layout.css";

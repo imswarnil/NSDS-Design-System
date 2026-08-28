@@ -39,6 +39,7 @@
     <div class="ns-ad ns-ad--rectangle" data-state="loading">
       <span class="ns-ad__label">Advertisement</span>
       <div class="ns-ad__frame">
+        <!-- layout-ok: AdSense's own contract — its script reads display:block off the element -->
         <ins class="adsbygoogle" style="display:block"
              data-ad-client="ca-pub-XXXX" data-ad-slot="1234567890"></ins>
         <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">300x250</span>
@@ -56,8 +57,7 @@
      a desktop. It sits ABOVE the title rather than between the title and the
      text, because a strip wedged into the header separates the headline from
      the standfirst that explains it. -->
-<div class="ns-ad ns-ad--leaderboard" data-state="loading" data-placement="Leaderboard · top of page"
-     style="margin-block:var(--space-6)">
+<div class="ns-ad ns-ad--leaderboard" data-state="loading" data-placement="Leaderboard · top of page">
   <span class="ns-ad__label">Advertisement</span>
   <div class="ns-ad__frame">
     <span class="ns-ad__dummy" aria-hidden="true">
@@ -107,8 +107,7 @@
          so without this class the reader on a phone gets 600 pixels of ad
          between the headline and the first paragraph, and the desktop view
          everyone reviews looks perfectly fine. -->
-    <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled" data-placement="Skyscraper · rail"
-         style="margin-block-start:var(--space-8)">
+    <div class="ns-ad ns-ad--skyscraper ns-ad-rail" data-state="filled" data-placement="Skyscraper · rail">
       <span class="ns-ad__label">Advertisement</span>
       <div class="ns-ad__frame">
         <span class="ns-ad__dummy" aria-hidden="true">
@@ -207,15 +206,14 @@
          A responsive unit sizes itself, so its height is unknown until it
          renders — which is why it lives BELOW the last paragraph. If it grows
          on render it moves only what the reader has already passed. -->
-    <div class="ns-ad ns-ad--fluid" data-state="loading" data-placement="Fluid · end of body"
-         style="margin-block-start:var(--space-8)">
+    <div class="ns-ad ns-ad--fluid" data-state="loading" data-placement="Fluid · end of body">
       <span class="ns-ad__label">Advertisement</span>
       <div class="ns-ad__frame">
         <span class="ns-ad__skeleton ns-skeleton" aria-hidden="true">100% × min 250</span>
       </div>
     </div>
 
-    <div style="display:grid;gap:var(--space-8);margin-block-start:var(--space-12)">
+    <div class="ns-stack--md">
       <div class="ns-authorbox">
         <img class="ns-authorbox__avatar" src="/assets/logo/favicon.svg" alt="">
         <div>
@@ -258,13 +256,13 @@
       </nav>
 
       <section>
-        <div class="ns-band__head ns-band__head--between" style="margin-block-end:var(--space-4)">
+        <div class="ns-band__head ns-band__head--between">
           <div><span class="ns-kicker">Related</span><h2 class="ns-band__title" style="font-size:var(--size-h3)">More on Apex</h2></div>
         </div>
         <!-- 7 — IN-FEED, between the related cards.
              Card-shaped so it belongs in the row, dashed even when filled so
              it is findable as the one thing in the row that is not editorial. -->
-        <div class="ns-grid" style="grid-template-columns:repeat(auto-fill,minmax(13rem,1fr));gap:var(--gap-grid)">
+        <div class="ns-grid ns-grid--xs">
           <article class="ns-card ns-bcard ns-bcard--minimal"><div class="ns-card__body"><a class="ns-card__link" href="#"><h3 class="ns-bcard__title">Flow or Apex? A decision table</h3></a><div class="ns-postmeta"><span>5 min read</span></div></div></article>
           <div class="ns-ad ns-ad--feed" data-state="filled" data-placement="In-feed · related row">
             <span class="ns-ad__label">Advertisement</span>
@@ -283,7 +281,7 @@
       <!-- 8 — THE TWO STATES EVERYONE FORGETS, shown side by side so they are
            not theoretical. `empty` with data-collapse removes itself in
            production; it is left visible here so it can be looked at. -->
-      <div class="ns-grid" style="grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:var(--gap-grid)">
+      <div class="ns-grid ns-grid--fit">
         <div class="ns-ad ns-ad--rectangle" data-state="empty" data-placement="No fill">
           <span class="ns-ad__label">Advertisement</span>
           <div class="ns-ad__frame">

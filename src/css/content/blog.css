@@ -320,6 +320,10 @@
      "Part 3 of 6". A post that belongs to a series has to say so above the
      fold, and link both directions — otherwise the reader lands on part 3
      from search and has no idea parts 1 and 2 exist. */
+  /* The card carries the gap to the article below it: a series box is
+     ALWAYS followed by the post it belongs to, in every template that has
+     one, and each of them was writing the margin by hand. */
+  .ns-series { margin-block-end: var(--stack-md); }
   .ns-series {
     display: flex; flex-direction: column; gap: var(--space-2);
     padding: var(--space-4);
@@ -408,7 +412,11 @@
      index puts the second post below the fold to make the first one taller,
      which is a layout serving itself. */
   .ns-blog-listing { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: var(--space-10); align-items: start; }
-  .ns-blog-listing__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4)); display: flex; flex-direction: column; gap: var(--space-6); }
+  /* Sticky and nothing else. The rail used to set its own flex column and
+     gap, which meant a sidebar block was spaced by the RAIL here and by
+     `.ns-widget + .ns-widget` in the post templates — two answers to one
+     question. Pair it with .ns-widgets and the answer is the widget's. */
+  .ns-blog-listing__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4)); }
   @media (max-width: 63.999rem) {
     .ns-blog-listing { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
     .ns-blog-listing__rail { position: static; }

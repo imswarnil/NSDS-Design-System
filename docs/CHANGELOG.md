@@ -17,6 +17,68 @@ time: every screen in both products moves.
 
 ## [Unreleased]
 
+### Added — the layout contract, and a gate that keeps it
+
+Three nested levels, one rule: **a level never does another level's job.** A
+`.ns-band` owns the ground and the space between sections, a
+`.ns-band__inner` owns the width and the gutters, a `.ns-stack` owns the
+rhythm between the children. An element does not set its own top margin.
+
+New `src/css/foundation/layout.css` is the primitives' home. `.ns-stack`
+**moved out of `foundation/a11y.css`** — it was a layout utility filed under
+accessibility, with no doc page and no demo, which is why nothing used it and
+every template hand-wrote the margin instead. Joining it: `.ns-cluster` (the
+horizontal counterpart, with `__end` and `__fill`), `.ns-center` (the
+container level for anything not inside a band) and `.ns-bare` (the
+user-agent box removed — a reset, kept separate from layout on purpose).
+
+`scripts/check-layout.mjs` is a new gate. It fails on a margin, padding, gap
+or `display` inside a `style=` attribute in `templates/`. Per-instance data
+(`--v`, `--x`, `--seg`) stays legal, as does anything carrying
+`<!-- layout-ok: reason -->`. **133 → 0** across 61 templates.
+
+Roughly half of those 133 were a missing class rather than a stray margin, so
+each became one: `.ns-bare`, `.ns-cluster__fill`, `.ns-center--compact` /
+`--flush`, `.ns-page--pad`, `.ns-grid--xs` / `--fit`, `.ns-band--nested`,
+`.ns-band__inner--continued`, `.ns-card__body--center`, `.ns-record`,
+`.ns-certbadge--lg`, `.ns-profile__avatar--xl`, `.ns-sponsor--full`,
+`.ns-deck__overview-head--flush`, `.ns-deck__help-close`,
+`.ns-pagehead__kicker--section`, and a `.ns-field .ns-btn--block` rule that
+four templates had been writing inline.
+
+The blog rail's three widgets were the finding: `.ns-widget` **already
+existed**, built for exactly that job, and two templates plus a doc entry had
+gone on hand-rolling it out of `.ns-toc__title` and an inline
+`padding-inline: 0`. A component nobody can find is a component nobody uses.
+
+`docs/LAYOUT.md` is the guide. The styleguide's **Layout & elevation** page is
+the live demo — the four stack steps are drawn by the real classes, so a
+picture of the scale cannot disagree with the scale.
+
+### Fixed — three spacing bugs the conversion surfaced
+
+- **`.ns-prose h2` set a 96px top margin even as the first child**, so a tab
+  panel or card that opened on a heading opened 96px down from its own top
+  edge. `.ns-prose > :is(h2, h3, h4):first-child` now zeroes it — the same
+  guarantee `.ns-stack` gives with `> * + *`.
+- **`.ns-course-detail__rail` shrank its own cards.** The rail is capped to
+  the viewport with `overflow-y: auto`, but its flex children kept the default
+  `flex-shrink: 1`, so each card gave up height to fit the cap instead of the
+  rail scrolling — the certificate badge was cut in half. A shrunk flex item
+  is not an overflow anyone warns about, which is how it survived.
+- **`.ns-blog-listing__rail` set spacing its widgets also set** — a `gap` on
+  the rail and a margin-plus-rule on `.ns-widget + .ns-widget`, so which one
+  applied depended on the template. The rail is now sticky and nothing else.
+
+### Changed — spacing normalised to the scale
+
+Where an ad-hoc value was replaced by the nearest scale step, the pixels
+moved: `--space-10` (40) and `--space-12` (48) between subsections became
+`--stack-md` (32), and a `--space-8` (32) cluster gap became `--space-6` (24).
+That is the normalisation, not a side effect of it — eight spacings where the
+scale has four is the thing being fixed.
+
+
 ### Added — an icon pipeline: `src/icons/<style>/<name>.svg`
 
 **Adding an icon is dropping a file in a folder.** That is the entire point.

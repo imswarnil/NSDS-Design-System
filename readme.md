@@ -305,7 +305,7 @@ or plain nginx (`rsync -a _site/ server:/var/www/design`). Full detail in
 
 ## The checks
 
-`npm run check` runs seven gates. Each exists because the thing it catches
+`npm run check` runs ten gates. Each exists because the thing it catches
 shipped broken at least once and nothing noticed:
 
 | check | catches |
@@ -315,8 +315,11 @@ shipped broken at least once and nothing noticed:
 | `check:cascade` | **a rule outside a layer, or an undeclared `!important`** — either one silently revokes "a utility always wins" |
 | `check:components` | a `.jsx` that styles itself with a `style={{}}` object, which the Ghost theme cannot render |
 | `check:markup` | **a `.ns-*` class used in markup with no rule** — it renders as an unstyled element and nobody notices until a screenshot |
+| `check:layout` | **a margin, padding, gap or display in an inline `style=`** — spacing decided by the child is spacing decided in as many places as there are children, and it drifts (see `docs/LAYOUT.md`) |
 | `check:palette` | a chart hue failing the OKLCH band, chroma floor, CVD separability or contrast |
 | `check:css` | a stale `dist/` bundle |
+| `check:skill` | a stale `.claude/skills/namaste-ui/` — which teaches an agent a version of this system that no longer exists, silently, in somebody else's repository |
+| `check:icons` | a stale `icons/nsds-icons.svg` — `src/icons/` edited without rebuilding renders the OLD drawing with no error anywhere |
 
 `gulp site` additionally runs `check:links`, which walks the built `_site/` for
 broken relative paths, root-absolute assets, duplicate ids and dangling
@@ -356,8 +359,8 @@ NSDS-Design-System/
 ├── patterns/          nine hairline background patterns (pure CSS)
 ├── templates/         framework-agnostic HTML for full surfaces
 ├── assets/            logo, images, theme-init.js
-├── scripts/           build + the seven checks + the preview generator
-├── docs/              INTEGRATION.md, CONTRIBUTING.md, CHANGELOG.md
+├── scripts/           build + the ten checks + the preview generator
+├── docs/              LAYOUT.md, INTEGRATION.md, CONTRIBUTING.md, CHANGELOG.md
 ├── .github/workflows/ CI (checks on every PR) + CD (Pages deploy from main)
 ├── gulpfile.mjs       gulp orchestration over scripts/
 ├── dist/              generated flat CSS bundle (committed — gulp consumes it)
@@ -518,8 +521,8 @@ conventions someone has to remember.
   permits self-hosting but not redistributing the font software, and shipping
   a derived static family is redistribution. `fonts/README.md` holds the
   weight tables, the optical rules and the subsetting recipe.
-- `scripts/` — the build, the seven checks, and the preview generator + server.
-- `docs/` — `INTEGRATION.md` (wiring both products), `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
+- `scripts/` — the build, the ten checks, and the preview generator + server.
+- `docs/` — `LAYOUT.md` (the section → container → stack contract), `INTEGRATION.md` (wiring both products), `CUSTOMISING.md`, `ICONS.md`, `CONTRIBUTING.md`, `CHANGELOG.md`. `LICENSE` at the root.
 
 ## Templates — the generic markup layer
 

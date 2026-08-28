@@ -23,7 +23,7 @@
   markup unchanged. That is the point: a tag archive is not a second
   template, it is the same page with a different header.
 -->
-<header class="ns-taghead" style="max-inline-size:var(--container-page);margin-inline:auto;padding-inline:var(--gutter)">
+<header class="ns-taghead ns-center ns-center--gutter">
   <!-- The # is generated in CSS. A hash character in the DOM is read aloud
        as "number sign" before every tag name on the page. -->
   <h1 class="ns-taghead__title">apex <span class="ns-taghead__count">42 posts</span></h1>
@@ -36,15 +36,15 @@
 
 <!-- Sibling tags, not a tag cloud: equal weight, alphabetical, so the one
      the reader is hunting for is as findable as the popular one. -->
-<nav class="ns-tagrow" aria-label="Related tags" style="max-inline-size:var(--container-page);margin:var(--space-5) auto 0;padding-inline:var(--gutter)">
+<nav class="ns-tagrow ns-center ns-center--gutter ns-center--pad-t" aria-label="Related tags">
   <a class="ns-tag ns-tag--pill" href="/tag/governor-limits">governor-limits <span class="ns-tag__count">14</span></a>
   <a class="ns-tag ns-tag--pill" href="/tag/soql">soql <span class="ns-tag__count">9</span></a>
   <a class="ns-tag ns-tag--pill" href="/tag/testing">testing <span class="ns-tag__count">6</span></a>
   <a class="ns-tag ns-tag--pill" href="/tag/triggers">triggers <span class="ns-tag__count">5</span></a>
 </nav>
 
-<div class="ns-blog-listing" style="max-inline-size:var(--container-page);margin-inline:auto;padding:var(--space-8) var(--gutter) var(--space-16)">
-  <div>
+<div class="ns-blog-listing ns-center ns-center--gutter ns-center--pad">
+  <div class="ns-stack--md">
     <!-- SLOT: repeat one .ns-bcard per post. No featured card here — see above. -->
     <div class="ns-blog-grid">
       <article class="ns-card ns-bcard">
@@ -93,7 +93,7 @@
       </article>
     </div>
 
-    <nav class="ns-pagination" aria-label="Pagination" style="margin-block-start:var(--space-10)">
+    <nav class="ns-pagination" aria-label="Pagination">
       <a class="ns-pagination__link" href="#" aria-current="page">1</a>
       <a class="ns-pagination__link" href="#">2</a>
       <a class="ns-pagination__link" href="#">3</a>
@@ -104,9 +104,9 @@
 
   <!-- The index's rail, unchanged. On a tag page it answers "what else is
        here" while the grid answers "what is in this tag". -->
-  <aside class="ns-blog-listing__rail">
-    <div>
-      <p class="ns-toc__title" style="padding-inline:0">Start here</p>
+  <aside class="ns-blog-listing__rail ns-widgets">
+    <div class="ns-widget">
+      <p class="ns-widget__title">Start here</p>
       <div class="ns-blog-archive">
         <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">04 Aug</span><span class="ns-blog-archive__title">Why your trigger fails at 201 records</span><span class="ns-blog-archive__read">6m</span></a>
         <a class="ns-blog-archive__row" href="#"><span class="ns-blog-archive__date">21 Jul</span><span class="ns-blog-archive__title">Bulkify everything</span><span class="ns-blog-archive__read">8m</span></a>
@@ -116,10 +116,10 @@
 
     <!-- The Newsletter pattern (.ns-field + .ns-input + Button), stacked for
          a narrow rail. Not a second subscribe component. -->
-    <form class="ns-field">
+    <form class="ns-field ns-widget ns-widget--boxed">
       <label class="ns-field__label" for="tag-sub">Follow #apex</label>
       <input class="ns-input" id="tag-sub" type="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit" style="margin-block-start:var(--space-2)">Subscribe</button>
+      <button class="ns-btn ns-btn--primary ns-btn--block" type="submit">Subscribe</button>
       <p class="ns-field__help">New Apex posts only. Nothing else from the blog.</p>
     </form>
   </aside>

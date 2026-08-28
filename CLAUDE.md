@@ -49,12 +49,12 @@ npm install
 npm run dev          # gulp: build → serve at :4322 → watch → SSE live reload
                      # opens the HOMEPAGE at / ; styleguide is at /preview/
 npm run build        # tokens → CSS bundle → styleguide. Run after ANY token or CSS edit.
-npm run check        # the seven gates CI runs (npm test is an alias)
+npm run check        # the ten gates CI runs (npm test is an alias)
 npm run site         # build + stage _site/ + link check
 npm run serve        # serve an existing build, no watching
 ```
 
-The seven gates in `npm run check` are: `build-tokens --check`, `lint-principles`, `check-cascade`, `check-components`, `check-icons`, `check-palette`, `build-css --check`. **`check-markup` and `check-links` are not among them** — run those yourself when you touch markup or add pages.
+The ten gates in `npm run check` are: `build-tokens --check`, `lint-principles`, `check-cascade`, `check-components`, `check-layout`, `check-icons`, `check-palette`, `build-css --check`, `build-skill --check`, `build-icons --check`. **`check-markup` and `check-links` are not among them** — run those yourself when you touch markup or add pages.
 
 Individual gates, for a fast loop while iterating:
 
@@ -62,6 +62,7 @@ Individual gates, for a fast loop while iterating:
 node scripts/lint-principles.mjs   # raw values in components/css
 node scripts/check-cascade.mjs     # layer-order contract
 node scripts/check-components.mjs  # .jsx parses; no inline styling
+node scripts/check-layout.mjs      # no inline layout in templates/
 node scripts/check-palette.mjs     # chart hues vs colourblind floors
 node scripts/check-markup.mjs      # every .ns-* used is defined
 node scripts/check-icons.mjs       # glyphs present in the Phosphor subset (warns, does not fail)
@@ -72,6 +73,35 @@ node scripts/build-tokens.mjs --check
 Every gulp task is a thin wrapper over `scripts/*.mjs`, so `node scripts/<x>.mjs` always works with no gulp.
 
 **Check by exit code, not by grepping output.** The linters print human-readable findings with no `FAIL`/`ERROR` prefix, so `npm run check | grep -i error` reports success on a failing build. Use `npm run check; echo $?`.
+
+## The layout contract
+
+Three nested levels, and one rule: **a level never does another level's job.**
+
+```
+SECTION      .ns-band          full-bleed; the ground + the space between sections
+  CONTAINER  .ns-band__inner   the max width + the gutters
+    STACK    .ns-stack         the rhythm BETWEEN the children
+```
+
+A band does not set a width. A container does not set a background. **An
+element does not set its own top margin** — its parent's stack does, via
+`> * + *`, which is also why the first child never carries a stray one.
+
+`src/css/foundation/layout.css` holds the primitives: `.ns-stack` (four
+steps), `.ns-cluster` (the horizontal counterpart, plus `__end` and `__fill`),
+`.ns-center` (the container level for anything not inside a band) and
+`.ns-bare` (the user-agent box removed — a reset, not a layout decision).
+
+`check-layout.mjs` fails the build on a layout property inside a `style=`
+attribute in `templates/`. Per-instance data (`--v`, `--x`, `--seg`, chart
+values) stays legal, as does anything carrying `<!-- layout-ok: reason -->`.
+
+**Before writing an inline margin, look for the class.** Half the 133
+declarations this gate removed were a component that already existed and could
+not be found — the blog rail hand-rolled `.ns-widget` in three places while
+`blog.css` had already built it, comment and all. `docs/LAYOUT.md` is the
+guide; the styleguide's **Layout & elevation** page is the live demo.
 
 ## Architecture
 

@@ -57,6 +57,10 @@
   }
   .ns-chero__meta > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
   .ns-chero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-6); }
+  /* The author row under the actions. The CONTAINER owns how its children
+     sit — this was an inline margin on every course page, which is the
+     same spacing decided in three places instead of one. */
+  .ns-chero__body > .ns-authors { margin-block-start: var(--space-5); }
   .ns-chero__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-end: var(--space-4); }
 
   /* The media card. A preview player, a still, or nothing — and when it is a

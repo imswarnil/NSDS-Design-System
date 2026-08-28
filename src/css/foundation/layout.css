@@ -1,0 +1,110 @@
+/* NS Design System — layout primitives.
+   =========================================================================
+   The third level of the layout contract, and the one that was missing in
+   practice. Every page here is three nested things:
+
+     SECTION    .ns-band          full-bleed; owns the ground and the
+                                  padding between page sections
+     CONTAINER  .ns-band__inner   owns the max width and the gutters
+     STACK      .ns-stack         owns the rhythm BETWEEN the elements
+                                  inside — this file
+
+   The rule the three obey: A LEVEL NEVER DOES ANOTHER LEVEL'S JOB. A band
+   does not set a width. A container does not set a background. An element
+   does not set its own top margin — its parent's stack does.
+
+   WHY THIS FILE EXISTS. .ns-stack was real before this, and it lived in
+   a11y.css: a layout utility filed under accessibility, with no doc page and
+   no demo. It was invisible, so nobody reached for it, so every template
+   hand-wrote the margin instead — an audit found 44 inline
+   `margin-block-start` declarations across eight different values, where the
+   scale has four. Unused and undiscoverable are the same bug, and the fix
+   for both is a findable home plus a gate (scripts/check-layout.mjs).
+
+   See docs/LAYOUT.md. */
+@layer ns-components {
+
+  /* --- Stack: rhythm down ---------------------------------------------------
+     `> * + *` and nothing else. The first child never carries a stray top
+     margin, so a stack cannot double up against its section's own padding —
+     which is the failure mode of putting the margin on headings instead, and
+     the reason margins on headings collapse unpredictably beside grids and
+     cards. */
+  .ns-stack > * + * { margin-block-start: var(--stack-sm); }
+  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); } /* used-by: ghost-theme, lms */
+  /* Named explicitly even though it matches the base, so all four steps are
+     nameable. "The default" is not a step somebody can choose on purpose. */
+  .ns-stack--sm > * + * { margin-block-start: var(--stack-sm); }
+  .ns-stack--md > * + * { margin-block-start: var(--stack-md); } /* used-by: ghost-theme, lms */
+  .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
+
+  /* --- Cluster: rhythm across ----------------------------------------------
+     Things in a row that wrap, with ONE gap in both axes — the horizontal
+     counterpart to the stack, and the answer to the fourteen inline
+     `display:flex;gap:…` declarations the same audit found.
+
+     `align-items: center` because a cluster is nearly always controls or
+     chips of differing heights, and the one case that wants baselines
+     (`--baseline`) is rarer than the one that wants centres. */
+  /* --- Bare: the browser's own box, removed -----------------------------
+     A `fieldset`, `ul`, `ol` or `dd` carries a user-agent margin, padding,
+     border or marker that a designed layout almost never wants. Stripping
+     it is not a layout DECISION, so it should not read like one: the audit
+     found `style="border:0;padding:0;margin:0"` repeated verbatim on eight
+     elements, which is a reset masquerading as spacing.
+
+     Use it on the semantic element, then put the real layout on the same
+     node with a stack or a cluster. */
+  .ns-bare { margin: 0; padding: 0; border: 0; list-style: none; }
+
+  .ns-cluster {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: var(--gap-inline);
+  }
+  .ns-cluster--xs { gap: var(--space-1-5); }
+  .ns-cluster--md { gap: var(--space-4); }
+  .ns-cluster--lg { gap: var(--space-6); }
+  /* Baselines, for a row of text at different sizes — a figure beside its
+     label, a title beside a timestamp. */
+  .ns-cluster--baseline { align-items: baseline; }
+  /* Pushes everything after it to the far edge. One class instead of the
+     `margin-inline-start: auto` that otherwise appears inline on every
+     toolbar in the system. */
+  .ns-cluster__end { margin-inline-start: auto; }
+  /* Takes the leftover width, but stops wrapping before it gets too narrow
+     to read. The `16rem` is a MEASURE floor, not a chosen width: below it a
+     column of text stops being a column. */
+  .ns-cluster__fill { flex: 1; min-inline-size: 16rem; }
+
+  /* --- Centre: a measure, centred ------------------------------------------
+     A column with a maximum width and automatic side margins. The container
+     level for things that are NOT inside a band — a bare page, a demo, an
+     email body. Takes the width from a token so the three measures stay the
+     three measures. */
+  .ns-center { margin-inline: auto; max-inline-size: var(--container-page); }
+  .ns-center--narrow { max-inline-size: var(--container-narrow); }
+  .ns-center--prose { max-inline-size: var(--container-prose); }
+  /* Narrower than every container token: a ONE-FIELD form — a signup, a
+     search, an unsubscribe. --container-narrow (56rem) is the width of a
+     settings form with labelled rows; a single input stretched that far
+     reads as a site-wide search bar rather than as a thing to fill in. */
+  .ns-center--compact { max-inline-size: 32rem; }
+  /* A centre that is NOT centred — takes the measure, keeps the left edge.
+     A search box at the head of a listing lines up with the listing; the
+     same box centred looks like a hero that lost its heading. */
+  .ns-center--flush { margin-inline: 0; margin-block-end: var(--stack-md); }
+  /* With the gutters, for a centre that is doing a container's whole job. */
+  .ns-center--gutter { padding-inline: var(--gutter); }
+  /* Block padding, for a page wrapper that is a section in everything but
+     name — a listing grid or a detail layout on a page with no band around
+     it. It gets the band's own step, so a wrapper and a band space the page
+     identically instead of the wrapper inventing a ninth value.
+
+     ONE ELEMENT, deliberately. A band is two (ground + measure) because its
+     ground is full-bleed; a wrapper has no ground, so splitting it in two
+     would add a div for nothing. --pad-b is the common case: a page whose
+     top spacing already came from the header above it. */
+  .ns-center--pad { padding-block: var(--stack-lg); }
+  .ns-center--pad-b { padding-block-end: var(--stack-lg); }
+  .ns-center--pad-t { padding-block-start: var(--stack-md); }
+}

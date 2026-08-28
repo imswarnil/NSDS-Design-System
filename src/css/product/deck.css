@@ -807,6 +807,12 @@
     background: var(--color-surface);
   }
   .ns-deck__overview[hidden] { display: none; }
+  /* A heading INSIDE the overview rather than above it — the same type,
+     without the bar's own inset and rule. */
+  .ns-deck__overview-head--flush { padding: 0; border-block-end: 0; }
+  /* The dismiss under the shortcut table. Tight to the last row: it closes
+     the list rather than starting a new thing. */
+  .ns-deck__help-close { margin-block-start: var(--space-2); }
   .ns-deck__overview-head {
     display: flex;
     align-items: center;

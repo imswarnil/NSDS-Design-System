@@ -5,10 +5,10 @@
      or hand it to someone deciding whether this system reads well.
      Uses only .ns-* classes and tokens — no styles of its own. -->
 <section class="ns-band ns-band--tight">
-  <div class="ns-band__inner">
+  <div class="ns-band__inner ns-stack">
     <p class="ns-label">// N&amp;M type system · specimen</p>
 
-    <h1 class="ns-display ns-display--mega ns-display--stack" style="margin-block:var(--space-6)">
+    <h1 class="ns-display ns-display--mega ns-display--stack">
       <span class="ns-reveal"><span>Display speaks.</span></span>
       <span class="ns-reveal"><span class="ns-display--outline ns-display--outline-brand">Text explains.</span></span>
       <span class="ns-reveal"><span>Mono keeps</span></span>
@@ -26,21 +26,21 @@
 </section>
 
 <section class="ns-band">
-  <div class="ns-band__inner">
+  <div class="ns-band__inner ns-stack">
     <p class="ns-label">// The character set</p>
-    <p class="ns-display" style="font-size:var(--size-h1);word-spacing:0.15em;margin-block-start:var(--space-4)">
+    <p class="ns-display" style="font-size:var(--size-h1);word-spacing:0.15em">
       ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>abcdefghijklmnopqrstuvwxyz<br>0123456789 &amp; ? ! @ # % / — “ ” ‘ ’
     </p>
-    <p style="font-family:var(--font-mono);font-size:var(--size-h3);margin-block-start:var(--space-6)">
+    <p style="font-family:var(--font-mono);font-size:var(--size-h3)">
       0123456789 {} [] () &lt;&gt; =&gt; != === /* */ // &amp;&amp; ||
     </p>
   </div>
 </section>
 
 <section class="ns-band ns-band--sunken">
-  <div class="ns-band__inner">
+  <div class="ns-band__inner ns-stack">
     <p class="ns-label">// The weight range — one axis, seven stops</p>
-    <div style="display:grid;gap:var(--space-2);margin-block-start:var(--space-4)">
+    <div class="ns-stack--xs">
       <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:200">200 ExtraLight — display only</span>
       <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:400">400 Regular</span>
       <span style="font-family:var(--font-heading);font-size:var(--size-h2);font-weight:600">600 SemiBold — nav, tabs</span>
@@ -51,9 +51,9 @@
 </section>
 
 <section class="ns-band">
-  <div class="ns-band__inner">
+  <div class="ns-band__inner ns-stack">
     <p class="ns-label">// The reading layer, at the real measure</p>
-    <div class="ns-prose ns-dropcap" style="margin-block-start:var(--space-4)">
+    <div class="ns-prose ns-dropcap">
       <p>Salesforce is a platform before it is a product, and the difference is the whole reason this
       curriculum exists. Learn the platform — the data model, the security model, the automation
       model — and every product built on top of it becomes a variation you already understand
@@ -68,9 +68,9 @@
 </section>
 
 <section class="ns-band ns-band--sunken">
-  <div class="ns-band__inner">
+  <div class="ns-band__inner ns-stack">
     <p class="ns-label">// Effects, in place</p>
-    <div class="ns-measure" style="display:grid;gap:var(--space-4);margin-block-start:var(--space-4);font-size:var(--size-body-lg)">
+    <div class="ns-measure ns-stack" style="font-size:var(--size-body-lg)">
       <p>Bulkify <span class="ns-circle ns-circle--animate">every trigger<svg viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><path d="M28,10 C90,-2 200,2 210,22 C216,42 150,54 92,52 C40,50 4,42 8,28 C11,16 60,6 130,8"/></svg></span> — the circle is for one phrase per screen.</p>
       <p><s class="ns-strike ns-strike--animate ns-strike--muted">One record at a time</s> <strong>collections, always</strong>.</p>
       <p><span class="ns-frame ns-frame--animate">Governor limits</span> are per transaction, and <span class="ns-frame ns-frame--brackets">RunLocalTests</span> is the deploy gate.</p>
@@ -80,13 +80,13 @@
 </section>
 
 <section class="ns-band">
-  <div class="ns-band__inner" style="display:flex;align-items:center;gap:var(--space-8);flex-wrap:wrap">
+  <div class="ns-band__inner ns-cluster ns-cluster--lg">
     <span class="ns-curve ns-curve--spin" style="color:var(--color-brand-600)">Namaste Salesforce · Learn the platform ·
       <span class="ns-curve__center"><i class="ph ph-seal-check" aria-hidden="true" style="font-size:2.5rem;color:var(--color-brand-500)"></i></span>
     </span>
-    <div style="flex:1;min-inline-size:16rem">
+    <div class="ns-cluster__fill">
       <p class="ns-label">// Mono keeps the records</p>
-      <p style="font-family:var(--font-mono);font-size:var(--size-mono);margin-block-start:var(--space-3);line-height:var(--leading-body)">
+      <p class="ns-record">
         01 &middot; APEX BASICS &middot; 12:40 &middot; COMPLETE<br>
         02 &middot; SOQL &amp; SOSL &middot; 18:05 &middot; IN PROGRESS<br>
         03 &middot; TRIGGERS &middot; 24:12 &middot; NOT STARTED

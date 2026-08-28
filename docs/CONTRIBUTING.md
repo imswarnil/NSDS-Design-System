@@ -150,7 +150,7 @@ If it fails, re-step the offending hue until it passes. Do not lower the bar.
 - [ ] `.d.ts` doc comments say *why*, not just *what*
 - [ ] `docs/CHANGELOG.md` updated
 - [ ] `node scripts/check-markup.mjs` and `node scripts/check-icons.mjs` pass —
-      neither is in the seven gates' fast path but both fail on real defects
+      neither is in the ten gates' fast path but both fail on real defects
 - [ ] If you touched a `.card.html`, its `viewport="WxH"` still matches what it
       renders to. Measure it; a card framed at the wrong height gets a
       scrollbar or a band of dead space, and nothing else will tell you

@@ -5587,6 +5587,10 @@
   .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-600); }
   [data-theme="dark"] .ns-card:has(.ns-card__link):hover .ns-card__media--glyph { color: var(--color-brand-200); }
   .ns-card__body { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--pad-card); flex: 1; }
+  /* A body whose children are centred rather than left-aligned — a badge
+     card, a stat card, an empty state inside a card. The card owns the
+     arrangement of its own body; the badge inside does not centre itself. */
+  .ns-card__body--center { align-items: center; text-align: center; gap: var(--space-3); }
   .ns-card__kicker { font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
                      letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label); }
   .ns-card__title { font-size: var(--size-body); font-weight: var(--weight-semibold); color: var(--color-ink); }
@@ -5975,6 +5979,7 @@
      word off every line. */
   .ns-marquee--vertical .ns-bubble { inline-size: auto; }
   .ns-marquee-deck__tilt {
+    display: grid; gap: var(--space-5);
     transform: rotateX(9deg) rotateZ(-2deg); /* lint-ok: a depth angle, not a spacing value */
     transform-origin: center top;
   }
@@ -6395,6 +6400,9 @@
   .ns-certbadge--architect .ns-certbadge__ribbon { background: linear-gradient(100deg, var(--color-accent-400), var(--color-brand-500)); }
   /* Not earned yet: the same badge, drained. Greyed rather than hidden, so a
      track shows what is ahead of you. */
+  /* Bigger than the grid size, smaller than the hero's. For a badge that
+     is the SUBJECT of the card it sits in rather than one of a shelf. */
+  .ns-certbadge--lg { inline-size: 7rem; }
   .ns-certbadge--locked { filter: grayscale(1); opacity: var(--opacity-disabled); }
   /* A row of them. */
   .ns-certbadges { display: flex; flex-wrap: wrap; gap: var(--space-6); align-items: flex-start; }
@@ -6767,6 +6775,14 @@
   .ns-course-detail__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4));
                             display: flex; flex-direction: column; gap: var(--space-4);
                             max-block-size: calc(100dvh - var(--navbar-h) - var(--space-8)); overflow-y: auto; }
+  /* The rail is capped to the viewport and scrolls. Its children must NOT:
+     a flex item's default `flex-shrink: 1` lets every card give up height to
+     fit the cap, so the enrol card and the certificate card each lost about
+     a third of themselves and the badge inside one of them was cut in half —
+     silently, because a shrunk flex item is not an overflow anyone warns
+     about. `flex: none` makes the rail do the scrolling, which is what the
+     `overflow-y` was for. */
+  .ns-course-detail__rail > * { flex: none; }
   @media (max-width: 63.999rem) {
     .ns-course-detail { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
     .ns-course-detail__rail { position: static; max-block-size: none; overflow: visible; }
@@ -8951,6 +8967,10 @@
   }
   .ns-chero__meta > * { display: inline-flex; align-items: center; gap: var(--space-1-5); }
   .ns-chero__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-block-start: var(--space-6); }
+  /* The author row under the actions. The CONTAINER owns how its children
+     sit — this was an inline margin on every course page, which is the
+     same spacing decided in three places instead of one. */
+  .ns-chero__body > .ns-authors { margin-block-start: var(--space-5); }
   .ns-chero__badges { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-block-end: var(--space-4); }
 
   /* The media card. A preview player, a still, or nothing — and when it is a
@@ -9737,6 +9757,10 @@
      "Part 3 of 6". A post that belongs to a series has to say so above the
      fold, and link both directions — otherwise the reader lands on part 3
      from search and has no idea parts 1 and 2 exist. */
+  /* The card carries the gap to the article below it: a series box is
+     ALWAYS followed by the post it belongs to, in every template that has
+     one, and each of them was writing the margin by hand. */
+  .ns-series { margin-block-end: var(--stack-md); }
   .ns-series {
     display: flex; flex-direction: column; gap: var(--space-2);
     padding: var(--space-4);
@@ -9825,7 +9849,11 @@
      index puts the second post below the fold to make the first one taller,
      which is a layout serving itself. */
   .ns-blog-listing { display: grid; grid-template-columns: minmax(0, 1fr) 16rem; gap: var(--space-10); align-items: start; }
-  .ns-blog-listing__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4)); display: flex; flex-direction: column; gap: var(--space-6); }
+  /* Sticky and nothing else. The rail used to set its own flex column and
+     gap, which meant a sidebar block was spaced by the RAIL here and by
+     `.ns-widget + .ns-widget` in the post templates — two answers to one
+     question. Pair it with .ns-widgets and the answer is the widget's. */
+  .ns-blog-listing__rail { position: sticky; inset-block-start: calc(var(--navbar-h) + var(--space-4)); }
   @media (max-width: 63.999rem) {
     .ns-blog-listing { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
     .ns-blog-listing__rail { position: static; }
@@ -10817,6 +10845,15 @@
   .ns-prose h3 { font-size: var(--size-h3); margin-block-start: var(--stack-lg); }
   .ns-prose h4 { font-size: var(--size-h4); margin-block-start: var(--stack-lg); }
   .ns-prose h2 + *, .ns-prose h3 + *, .ns-prose h4 + * { margin-block-start: var(--space-3); }
+  /* …but not when the heading OPENS the surface. The air above an h2 is the
+     distance from what came before it, and when nothing came before it that
+     distance is a hole: a tab panel or a card that starts on a heading opened
+     96px down from its own top edge, which reads as a rendering fault rather
+     than as rhythm. This is the guarantee .ns-stack gives with `> * + *`,
+     restated for the one rule in this file that could not be written that
+     way — the heading margins vary by level, so they cannot live in a single
+     adjacent-sibling rule. Listed explicitly to clear `.ns-prose h2`. */
+  .ns-prose > :is(h2, h3, h4):first-child { margin-block-start: 0; }
 
   /* Lead paragraph — the deck under a title. */
   /* Snug, not heading: a lede is a SENTENCE that wraps two or three lines,
@@ -12401,6 +12438,14 @@
   .ns-label {
     font-family: var(--font-mono); font-size: var(--size-label); font-weight: var(--weight-label);
     letter-spacing: var(--tracking-label); text-transform: uppercase; color: var(--color-label);
+  }
+  /* A block of records — lesson rows, a log, a run of timestamps. The label
+     is one line and shouts; this is several lines and does not, so it keeps
+     its own case and takes body leading because it WRAPS. Mono is for
+     values; this is a column of values. */
+  .ns-record {
+    font-family: var(--font-mono); font-size: var(--size-mono);
+    line-height: var(--leading-body); color: var(--color-muted);
   }
 }
 /* NS Design System — page motion.
@@ -15822,6 +15867,12 @@
     background: var(--color-surface);
   }
   .ns-deck__overview[hidden] { display: none; }
+  /* A heading INSIDE the overview rather than above it — the same type,
+     without the bar's own inset and rule. */
+  .ns-deck__overview-head--flush { padding: 0; border-block-end: 0; }
+  /* The dismiss under the shortcut table. Tight to the last row: it closes
+     the list rather than starting a new thing. */
+  .ns-deck__help-close { margin-block-start: var(--space-2); }
   .ns-deck__overview-head {
     display: flex;
     align-items: center;
@@ -16186,6 +16237,9 @@
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center; column-gap: var(--space-5);
   }
+  /* Fills its column instead of shrinking to its contents — for a leaderboard
+     that IS the section rather than one card among several. */
+  .ns-sponsor--full { inline-size: 100%; }
   .ns-sponsor--leaderboard .ns-sponsor__label { grid-column: 1 / -1; grid-row: 1; }
   .ns-sponsor--leaderboard .ns-sponsor__logo { grid-row: 2; }
   .ns-sponsor--leaderboard .ns-sponsor__body { grid-row: 2; }
@@ -16312,6 +16366,18 @@
      ladder does not carry sets them inline rather than inventing a class —
      `style="--ns-ad-w:468px;--ns-ad-h:60px"` is a datum, not a style choice,
      the same argument the table's data bar makes. */
+  /* THE ONE COMPONENT THAT OWNS ITS OWN BLOCK MARGIN, and the exception is
+     argued rather than assumed. Everywhere else in this system a parent
+     stack spaces its children, because the parent knows what the children
+     are. An ad slot is the case where it does not: the unit is dropped into
+     a host the page did not plan for — mid-article by a script, above a
+     title by a theme setting, into a rail by a template — and the hosts that
+     forget to space it are the ones where an advertisement ends up touching
+     a paragraph, which is the single thing an ad must never do. So the slot
+     brings the distance with it. The two that sit INSIDE a row (--feed in a
+     card grid, --rail in a sidebar stack) are placed by that container and
+     opt out. */
+  .ns-ad:not(.ns-ad--feed) { margin-block: var(--stack-md); }
   .ns-ad {
     --ns-ad-w: 300px;
     --ns-ad-h: 250px;
@@ -16818,6 +16884,20 @@
      exists to be tighter than. 40px is the one step between them. */
   .ns-band--tight { padding-block: var(--space-10); }
   .ns-band__inner { max-inline-size: var(--container-page); margin-inline: auto; padding-inline: var(--gutter); }
+  /* A band INSIDE a container that has already spent the gutters — a
+     collapsible block dropped into a course page or an article column. It is
+     still a band (it owns a section's worth of vertical space) but it must
+     not gutter twice, or its content sits a gutter narrower than the column
+     it lives in. Only the top padding survives: the stack below it owns the
+     rest. */
+  .ns-band--nested { padding-block: var(--space-8) 0; }
+  .ns-band--nested > .ns-band__inner { padding-inline: 0; max-inline-size: none; }
+  /* A SECOND container in the same band — a quote block above, then the
+     marquee deck below, both inside one section's ground. It is not a new
+     band (the ground and the section padding are already spent) so it takes
+     a subsection's distance, not a section's. */
+  .ns-band__inner--continued { margin-block-start: var(--stack-md); }
+
   .ns-band--sunken { background: var(--color-surface-sunken); border-block: 1px solid var(--color-border); }
   /* The navy band: the brand's own dark console, identical in both themes. */
   /* `overflow: clip`, NOT `hidden`, and the difference is not cosmetic. Both
@@ -17994,6 +18074,7 @@
      page who buys ad space. */
   .ns-sponsorask {
     display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;
+    margin-block-start: var(--stack-md);
     padding: var(--space-5) var(--pad-card);
     border: 1px dashed var(--color-border); border-radius: var(--radius-card);
     background: var(--color-surface-sunken);
@@ -18574,6 +18655,10 @@
   }
   .ns-profile__cover > img { inline-size: 100%; block-size: 100%; object-fit: cover; display: block; }
   .ns-profile__body { display: flex; flex-direction: column; gap: var(--space-3); padding: 0 var(--pad-card) var(--pad-card); }
+  /* The hero portrait — a personal site's one photograph, not the 40px
+     face beside a byline. Centred in its own line because at this size it
+     IS the line. */
+  .ns-profile__avatar--xl { inline-size: 12rem; block-size: 12rem; display: block; margin-inline: auto; }
   .ns-profile__avatar {
     inline-size: var(--space-16); block-size: var(--space-16);
     border-radius: var(--radius-pill); object-fit: cover;
@@ -19044,6 +19129,9 @@
     padding-block-end: var(--space-5); margin-block-end: var(--space-6);
     border-block-end: 1px solid var(--color-border);
   }
+  /* The kicker reused as a SUBHEADING, partway down a dashboard, opening a
+     block below the one above it. Same type, a subsection's distance. */
+  .ns-pagehead__kicker--section { margin-block-start: var(--stack-md); }
   .ns-pagehead__kicker {
     display: block;
     font-family: var(--font-mono); font-size: var(--size-label);
@@ -19439,18 +19527,19 @@
   .ns-page--prose { max-inline-size: var(--container-prose); } /* used-by: ghost-theme, lms */
   .ns-page--narrow { max-inline-size: var(--container-narrow); }
   .ns-page--wide { max-inline-size: var(--container-wide); } /* used-by: ghost-theme, lms */
+  /* A page shell that is ALSO the section — an error page, a bare form, a
+     confirmation. Same step a band spends, so a page with a band and a
+     page without one open at the same height. */
+  .ns-page--pad { padding-block: var(--stack-lg); }
+  /* The submit at the foot of a stacked field group. It is the only child
+     of .ns-field that is not part of the label/control/help run, so it is
+     the only one that needs air above it — four templates wrote that same
+     inline margin before this rule existed. */
+  .ns-field .ns-btn--block { margin-block-start: var(--space-2); }
   /* The gutter is inline only, because a page's vertical rhythm belongs to the
      sections inside it. --demo adds the block padding for a standalone page
      that has no band wrapping it. */
   .ns-page--demo { padding-block: var(--space-8); } /* used-by: ghost-theme, lms */
-
-  /* Vertical rhythm between sections, as a class rather than a margin on
-     every heading — margins on headings collapse unpredictably next to
-     grids and cards. */
-  .ns-stack > * + * { margin-block-start: var(--stack-sm); }
-  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); } /* used-by: ghost-theme, lms */
-  .ns-stack--md > * + * { margin-block-start: var(--stack-md); } /* used-by: ghost-theme, lms */
-  .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
 
   /* Auto-fitting card grid. `min()` keeps the track from overflowing the
      viewport at 320px, which a bare minmax(18rem, 1fr) does. */
@@ -19459,6 +19548,12 @@
     grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
   }
   .ns-grid--sm { grid-template-columns: repeat(auto-fill, minmax(min(14rem, 100%), 1fr)); } /* used-by: ghost-theme, lms */
+  .ns-grid--xs { grid-template-columns: repeat(auto-fill, minmax(min(13rem, 100%), 1fr)); }
+  /* auto-FIT, not auto-fill: the last row stretches to fill the width instead
+     of leaving empty tracks. Right when the count is small and known (three
+     states of an ad slot, four plan cards); wrong for a feed, where a
+     one-result page would show one card three columns wide. */
+  .ns-grid--fit { grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr)); }
 
   /* Docs shell: sticky sidebar + content + optional TOC. Collapses to one
      column below lg, where the sidebar becomes a drawer. */
@@ -19483,4 +19578,116 @@
   @media (prefers-reduced-motion: reduce) {
     .ns-motion-safe { animation: none !important; }
   }
+}
+/* Layout primitives last in the foundation group: they are the lowest-
+   specificity structural classes and anything may override them. */
+/* NS Design System — layout primitives.
+   =========================================================================
+   The third level of the layout contract, and the one that was missing in
+   practice. Every page here is three nested things:
+
+     SECTION    .ns-band          full-bleed; owns the ground and the
+                                  padding between page sections
+     CONTAINER  .ns-band__inner   owns the max width and the gutters
+     STACK      .ns-stack         owns the rhythm BETWEEN the elements
+                                  inside — this file
+
+   The rule the three obey: A LEVEL NEVER DOES ANOTHER LEVEL'S JOB. A band
+   does not set a width. A container does not set a background. An element
+   does not set its own top margin — its parent's stack does.
+
+   WHY THIS FILE EXISTS. .ns-stack was real before this, and it lived in
+   a11y.css: a layout utility filed under accessibility, with no doc page and
+   no demo. It was invisible, so nobody reached for it, so every template
+   hand-wrote the margin instead — an audit found 44 inline
+   `margin-block-start` declarations across eight different values, where the
+   scale has four. Unused and undiscoverable are the same bug, and the fix
+   for both is a findable home plus a gate (scripts/check-layout.mjs).
+
+   See docs/LAYOUT.md. */
+@layer ns-components {
+
+  /* --- Stack: rhythm down ---------------------------------------------------
+     `> * + *` and nothing else. The first child never carries a stray top
+     margin, so a stack cannot double up against its section's own padding —
+     which is the failure mode of putting the margin on headings instead, and
+     the reason margins on headings collapse unpredictably beside grids and
+     cards. */
+  .ns-stack > * + * { margin-block-start: var(--stack-sm); }
+  .ns-stack--xs > * + * { margin-block-start: var(--stack-xs); } /* used-by: ghost-theme, lms */
+  /* Named explicitly even though it matches the base, so all four steps are
+     nameable. "The default" is not a step somebody can choose on purpose. */
+  .ns-stack--sm > * + * { margin-block-start: var(--stack-sm); }
+  .ns-stack--md > * + * { margin-block-start: var(--stack-md); } /* used-by: ghost-theme, lms */
+  .ns-stack--lg > * + * { margin-block-start: var(--stack-lg); }
+
+  /* --- Cluster: rhythm across ----------------------------------------------
+     Things in a row that wrap, with ONE gap in both axes — the horizontal
+     counterpart to the stack, and the answer to the fourteen inline
+     `display:flex;gap:…` declarations the same audit found.
+
+     `align-items: center` because a cluster is nearly always controls or
+     chips of differing heights, and the one case that wants baselines
+     (`--baseline`) is rarer than the one that wants centres. */
+  /* --- Bare: the browser's own box, removed -----------------------------
+     A `fieldset`, `ul`, `ol` or `dd` carries a user-agent margin, padding,
+     border or marker that a designed layout almost never wants. Stripping
+     it is not a layout DECISION, so it should not read like one: the audit
+     found `style="border:0;padding:0;margin:0"` repeated verbatim on eight
+     elements, which is a reset masquerading as spacing.
+
+     Use it on the semantic element, then put the real layout on the same
+     node with a stack or a cluster. */
+  .ns-bare { margin: 0; padding: 0; border: 0; list-style: none; }
+
+  .ns-cluster {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: var(--gap-inline);
+  }
+  .ns-cluster--xs { gap: var(--space-1-5); }
+  .ns-cluster--md { gap: var(--space-4); }
+  .ns-cluster--lg { gap: var(--space-6); }
+  /* Baselines, for a row of text at different sizes — a figure beside its
+     label, a title beside a timestamp. */
+  .ns-cluster--baseline { align-items: baseline; }
+  /* Pushes everything after it to the far edge. One class instead of the
+     `margin-inline-start: auto` that otherwise appears inline on every
+     toolbar in the system. */
+  .ns-cluster__end { margin-inline-start: auto; }
+  /* Takes the leftover width, but stops wrapping before it gets too narrow
+     to read. The `16rem` is a MEASURE floor, not a chosen width: below it a
+     column of text stops being a column. */
+  .ns-cluster__fill { flex: 1; min-inline-size: 16rem; }
+
+  /* --- Centre: a measure, centred ------------------------------------------
+     A column with a maximum width and automatic side margins. The container
+     level for things that are NOT inside a band — a bare page, a demo, an
+     email body. Takes the width from a token so the three measures stay the
+     three measures. */
+  .ns-center { margin-inline: auto; max-inline-size: var(--container-page); }
+  .ns-center--narrow { max-inline-size: var(--container-narrow); }
+  .ns-center--prose { max-inline-size: var(--container-prose); }
+  /* Narrower than every container token: a ONE-FIELD form — a signup, a
+     search, an unsubscribe. --container-narrow (56rem) is the width of a
+     settings form with labelled rows; a single input stretched that far
+     reads as a site-wide search bar rather than as a thing to fill in. */
+  .ns-center--compact { max-inline-size: 32rem; }
+  /* A centre that is NOT centred — takes the measure, keeps the left edge.
+     A search box at the head of a listing lines up with the listing; the
+     same box centred looks like a hero that lost its heading. */
+  .ns-center--flush { margin-inline: 0; margin-block-end: var(--stack-md); }
+  /* With the gutters, for a centre that is doing a container's whole job. */
+  .ns-center--gutter { padding-inline: var(--gutter); }
+  /* Block padding, for a page wrapper that is a section in everything but
+     name — a listing grid or a detail layout on a page with no band around
+     it. It gets the band's own step, so a wrapper and a band space the page
+     identically instead of the wrapper inventing a ninth value.
+
+     ONE ELEMENT, deliberately. A band is two (ground + measure) because its
+     ground is full-bleed; a wrapper has no ground, so splitting it in two
+     would add a div for nothing. --pad-b is the common case: a page whose
+     top spacing already came from the header above it. */
+  .ns-center--pad { padding-block: var(--stack-lg); }
+  .ns-center--pad-b { padding-block-end: var(--stack-lg); }
+  .ns-center--pad-t { padding-block-start: var(--stack-md); }
 }
